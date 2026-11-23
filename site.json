@@ -1,0 +1,262 @@
+{
+  "site_name": "ChemistryTeacher.net",
+  "base_url": "https://chemistryteacher.net",
+  "tagline": "Free interactive chemistry simulations and practice for high school",
+  "home_title": "Free Chemistry Simulations & Interactive Labs | ChemistryTeacher.net",
+  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, atoms, isotopes and nuclear equations. No login.",
+  "home_intro": "Free, hands-on chemistry simulations built by a high school chemistry teacher for real classrooms. Every activity runs right in the browser on Chromebooks, laptops, tablets and classroom projectors. No logins, no ads, and no student data collected.",
+  "about_site": "ChemistryTeacher.net is made by a high school chemistry teacher with about twenty years in the classroom. Each activity was built to fix a spot where students usually get stuck, then tested with real classes. Teachers are welcome to use every activity with their students for free. Please link to the page here instead of re-posting the files.",
+  "license": "Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosting.",
+  "units": [
+    "Measurement & Math",
+    "Atomic Structure",
+    "Bonding & Naming",
+    "Gases",
+    "Energy & Thermochemistry",
+    "More Activities"
+  ],
+  "redirects": {
+    "/name-formula-trainer": "/naming-compounds",
+    "/nomenclature": "/naming-compounds",
+    "/lewis-dot-builder": "/lewis-dot-structures",
+    "/lewis-dot": "/lewis-dot-structures",
+    "/gas-law-lab": "/gas-laws",
+    "/gas-law-sim": "/gas-laws",
+    "/heating-curve-sim": "/heating-curve",
+    "/calorimetry-lab": "/calorimetry",
+    "/specific-heat": "/calorimetry",
+    "/dimensional-analysis-lab": "/dimensional-analysis",
+    "/atomic-theory-history": "/atomic-theory",
+    "/history-of-atomic-theory": "/atomic-theory",
+    "/nuclear-equation-builder": "/nuclear-equations"
+  },
+  "activities": {
+    "dimensional-analysis": {
+      "name": "Dimensional Analysis Lab",
+      "title": "Dimensional Analysis Practice: Unit & Mole Conversions",
+      "description": "Free interactive dimensional analysis (factor-label) practice. Build conversion factors, cancel units and solve unit, mole and stoichiometry conversions step by step.",
+      "unit": "Measurement & Math",
+      "order": 1,
+      "card": "Build conversion factors, cancel units, and solve unit, mole and stoichiometry problems.",
+      "topics": [
+        "dimensional analysis",
+        "factor-label method",
+        "unit conversions",
+        "mole conversions",
+        "stoichiometry"
+      ],
+      "about": "Dimensional analysis (the factor-label method) is the problem-solving tool students use all year, from metric conversions to stoichiometry. In this lab, students set up the starting amount, drag in conversion factors, and watch units cancel, so they see why a factor goes on top or bottom instead of memorizing it.",
+      "how": [
+        "Choose Unit Conversion or Mole Conversion at the top.",
+        "Use Guided mode to practice 2-fraction and 3-fraction problems, or Free Form to set up your own.",
+        "Enter the starting amount, then add conversion factors so the unwanted units cancel.",
+        "Open the periodic table for molar masses in mole and stoichiometry (4-fraction) problems."
+      ],
+      "classroom": "Use it as a warm-up before a conversions quiz, on the projector to model setups, or as stoichiometry practice where students must show every factor."
+    },
+    "atomic-theory": {
+      "name": "History of Atomic Theory",
+      "title": "History of Atomic Theory Timeline: Interactive Atomic Models",
+      "description": "Interactive history of atomic theory timeline: Democritus, Dalton, Thomson, Rutherford, Bohr and the quantum model. Compare atomic models, then take a short quiz.",
+      "unit": "Atomic Structure",
+      "order": 1,
+      "card": "Travel the timeline from Democritus to the quantum model, compare each atomic model, then take the quiz.",
+      "topics": [
+        "history of atomic theory",
+        "atomic models",
+        "Dalton",
+        "Thomson plum pudding model",
+        "Rutherford gold foil experiment",
+        "Bohr model",
+        "quantum mechanical model"
+      ],
+      "about": "The atomic model changed each time a new experiment did not fit the old one. This interactive timeline walks students through each major discovery, shows the model scientists used at that point, and lets them compare it side by side with the model before it, so they connect each change to the evidence that caused it.",
+      "how": [
+        "Use Prev and Next to move through the 8 stops on the timeline.",
+        "Press Compare to previous model to see what changed and why.",
+        "View all 8 stops to unlock the quiz.",
+        "Finish the quiz to get a score card. No names or personal information are collected."
+      ],
+      "classroom": "Works well as a self-paced introduction to atomic structure, a station activity, or review before a unit test. The score card gives a quick completion check.",
+      "bar": "br"
+    },
+    "atom-builder": {
+      "name": "Atom Builder: Isotopes & Ions",
+      "title": "Atom Builder: Protons, Neutrons, Electrons, Isotopes & Ions",
+      "description": "Build an atom with protons, neutrons and electrons. Free interactive practice for isotopes, ions, mass number, atomic number, hyphen and nuclear notation.",
+      "unit": "Atomic Structure",
+      "order": 2,
+      "card": "Add protons, neutrons and electrons to build atoms, isotopes and ions, then name them in hyphen and nuclear notation.",
+      "topics": [
+        "protons neutrons electrons",
+        "subatomic particles",
+        "isotopes",
+        "ions",
+        "atomic number",
+        "mass number",
+        "nuclear notation",
+        "hyphen notation"
+      ],
+      "about": "Students build atoms by dragging protons, neutrons and electrons onto the model and see how each particle changes the element, the mass number, or the charge. Guided levels move from counting particles to building, naming and converting between hyphen notation and nuclear (isotope) notation.",
+      "how": [
+        "Pick Free Form to explore, or Guided to work through 5 levels: Count It, Build It, Name It, Convert It and Mixed.",
+        "Drag particles onto the atom. Double-click a particle or drag it off to remove it.",
+        "Use the x1, x5 and x10 buttons to add particles faster.",
+        "Tap an answer box and use the keypad to enter numbers and charges."
+      ],
+      "classroom": "Great for the first day of isotopes and ions, as a projector demo, or as practice before a quiz on subatomic particles.",
+      "bar": "br"
+    },
+    "nuclear-equations": {
+      "name": "Nuclear Equation Builder",
+      "title": "Nuclear Equation Builder: Alpha, Beta, Gamma Decay Practice",
+      "description": "Free interactive practice balancing nuclear equations: alpha decay, beta decay, positron emission, gamma radiation, fission and fusion. Check mass and atomic numbers.",
+      "unit": "Atomic Structure",
+      "order": 3,
+      "card": "Balance nuclear equations for alpha, beta, positron and gamma decay by matching mass and atomic numbers.",
+      "topics": [
+        "nuclear equations",
+        "alpha decay",
+        "beta decay",
+        "positron emission",
+        "gamma radiation",
+        "nuclear chemistry",
+        "radioactive decay"
+      ],
+      "about": "Balancing a nuclear equation comes down to one rule: the mass numbers and the atomic numbers must add up the same on both sides. Students build each side from particles like alpha, beta, positron, proton, neutron and gamma, and the builder checks the top (A) and bottom (Z) totals for them.",
+      "how": [
+        "Choose Guided (Levels 1 to 3) or Free Form.",
+        "Tap a species to edit it, and tap its symbol to change the element.",
+        "Add particles from the palette to the left or right side.",
+        "Press Check to test your equation, or Hint if you are stuck."
+      ],
+      "classroom": "Use it after introducing types of radioactive decay, as guided practice before a nuclear chemistry quiz, or for students to check their paper work."
+    },
+    "lewis-dot-structures": {
+      "name": "Lewis Dot Builder",
+      "title": "Lewis Dot Structure Builder: Covalent & Ionic Bonding",
+      "description": "Free drag-and-drop Lewis dot structure builder. Practice covalent and ionic bonding, valence electrons and the octet rule with instant checking.",
+      "unit": "Bonding & Naming",
+      "order": 1,
+      "card": "Drag atoms from the periodic table, share or transfer electrons, and check octets for covalent and ionic compounds.",
+      "topics": [
+        "Lewis dot structures",
+        "Lewis diagrams",
+        "valence electrons",
+        "octet rule",
+        "covalent bonding",
+        "ionic bonding"
+      ],
+      "about": "Students drag elements from the periodic table onto a whiteboard and build Lewis dot diagrams by moving actual valence electrons. Two nonmetals share a pair to make a covalent bond, and a metal transfers its electron to a nonmetal to make an ionic bond, so the difference between the two bond types is something students do, not just read.",
+      "how": [
+        "Pick Guided to build assigned compounds, or Free Draw to build your own.",
+        "Drag a colored symbol from the periodic table into the build area.",
+        "Drag a dot onto another atom to bond. Pull a bond sideways to break it.",
+        "Press Check octets, then Save image to keep your structure."
+      ],
+      "classroom": "Designed for projectors and Smartboards. Use it to model bonding, for partner practice, or for students to save images of their structures for an assignment."
+    },
+    "naming-compounds": {
+      "name": "Name ⇄ Formula Trainer",
+      "title": "Naming Compounds Practice: Ionic & Covalent Formulas",
+      "description": "Free naming compounds practice: write names from formulas and formulas from names for ionic, covalent, transition metal and polyatomic ion compounds.",
+      "unit": "Bonding & Naming",
+      "order": 2,
+      "card": "Practice formula to name and name to formula for ionic, covalent, transition metal and polyatomic compounds.",
+      "topics": [
+        "naming compounds",
+        "chemical nomenclature",
+        "ionic compounds",
+        "covalent compounds",
+        "polyatomic ions",
+        "transition metals",
+        "writing chemical formulas"
+      ],
+      "about": "Nomenclature takes lots of practice, and the first step is deciding whether a compound is ionic or covalent. This trainer has students classify each compound first, then name it or write its formula. Levels build from simple binary compounds to transition metals with Roman numerals and polyatomic ions.",
+      "how": [
+        "Choose Ionic, Covalent or Mixed, then a level from 1 (known charges) to 4 (mixed).",
+        "Pick Formula to Name or Name to Formula.",
+        "Use the built-in periodic table (blue numbers show group charges) and the Reference list of polyatomic ions.",
+        "Check the Score Card to see your progress."
+      ],
+      "classroom": "Use it as daily nomenclature practice, homework, or test review. The Score Card gives students and teachers a quick progress check."
+    },
+    "gas-laws": {
+      "name": "Gas Law Lab",
+      "title": "Gas Laws Simulation: Boyle's, Charles's & Gay-Lussac's Law Lab",
+      "description": "Free gas law simulation with a syringe in a water bath. Collect data and graph Boyle's law, Charles's law, Gay-Lussac's law and the combined gas law.",
+      "unit": "Gases",
+      "order": 1,
+      "card": "A syringe in a water bath: change pressure, volume and temperature, collect data, graph it, and find absolute zero.",
+      "topics": [
+        "gas laws",
+        "Boyle's law",
+        "Charles's law",
+        "Gay-Lussac's law",
+        "combined gas law",
+        "absolute zero",
+        "pressure volume temperature"
+      ],
+      "about": "A virtual syringe in a water bath lets students run real gas law experiments: push or pull the plunger, add weights, or heat and cool the bath, and record pressure, volume and temperature. They graph their own data with a best-fit line, so the relationships in Boyle's, Charles's and Gay-Lussac's laws come from evidence. Extending the line to zero lets them find absolute zero themselves.",
+      "how": [
+        "Pick a law at the top. The green boxes show what is held constant.",
+        "Change one variable with the buttons on the model or the Controls box.",
+        "Record at least 3 trials (5 or more is better), then graph them. Try P against 1/V for Boyle's law.",
+        "Turn on the \"constant?\" column and answer the challenge questions. Data can be copied to Google Sheets or downloaded as CSV."
+      ],
+      "classroom": "Use it as a full virtual lab, as a pre-lab before a real syringe lab, or to let absent students collect data. Measurement error can be switched on for realistic data."
+    },
+    "heating-curve": {
+      "name": "Heating Curve Simulator",
+      "title": "Heating Curve of Water Simulation: Phase Changes & Energy",
+      "description": "Free heating and cooling curve of water simulation with real lab footage. See melting, boiling, phase changes, kinetic and potential energy from ice at -50 °C to steam.",
+      "unit": "Energy & Thermochemistry",
+      "order": 1,
+      "card": "Heat ice to steam (or cool it back) and watch the graph, the particles and real lab footage stay in sync.",
+      "topics": [
+        "heating curve",
+        "cooling curve",
+        "phase changes",
+        "melting point",
+        "boiling point",
+        "kinetic energy",
+        "potential energy",
+        "states of matter"
+      ],
+      "about": "Why does the temperature stop rising while ice melts or water boils? This heating curve simulator takes water from ice at -50 °C to steam at 150 °C (or cools it back down) while the graph, the kinetic and potential energy bars, and real time-lapse lab footage of a classroom run play together. The flat parts of the curve become easy to explain: the energy is going into changing the phase, not raising the temperature.",
+      "how": [
+        "Press Play (or the space bar) to run the heating curve. R resets.",
+        "Use the arrow keys or the Cooling and Heating buttons to switch direction.",
+        "Press V to show or hide the lab view of the real beaker, and F for full screen.",
+        "Open Teacher settings to show or hide the graph line, labels and KE/PE bars."
+      ],
+      "classroom": "Project it while teaching phase changes, pause at each segment for students to predict what happens next, or pair it with a real ice-melting lab.",
+      "bar": "th"
+    },
+    "calorimetry": {
+      "name": "Calorimetry & Specific Heat Lab",
+      "title": "Calorimetry Lab Simulation: Specific Heat & Food Calories",
+      "description": "Free virtual calorimetry lab. Find the specific heat capacity of metals with q = mcΔT and measure food Calories by burning snacks. Includes real lab videos.",
+      "unit": "Energy & Thermochemistry",
+      "order": 2,
+      "card": "Drop hot metal into a calorimeter to find specific heat, burn snack foods to measure Calories, and compare with real lab videos.",
+      "topics": [
+        "calorimetry",
+        "specific heat capacity",
+        "q = mcΔT",
+        "heat transfer",
+        "conservation of energy",
+        "food calories",
+        "thermochemistry"
+      ],
+      "about": "This virtual calorimetry lab has two parts. In the first, students heat marbles or metal samples and drop them into water to measure the specific heat capacity with q = mcΔT and conservation of energy. In the second, they burn snack foods under a can of water to measure food Calories and compare with the nutrition label. Time-lapse videos of the real class experiments show where real labs lose heat.",
+      "how": [
+        "Follow the glowing hints: blue = drag, yellow = click, green box = drop here, notepad = record it.",
+        "Record temperatures in the data table and watch the temperature-time graph and energy bar chart.",
+        "Use the Calculations and Questions tabs to solve for heat and specific heat.",
+        "Open Real Lab to watch the class experiment videos, and the Reference Table for formulas and specific heat values."
+      ],
+      "classroom": "Use it as a full virtual lab, a pre-lab before the real calorimetry lab, or a make-up lab for absent students."
+    }
+  }
+}
