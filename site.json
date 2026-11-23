@@ -3,7 +3,7 @@
   "base_url": "https://chemistryteacher.net",
   "tagline": "Free interactive chemistry simulations and practice for high school",
   "home_title": "Free Chemistry Simulations & Interactive Labs | ChemistryTeacher.net",
-  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, atoms, isotopes, alpha, beta and gamma radiation, a cloud chamber and nuclear equations. No login.",
+  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, endothermic vs exothermic reactions, atoms, isotopes, alpha, beta and gamma radiation, a cloud chamber and nuclear equations. No login.",
   "home_intro": "Free, hands-on chemistry simulations built by a high school chemistry teacher for real classrooms. Every activity runs right in the browser on Chromebooks, laptops, tablets and classroom projectors. No logins, no ads, and no student data collected.",
   "about_site": "ChemistryTeacher.net is made by a high school chemistry teacher with about twenty years in the classroom. Each activity was built to fix a spot where students usually get stuck, then tested with real classes. Teachers are welcome to use every activity with their students for free. Please link to the page here instead of re-posting the files.",
   "license": "Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosting.",
@@ -36,7 +36,13 @@
     "/cloud-chamber-simulator": "/cloud-chamber",
     "/cloud-chamber-sim": "/cloud-chamber",
     "/cloud-chamber-lab": "/cloud-chamber",
-    "/particle-tracks": "/cloud-chamber"
+    "/particle-tracks": "/cloud-chamber",
+    "/endothermic-exothermic-reactions": "/endothermic-exothermic",
+    "/exothermic-endothermic": "/endothermic-exothermic",
+    "/endothermic": "/endothermic-exothermic",
+    "/exothermic": "/endothermic-exothermic",
+    "/hot-pack-cold-pack": "/endothermic-exothermic",
+    "/endo-exo": "/endothermic-exothermic"
   },
   "activities": {
     "dimensional-analysis": {
@@ -372,6 +378,37 @@
       ],
       "classroom": "Use it as interactive notes on classifying matter, as station work, or as review before a quiz on elements, compounds and mixtures. The score card can be turned in through Google Classroom or Gmail.",
       "bar": "bl"
+    },
+    "endothermic-exothermic": {
+      "name": "Endothermic vs Exothermic",
+      "title": "Endothermic vs Exothermic Reactions: Hot & Cold Pack Lab, ΔH & Quiz",
+      "description": "Free interactive lesson on endothermic and exothermic reactions: system vs surroundings, the sign of ΔH, bond energy, energy diagrams, a hot/cold pack lab and quiz.",
+      "unit": "Energy & Thermochemistry",
+      "order": 3,
+      "card": "Learn ΔH, bond energy and energy diagrams, then dissolve CaCl₂, NaOH, NH₄NO₃ and KCl in a virtual hot pack / cold pack lab.",
+      "topics": [
+        "endothermic reactions",
+        "exothermic reactions",
+        "enthalpy change (ΔH)",
+        "system and surroundings",
+        "bond energy",
+        "potential energy diagrams",
+        "activation energy",
+        "catalysts",
+        "phase changes",
+        "heat of solution",
+        "hot packs and cold packs",
+        "thermochemistry"
+      ],
+      "about": "Students learn the difference between the system and the surroundings, why exothermic reactions have a negative ΔH and endothermic reactions a positive ΔH, how breaking and forming bonds decides the energy change, and how to read potential energy diagrams with activation energy, the activated complex and a catalyst. In the Hot Pack / Cold Pack lab they dissolve CaCl₂, NaOH, NH₄NO₃ and KCl in 100 mL of water, graph temperature against time, classify each process and check the math with q = mcΔT. A scenario sort covers everyday examples and phase changes.",
+      "how": [
+        "Work through the 8 Learn stops (Back/Next or tap a numbered stop).",
+        "In Lab A, choose a solid and a mass, then press Drop in & stir. Watch the thermometer and graph, then classify the process and the sign of ΔH.",
+        "Test all four solids, then sort the 12 scenario cards in Lab B.",
+        "When the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
+      ],
+      "classroom": "Use it as notes and a virtual lab before a real hot pack / cold pack or calorimetry lab, as a make-up lab for absent students, or as review before a thermochemistry quiz. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "tl"
     }
   }
 }
