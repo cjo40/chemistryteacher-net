@@ -154,7 +154,13 @@
         "Drag a dot onto another atom to bond. Pull a bond sideways to break it.",
         "Press Check octets, then Save image to keep your structure."
       ],
-      "classroom": "Designed for projectors and Smartboards. Use it to model bonding, for partner practice, or for students to save images of their structures for an assignment."
+      "classroom": "Designed for projectors and Smartboards. Use it to model bonding, for partner practice, or for students to save images of their structures for an assignment.",
+      "worksheets": [
+        {
+          "label": "Worksheet",
+          "file": "lewis-dot-structures-worksheet.pdf"
+        }
+      ]
     },
     "naming-compounds": {
       "name": "Name ⇄ Formula Trainer",
@@ -231,7 +237,17 @@
         "Open Teacher settings to show or hide the graph line, labels and KE/PE bars."
       ],
       "classroom": "Project it while teaching phase changes, pause at each segment for students to predict what happens next, or pair it with a real ice-melting lab.",
-      "bar": "th"
+      "bar": "th",
+      "worksheets": [
+        {
+          "label": "Worksheet",
+          "file": "heating-curve-worksheet.pdf"
+        },
+        {
+          "label": "Worksheet",
+          "file": "heating-curve-worksheet.docx"
+        }
+      ]
     },
     "calorimetry": {
       "name": "Calorimetry & Specific Heat Lab",

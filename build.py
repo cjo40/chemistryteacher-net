@@ -81,6 +81,10 @@ def collect(cfg):
         meta.setdefault("about", meta["description"])
         meta.setdefault("how", [])
         meta.setdefault("classroom", "")
+        meta.setdefault("worksheets", [])
+        for w in meta["worksheets"]:
+            if not (ASSETS / "worksheets" / w["file"]).exists():
+                fail(f"worksheet file assets/worksheets/{w['file']} is missing (listed for {slug} in site.json)")
         meta["slug"] = slug
         meta["url"] = f"{cfg['base_url']}/{slug}"
         meta["lastmod"] = last_changed(f)
@@ -206,6 +210,7 @@ def body_widget(cfg, a, related):
     <p>{esc(a['about'])}</p>
     {f'<h2>How to use it</h2><ol>{how}</ol>' if how else ''}
     {f'<h2>In the classroom</h2><p>{esc(a["classroom"])}</p>' if a['classroom'] else ''}
+    {'<h2>Printable worksheet</h2><p>' + ' &nbsp; '.join(worksheet_links(a, 'ct-ws')) + '</p>' if a['worksheets'] else ''}
     {f'<h2>Topics</h2><p>{esc(topics)}</p>' if topics else ''}
     {f'<h2>Related activities</h2><ul>{rel}</ul>' if rel else ''}
     <p><a href="/">See all free chemistry activities at {esc(cfg['site_name'])}</a></p>
@@ -286,7 +291,14 @@ nav.top a:hover{color:var(--teal)}
 section.unit{padding:18px 0 8px}
 section.unit h2{font-size:24px;margin:18px 0 14px;letter-spacing:-.3px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s,border-color .12s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;color:inherit;transition:transform .12s,box-shadow .12s,border-color .12s}
+.card .cover{display:block}
+.card h3 a{color:var(--ink);text-decoration:none}
+.card h3 a:hover{color:var(--teal)}
+.card .go{text-decoration:none}
+.wsrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.ws{font-size:14px;font-weight:600;color:var(--ink2);text-decoration:none;background:#f1f5f9;border:1px solid var(--line);border-radius:8px;padding:4px 9px}
+.ws:hover{color:var(--teal);border-color:#99f6e4;background:#f0fdfa}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,23,42,.10);border-color:#99f6e4}
 .card img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;object-position:top;display:block;background:#e2e8f0;border-bottom:1px solid var(--line)}
 .card .ph{aspect-ratio:1200/630;display:flex;align-items:center;justify-content:center;background:#ecfdf5;border-bottom:1px solid var(--line)}
@@ -347,11 +359,22 @@ def page_shell(cfg, title, description, canonical, body, extra_head="", robots="
 """
 
 
+def worksheet_links(a, cls="ws"):
+    out = []
+    for w in a["worksheets"]:
+        kind = "PDF" if w["file"].lower().endswith(".pdf") else "Word"
+        out.append(f'<a class="{cls}" href="/assets/worksheets/{esc(w["file"])}" target="_blank" rel="noopener">&#128196; {esc(w.get("label", "Worksheet"))} ({kind})</a>')
+    return out
+
+
 def card_html(a, eager=False):
     img = (f'<img src="/assets/previews/{a["slug"]}.jpg" alt="Screenshot of the {esc(a["name"])} activity" width="1200" height="630" loading="{"eager" if eager else "lazy"}" decoding="async">'
            if a["has_preview"] else f'<div class="ph">{FLASK_SVG.format(s=64)}</div>')
-    return (f'<a class="card" href="/{a["slug"]}">{img}<div class="body"><h3>{esc(a["name"])}</h3>'
-            f'<p>{esc(a["card"])}</p><span class="go">Open activity &rarr;</span></div></a>')
+    ws = worksheet_links(a)
+    ws_html = f'<div class="wsrow">{" ".join(ws)}</div>' if ws else ""
+    return (f'<div class="card"><a class="cover" href="/{a["slug"]}" tabindex="-1" aria-hidden="true">{img}</a><div class="body">'
+            f'<h3><a href="/{a["slug"]}">{esc(a["name"])}</a></h3><p>{esc(a["card"])}</p>'
+            f'<a class="go" href="/{a["slug"]}">Open activity &rarr;</a>{ws_html}</div></div>')
 
 
 def unit_id(u):
@@ -396,6 +419,7 @@ def build_home(cfg, acts):
     <li>No accounts, no ads and no student data collected.</li>
     <li>Link any activity in Google Classroom or your LMS: each one has its own short address, like chemistryteacher.net/gas-laws.</li>
     <li>Open the About button on any activity for how-to steps and classroom ideas.</li>
+    <li>Some activities have a free printable worksheet: look for the &#128196; Worksheet links on the cards.</li>
   </ul></div>
 </div></section>
 </main>"""
