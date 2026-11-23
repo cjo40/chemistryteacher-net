@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Types of Radiation: Alpha, Beta &amp; Gamma</title>
+<meta name="description" content="Interactive high school chemistry activity on alpha, beta and gamma radiation: notes, a shielding lab, mystery sources and a quiz with score card.">
+<style>
+:root{--ink:#0b1324;--muted:#3b4658;--bg:#f4f7fb;--card:#fff;--panel:#eaf0f7;--line:#b9c4d3;--accent:#1e3a8a;--accent2:#2563eb;--alpha:#c2410c;--beta:#1d4ed8;--gamma:#7e22ce;--ok:#166534;--okbg:#dcfce7;--bad:#991b1b;--badbg:#fee2e2;--focus:#f59e0b;--r:12px}
+*{box-sizing:border-box}
+html{font-size:clamp(15px,0.45vw + 12px,20px);-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+b,strong{font-weight:700}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:.45rem 1rem;padding:.45rem 1rem;background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.title{display:flex;align-items:center;gap:.6rem;flex:1 1 260px;min-width:0}
+.title h1{font-size:1.15rem;margin:0;line-height:1.15}
+.title .url{font-size:.72rem;opacity:.92}
+.logo{width:2.2rem;height:2.2rem;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.tabs{display:flex;align-items:stretch;gap:.3rem;flex-wrap:wrap}
+.tab{display:flex;flex-direction:column;justify-content:center;min-width:7.2rem;padding:.3rem .75rem;border-radius:10px;border:2px solid rgba(255,255,255,.6);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;text-align:left}
+.tab .tlabel{font-weight:700;font-size:1.02rem;display:flex;align-items:center;gap:.35rem}
+.tab .tsub{font-size:.7rem;line-height:1.2;max-width:13rem}
+.tab[aria-selected=true]{background:#fff;color:var(--accent);border-color:#fff}
+.tab.locked{border-style:dashed}
+.tarrow{align-self:center;font-weight:700;opacity:.85}
+.icon{width:1em;height:1em;flex:none;vertical-align:-.12em}
+.mute{display:inline-flex;align-items:center;gap:.4rem;min-height:40px;padding:.3rem .7rem;border-radius:10px;border:2px solid #fff;background:transparent;color:#fff;font-weight:700;cursor:pointer}
+.mute[aria-pressed=true]{background:#fff;color:var(--accent)}
+main{max-width:1320px;margin:0 auto;padding:.9rem 1rem 2rem}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.45rem .95rem;min-height:44px;border-radius:10px;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;touch-action:manipulation;text-align:center}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn.small{min-height:36px;padding:.25rem .65rem;font-size:.88rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn[aria-pressed=true]{background:var(--accent);color:#fff}
+.btn.ta{border-color:var(--alpha);color:var(--alpha)}
+.btn.tb{border-color:var(--beta);color:var(--beta)}
+.btn.tg{border-color:var(--gamma);color:var(--gamma)}
+.btn.ta[aria-pressed=true]{background:var(--alpha);color:#fff}
+.btn.tb[aria-pressed=true]{background:var(--beta);color:#fff}
+.btn.tg[aria-pressed=true]{background:var(--gamma);color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1rem 1.15rem;box-shadow:0 2px 10px rgba(15,23,42,.07)}
+.note{font-size:.9rem;color:var(--muted)}
+.tip{background:#fff7e6;border:1px solid #f0c674;border-radius:10px;padding:.5rem .75rem;font-size:.92rem}
+
+/* nuclear notation */
+.nuc{display:inline-flex;align-items:center;white-space:nowrap;vertical-align:middle}
+.nuc .az{display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.62em;line-height:1.02;margin-right:.06em}
+
+/* learn */
+.learn-top{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;margin:-.4rem -.5rem .6rem;padding:.45rem .5rem;position:sticky;top:var(--topH,0px);z-index:25;background:rgba(244,247,251,.96);border-bottom:1px solid var(--line);box-shadow:0 4px 8px -6px rgba(15,23,42,.25)}
+.progress{flex:1 1 200px;height:14px;background:#d7e0ec;border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.progress>div{height:100%;background:var(--accent2);width:0;transition:width .3s}
+.ptext{font-weight:700;font-size:.92rem}
+.dots{display:flex;gap:.35rem;flex-wrap:wrap}
+.dot{width:2.3rem;height:2.3rem;border-radius:50%;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;position:relative;padding:0}
+.dot.viewed{background:#dbe7ff}
+.dot.viewed::after{content:"✓";position:absolute;right:-5px;top:-6px;font-size:.66rem;background:var(--ok);color:#fff;border-radius:50%;width:1.05rem;height:1.05rem;line-height:1.05rem;text-align:center}
+.dot[aria-current=step]{background:var(--accent);color:#fff}
+.stop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:1.2rem;align-items:start}
+.stop h2{margin:.1rem 0 .55rem;font-size:1.4rem;color:var(--accent)}
+.stop ul{margin:0;padding-left:1.15rem}
+.stop li{margin:.32rem 0}
+.learn-nav{display:flex;justify-content:space-between;gap:.5rem;margin-top:.8rem}
+.viz,.vizc{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px;background-color:#f7faff;background-image:linear-gradient(rgba(148,163,184,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.15) 1px,transparent 1px),linear-gradient(180deg,#fdfeff,#e7eef8);background-size:24px 24px,24px 24px,100% 100%;box-shadow:inset 0 1px 4px rgba(15,23,42,.08)}
+.viz{touch-action:manipulation}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.pulse{animation:pulse 1.1s ease-in-out infinite}
+.ticon{width:1.4em;height:1.4em;vertical-align:-.35em;margin-right:.1em}
+.lvl{display:inline-block;font-weight:700;font-size:.76rem;padding:.05rem .5rem;border-radius:99px;border:1.5px solid}
+.lvl.l3{background:#fee2e2;border-color:#991b1b;color:#991b1b}.lvl.l2{background:#fef3c7;border-color:#92400e;color:#92400e}.lvl.l1{background:#dcfce7;border-color:#166534;color:#166534}
+.viz-ctrls{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem;align-items:center}
+.viz-note{margin:.5rem 0 0;font-size:.95rem;min-height:2.6em}
+.eq{font-size:1.35rem;margin-top:.4rem;text-align:center}
+.stats{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:.4rem;font-size:.95rem}
+svg text{font-family:"Atkinson Hyperlegible",system-ui,sans-serif}
+.svglbl{font-size:15px;fill:var(--ink);font-weight:700}
+.svgsm{font-size:12px;fill:var(--muted)}
+.fa{fill:var(--alpha)}.fb{fill:var(--beta)}.fg{fill:var(--gamma)}
+.sa{stroke:var(--alpha)}.sb{stroke:var(--beta)}.sg{stroke:var(--gamma)}
+.proton{fill:#ef4444;stroke:#7f1d1d;stroke-width:1.5}
+.neutron{fill:#d5dbe4;stroke:#334155;stroke-width:1.5}
+.ptxt{fill:#fff;font-weight:700;font-size:13px;pointer-events:none}
+@keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(1.6px,-1px)}50%{transform:translate(-1.4px,1.2px)}75%{transform:translate(1px,1.4px)}100%{transform:translate(0,0)}}
+.shake{animation:shake .18s linear infinite;transform-box:fill-box}
+.fly{transition:transform 1.3s cubic-bezier(.2,.7,.3,1),opacity 1.3s}
+@keyframes flow{to{stroke-dashoffset:-40}}
+.flow{stroke-dasharray:14 6;animation:flow 1s linear infinite}
+table.cmp{width:100%;border-collapse:collapse;font-size:.9rem;background:#fff}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:.35rem .45rem;vertical-align:top;text-align:left}
+table.cmp thead th{background:var(--panel)}
+table.cmp th[scope=row]{background:#f7f9fc;white-space:nowrap}
+table.cmp .hl{background:#fff4c2!important;outline:2px solid #d4a017;outline-offset:-2px}
+.bars{margin-top:.6rem}
+.bar{display:grid;grid-template-columns:11.5rem 1fr 4.2rem;align-items:center;gap:.4rem;font-size:.85rem;margin:.18rem 0}
+.bar .track{background:#e2e8f0;border-radius:99px;height:.95rem;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}
+.bar .fill{height:100%;background:linear-gradient(90deg,#60a5fa,#1d4ed8);border-radius:99px}
+.bar .fill.pat{background:repeating-linear-gradient(45deg,#2563eb 0 6px,#93b4f5 6px 10px)}
+
+/* lab */
+.lab-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:1rem;align-items:start}
+.subtabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:-.4rem -.5rem .6rem;padding:.45rem .5rem;position:sticky;top:var(--topH,0px);z-index:25;background:rgba(244,247,251,.96);border-bottom:1px solid var(--line)}
+.subtab{border-radius:10px 10px 0 0}
+.labintro{margin:.1rem 0 .6rem}
+.bench{display:grid;grid-template-columns:minmax(0,1fr) 12.5rem;gap:.7rem;align-items:stretch}
+.meter{background:linear-gradient(160deg,#fde047,#eab308 55%,#a16207);border-radius:16px;padding:.5rem .6rem .6rem;border:3px solid #713f12;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 5px 14px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35rem;color:#1c1917}
+.mtop{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:700;font-size:.7rem;letter-spacing:.06em}
+.gauge{width:100%;display:block;background:radial-gradient(ellipse at 50% 100%,#fffbeb,#fef3c7);border-radius:12px 12px 6px 6px;border:2px solid #713f12;box-shadow:inset 0 2px 5px rgba(0,0,0,.18)}
+#needle{transform-origin:80px 88px;transform:rotate(-80deg);transition:transform .45s ease-out}
+.lcd{width:100%;background:linear-gradient(#1f2a1f,#0a120a);border-radius:8px;border:2px solid #3f3f46;text-align:center;color:#86efac;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.85rem;font-weight:700;padding:.05rem .3rem;text-shadow:0 0 8px rgba(134,239,172,.65);line-height:1.25}
+.lcd small{font-size:.62rem;letter-spacing:.03em}
+.bgnote{font-size:.68rem;font-weight:700;text-align:center;line-height:1.1}
+.grille{width:70%;height:14px;background:radial-gradient(#3f3f46 1.6px,transparent 1.9px) 0 0/8px 7px;opacity:.85}
+.led{width:14px;height:14px;border-radius:50%;background:#7f1d1d;border:2px solid #451a03;display:inline-block}
+.led.on{background:#ef4444;box-shadow:0 0 8px 3px rgba(239,68,68,.85)}
+.srcpick .btn{min-width:8.5rem}
+.palette{display:flex;flex-wrap:wrap;gap:.45rem;margin:.6rem 0}
+.tile{display:flex;align-items:center;gap:.45rem;padding:.35rem .6rem;border:2px solid var(--line);border-radius:10px;background:#fff;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;min-height:46px;font-weight:700}
+.tile small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
+.tile[aria-pressed=true]{border-color:var(--accent);background:#e6eeff}
+.tile[aria-pressed=true]::after{content:"in place";font-size:.7rem;font-weight:700;color:var(--accent);margin-left:.2rem}
+.swatch{width:30px;height:36px;flex:none}
+.ghost-drag{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-60%);background:#fff;border:2px solid var(--accent);border-radius:10px;padding:.3rem .6rem;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.slot-hot rect.slotbox{stroke:var(--focus)!important;stroke-width:4!important}
+.autorec{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;padding:.3rem .8rem;border-radius:10px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:.95rem}
+.autorec.busy{border-color:#d97706;color:#92400e;background:#fffbeb}
+.autorec.done{border-color:var(--ok);color:var(--ok);background:var(--okbg)}
+.spin{width:.95em;height:.95em;border:3px solid #fcd34d;border-top-color:#92400e;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes flashrow{from{background:#fff4c2}to{background:transparent}}
+.data tr.newrow td{animation:flashrow 1.6s ease-out}
+.ctrlrow{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;margin:.5rem 0}
+input[type=range]{width:min(320px,100%);height:34px;accent-color:var(--accent)}
+label.rng{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-weight:700}
+.data{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff;margin-top:.4rem}
+.data th,.data td{border:1px solid var(--line);padding:.25rem .4rem;text-align:left}
+.data thead th{background:var(--panel);position:sticky;top:0}
+.datawrap{max-height:260px;overflow:auto;border-radius:8px;max-width:100%}
+.checklist{position:sticky;top:calc(var(--topH,0px) + 4.2rem)}
+.checklist h2{font-size:1.15rem;margin:0 0 .5rem;color:var(--accent)}
+.ck{display:flex;gap:.5rem;align-items:flex-start;margin:.45rem 0;font-size:.92rem}
+.ck .box{flex:none;width:1.45rem;height:1.45rem;border:2px solid var(--muted);border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:700;background:#fff}
+.ck.done .box{background:var(--ok);border-color:var(--ok);color:#fff}
+.ck .st{display:block;font-size:.78rem;color:var(--muted);font-weight:700}
+.ck.done .st{color:var(--ok)}
+.grid18{border-collapse:collapse;font-size:.72rem;margin:.2rem 0 .1rem}
+.grid18 th,.grid18 td{border:1px solid var(--line);padding:.1rem .2rem;text-align:center;min-width:1.35rem}
+.grid18 td.y{background:var(--okbg);color:var(--ok);font-weight:700}
+.unlock{margin-top:.6rem;padding:.5rem .6rem;border-radius:8px;font-size:.88rem;font-weight:700}
+.unlock.no{background:#f1f5f9;border:1px dashed var(--muted)}
+.unlock.yes{background:var(--okbg);border:1px solid var(--ok);color:var(--ok)}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:.35rem .7rem .5rem;margin:0}
+legend{font-weight:700;padding:0 .3rem}
+.radios{display:flex;flex-wrap:wrap;gap:.3rem .9rem}
+.radios label{display:flex;align-items:center;gap:.35rem;min-height:36px;cursor:pointer}
+.radios input{width:1.15rem;height:1.15rem;accent-color:var(--accent)}
+.fbk{padding:.55rem .75rem;border-radius:10px;margin-top:.55rem;font-weight:400}
+.fbk.ok{background:var(--okbg);border:2px solid var(--ok)}
+.fbk.bad{background:var(--badbg);border:2px solid var(--bad)}
+.fbk.info{background:#eef4ff;border:2px solid var(--accent2)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.6rem;margin-top:.6rem}
+.mcard{border:2px solid var(--line);border-radius:12px;padding:.55rem .7rem;background:#fff}
+.mcard.solved{border-color:var(--ok);background:#f4fff7}
+.mcard h3{margin:.05rem 0 .3rem;font-size:1.02rem}
+.mcard .checks{display:flex;gap:.7rem;flex-wrap:wrap;margin:.2rem 0 .4rem}
+.mcard .checks label{display:flex;gap:.3rem;align-items:center;min-height:34px;font-weight:700}
+.mcard .checks input{width:1.15rem;height:1.15rem}
+
+/* quiz */
+.quizwrap{max-width:900px;margin:0 auto}
+.lockpanel{max-width:720px;margin:1rem auto;text-align:left}
+.lockpanel h2{display:flex;align-items:center;gap:.5rem;color:var(--accent);margin-top:0}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;font-weight:700;color:var(--muted)}
+.qtype{font-size:.8rem;border:1px solid var(--line);border-radius:99px;padding:.1rem .55rem;background:#fff}
+.qprompt{font-size:1.2rem;font-weight:700;margin:.4rem 0 .7rem}
+.opts{display:grid;gap:.45rem}
+.opt{display:flex;align-items:center;gap:.6rem;text-align:left;padding:.55rem .8rem;border:2px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;min-height:48px;font-size:1.02rem}
+.opt .let{flex:none;width:1.8rem;height:1.8rem;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
+.opt[aria-pressed=true]{border-color:var(--accent);background:#e6eeff}
+.opt[aria-pressed=true] .let{background:var(--accent);color:#fff}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.tag{font-size:.75rem;font-weight:700;margin-left:auto;padding:.05rem .45rem;border-radius:99px;border:1px solid currentColor}
+.ranklist{list-style:none;padding:0;margin:0;display:grid;gap:.4rem;counter-reset:rk}
+.rankitem{display:flex;align-items:center;gap:.5rem;padding:.45rem .6rem;border:2px solid var(--line);border-radius:10px;background:#fff;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;counter-increment:rk;min-height:50px}
+.rankitem::before{content:counter(rk);font-weight:700;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;flex:none}
+.rankitem.dragging{border-color:var(--focus);box-shadow:0 4px 14px rgba(0,0,0,.2);background:#fffbeb}
+.rankitem .grip{font-size:1.2rem;color:var(--muted)}
+.rankitem .txt{flex:1}
+.rankitem .mv{min-height:34px;min-width:34px;padding:0}
+.rankend{font-size:.85rem;font-weight:700;color:var(--muted);margin:.25rem 0}
+.pool{display:flex;flex-wrap:wrap;gap:.4rem;min-height:3.2rem;padding:.5rem;border:2px dashed var(--line);border-radius:10px;background:#fff;margin-bottom:.6rem}
+.bins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
+.bin{border:2px solid var(--line);border-radius:12px;background:#fff;min-height:8rem;padding:.4rem;display:flex;flex-direction:column;gap:.35rem;cursor:pointer}
+.bin h4{margin:0 0 .2rem;font-size:1rem;display:flex;align-items:center;gap:.35rem}
+.bin.hot{border-color:var(--focus);background:#fffbeb}
+.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .6rem;border:2px solid var(--accent);border-radius:99px;background:#fff;font-weight:700;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;min-height:40px;font-size:.92rem;text-align:left}
+.chip[aria-pressed=true]{background:#fff4c2;border-color:#b7791f}
+.chip.right{border-color:var(--ok);background:var(--okbg)}
+.chip.wrong{border-color:var(--bad);background:var(--badbg)}
+.diag{max-width:620px}
+.diag .hit{cursor:pointer}
+.diag .hit:focus{outline:none}
+.diag .hit:focus-visible .hl{stroke:#f59e0b;stroke-opacity:.35}
+.qactions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem}
+.scorebox{text-align:center}
+.scorebox canvas{max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);background:#fff}
+.scoremsg{min-height:1.5em;font-weight:700;margin:.4rem 0}
+footer{max-width:1320px;margin:0 auto;padding:0 1rem 3.4rem 3.6rem;font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;justify-content:space-between}
+
+@media (max-width:1060px){.lab-layout{grid-template-columns:minmax(0,1fr)}.checklist{position:static}}
+@media (max-width:860px){.stop{grid-template-columns:1fr}.bench{grid-template-columns:1fr}.meter{flex-direction:row;flex-wrap:wrap;gap:.5rem;justify-content:center}.gauge{width:46%;max-width:220px}.lcd{width:46%;max-width:220px}.grille{display:none}.bins{grid-template-columns:1fr}.tab{min-width:5.6rem}.title h1{font-size:1rem}}
+@media (max-width:520px){.topbar{position:static}main{padding:.6rem}.tab .tsub{font-size:.64rem}.tarrow{display:none}.bar{grid-template-columns:8.5rem 1fr 3.6rem}}
+@media (max-height:640px) and (min-width:861px){.topbar{padding:.3rem 1rem}.title .url{display:none}}
+@media (prefers-reduced-motion:reduce){.shake,.flow,.pulse{animation:none}#needle{transition:none}.fly{transition-duration:.01s}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="title">
+    <svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><use href="#trefoil" x="0" y="0" width="100" height="100"/></svg>
+    <div><h1>Types of Radiation: Alpha, Beta &amp; Gamma</h1><div class="url">chemistryteacher.net/types-of-radiation</div></div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Activity sections">
+    <button class="tab" role="tab" id="tab-learn" data-view="learn" aria-controls="view-learn"><span class="tlabel">1 · Learn</span><span class="tsub" id="sub-learn"></span></button>
+    <span class="tarrow" aria-hidden="true">→</span>
+    <button class="tab" role="tab" id="tab-lab" data-view="lab" aria-controls="view-lab"><span class="tlabel">2 · Lab</span><span class="tsub" id="sub-lab"></span></button>
+    <span class="tarrow" aria-hidden="true">→</span>
+    <button class="tab" role="tab" id="tab-quiz" data-view="quiz" aria-controls="view-quiz"><span class="tlabel" id="quizLabel">3 · Quiz</span><span class="tsub" id="sub-quiz"></span></button>
+  </nav>
+  <button class="mute" id="muteBtn" aria-pressed="false"></button>
+</header>
+
+<main>
+  <!-- LEARN -->
+  <section id="view-learn" class="view" role="tabpanel" aria-labelledby="tab-learn">
+    <div class="learn-top">
+      <span class="ptext" id="learnProg"></span>
+      <div class="progress" aria-hidden="true"><div id="learnBar"></div></div>
+      <div class="dots" id="dots" aria-label="Learn stops"></div>
+    </div>
+    <article class="stop card" id="stop" aria-live="polite">
+      <div class="stop-text"><h2 id="stopTitle"></h2><ul id="stopBullets"></ul></div>
+      <div class="stop-visual" id="stopVisual"></div>
+    </article>
+    <div class="learn-nav">
+      <button class="btn" id="backBtn">◀ Back</button>
+      <button class="btn primary" id="nextBtn">Next ▶</button>
+    </div>
+  </section>
+
+  <!-- LAB -->
+  <section id="view-lab" class="view" role="tabpanel" aria-labelledby="tab-lab" hidden>
+    <div class="lab-layout">
+      <div class="lab-main">
+        <div class="subtabs" role="tablist" aria-label="Lab parts">
+          <button class="btn subtab" data-lab="A" role="tab">A · Shielding Lab</button>
+          <button class="btn subtab" data-lab="C" role="tab">B · Mystery Sources</button>
+        </div>
+
+        <!-- A + C share the bench -->
+        <div id="lab-AC" class="card">
+          <p class="labintro" id="benchIntro"></p>
+          <div class="row srcpick" id="srcPick" role="group" aria-label="Choose a source"></div>
+          <div class="palette" id="palette" aria-label="Shields: drag one into the shield slot, or tap to swap it in"></div>
+          <div class="bench">
+            <svg class="viz" id="benchSvg" viewBox="0 0 820 268" role="img" aria-label="Radiation source, shield slot and Geiger counter"></svg>
+            <div class="meter" aria-live="off">
+              <div class="mtop"><span>GEIGER COUNTER</span><span class="led" id="led" aria-hidden="true"></span></div>
+              <svg class="gauge" id="gauge" viewBox="0 0 160 98" aria-hidden="true"></svg>
+              <div class="lcd"><span id="cpm">0</span> <small>counts/min</small></div>
+              <div class="bgnote">includes ≈25 cpm background</div>
+              <div class="grille" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="ctrlrow">
+            <label class="rng" for="dist">Distance: <span id="distOut">3 cm</span>
+              <input type="range" id="dist" min="2" max="40" step="1" value="3"></label>
+            <span class="autorec" id="autoRec" role="status">Readings record automatically.</span>
+            <button class="btn ghost" id="clearShields">Remove shield</button>
+          </div>
+          <p class="tip" id="benchTip"></p>
+          <div id="mysteryPanel" hidden>
+            <h3 style="margin:.6rem 0 .2rem">Identify each mystery source</h3>
+            <p class="note" style="margin:.1rem 0">Check every type of radiation the source gives off, then press <b>Check</b>. Identify at least 2.</p>
+            <div class="mgrid" id="mgrid"></div>
+          </div>
+          <h3 style="margin:.8rem 0 .1rem">Data table</h3>
+          <div class="datawrap"><table class="data" id="dataTable">
+            <thead><tr><th>#</th><th>Source</th><th>Shield(s)</th><th>Distance</th><th>Count (cpm)</th><th>Net (minus background)</th></tr></thead>
+            <tbody></tbody></table></div>
+          <div class="row" style="margin-top:.4rem"><button class="btn small ghost" id="clearData">Clear table</button><span class="note" id="bgNote"></span></div>
+        </div>
+
+      </div>
+
+      <aside class="checklist card" id="checklist" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="view-quiz" class="view" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div class="quizwrap" id="quizRoot"></div>
+  </section>
+</main>
+<footer>
+  <span>chemistryteacher.net/types-of-radiation · Progress is saved on this device only.</span>
+  <button class="btn small ghost" id="resetBtn">Reset my progress</button>
+</footer>
+<script>
+(function(){
+'use strict';
+/* ---------- helpers ---------- */
+var $ = function(s,r){return (r||document).querySelector(s);};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function poisson(l){
+  if(l<=0) return 0;
+  if(l>50){var u=0;while(u===0)u=Math.random();var z=Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*Math.random());return Math.max(0,Math.round(l+Math.sqrt(l)*z));}
+  var L=Math.exp(-l),k=0,p=1;do{k++;p*=Math.random();}while(p>L);return k-1;
+}
+var RM = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+function nuc(A,Z,sym){return '<span class="nuc"><span class="az"><span>'+A+'</span><span>'+Z+'</span></span>'+sym+'</span>';}
+function svgNuc(x,y,A,Z,sym,size,cls){size=size||22;cls=cls||'';var s=Math.round(size*0.6);
+  return '<text class="'+cls+'" x="'+x+'" y="'+(y-size*0.42)+'" font-size="'+s+'" text-anchor="end" font-weight="700">'+A+'</text>'+
+         '<text class="'+cls+'" x="'+x+'" y="'+(y+size*0.22)+'" font-size="'+s+'" text-anchor="end" font-weight="700">'+Z+'</text>'+
+         '<text class="'+cls+'" x="'+(x+2)+'" y="'+y+'" font-size="'+size+'" font-weight="700">'+sym+'</text>';}
+function loop(fn){var alive=true,last=performance.now(),id;function f(t){if(!alive)return;var dt=Math.min(60,t-last);last=t;if(fn(dt,t)===false){alive=false;return;}id=requestAnimationFrame(f);}id=requestAnimationFrame(f);return function(){alive=false;cancelAnimationFrame(id);};}
+function wavePath(x1,x2,y,amp,per){var d='M'+x1+' '+y;for(var x=x1;x<=x2;x+=3){d+=' L'+x.toFixed(1)+' '+(y+amp*Math.sin((x-x1)/per*2*Math.PI)).toFixed(1);}return d;}
+var LOCK='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>';
+var SPK_ON='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/><path d="M16 8a5 5 0 0 1 0 8M18.5 5.5a8.5 8.5 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+var SPK_OFF='<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/><path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2.4"/></svg>';
+
+/* ---------- drag helper (pointer events: mouse + touch + pen) ---------- */
+function makeDraggable(el,opt){
+  // opt: label(), onMove(x,y), onDrop(x,y), onClick()
+  el.addEventListener('pointerdown',function(e){
+    if(e.button>0) return;
+    if(opt.ignore && opt.ignore(e)) return;
+    var sx=e.clientX, sy=e.clientY, moved=false, ghost=null;
+    function mv(ev){
+      if(!moved && Math.hypot(ev.clientX-sx,ev.clientY-sy)>7){
+        moved=true; ghost=document.createElement('div'); ghost.className='ghost-drag';
+        ghost.textContent=opt.label?opt.label():el.textContent; document.body.appendChild(ghost);
+      }
+      if(moved){ev.preventDefault();ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';if(opt.onMove)opt.onMove(ev.clientX,ev.clientY);}
+    }
+    function up(ev){
+      window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cancel);
+      if(ghost) ghost.remove();
+      if(moved){el._dragged=true;setTimeout(function(){el._dragged=false;},350);if(opt.onDrop)opt.onDrop(ev.clientX,ev.clientY);}
+    }
+    function cancel(){window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',cancel);if(ghost)ghost.remove();if(opt.onMove)opt.onMove(-1,-1);}
+    window.addEventListener('pointermove',mv,{passive:false});window.addEventListener('pointerup',up);window.addEventListener('pointercancel',cancel);
+  });
+  if(opt.onClick) el.addEventListener('click',function(e){if(el._dragged){el._dragged=false;return;}opt.onClick(e);});
+}
+function inRect(x,y,el){var r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;}
+
+/* ---------- state ---------- */
+var KEY='ctn-types-of-radiation-v1';
+var TEACHER=/[?&]teacher\b/.test(location.search);
+var state={viewed:[],stop:0,shieldTests:[],dist:{},defl:[],mysteryOk:0,attempts:0,muted:false};
+try{var saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object'){for(var k in state){if(saved[k]!==undefined)state[k]=saved[k];}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+/* ---------- sound ---------- */
+var actx=null, clickBuf=null;
+function ensureAudio(){
+  if(state.muted) return null;
+  try{
+    if(!actx){var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;actx=new AC();
+      var n=Math.floor(actx.sampleRate*0.004);clickBuf=actx.createBuffer(1,n,actx.sampleRate);var d=clickBuf.getChannelData(0);
+      for(var i=0;i<n;i++){d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);}}
+    if(actx.state==='suspended') actx.resume();
+    return actx;
+  }catch(e){return null;}
+}
+function playClicks(times){
+  if(state.muted||!actx||actx.state!=='running'||!times.length) return;
+  var t0=actx.currentTime+0.02;
+  times.slice(0,45).forEach(function(dt){try{var s=actx.createBufferSource();s.buffer=clickBuf;var g=actx.createGain();g.gain.value=0.45;s.connect(g);g.connect(actx.destination);s.start(t0+dt);}catch(e){}});
+}
+document.addEventListener('pointerdown',function(){ensureAudio();},true);
+function renderMute(){var b=$('#muteBtn');b.innerHTML=(state.muted?SPK_OFF+' Sound: off':SPK_ON+' Sound: on');b.setAttribute('aria-pressed',state.muted?'true':'false');b.setAttribute('aria-label',state.muted?'Sound is off. Turn sound on':'Sound is on. Mute sound');}
+$('#muteBtn').addEventListener('click',function(){state.muted=!state.muted;save();renderMute();if(!state.muted)ensureAudio();});
+
+/* ---------- shared graphics: gradients, patterns, sprites ---------- */
+function trefoilBlades(r1,r2){var d='';[-90,30,150].forEach(function(c){var a1=(c-30)*Math.PI/180,a2=(c+30)*Math.PI/180;
+  function P(r,a){return (r*Math.cos(a)).toFixed(2)+' '+(r*Math.sin(a)).toFixed(2);}
+  d+='M'+P(r1,a1)+' L'+P(r2,a1)+' A'+r2+' '+r2+' 0 0 1 '+P(r2,a2)+' L'+P(r1,a2)+' A'+r1+' '+r1+' 0 0 0 '+P(r1,a1)+'Z ';});return d;}
+(function(){
+  function rg(id,stops,cx,cy,r){return '<radialGradient id="'+id+'" cx="'+(cx||'50%')+'" cy="'+(cy||'50%')+'" r="'+(r||'50%')+'">'+stops.map(function(s){return '<stop offset="'+s[0]+'" stop-color="'+s[1]+'"'+(s[2]!=null?' stop-opacity="'+s[2]+'"':'')+'/>';}).join('')+'</radialGradient>';}
+  function lg(id,stops,x2,y2){return '<linearGradient id="'+id+'" x1="0" y1="0" x2="'+(x2==null?1:x2)+'" y2="'+(y2==null?0:y2)+'">'+stops.map(function(s){return '<stop offset="'+s[0]+'" stop-color="'+s[1]+'"'+(s[2]!=null?' stop-opacity="'+s[2]+'"':'')+'/>';}).join('')+'</linearGradient>';}
+  var d=
+   rg('gProton',[[0,'#ffe1e1'],[.3,'#f87171'],[.75,'#dc2626'],[1,'#7f1d1d']],'35%','30%','70%')+
+   rg('gNeutron',[[0,'#ffffff'],[.35,'#e2e8f0'],[.8,'#94a3b8'],[1,'#475569']],'35%','30%','70%')+
+   rg('gElectron',[[0,'#eff6ff'],[.35,'#60a5fa'],[1,'#1e3a8a']],'35%','30%','70%')+
+   rg('gAlphaGlow',[[0,'#fb923c',.9],[.45,'#fb923c',.35],[1,'#fb923c',0]])+
+   rg('gBetaGlow',[[0,'#60a5fa',.95],[.45,'#60a5fa',.35],[1,'#60a5fa',0]])+
+   rg('gGammaGlow',[[0,'#c084fc',.95],[.45,'#c084fc',.35],[1,'#c084fc',0]])+
+   rg('gHot',[[0,'#fdba74',.75],[.55,'#fb923c',.3],[1,'#fb923c',0]])+
+   rg('gCalm',[[0,'#93c5fd',.55],[.6,'#93c5fd',.18],[1,'#93c5fd',0]])+
+   rg('gCloud',[[0,'#bfdbfe',.0],[.55,'#bfdbfe',.35],[.8,'#dbeafe',.5],[1,'#dbeafe',0]])+
+   rg('gYellowGlow',[[0,'#fde047',.9],[1,'#fde047',0]])+
+   lg('gCan',[[0,'#1f2937'],[.18,'#6b7280'],[.38,'#d1d5db'],[.55,'#6b7280'],[1,'#111827']])+
+   lg('gLid',[[0,'#e5e7eb'],[1,'#6b7280']],0,1)+
+   lg('gTube',[[0,'#f8fafc'],[.42,'#cbd5e1'],[.5,'#64748b'],[.62,'#94a3b8'],[1,'#334155']],0,1)+
+   lg('gMica',[[0,'#fef3c7'],[1,'#b45309']],0,1)+
+   lg('gAl',[[0,'#f9fafb'],[.25,'#a1a1aa'],[.5,'#f4f4f5'],[.75,'#a8a29e'],[1,'#e4e4e7']])+
+   lg('gLead',[[0,'#9ca3af'],[.3,'#4b5563'],[.6,'#6b7280'],[1,'#1f2937']])+
+   lg('gSkin',[[0,'#f8d5b8'],[.5,'#e9b48f'],[1,'#c98a63']])+
+   lg('gPaper',[[0,'#ffffff'],[1,'#e7e5e4']])+
+   lg('gPlatePos',[[0,'#fecaca'],[.45,'#ef4444'],[1,'#991b1b']],0,1)+
+   lg('gPlateNeg',[[0,'#bfdbfe'],[.45,'#3b82f6'],[1,'#1e3a8a']],0,1)+
+   lg('gScreen',[[0,'#dcfce7'],[.5,'#4ade80'],[1,'#166534']])+
+   lg('gBench',[[0,'#475569'],[.2,'#1e293b'],[1,'#0f172a']],0,1)+
+   lg('gTape',[[0,'#fef9c3'],[1,'#facc15']],0,1)+
+   lg('gBar',[[0,'#60a5fa'],[1,'#1d4ed8']])+
+   '<pattern id="gWoodP" width="16" height="40" patternUnits="userSpaceOnUse"><rect width="16" height="40" fill="#c08a52"/><path d="M3 0 Q6 10 3 20 T3 40 M9 0 Q12 12 9 22 T10 40 M14 0 Q12 15 14 40" stroke="#8a5a2b" stroke-width="1.2" fill="none" opacity=".8"/></pattern>'+
+   '<pattern id="gConc" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#bdb7af"/><circle cx="3" cy="3" r="1.4" fill="#78716c"/><circle cx="10" cy="7" r="1" fill="#57534e"/><circle cx="6" cy="11" r="1.6" fill="#a8a29e"/><circle cx="12" cy="1" r=".8" fill="#57534e"/></pattern>'+
+   '<filter id="fShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#0f172a" flood-opacity=".3"/></filter>'+
+   '<marker id="mArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>'+
+   '<symbol id="trefoil" viewBox="-50 -50 100 100"><circle r="47" fill="#facc15" stroke="#111827" stroke-width="4"/><circle r="7" fill="#111827"/><path d="'+trefoilBlades(12,40)+'" fill="#111827"/></symbol>';
+  document.body.insertAdjacentHTML('afterbegin','<svg id="gfxDefs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs>'+d+'</defs></svg>');
+})();
+/* particle sprites (centered on 0,0) */
+function partSvg(t){
+  if(t==='a')return '<circle r="14" fill="url(#gAlphaGlow)"/><circle cx="-2.8" cy="-2.8" r="3.3" fill="url(#gProton)"/><circle cx="2.8" cy="-2.8" r="3.3" fill="url(#gNeutron)"/><circle cx="-2.8" cy="2.8" r="3.3" fill="url(#gNeutron)"/><circle cx="2.8" cy="2.8" r="3.3" fill="url(#gProton)"/>';
+  if(t==='b')return '<circle r="10" fill="url(#gBetaGlow)"/><circle r="3.4" fill="url(#gElectron)"/>';
+  var w='M-15 0 q3.75 -7 7.5 0 t7.5 0 t7.5 0 t7.5 0';
+  return '<path d="'+w+'" fill="none" stroke="#c084fc" stroke-width="8" opacity=".35" stroke-linecap="round"/><path d="'+w+'" fill="none" stroke="#7e22ce" stroke-width="2.6" stroke-linecap="round"/>';
+}
+/* lead source "pig" with trefoil; aperture faces right at x = cx + 35*s */
+function srcCan(cx,cy,s,label,sub){s=s||1;
+  var g='<g transform="translate('+cx+' '+cy+') scale('+s+')"><g filter="url(#fShadow)">'+
+   '<ellipse cx="0" cy="30" rx="30" ry="8" fill="#111827"/><rect x="-30" y="-30" width="60" height="60" fill="url(#gCan)"/>'+
+   '<ellipse cx="0" cy="-30" rx="30" ry="8" fill="url(#gLid)" stroke="#374151" stroke-width="1"/><ellipse cx="0" cy="-32" rx="10" ry="3" fill="#374151"/>'+
+   '<rect x="25" y="-8" width="10" height="16" rx="2" fill="#111827"/><rect x="31" y="-4" width="4" height="8" fill="#fde68a"/></g>'+
+   '<use href="#trefoil" x="-14" y="-16" width="28" height="28"/></g>';
+  if(label)g+='<text x="'+cx+'" y="'+(cy+42*s+14)+'" text-anchor="middle" class="svglbl" font-size="'+(s<.8?12:14)+'">'+label+'</text>';
+  if(sub)g+='<text x="'+cx+'" y="'+(cy+42*s+29)+'" text-anchor="middle" class="svgsm">'+sub+'</text>';
+  return g;}
+/* Geiger–Müller tube; mica window at (x, cy) facing left */
+function gmTube(x,cy,s,cable){s=s||1;var r='';for(var i=0;i<5;i++)r+='<rect x="'+(58+i*5)+'" y="-15" width="2" height="30" fill="#1e293b" opacity=".45"/>';
+  return '<g transform="translate('+x+' '+cy+') scale('+s+')"><g filter="url(#fShadow)"><rect x="0" y="-15" width="88" height="30" rx="8" fill="url(#gTube)"/>'+r+
+   '<rect x="-4" y="-14" width="8" height="28" rx="2.5" fill="#92400e"/><ellipse cx="-2" cy="0" rx="2.6" ry="11" fill="url(#gMica)"/>'+
+   '<rect x="10" y="-7" width="38" height="14" rx="3" fill="#0f172a" opacity=".88"/><text x="29" y="4" text-anchor="middle" font-size="9" font-weight="700" fill="#86efac">GM TUBE</text></g>'+
+   (cable===false?'':'<path d="M88 0 C112 0 112 34 140 38" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round"/>')+'</g>';}
+/* 3D slab: front face at (x,y,w,h), depth goes up-right */
+function slab(x,y,w,h,fill,dep,extra){dep=dep==null?8:dep;
+  var top='M'+x+' '+y+' L'+(x+dep)+' '+(y-dep)+' L'+(x+w+dep)+' '+(y-dep)+' L'+(x+w)+' '+y+'Z',
+      side='M'+(x+w)+' '+y+' L'+(x+w+dep)+' '+(y-dep)+' L'+(x+w+dep)+' '+(y+h-dep)+' L'+(x+w)+' '+(y+h)+'Z';
+  return '<path d="'+side+'" fill="'+fill+'"/><path d="'+side+'" fill="#000" opacity=".3"/><path d="'+top+'" fill="'+fill+'"/><path d="'+top+'" fill="#fff" opacity=".4"/>'+
+    '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+fill+'"/>'+(extra||'')+
+    '<path d="'+top+side+'" fill="none" stroke="#1e293b" stroke-opacity=".55" stroke-width="1"/><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="none" stroke="#1e293b" stroke-opacity=".7" stroke-width="1.2"/>';}
+function glowWave(x1,x2,y,amp,per,core,cls){var p=wavePath(x1,x2,y,amp,per);return '<path d="'+p+'" fill="none" stroke="#c084fc" stroke-width="8" opacity=".28" stroke-linecap="round"'+(cls?' class="'+cls+'"':'')+'/><path d="'+p+'" fill="none" stroke="#7e22ce" stroke-width="'+(core||2.5)+'" stroke-linecap="round"'+(cls?' class="'+cls+'"':'')+'/>';}
+var ICON={a:'<svg class="ticon" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="12" fill="url(#gAlphaGlow)"/><circle cx="-4" cy="-4" r="5" fill="url(#gProton)"/><circle cx="4" cy="-4" r="5" fill="url(#gNeutron)"/><circle cx="-4" cy="4" r="5" fill="url(#gNeutron)"/><circle cx="4" cy="4" r="5" fill="url(#gProton)"/></svg>',
+  b:'<svg class="ticon" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="12" fill="url(#gBetaGlow)"/><circle r="5" fill="url(#gElectron)"/></svg>',
+  g:'<svg class="ticon" viewBox="-14 -12 28 24" aria-hidden="true"><path d="M-13 0 q3.25 -8 6.5 0 t6.5 0 t6.5 0 t6.5 0" fill="none" stroke="#c084fc" stroke-width="6" opacity=".4"/><path d="M-13 0 q3.25 -8 6.5 0 t6.5 0 t6.5 0 t6.5 0" fill="none" stroke="#7e22ce" stroke-width="2.4"/></svg>'};
+
+/* ---------- shared deflection geometry ---------- */
+function deflPath(type,V,g){
+  // + plate on top, − plate on bottom. α (+) pushed down toward −; β (−) pulled up toward +.
+  var k=type==='a'?g.kA:(type==='b'?g.kB:0), sign=type==='a'?1:-1, A=k*V/g.Vmax;
+  var pts=[[g.sx,g.yc],[g.x0,g.yc]], hit=false, y=g.yc, L=g.x1-g.x0;
+  for(var x=g.x0+4;x<=g.x1;x+=4){var u=(x-g.x0)/L;y=g.yc+sign*A*u*u;if(Math.abs(y-g.yc)>=g.gap){y=g.yc+sign*g.gap;pts.push([x,y]);hit=true;break;}pts.push([x,y]);}
+  if(!hit){var slope=sign*2*A/L,ye=y;for(var x2=g.x1+6;x2<=g.xs;x2+=6){var yy=ye+slope*(x2-g.x1);if(yy<g.ymin||yy>g.ymax){pts.push([x2,clamp(yy,g.ymin,g.ymax)]);break;}pts.push([x2,yy]);}}
+  if(type==='g'){pts=pts.map(function(p){return [p[0],p[1]+(p[0]>g.sx+10?4*Math.sin(p[0]/5):0)];});}
+  return {pts:pts,hit:hit,A:A};
+}
+function plateSvg(g){
+  var top=g.yc-g.gap-18,bot=g.yc+g.gap+2,w=g.x1-g.x0,s='';
+  s+='<rect x="'+(g.x0-34)+'" y="'+(top-20)+'" width="'+(w+78)+'" height="'+(bot-top+44)+'" rx="18" fill="#dbeafe" fill-opacity=".28" stroke="#93c5fd" stroke-width="1.5" stroke-dasharray="3 5"/>'+
+     '';
+  for(var x=g.x0+26;x<g.x1;x+=48)s+='<line x1="'+x+'" y1="'+(top+22)+'" x2="'+x+'" y2="'+(bot-6)+'" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4 5" marker-end="url(#mArrow)" opacity=".75"/>';
+  var sp='',sn='';for(var x3=g.x0+18;x3<g.x1;x3+=36){sp+='<circle cx="'+x3+'" cy="'+(top+8)+'" r="6.5" fill="#fff" opacity=".9"/><text x="'+x3+'" y="'+(top+12.5)+'" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">+</text>';
+    sn+='<circle cx="'+x3+'" cy="'+(bot+8)+'" r="6.5" fill="#fff" opacity=".9"/><text x="'+x3+'" y="'+(bot+12.5)+'" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">−</text>';}
+  s+='<g filter="url(#fShadow)">'+slab(g.x0,top,w,16,'url(#gPlatePos)',10,sp)+'</g><g filter="url(#fShadow)">'+slab(g.x0,bot,w,16,'url(#gPlateNeg)',10,sn)+'</g>';
+  s+='<text x="'+(g.x0+w/2)+'" y="'+(top-26)+'" text-anchor="middle" class="svglbl" style="fill:#991b1b">+ plate (positive)</text><text x="'+(g.x0+w/2)+'" y="'+(bot+42)+'" text-anchor="middle" class="svglbl" style="fill:#1e3a8a">− plate (negative)</text>';
+  s+=srcCan(g.sx-34,g.yc,.75);
+  s+='<rect x="'+g.xs+'" y="'+g.ymin+'" width="12" height="'+(g.ymax-g.ymin)+'" rx="4" fill="url(#gScreen)" stroke="#166534" stroke-width="1.5" filter="url(#fShadow)"/><text x="'+(g.xs+6)+'" y="'+(g.ymax+16)+'" text-anchor="middle" class="svgsm">screen</text>';
+  return s;
+}
+var TSTYLE={a:{cls:'sa',w:5,dash:'',sym:'α',glow:'#fb923c'},b:{cls:'sb',w:3,dash:'9 6',sym:'β',glow:'#60a5fa'},g:{cls:'sg',w:2.5,dash:'',sym:'γ',glow:'#c084fc'}};
+function animateTrace(svgG,type,res,done){
+  var st=TSTYLE[type],pts=res.pts,ns='http://www.w3.org/2000/svg';
+  var halo=document.createElementNS(ns,'polyline');halo.setAttribute('fill','none');halo.setAttribute('stroke',st.glow);halo.setAttribute('stroke-width',st.w+9);halo.setAttribute('stroke-opacity','.25');halo.setAttribute('stroke-linecap','round');halo.setAttribute('stroke-linejoin','round');svgG.appendChild(halo);
+  var pl=document.createElementNS(ns,'polyline');pl.setAttribute('fill','none');pl.setAttribute('class',st.cls);pl.setAttribute('stroke-width',st.w);if(st.dash)pl.setAttribute('stroke-dasharray',st.dash);pl.setAttribute('stroke-linecap','round');pl.setAttribute('stroke-linejoin','round');svgG.appendChild(pl);
+  var dot=document.createElementNS(ns,'g');dot.innerHTML=partSvg(type);svgG.appendChild(dot);
+  var seg=[0];for(var i=1;i<pts.length;i++)seg.push(seg[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  var total=seg[seg.length-1],speed=type==='a'?0.45:(type==='b'?0.9:1.2),dist=0;
+  function setPts(arr){var s=arr.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');pl.setAttribute('points',s);halo.setAttribute('points',s);}
+  function finish(){setPts(pts);var e=pts[pts.length-1];dot.setAttribute('transform','translate('+e[0]+' '+e[1]+')');
+    var spot=document.createElementNS(ns,'circle');spot.setAttribute('cx',e[0]);spot.setAttribute('cy',e[1]);spot.setAttribute('r','18');spot.setAttribute('fill','url(#g'+({a:'Alpha',b:'Beta',g:'Gamma'}[type])+'Glow)');svgG.insertBefore(spot,halo);
+    var t=document.createElementNS(ns,'text');t.setAttribute('x',e[0]-(res.hit?0:(type==='g'?70:24)));t.setAttribute('y',e[1]+(e[1]<60?24:(type==='a'?28:-12)));t.setAttribute('font-size','20');t.setAttribute('font-weight','700');t.setAttribute('class',type==='a'?'fa':(type==='b'?'fb':'fg'));t.setAttribute('paint-order','stroke');t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','4');t.textContent=st.sym+(res.hit?' hits plate':'');svgG.appendChild(t);if(done)done();}
+  if(RM){finish();return function(){};}
+  return loop(function(dt){dist+=speed*dt;if(dist>=total){finish();return false;}
+    var i=1;while(i<seg.length&&seg[i]<dist)i++;var out=pts.slice(0,i);var f=(dist-seg[i-1])/(seg[i]-seg[i-1]);var x=pts[i-1][0]+f*(pts[i][0]-pts[i-1][0]),y=pts[i-1][1]+f*(pts[i][1]-pts[i-1][1]);out.push([x,y]);
+    setPts(out);dot.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+')');});
+}
+function nucleonSvg(x,y,r,t,extra){return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r+'" class="'+(t==='p'?'proton':'neutron')+'"'+(extra||'')+'/>'+(t==='p'?'<text x="'+x.toFixed(1)+'" y="'+(y+r*0.42).toFixed(1)+'" text-anchor="middle" class="ptxt" font-size="'+Math.round(r*1.2)+'">+</text>':'');}
+
+/* ---------- Learn visuals ---------- */
+function vizNucleus(el){
+  el.innerHTML='<svg class="viz" viewBox="0 0 480 300" role="img" aria-label="An unstable nucleus that can give off alpha, beta or gamma radiation">'+
+    '<circle id="v1aura" cx="140" cy="145" r="105" fill="url(#gHot)" class="pulse"/><g id="v1fx"></g><g id="v1nuc"></g>'+
+    '<text x="140" y="284" text-anchor="middle" class="svglbl" id="v1state">Unstable nucleus (shaking)</text>'+
+    '<g transform="translate(335 196)"><rect width="135" height="92" rx="10" fill="#fff" stroke="#b9c4d3" filter="url(#fShadow)"/>'+
+    '<circle cx="20" cy="22" r="9" class="proton"/><text x="20" y="26.5" text-anchor="middle" class="ptxt" font-size="11">+</text><text x="36" y="27" font-size="13" font-weight="700">proton</text>'+
+    '<circle cx="20" cy="48" r="9" class="neutron"/><text x="36" y="53" font-size="13" font-weight="700">neutron</text>'+
+    '<text x="12" y="80" font-size="12" fill="#3b4658" id="v1az">A = 26 · Z = 12</text></g></svg>'+
+    '<div class="viz-ctrls"><button class="btn ta" data-e="a">Emit α</button><button class="btn tb" data-e="b">Emit β</button><button class="btn tg" data-e="g">Emit γ</button><button class="btn ghost" data-e="r">Reset</button></div>'+
+    '<p class="viz-note" id="v1note">Pick a type of decay to see what leaves the nucleus and how the nucleus changes.</p>';
+  var g=$('#v1nuc',el),fx=$('#v1fx',el),aura=$('#v1aura',el),cx=140,cy=145,nodes=[];
+  function az(){var p=nodes.filter(function(n){return n.t==='p';}).length;$('#v1az',el).textContent='A = '+nodes.length+' · Z = '+p;}
+  function build(){g.innerHTML='';fx.innerHTML='';nodes=[];g.setAttribute('class','shake');aura.setAttribute('fill','url(#gHot)');aura.setAttribute('class','pulse');
+    var types=[];for(var i=0;i<26;i++)types.push(i%2?'p':'n');types[25]='n';types[23]='n';
+    for(var j=0;j<26;j++){var r=11.5*Math.sqrt(j+0.5),a=j*2.39996;nodes.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a),t:types[j]});}
+    nodes.slice().sort(function(a,b){return a.y-b.y;}).forEach(function(n){var c=document.createElementNS('http://www.w3.org/2000/svg','g');c.innerHTML=nucleonSvg(n.x,n.y,11,n.t);n.el=c;g.appendChild(c);});
+    $('#v1state',el).textContent='Unstable nucleus (shaking)';$('#v1note',el).innerHTML='Pick a type of decay to see what leaves the nucleus and how the nucleus changes.';
+    $$('[data-e]',el).forEach(function(b){if(b.dataset.e!=='r')b.disabled=false;});az();}
+  function fly(node,tx,ty){requestAnimationFrame(function(){requestAnimationFrame(function(){node.style.transform='translate('+tx+'px,'+ty+'px)';});});}
+  function after(){g.setAttribute('class','');aura.setAttribute('fill','url(#gCalm)');aura.setAttribute('class','');$('#v1state',el).textContent='More stable nucleus';$$('[data-e]',el).forEach(function(b){if(b.dataset.e!=='r')b.disabled=true;});az();}
+  function emit(t){
+    var ns='http://www.w3.org/2000/svg',p=document.createElementNS(ns,'g');p.setAttribute('class','fly');
+    if(t==='a'){var rem=[],cp=0,cn=0;for(var i=nodes.length-1;i>=0&&rem.length<4;i--){var n=nodes[i];if(n.t==='p'&&cp<2){cp++;rem.push(n);}else if(n.t==='n'&&cn<2){cn++;rem.push(n);}}
+      rem.forEach(function(n){n.el.remove();nodes.splice(nodes.indexOf(n),1);});var ax=cx+39,ay=cy+1;
+      p.innerHTML='<circle cx="'+ax+'" cy="'+ay+'" r="34" fill="url(#gAlphaGlow)"/>'+nucleonSvg(ax-9,ay-9,10,'p')+nucleonSvg(ax+9,ay-9,10,'n')+nucleonSvg(ax-9,ay+9,10,'n')+nucleonSvg(ax+9,ay+9,10,'p')+'<text x="'+ax+'" y="'+(ay-26)+'" text-anchor="middle" font-size="18" font-weight="700" class="fa">α</text>';
+      fx.appendChild(p);fly(p,170,-70);
+      $('#v1note',el).innerHTML='An <b>alpha particle</b> (2 protons + 2 neutrons) left. <b>Mass number −4</b>, <b>atomic number −2</b>, so the atom became a <b>different element</b>.';}
+    else if(t==='b'){var nn=null;for(var k=nodes.length-1;k>=0;k--){if(nodes[k].t==='n'){nn=nodes[k];break;}}
+      nn.t='p';nn.el.innerHTML=nucleonSvg(nn.x,nn.y,11,'p',' stroke="#f59e0b" stroke-width="3.5"');
+      p.innerHTML='<g transform="translate('+nn.x+' '+nn.y+')">'+partSvg('b')+'</g><text x="'+(nn.x+10)+'" y="'+(nn.y-12)+'" font-size="16" font-weight="700" class="fb">β⁻</text>';fx.appendChild(p);p.style.transitionDuration='.7s';fly(p,300-(nn.x-cx),-80);
+      $('#v1note',el).innerHTML='A <b>neutron changed into a proton</b> and a fast <b>electron (β⁻)</b> shot out. <b>Atomic number +1</b>, mass number the same.';}
+    else{p.innerHTML=glowWave(cx+20,cx+120,cy,7,18,3)+'<text x="'+(cx+66)+'" y="'+(cy-18)+'" font-size="18" font-weight="700" class="fg">γ</text>';
+      fx.appendChild(p);p.style.transitionDuration='.8s';fly(p,230,0);
+      $('#v1note',el).innerHTML='Extra <b>energy</b> left as a <b>gamma photon</b>. The nucleus calms down, but <b>A and Z do not change</b>.';}
+    after();
+  }
+  $$('[data-e]',el).forEach(function(b){b.addEventListener('click',function(){if(b.dataset.e==='r')build();else emit(b.dataset.e);});});
+  build();return function(){};
+}
+
+function vizAlpha(el){
+  var ruler='';for(var c=0;c<=16;c++){var x=64+c*26;ruler+='<line x1="'+x+'" y1="306" x2="'+x+'" y2="'+(c%2?311:315)+'" stroke="#78350f" stroke-width="1.2"/>'+(c%2?'':'<text x="'+x+'" y="326" text-anchor="middle" font-size="11" fill="#78350f" font-weight="700">'+(c/2)+'</text>');}
+  el.innerHTML='<svg class="viz" viewBox="0 0 520 334" role="img" aria-label="Alpha particle structure and how far it travels">'+
+   '<circle cx="82" cy="84" r="70" fill="url(#gAlphaGlow)"/>'+nucleonSvg(60,62,22,'p')+nucleonSvg(104,62,22,'n')+nucleonSvg(60,106,22,'n')+nucleonSvg(104,106,22,'p')+
+   svgNuc(190,84,4,2,'He',30,'')+'<text x="252" y="84" font-size="24" font-weight="700">or</text><text x="292" y="86" font-size="36" font-weight="700" class="fa">α</text>'+
+   '<text x="166" y="122" class="svglbl">2 protons + 2 neutrons · charge +2 · mass 4 amu</text>'+
+   '<text x="14" y="164" class="svglbl">Lane 1: a sheet of paper</text>'+srcCan(38,206,.5)+
+   '<g filter="url(#fShadow)">'+slab(250,172,4,70,'url(#gPaper)',10)+'</g><text x="256" y="258" text-anchor="middle" class="svgsm">paper</text>'+
+   '<text x="14" y="258" class="svglbl">Lane 2: air only (ruler in cm)</text>'+srcCan(38,288,.5)+
+   '<rect x="60" y="304" width="424" height="24" rx="3" fill="url(#gTape)" stroke="#a16207" filter="url(#fShadow)"/>'+ruler+
+   '<g id="v2fx"></g></svg>'+
+   '<div class="viz-ctrls"><button class="btn ta" id="v2fire">Fire α particles</button></div><p class="viz-note" id="v2note">Press fire to see how far alpha particles get.</p>';
+  var fx=$('#v2fx',el),stop=null;
+  $('#v2fire',el).addEventListener('click',function(){
+    if(stop)stop();fx.innerHTML='';var ns='http://www.w3.org/2000/svg';
+    function mk(y){var tr=document.createElementNS(ns,'line');tr.setAttribute('x1',58);tr.setAttribute('y1',y);tr.setAttribute('y2',y);tr.setAttribute('stroke','#fb923c');tr.setAttribute('stroke-width','8');tr.setAttribute('stroke-opacity','.3');tr.setAttribute('stroke-linecap','round');fx.appendChild(tr);
+      var d=document.createElementNS(ns,'g');d.innerHTML=partSvg('a');fx.appendChild(d);return {tr:tr,d:d,y:y};}
+    var A1=mk(206),A2=mk(288),x=58,x2=58,end1=244,end2=64+4.1*52;
+    function set(o,xx){o.tr.setAttribute('x2',xx);o.d.setAttribute('transform','translate('+xx+' '+o.y+') scale(1.3)');}
+    function done(){fx.insertAdjacentHTML('beforeend','<text x="272" y="212" class="svglbl fa">Stopped by paper!</text><text x="'+(end2+16)+'" y="282" class="svglbl fa">Stops after ≈4 cm of air</text>');
+      $('#v2note',el).innerHTML='Alpha particles are <b>slow</b> (≈5% of light speed) and <b>heavy</b>, so they bump into atoms constantly and lose energy fast: <b>most ionizing, least penetrating</b>.';}
+    if(RM){set(A1,end1);set(A2,end2);done();return;}
+    stop=loop(function(dt){x=Math.min(end1,x+0.12*dt);x2=Math.min(end2,x2+0.12*dt);set(A1,x);set(A2,x2);if(x>=end1&&x2>=end2){done();return false;}});
+  });
+  return function(){if(stop)stop();};
+}
+
+function vizBeta(el){
+  el.innerHTML='<svg class="viz" viewBox="0 0 520 290" role="img" aria-label="A neutron in a carbon-14 nucleus changes into a proton and emits a beta particle"><circle cx="150" cy="135" r="95" fill="url(#gCalm)"/><g id="v3n"></g><g id="v3fx"></g>'+
+    '<text x="150" y="276" text-anchor="middle" class="svglbl" id="v3lbl">Carbon-14: 6 protons, 8 neutrons</text></svg>'+
+    '<div class="eq" id="v3eq">'+nuc(14,6,'C')+' → ?</div>'+
+    '<div class="viz-ctrls"><button class="btn tb" id="v3go">Watch β decay</button><button class="btn ghost" id="v3r">Reset</button></div><p class="viz-note" id="v3note">One neutron is about to change.</p>';
+  var g=$('#v3n',el),fx=$('#v3fx',el),cx=150,cy=135,target;
+  function build(){fx.innerHTML='';var s='',t=['n','p','n','p','n','p','n','p','n','p','n','p','n','n'],arr=[];
+    for(var j=0;j<14;j++){var r=17*Math.sqrt(j+0.5),a=j*2.39996;arr.push({j:j,x:cx+r*Math.cos(a),y:cy+r*Math.sin(a),t:t[j]});}
+    arr.sort(function(a,b){return a.y-b.y;}).forEach(function(n){s+='<g data-i="'+n.j+'">'+nucleonSvg(n.x,n.y,15,n.t,n.j===12?' stroke="#f59e0b" stroke-width="4" stroke-dasharray="4 3"':'')+'</g>';if(n.j===12)target={x:n.x,y:n.y};});
+    g.innerHTML=s;
+    $('#v3eq',el).innerHTML=nuc(14,6,'C')+' → ?';$('#v3lbl',el).textContent='Carbon-14: 6 protons, 8 neutrons';$('#v3note',el).innerHTML='The dashed <b>neutron</b> is about to change.';$('#v3go',el).disabled=false;}
+  $('#v3go',el).addEventListener('click',function(){
+    $('#v3go',el).disabled=true;var gg=g.querySelector('[data-i="12"]');
+    gg.innerHTML=nucleonSvg(target.x,target.y,15,'p',' stroke="#f59e0b" stroke-width="4"');
+    var ns='http://www.w3.org/2000/svg',p=document.createElementNS(ns,'g');p.setAttribute('class','fly');p.style.transitionDuration='.8s';
+    p.innerHTML='<g transform="translate('+target.x+' '+target.y+') scale(1.5)">'+partSvg('b')+'</g><text x="'+(target.x+12)+'" y="'+(target.y-12)+'" font-size="18" font-weight="700" class="fb">β⁻ (e⁻)</text>';fx.appendChild(p);
+    var v=document.createElementNS(ns,'g');v.setAttribute('class','fly');v.style.transitionDuration='1.8s';
+    v.innerHTML='<circle cx="'+target.x+'" cy="'+target.y+'" r="7" fill="none" stroke="#64748b" stroke-dasharray="3 3" stroke-width="2"/><text x="'+(target.x+10)+'" y="'+(target.y+20)+'" font-size="14" fill="#475569">antineutrino</text>';fx.appendChild(v);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){p.style.transform='translate('+(400-target.x)+'px,'+(60-target.y)+'px)';v.style.transform='translate('+(300-target.x)+'px,'+(230-target.y)+'px)';});});
+    $('#v3eq',el).innerHTML=nuc(14,6,'C')+' → '+nuc(14,7,'N')+' + '+nuc(0,'−1','e');$('#v3lbl',el).textContent='Now nitrogen-14: 7 protons, 7 neutrons';
+    $('#v3note',el).innerHTML='n → p⁺ + e⁻. The <b>electron is created in the nucleus</b> and ejected as a beta particle. Mass number stays <b>14</b>; atomic number goes <b>6 → 7</b>.';
+  });
+  $('#v3r',el).addEventListener('click',build);build();return function(){};
+}
+
+function vizGamma(el){
+  el.innerHTML='<svg class="viz" viewBox="0 0 520 260" role="img" aria-label="Gamma rays passing through paper and aluminum and being reduced by lead" id="v4svg"></svg>'+
+    '<div class="viz-ctrls"><label class="rng" for="v4pb">Lead thickness: <span id="v4o">5 cm</span> <input type="range" id="v4pb" min="0" max="10" step="0.5" value="5"></label></div>'+
+    '<p class="viz-note" id="v4note"></p>';
+  var svg=$('#v4svg',el);
+  function draw(){var t=parseFloat($('#v4pb',el).value),frac=Math.pow(2,-t/1.2),w=t*11,leadX=320,ys=[72,96,120,144,168,192],cls=RM?'':'flow';
+    $('#v4o',el).textContent=t+' cm';
+    var s=srcCan(38,132,.75,'Co-60')+'<text x="66" y="33" font-size="24" font-weight="700" class="fg">γ</text><text x="86" y="31" class="svglbl fg" style="fill:#7e22ce">Gamma rays →</text>';
+    ys.forEach(function(y){s+=glowWave(66,leadX-2,y,5,16,2.5,cls);});
+    s+='<g filter="url(#fShadow)">'+slab(150,58,5,156,'url(#gPaper)',10)+'</g><text x="153" y="236" text-anchor="middle" class="svgsm">paper</text>';
+    s+='<g filter="url(#fShadow)">'+slab(230,58,9,156,'url(#gAl)',10)+'</g><text x="235" y="236" text-anchor="middle" class="svgsm">3 mm Al</text>';
+    if(w>0)s+='<g filter="url(#fShadow)">'+slab(leadX,48,w,176,'url(#gLead)',12,w>24?'<text x="'+(leadX+w/2)+'" y="140" text-anchor="middle" font-size="18" font-weight="700" fill="#e5e7eb" opacity=".8">Pb</text>':'')+'</g><text x="'+(leadX+w/2)+'" y="244" text-anchor="middle" class="svgsm">lead</text>';
+    var n=Math.round(6*frac),afterX=leadX+w+(w>0?14:2);
+    for(var i=0;i<n;i++)s+=glowWave(afterX,505,ys[i],5,16,2.5,cls);
+    if(n===0&&frac>0)s+='<path d="'+wavePath(afterX,505,132,4,16)+'" fill="none" class="sg" stroke-width="1.6" stroke-dasharray="3 5"/><text x="510" y="116" text-anchor="end" class="svgsm">a few still get through</text>';
+    s+='<text x="510" y="30" text-anchor="end" class="svglbl fg" paint-order="stroke" stroke="#fff" stroke-width="4">'+(frac*100<1?(frac*100).toFixed(2):(frac*100).toFixed(1))+'% gets through</text>';
+    svg.innerHTML=s;
+    $('#v4note',el).innerHTML='Paper and 3 mm of aluminum barely affect gamma rays. Every <b>1.2 cm of lead cuts Co-60 gamma rays in half</b> (its half-value layer), so the amount drops but <b>never reaches zero</b>.';}
+  $('#v4pb',el).addEventListener('input',draw);draw();return function(){};
+}
+
+function vizIonize(el){
+  el.innerHTML='<canvas class="vizc" id="v5c" role="img" aria-label="Radiation knocking electrons off atoms along its path"></canvas>'+
+   '<div class="viz-ctrls"><button class="btn ta" data-f="a">Fire α</button><button class="btn tb" data-f="b">Fire β</button><button class="btn tg" data-f="g">Fire γ</button></div>'+
+   '<div class="stats"><span>Ions made: <b id="v5i">0</b></span><span>How far it got: <b id="v5d">—</b></span></div>'+
+   '<p class="viz-note" id="v5n">Each gray ball is a neutral atom with an electron (blue). When radiation knocks the electron off, the atom becomes a glowing <b>+ ion</b>.</p>';
+  var cv=$('#v5c',el),W=640,H=280,dpr=Math.min(2,window.devicePixelRatio||1);cv.width=W*dpr;cv.height=H*dpr;var ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  function sprite(S,fn){var c=document.createElement('canvas');c.width=c.height=S*dpr;var x=c.getContext('2d');x.scale(dpr,dpr);fn(x,S/2);return c;}
+  var atomS=sprite(34,function(x,m){x.strokeStyle='rgba(37,99,235,.45)';x.lineWidth=1.2;x.beginPath();x.ellipse(m,m,14,5.5,-0.5,0,7);x.stroke();
+      var g=x.createRadialGradient(m-3,m-3,1,m,m,9);g.addColorStop(0,'#fff');g.addColorStop(.45,'#cbd5e1');g.addColorStop(1,'#64748b');x.beginPath();x.arc(m,m,8,0,7);x.fillStyle=g;x.fill();
+      var e=x.createRadialGradient(m+11,m-6,0,m+11,m-6,3.4);e.addColorStop(0,'#dbeafe');e.addColorStop(1,'#1d4ed8');x.beginPath();x.arc(m+11.5,m-6.2,3,0,7);x.fillStyle=e;x.fill();}),
+      ionS=sprite(34,function(x,m){var h=x.createRadialGradient(m,m,0,m,m,17);h.addColorStop(0,'rgba(253,224,71,.85)');h.addColorStop(1,'rgba(253,224,71,0)');x.fillStyle=h;x.fillRect(0,0,34,34);
+      var g=x.createRadialGradient(m-3,m-3,1,m,m,9);g.addColorStop(0,'#fef9c3');g.addColorStop(.5,'#fbbf24');g.addColorStop(1,'#b45309');x.beginPath();x.arc(m,m,8.5,0,7);x.fillStyle=g;x.fill();
+      x.fillStyle='#78350f';x.font='bold 13px system-ui';x.textAlign='center';x.fillText('+',m,m+4.5);}),
+      elS=sprite(16,function(x,m){var g=x.createRadialGradient(m,m,0,m,m,8);g.addColorStop(0,'rgba(219,234,254,1)');g.addColorStop(.35,'rgba(37,99,235,.95)');g.addColorStop(1,'rgba(37,99,235,0)');x.fillStyle=g;x.fillRect(0,0,16,16);});
+  var atoms=[],els=[],P=null,stop=null,ions=0;
+  function reset(){atoms=[];els=[];ions=0;for(var r=0;r<7;r++)for(var c=0;c<18;c++)atoms.push({x:28+c*34+(r%2)*17,y:30+r*36,ion:false});}
+  var PAR={a:{v:0.07,R:48,p:0.95,range:215,col:'#ea580c',glow:'251,146,60'},b:{v:0.32,R:26,p:0.32,range:540,col:'#1d4ed8',glow:'96,165,250'},g:{v:0.6,R:30,p:0.035,range:700,col:'#7e22ce',glow:'192,132,252'}};
+  function draw(){ctx.clearRect(0,0,W,H);
+    atoms.forEach(function(a){ctx.drawImage(a.ion?ionS:atomS,a.x-17,a.y-17,34,34);});
+    els.forEach(function(e){ctx.drawImage(elS,e.x-8,e.y-8,16,16);});
+    if(P){var q=PAR[P.t];var tg=ctx.createLinearGradient(0,0,P.x,0);tg.addColorStop(0,'rgba('+q.glow+',0)');tg.addColorStop(1,'rgba('+q.glow+',.55)');
+      ctx.strokeStyle=tg;ctx.lineWidth=P.t==='a'?14:8;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,P.y);ctx.lineTo(P.x,P.y);ctx.stroke();
+      ctx.strokeStyle=q.col;ctx.lineWidth=P.t==='a'?4:(P.t==='b'?2.5:2);ctx.setLineDash(P.t==='b'?[8,6]:[]);ctx.beginPath();ctx.moveTo(0,P.y);
+      if(P.t==='g'){for(var x=0;x<=P.x;x+=3)ctx.lineTo(x,P.y+4*Math.sin(x/5));}else ctx.lineTo(P.x,P.y);ctx.stroke();ctx.setLineDash([]);
+      var R=P.t==='a'?20:14,gl=ctx.createRadialGradient(P.x,P.y,0,P.x,P.y,R);gl.addColorStop(0,'rgba('+q.glow+',.95)');gl.addColorStop(1,'rgba('+q.glow+',0)');ctx.fillStyle=gl;ctx.beginPath();ctx.arc(P.x,P.y,R,0,7);ctx.fill();
+      ctx.beginPath();ctx.arc(P.x,P.y,P.t==='a'?7:(P.t==='b'?3.5:3),0,7);ctx.fillStyle=q.col;ctx.fill();
+      ctx.font='bold 17px system-ui';ctx.textAlign='left';ctx.lineWidth=4;ctx.strokeStyle='#fff';var lb={a:'α',b:'β',g:'γ'}[P.t],lx=Math.min(P.x+10,W-20);ctx.strokeText(lb,lx,P.y-14);ctx.fillStyle=q.col;ctx.fillText(lb,lx,P.y-14);}}
+  function fire(t){if(stop)stop();reset();var q=PAR[t];P={t:t,x:0,y:138,last:0};$('#v5i',el).textContent='0';$('#v5d',el).textContent='…';
+    function step(dt){P.x+=q.v*dt;atoms.forEach(function(a){if(!a.ion&&a.x>P.last&&a.x<=P.x&&Math.abs(a.y-P.y)<q.R&&Math.random()<q.p){a.ion=true;ions++;var ang=Math.random()*6.28;els.push({x:a.x+11,y:a.y-6,vx:Math.cos(ang)*0.06,vy:Math.sin(ang)*0.06,life:900});}});P.last=P.x;
+      els.forEach(function(e){e.x+=e.vx*dt;e.y+=e.vy*dt;e.life-=dt;});els=els.filter(function(e){return e.life>0;});
+      $('#v5i',el).textContent=ions;
+      if(P.x>=Math.min(q.range,W)){P.x=Math.min(q.range,W);$('#v5d',el).textContent=t==='a'?'short — stopped quickly':(t==='b'?'medium distance':'all the way through');
+        $('#v5n',el).innerHTML=t==='a'?'Alpha made <b>lots of ions</b> but used up its energy fast and <b>stopped</b>: most ionizing, least penetrating.':(t==='b'?'Beta made <b>some ions</b> and went <b>farther</b>: medium ionizing, medium penetrating.':'Gamma made <b>very few ions</b> and <b>passed straight through</b>: least ionizing, most penetrating.');
+        return true;}return false;}
+    if(RM){while(!step(16)){}els=[];draw();return;}
+    var finished=false,linger=0;stop=loop(function(dt){if(!finished)finished=step(dt);else{els.forEach(function(e){e.x+=e.vx*dt;e.y+=e.vy*dt;e.life-=dt;});els=els.filter(function(e){return e.life>0;});linger+=dt;}draw();if(finished&&linger>1000)return false;});}
+  $$('[data-f]',el).forEach(function(b){b.addEventListener('click',function(){fire(b.dataset.f);});});
+  reset();draw();return function(){if(stop)stop();};
+}
+
+function vizPlates(el){
+  var G={sx:80,x0:160,x1:360,xs:500,yc:150,gap:86,kA:22,kB:120,Vmax:1,ymin:16,ymax:284};
+  el.innerHTML='<svg class="viz" viewBox="0 0 560 300" role="img" aria-label="Alpha, beta and gamma passing between charged plates">'+plateSvg(G)+'<g id="v6t"></g></svg>'+
+    '<div class="viz-ctrls"><button class="btn ta" data-p="a">Fire α</button><button class="btn tb" data-p="b">Fire β</button><button class="btn tg" data-p="g">Fire γ</button><button class="btn" data-p="all">Fire all three</button><button class="btn ghost" data-p="c">Clear</button></div>'+
+    '<p class="viz-note" id="v6n">Line styles: <b>α thick solid</b>, <b>β dashed</b>, <b>γ wavy</b>.</p>';
+  var tg=$('#v6t',el),stops=[];
+  function fire(t){stops.push(animateTrace(tg,t,deflPath(t,0.62,G)));}
+  $$('[data-p]',el).forEach(function(b){b.addEventListener('click',function(){var p=b.dataset.p;if(p==='c'){stops.forEach(function(s){s();});tg.innerHTML='';return;}if(p==='all'){['a','b','g'].forEach(fire);}else fire(p);
+    $('#v6n',el).innerHTML={a:'α (+2) is pulled toward the <b>− plate</b>, but only <b>slightly</b> because it is heavy.',b:'β (−1) is pulled toward the <b>+ plate</b> <b>strongly</b> because it is very light.',g:'γ has <b>no charge</b>, so it goes <b>straight</b>.',all:'Opposite bends show α and β have <b>opposite charges</b>; γ is uncharged.'}[p];});});
+  return function(){stops.forEach(function(s){s();});};
+}
+
+function vizTable(el){
+  el.innerHTML='<div style="overflow-x:auto"><table class="cmp" id="cmpT"><thead><tr><th scope="col">Property</th><th scope="col" class="ca">'+ICON.a+' α Alpha</th><th scope="col" class="cb">'+ICON.b+' β Beta</th><th scope="col" class="cg">'+ICON.g+' γ Gamma</th></tr></thead><tbody>'+
+   '<tr><th scope="row">What it is</th><td>helium-4 nucleus (2 p + 2 n)</td><td>fast electron made when n → p in the nucleus</td><td>high-energy electromagnetic radiation (photon)</td></tr>'+
+   '<tr><th scope="row">Symbol</th><td>'+nuc(4,2,'He')+' or α</td><td>'+nuc(0,'−1','e')+' or β⁻</td><td>'+nuc(0,0,'γ')+' or γ</td></tr>'+
+   '<tr><th scope="row">Charge</th><td>+2</td><td>−1</td><td>0</td></tr>'+
+   '<tr><th scope="row">Mass</th><td>4 amu</td><td>≈ 0 (0.00055 amu)</td><td>0</td></tr>'+
+   '<tr><th scope="row">Speed</th><td>slow, ≈5% of light</td><td>fast, up to ≈99% of light</td><td>speed of light</td></tr>'+
+   '<tr><th scope="row">Ionizing power</th><td><span class="lvl l3">HIGH</span></td><td><span class="lvl l2">MEDIUM</span></td><td><span class="lvl l1">LOW</span></td></tr>'+
+   '<tr><th scope="row">Penetrating power</th><td><span class="lvl l1">LOW</span></td><td><span class="lvl l2">MEDIUM</span></td><td><span class="lvl l3">HIGH</span></td></tr>'+
+   '<tr><th scope="row">Shielding</th><td>paper, outer dead skin, a few cm of air</td><td>a few mm of aluminum</td><td>several cm of lead or thick concrete (reduces, never fully stops)</td></tr>'+
+   '<tr><th scope="row">Between charged plates</th><td>bends slightly toward −</td><td>bends strongly toward +</td><td>straight</td></tr>'+
+   '</tbody></table></div><div class="viz-ctrls"><span class="note">Highlight a column:</span><button class="btn ta small" data-c="1">α</button><button class="btn tb small" data-c="2">β</button><button class="btn tg small" data-c="3">γ</button><button class="btn ghost small" data-c="0">None</button></div>';
+  $$('[data-c]',el).forEach(function(b){b.addEventListener('click',function(){var c=+b.dataset.c;$$('#cmpT tr',el).forEach(function(tr){Array.prototype.forEach.call(tr.children,function(td,i){td.classList.toggle('hl',c>0&&i===c);});});});});
+  return function(){};
+}
+
+function vizSafety(el){
+  var BG=[['Radon & thoron gas',2.28],['Medical (CT, X-ray, nuclear med.)',2.16],['Cosmic rays (space)',0.33],['Inside your body (K-40, C-14)',0.29],['Rocks & soil',0.21],['Consumer products',0.13]];
+  el.innerHTML='<svg class="viz" viewBox="0 0 620 256" id="v8svg" role="img" aria-label="Inverse-square law: rays spread over a bigger area as distance grows"></svg>'+
+   '<div class="viz-ctrls"><label class="rng" for="v8d">Distance from source: <span id="v8o">2 m</span> <input type="range" id="v8d" min="1" max="4" step="1" value="2"></label></div>'+
+   '<p class="viz-note" id="v8n"></p>'+
+   '<div class="bars" aria-label="Average yearly radiation dose in the United States"><b>Where the average American\'s yearly dose comes from (mSv per year)</b>'+
+   BG.map(function(b,i){return '<div class="bar"><span>'+b[0]+'</span><div class="track"><div class="fill'+(i===1?' pat':'')+'" style="width:'+(b[1]/2.28*100)+'%"></div></div><span>'+b[1].toFixed(2)+'</span></div>';}).join('')+
+   '<div class="note">U.S. averages from NCRP Report 160 (natural sources) and Report 184 (medical, 2016). Radon is the largest <b>natural</b> source; medical imaging is about the same size.</div></div>';
+  var svg=$('#v8svg',el),yc=120,SX=40;
+  function plane(d,cur){var x=SX+d*100,s=d*26,ux=0,uy=s,vx=0.42*s,vy=-0.3*s,
+      P=function(a,b){return [x+a*vx+b*ux,yc+a*vy+b*uy];},c=[P(-.5,-.5),P(.5,-.5),P(.5,.5),P(-.5,.5)],str='';
+    if(cur){str+='<polygon points="'+SX+','+yc+' '+c[0].join(',')+' '+c[1].join(',')+'" fill="#c084fc" fill-opacity=".14"/><polygon points="'+SX+','+yc+' '+c[3].join(',')+' '+c[2].join(',')+'" fill="#c084fc" fill-opacity=".14"/>';
+      c.forEach(function(p){str+='<line x1="'+SX+'" y1="'+yc+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#7e22ce" stroke-opacity=".55" stroke-width="1.3"/>';});}
+    str+='<polygon points="'+c.map(function(p){return p.map(function(v){return v.toFixed(1);}).join(',');}).join(' ')+'" fill="'+(cur?'#f8fafc':'#f1f5f9')+'" fill-opacity="'+(cur?'.95':'.5')+'" stroke="#334155" stroke-opacity="'+(cur?1:.35)+'" stroke-width="'+(cur?1.6:1)+'"/>';
+    if(cur){for(var i=1;i<d;i++){var a=-.5+i/d,p1=P(a,-.5),p2=P(a,.5),q1=P(-.5,a),q2=P(.5,a);str+='<line x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'" stroke="#334155" stroke-width="1"/><line x1="'+q1[0]+'" y1="'+q1[1]+'" x2="'+q2[0]+'" y2="'+q2[1]+'" stroke="#334155" stroke-width="1"/>';}
+      var k=1/d,cc=[P(-.5,-.5),P(-.5+k,-.5),P(-.5+k,-.5+k),P(-.5,-.5+k)];str+='<polygon points="'+cc.map(function(p){return p.join(',');}).join(' ')+'" fill="#fde047" stroke="#a16207" stroke-width="1.5"/>';
+      str+='<text x="'+(x+14)+'" y="'+(yc-s/2-s*0.18-10)+'" text-anchor="middle" class="svglbl" fill="#7e22ce">'+['1','1/4','1/9','1/16'][d-1]+'</text>';}
+    return str;}
+  function draw(){var d=+$('#v8d',el).value,str='';
+    for(var m=4;m>=1;m--)if(m!==d)str+=plane(m,false);
+    str+=plane(d,true);
+    str+='<circle cx="'+SX+'" cy="'+yc+'" r="22" fill="url(#gGammaGlow)"/><circle cx="'+SX+'" cy="'+yc+'" r="6" fill="#7e22ce"/><text x="'+SX+'" y="'+(yc+34)+'" text-anchor="middle" class="svgsm">source</text>';
+    str+='<line x1="'+SX+'" y1="232" x2="460" y2="232" stroke="#334155" stroke-width="1.5"/>';
+    for(var n=1;n<=4;n++)str+='<line x1="'+(SX+n*100)+'" y1="226" x2="'+(SX+n*100)+'" y2="238" stroke="#334155" stroke-width="1.5"/><text x="'+(SX+n*100)+'" y="252" text-anchor="middle" class="svgsm"'+(n===d?' font-weight="700" fill="#0b1324"':'')+'>'+n+' m</text>';
+    svg.innerHTML=str;$('#v8o',el).textContent=d+' m';
+    var fr=['1','1/4','1/9','1/16'][d-1],pc=[100,25,11.1,6.25][d-1];
+    $('#v8n',el).innerHTML='At <b>'+d+' m</b> the same rays spread over <b>'+(d*d)+' square'+(d>1?'s':'')+'</b>, so one detector-sized patch (yellow) gets <b>'+fr+'</b> of the 1 m intensity (<b>'+pc+'%</b>). I ∝ 1/d²: <b>double the distance → ¼ the intensity</b>.';}
+  $('#v8d',el).addEventListener('input',draw);draw();return function(){};
+}
+
+/* ---------- Learn stops ---------- */
+var STOPS=[
+ {t:'Why radiation happens',v:vizNucleus,b:[
+  'Some atoms have an <b>unstable nucleus</b>: the mix of protons and neutrons is out of balance, or the nucleus is simply too big.',
+  'An unstable nucleus gives off <b>particles and/or energy</b> to become <b>more stable</b>. This is <b>radioactive decay</b>.',
+  'What it gives off is <b>nuclear radiation</b>: <b>alpha (α)</b>, <b>beta (β)</b> and <b>gamma (γ)</b>.',
+  'Radiation comes from the <b>nucleus</b>, not the electron cloud.',
+  'Decay is <b>random</b>: you can\'t predict when one nucleus will decay, only the average rate (<b>half-life</b>).']},
+ {t:'Alpha (α) radiation',v:vizAlpha,b:[
+  'An <b>alpha particle</b> is a <b>helium-4 nucleus</b>: <b>2 protons + 2 neutrons</b>, no electrons.',
+  'Symbols: '+nuc(4,2,'He')+' or <b>α</b>. <b>Charge +2</b>, <b>mass 4 amu</b>: the heaviest of the three.',
+  '<b>Slow</b>: about <b>5% of the speed of light</b>.',
+  '<b>Most ionizing</b>, <b>least penetrating</b>: stopped by <b>a sheet of paper</b>, the <b>outer layer of dead skin</b>, or <b>a few cm of air</b>.',
+  'Low risk outside the body, but <b>dangerous if inhaled or swallowed</b>: it dumps all its energy into nearby living cells.',
+  'Examples: <b>americium-241</b> in smoke detectors; <b>radon-222</b> gas that seeps out of rocks and soil.']},
+ {t:'Beta (β⁻) radiation',v:vizBeta,b:[
+  'A <b>beta particle</b> is a <b>fast electron</b> made <b>in the nucleus</b> when a <b>neutron changes into a proton</b> (an antineutrino also leaves).',
+  'Symbols: '+nuc(0,'−1','e')+' or <b>β⁻</b>. <b>Charge −1</b>.',
+  '<b>Mass ≈ 0</b>: 0.00055 amu, about <b>1/1836 the mass of a proton</b>.',
+  '<b>Very fast</b>: up to about 99% of the speed of light.',
+  '<b>Medium ionizing</b> and <b>medium penetrating</b>: gets through paper and skin, stopped by <b>a few mm of aluminum</b>.',
+  'Atomic number goes <b>up by 1</b>; mass number stays the same.',
+  'Examples: <b>carbon-14</b> (radiocarbon dating), <b>strontium-90</b>, <b>iodine-131</b> (thyroid treatment).']},
+ {t:'Gamma (γ) radiation',v:vizGamma,b:[
+  'Gamma rays are <b>high-energy electromagnetic radiation</b>: <b>photons</b>, not particles of matter.',
+  'Symbol: <b>γ</b> (or '+nuc(0,0,'γ')+'). <b>No charge</b>, <b>no mass</b>, travels at the <b>speed of light</b>.',
+  '<b>Least ionizing</b>, <b>most penetrating</b>: passes through paper, skin and aluminum.',
+  'Only <b>reduced</b> by <b>several cm of lead</b> or <b>thick concrete</b>, <b>never fully stopped</b>.',
+  'Often given off <b>along with α or β</b> when the new nucleus sheds extra energy. A and Z do <b>not</b> change.',
+  'Examples: <b>cobalt-60</b> cancer therapy, <b>food irradiation</b>, <b>sterilizing medical tools</b>.']},
+ {t:'Ionizing vs. penetrating power',v:vizIonize,b:[
+  '<b>Ionizing</b> = knocking <b>electrons off atoms</b>, making <b>ions</b>. This is how radiation damages cells and DNA.',
+  'Every ionization uses up some energy. Radiation that ionizes <b>a lot</b> runs out of energy <b>quickly</b>, so it <b>can\'t penetrate far</b>.',
+  '<b>Inverse relationship</b>: the more ionizing, the less penetrating.',
+  '<b>α</b>: most ionizing, least penetrating. <b>β</b>: in between. <b>γ</b>: least ionizing, most penetrating.',
+  'Rough ionizing comparison: <b>α : β : γ ≈ 10,000 : 100 : 1</b>.']},
+ {t:'Behavior between charged plates',v:vizPlates,b:[
+  'Charged radiation is pushed and pulled by an <b>electric field</b>: <b>opposite charges attract</b>.',
+  '<b>α (+2)</b> bends toward the <b>negative (−) plate</b>, but only <b>slightly</b>: it is heavy (about 7,300 times the mass of a β particle).',
+  '<b>β (−1)</b> bends toward the <b>positive (+) plate</b>, <b>strongly</b>, because it is so light.',
+  '<b>γ (no charge)</b> goes <b>straight</b>.',
+  'Bending in <b>opposite directions</b> proves α and β have <b>opposite charges</b>.']},
+ {t:'Comparison table',v:vizTable,b:[
+  'Use this table to review all three types side by side.',
+  'Pattern: <b>bigger and more charged → more ionizing → less penetrating</b>.',
+  'Shielding ladder: <b>paper</b> stops α, <b>aluminum</b> stops β, <b>lead/concrete</b> reduces γ.',
+  'Memory trick: <b>α</b> is a big, slow "bowling ball"; <b>β</b> is a tiny, fast "bullet"; <b>γ</b> is a beam of <b>light</b> energy.']},
+ {t:'Radiation safety',v:vizSafety,b:[
+  '<b>Time</b>: spend less time near a source → smaller dose.',
+  '<b>Distance</b>: move away. Intensity follows the <b>inverse-square law</b>: I ∝ 1/d². <b>Double the distance → ¼ the intensity</b>; triple → 1/9.',
+  '<b>Shielding</b>: put the right material in the way (paper for α, aluminum for β, lead or concrete for γ).',
+  '<b>Background radiation</b> is always around us: <b>radon gas</b> (the largest natural source), <b>cosmic rays</b>, <b>K-40</b> in food and our bodies, rocks and soil, and <b>medical</b> scans.']}
+];
+
+/* ---------- tabs / views ---------- */
+var view='learn', labPart='A';
+function learnDone(){return TEACHER||STOPS.every(function(_,i){return state.viewed.indexOf(i)>=0;});}
+function quizUnlocked(){return TEACHER||(learnDone()&&checklistStatus().allDone);}
+function updateTabs(){
+  var nv=state.viewed.length,cs=checklistStatus();
+  $('#sub-learn').textContent=learnDone()?'✓ All stops viewed':nv+' of '+STOPS.length+' stops viewed';
+  $('#sub-lab').textContent=cs.allDone?'✓ Checklist complete':cs.doneCount+' of 3 tasks done';
+  var qt=$('#tab-quiz');
+  if(quizUnlocked()){qt.classList.remove('locked');qt.removeAttribute('aria-disabled');$('#quizLabel').innerHTML='3 · Quiz';$('#sub-quiz').textContent=state.attempts?('Attempts: '+state.attempts):'Unlocked!';}
+  else{qt.classList.add('locked');qt.setAttribute('aria-disabled','true');$('#quizLabel').innerHTML=LOCK+' 3 · Quiz';
+    var need=[];if(!learnDone())need.push((STOPS.length-nv)+' Learn stop'+(STOPS.length-nv===1?'':'s'));if(!cs.allDone)need.push((3-cs.doneCount)+' Lab task'+(3-cs.doneCount===1?'':'s'));
+    $('#sub-quiz').textContent='Locked · needs '+need.join(' + ');}
+  $$('.tab').forEach(function(t){t.setAttribute('aria-selected',t.dataset.view===view?'true':'false');});
+}
+function showView(v){
+  view=v;['learn','lab','quiz'].forEach(function(n){$('#view-'+n).hidden=(n!==v);});
+  if(v==='learn')renderStop(state.stop);else stopViz();
+  if(v==='lab'){showLab(labPart);}else benchActive(false);
+  if(v==='quiz')renderQuizHome();
+  updateTabs();window.scrollTo(0,0);
+}
+$$('.tab').forEach(function(t){t.addEventListener('click',function(){showView(t.dataset.view);});});
+
+/* ---------- learn ---------- */
+var vizStop=null;
+function stopViz(){if(vizStop){try{vizStop();}catch(e){}vizStop=null;}}
+function renderStop(i){
+  stopViz();state.stop=i;if(state.viewed.indexOf(i)<0)state.viewed.push(i);save();
+  var s=STOPS[i];$('#stopTitle').textContent='Stop '+(i+1)+' · '+s.t;
+  $('#stopBullets').innerHTML=s.b.map(function(x){return '<li>'+x+'</li>';}).join('');
+  vizStop=s.v($('#stopVisual'));
+  var nv=state.viewed.length;$('#learnBar').style.width=(nv/STOPS.length*100)+'%';
+  $('#learnProg').textContent='Stop '+(i+1)+' of '+STOPS.length+' · '+nv+' viewed';
+  $('#dots').innerHTML=STOPS.map(function(st,k){var v=state.viewed.indexOf(k)>=0;return '<button class="dot'+(v?' viewed':'')+'" data-k="'+k+'"'+(k===i?' aria-current="step"':'')+' aria-label="Stop '+(k+1)+': '+st.t+(v?' (viewed)':' (not viewed yet)')+'">'+(k+1)+'</button>';}).join('');
+  $$('#dots .dot').forEach(function(b){b.addEventListener('click',function(){renderStop(+b.dataset.k);});});
+  $('#backBtn').disabled=(i===0);
+  $('#nextBtn').textContent=i===STOPS.length-1?'Go to the Lab ▶':'Next ▶';
+  updateTabs();
+}
+$('#backBtn').addEventListener('click',function(){if(state.stop>0)renderStop(state.stop-1);});
+$('#nextBtn').addEventListener('click',function(){if(state.stop<STOPS.length-1){renderStop(state.stop+1);window.scrollTo(0,0);}else showView('lab');});
+
+/* ---------- lab: sources & shields ---------- */
+var BG_RATE=22+Math.random()*6;
+var SOURCES={
+  none:{name:'No source',short:'None (background)',comps:[]},
+  am:{name:'Americium-241',short:'Am-241 (α)',comps:[{t:'a',K:10000}]},
+  sr:{name:'Strontium-90',short:'Sr-90 (β)',comps:[{t:'b',K:30000}]},
+  co:{name:'Cobalt-60',short:'Co-60 (γ)',comps:[{t:'g',K:25000}]}
+};
+(function(){var pool=shuffle(['a','b','g','ag']).slice(0,3);pool.push('bg');pool=shuffle(pool);
+  ['A','B','C','D'].forEach(function(L,i){var p=pool[i],r=0.7+Math.random()*0.6,c=[];
+    if(p.indexOf('a')>=0)c.push({t:'a',K:10000*r});
+    if(p.indexOf('b')>=0)c.push({t:'b',K:(p==='bg'?20000:30000)*r});
+    if(p.indexOf('g')>=0)c.push({t:'g',K:(p.length>1?14000:25000)*r});
+    SOURCES['m'+L]={name:'Mystery '+L,short:'Mystery '+L,comps:c,answer:p,letter:L};});})();
+var SHIELDS=[
+  {id:'hand',name:'Hand / skin',th:'≈2 cm of tissue',T:{a:0,b:0.01,g:0.88},w:24,fill:'#f2c7a5',pat:''},
+  {id:'paper',name:'Paper',th:'1 sheet',T:{a:0,b:0.9,g:1},w:5,fill:'#ffffff',pat:''},
+  {id:'wood',name:'Wood',th:'1 cm',T:{a:0,b:0.15,g:0.965},w:14,fill:'#b7793f',pat:'wood'},
+  {id:'al',name:'Aluminum',th:'3 mm',T:{a:0,b:0.003,g:0.956},w:8,fill:'#cbd5e1',pat:''},
+  {id:'pb',name:'Lead',th:'5 cm',T:{a:0,b:0,g:0.056},w:34,fill:'#64748b',pat:'hatch'},
+  {id:'conc',name:'Concrete',th:'10 cm',T:{a:0,b:0,g:0.35},w:44,fill:'#b8b2ab',pat:'dots'}
+];
+var SH={};SHIELDS.forEach(function(s){SH[s.id]=s;});
+var bench={src:'am',shields:[],d:3}, trials=[], identified={};
+function alphaAir(d){return clamp((4.3-d)/2.3,0,1);}
+function trueRate(){var src=SOURCES[bench.src],r=0,d=bench.d;
+  src.comps.forEach(function(c){var f=c.K/(d*d);if(c.t==='a')f*=alphaAir(d);bench.shields.forEach(function(id){f*=SH[id].T[c.t];});r+=f;});return r+BG_RATE;}
+
+/* bench drawing */
+var B={srcR:105,y:140,slotX:150,slotW:180,bench:178};
+function detX(){return 380+(bench.d-2)/38*330;}
+function benchStatic(){
+  $('#benchSvg').innerHTML='<rect x="0" y="'+B.bench+'" width="820" height="16" fill="url(#gBench)"/><rect x="0" y="'+B.bench+'" width="820" height="2" fill="#cbd5e1" opacity=".7"/>'+
+   '<g id="bSrc"></g><rect id="slotbox" class="slotbox" x="'+B.slotX+'" y="34" width="'+B.slotW+'" height="'+(B.bench-34)+'" rx="10" fill="#eef4ff" fill-opacity=".55" stroke="#64748b" stroke-width="2" stroke-dasharray="7 5"/>'+
+   '<text x="'+(B.slotX+B.slotW/2)+'" y="26" text-anchor="middle" class="svgsm" font-weight="700">SHIELD SLOT — drag one shield here</text>'+
+   '<g id="bShields"></g><g id="bBeam"></g><g id="bDet"></g><g id="bRuler"></g>'+
+   '<g transform="translate(560 22)"><circle r="7" fill="#94a3b8" opacity=".35"/><circle r="3" fill="#64748b"/><text x="12" y="4" class="svgsm" font-weight="700">= background radiation (always present)</text></g>';
+}
+var SHFILL={hand:'url(#gSkin)',paper:'url(#gPaper)',wood:'url(#gWoodP)',al:'url(#gAl)',pb:'url(#gLead)',conc:'url(#gConc)'};
+function benchDraw(){
+  var src=SOURCES[bench.src],lab=bench.src==='none'?'(empty holder)':src.short;
+  $('#bSrc').innerHTML=(bench.src==='none'?'<g opacity=".35">'+srcCan(70,140,1)+'</g>':srcCan(70,140,1))+'<text x="70" y="190" text-anchor="middle" fill="#f8fafc" font-size="11.5" font-weight="700">'+lab+'</text>';
+  var tot=bench.shields.reduce(function(a,id){return a+SH[id].w+10;},0),sc=tot>B.slotW-20?(B.slotW-20)/tot:1,x=B.slotX+B.slotW/2-tot*sc/2,s='';
+  bench.shields.forEach(function(id,i){var sh=SH[id],w=Math.max(4,sh.w*sc),h=id==='hand'?96:118,y=B.bench-h,
+      extra=id==='pb'&&w>=20?'<text x="'+(x+w/2)+'" y="'+(y+h/2+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="#e5e7eb" opacity=".85">Pb</text>':(id==='hand'?'<path d="M'+(x+4)+' '+(y+18)+' h'+(w-8)+' M'+(x+4)+' '+(y+34)+' h'+(w-8)+' M'+(x+4)+' '+(y+50)+' h'+(w-8)+'" stroke="#b9764f" stroke-width="1.2" opacity=".7"/>':'');
+    s+='<g class="inslot" data-sid="'+id+'" role="button" tabindex="0" aria-label="'+sh.name+' in slot. Activate to remove" style="cursor:pointer;touch-action:none"><g filter="url(#fShadow)">'+slab(x,y,w,h,SHFILL[id],8,extra)+'</g>'+
+       '<text x="'+(x+w/2+4)+'" y="'+(i%2?222:208)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e293b">'+{hand:'Hand',paper:'Paper',wood:'Wood',al:'Al',pb:'Lead',conc:'Concrete'}[id]+'</text></g>';sh._x=x;x+=w+10*sc;});
+  $('#bShields').innerHTML=s;
+  $$('#bShields .inslot').forEach(function(g){var id=g.dataset.sid;
+    makeDraggable(g,{label:function(){return SH[id].name;},onMove:slotHot,onDrop:function(px,py){slotHot(-1,-1);if(!inRect(px,py,$('#slotbox')))removeShield(id);},onClick:function(){removeShield(id);}});
+    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();removeShield(id);}});});
+  var dx=detX();
+  $('#bDet').innerHTML='<rect x="'+(dx+38)+'" y="'+(B.y+14)+'" width="6" height="'+(B.bench-B.y-14)+'" fill="#475569"/><ellipse cx="'+(dx+41)+'" cy="'+B.bench+'" rx="16" ry="4" fill="#1e293b"/>'+gmTube(dx,B.y,1);
+  var t='',per=(dx-B.srcR)/bench.d,step=per>=24?1:(per>=9?5:10);
+  for(var c=0;c<=bench.d;c++){var tx=B.srcR+c*per;if(per>=5||c%5===0)t+='<line x1="'+tx.toFixed(1)+'" y1="228" x2="'+tx.toFixed(1)+'" y2="'+(c%step===0?238:233)+'" stroke="#78350f" stroke-width="1"/>';
+    if(c%step===0&&c>0&&c<bench.d)t+='<text x="'+tx.toFixed(1)+'" y="247" text-anchor="middle" font-size="9" fill="#78350f">'+c+'</text>';}
+  $('#bRuler').innerHTML='<rect x="'+B.srcR+'" y="226" width="'+(dx-B.srcR)+'" height="14" rx="2" fill="url(#gTape)" stroke="#a16207"/>'+t+
+    '<text x="'+((B.srcR+dx)/2)+'" y="262" text-anchor="middle" class="svglbl" font-size="14">distance = '+bench.d+' cm (not to scale)</text>';
+  $$('.tile').forEach(function(t){t.setAttribute('aria-pressed',bench.shields.indexOf(t.dataset.sid)>=0?'true':'false');});
+  $('#distOut').textContent=bench.d+' cm';
+}
+function slotHot(x,y){$('#benchSvg').classList.toggle('slot-hot',x>=0&&inRect(x,y,$('#slotbox')));}
+function addShield(id){bench.shields=[id];benchDraw();}
+function removeShield(id){bench.shields=bench.shields.filter(function(s){return s!==id;});benchDraw();}
+function buildPalette(){
+  $('#palette').innerHTML=SHIELDS.map(function(s){var w={hand:14,paper:4,wood:9,al:6,pb:16,conc:18}[s.id];
+    return '<button class="tile" data-sid="'+s.id+'" aria-pressed="false"><svg class="swatch" viewBox="0 0 34 40" aria-hidden="true">'+slab(17-w/2-3,10,w,26,SHFILL[s.id],6)+'</svg><span>'+s.name+'<small>'+s.th+'</small></span></button>';}).join('');
+  $$('.tile').forEach(function(t){var id=t.dataset.sid;
+    makeDraggable(t,{label:function(){return SH[id].name;},onMove:slotHot,onDrop:function(x,y){slotHot(-1,-1);if(inRect(x,y,$('#slotbox')))addShield(id);},onClick:function(){if(bench.shields.indexOf(id)>=0)removeShield(id);else addShield(id);}});});
+}
+function buildSrcPick(){
+  var keys=labPart==='C'?['mA','mB','mC','mD']:['none','am','sr','co'];
+  if(keys.indexOf(bench.src)<0)bench.src=keys[labPart==='C'?0:1];
+  $('#srcPick').innerHTML='<span class="note" style="font-weight:700">Source:</span>'+keys.map(function(k){var s=SOURCES[k];return '<button class="btn small'+(k==='am'?' ta':k==='sr'?' tb':k==='co'?' tg':'')+'" data-src="'+k+'" aria-pressed="'+(k===bench.src)+'">'+s.short+'</button>';}).join('');
+  $$('#srcPick [data-src]').forEach(function(b){b.addEventListener('click',function(){bench.src=b.dataset.src;parts=[];bgParts=[];$('#bBeam').innerHTML='';buildSrcPick();benchDraw();});});
+}
+$('#dist').addEventListener('input',function(){bench.d=+this.value;benchDraw();});
+$('#clearShields').addEventListener('click',function(){bench.shields=[];benchDraw();});
+
+/* particles + counter */
+var parts=[],bgParts=[],tickTimer=null,stopBeam=null,spawnAcc=0;
+function flashLed(){var l=$('#led');if(!l)return;l.classList.add('on');setTimeout(function(){l.classList.remove('on');},90);}
+function spawnBg(){var beam=$('#bBeam');if(!beam||view!=='lab'||bgParts.length>8)return;var ns='http://www.w3.org/2000/svg',dx=detX(),
+    tx=dx+20+Math.random()*50,ty=B.y+(Math.random()*16-8),a=(Math.random()<.5?-1:1)*(0.5+Math.random()*1.2)-Math.PI/2*(Math.random()<.5?1:-1),
+    x0=tx+Math.cos(a)*95,y0=ty+Math.sin(a)*95;
+  var e=document.createElementNS(ns,'g');e.innerHTML='<circle r="8" fill="#94a3b8" opacity=".35"/><circle r="3" fill="#64748b"/>';beam.appendChild(e);
+  bgParts.push({el:e,x0:x0,y0:y0,x1:tx,y1:ty,t:0,dur:450});}
+function gaugeInit(){var g=$('#gauge'),cx=80,cy=88,r=64,s='';
+  function P(th,rr){var a=th*Math.PI/180;return [(cx+rr*Math.sin(a)).toFixed(1),(cy-rr*Math.cos(a)).toFixed(1)];}
+  function arc(a1,a2,col){var p1=P(a1,r),p2=P(a2,r);return '<path d="M'+p1+' A'+r+' '+r+' 0 0 1 '+p2+'" fill="none" stroke="'+col+'" stroke-width="9"/>';}
+  s+=arc(-80,0,'#86efac')+arc(0,40,'#fde047')+arc(40,80,'#f87171');
+  [[10,-80],[100,-26.7],['1k',26.7],['10k',80]].forEach(function(t){var a=P(t[1],r+5),b=P(t[1],r-8),l=P(t[1],r-19);s+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#1c1917" stroke-width="2"/><text x="'+l[0]+'" y="'+(+l[1]+4)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#1c1917">'+t[0]+'</text>';});
+  for(var i=0;i<=24;i++){var th=-80+i*160/24,a2=P(th,r+4),b2=P(th,r-4);s+='<line x1="'+a2[0]+'" y1="'+a2[1]+'" x2="'+b2[0]+'" y2="'+b2[1]+'" stroke="#1c1917" stroke-width=".8"/>';}
+  s+='<text x="80" y="76" text-anchor="middle" font-size="9" fill="#57534e" font-weight="700">CPM</text><g id="needle"><path d="M78.6 88 L80 24 L81.4 88 Z" fill="#b91c1c"/></g><circle cx="80" cy="88" r="6" fill="#1c1917"/><circle cx="80" cy="88" r="2" fill="#a8a29e"/>';
+  g.innerHTML=s;}
+function setMeter(c){var n=$('#needle');$('#cpm').textContent=c;var th=-80+160*clamp((Math.log10(Math.max(c,1))-1)/3,0,1);if(n)n.style.transform='rotate('+th.toFixed(1)+'deg)';}
+/* smooth counter: rolling 30-second window, updated 4x per second */
+var TICK=250,NB=120,win=[],winLam=-1,cfgKey='',cfgT=0,cfgDone=true,shownCpm=null;
+function seedWindow(lam){win=[];for(var i=0;i<NB;i++)win.push(poisson(lam*TICK/60000));winLam=lam;}
+function windowCpm(){return Math.round(win.reduce(function(a,b){return a+b;},0)*60000/(NB*TICK));}
+function benchKey(){return bench.src+'|'+bench.shields.join('+')+'|'+bench.d;}
+function benchActive(on){
+  if(tickTimer){clearInterval(tickTimer);tickTimer=null;}if(stopBeam){stopBeam();stopBeam=null;}
+  if(!on)return;
+  seedWindow(trueRate());shownCpm=windowCpm();setMeter(shownCpm);
+  tickTimer=setInterval(function(){
+    var lam=trueRate();if(Math.abs(lam-winLam)>0.01)seedWindow(lam);
+    var cs=poisson(Math.max(0,lam-BG_RATE)*TICK/60000),cb=poisson(BG_RATE*TICK/60000),times=[],bgT=[];
+    win.shift();win.push(cs+cb);
+    var target=windowCpm();shownCpm=shownCpm==null?target:Math.round(shownCpm+(target-shownCpm)*0.5);setMeter(shownCpm);
+    for(var i=0;i<cs;i++)times.push(Math.random()*TICK/1000);for(var j=0;j<cb;j++){var t=Math.random()*TICK/1000;times.push(t);bgT.push(t);}
+    playClicks(times);times.forEach(function(t){setTimeout(flashLed,t*1000);});
+    if(!RM)bgT.forEach(function(t){setTimeout(spawnBg,Math.max(0,t*1000-450));});
+    autoRecord();
+  },TICK);
+  if(RM)return;
+  var ns='http://www.w3.org/2000/svg';
+  stopBeam=loop(function(dt){
+    var src=SOURCES[bench.src],beam=$('#bBeam');if(!beam)return;
+    spawnAcc+=dt;
+    if(src.comps.length&&spawnAcc>200&&parts.length<30){spawnAcc=0;var c=src.comps[Math.floor(Math.random()*src.comps.length)],dX=detX()-4,stopX=dX;
+      for(var i=0;i<bench.shields.length;i++){var sh=SH[bench.shields[i]];if(Math.random()>sh.T[c.t]){stopX=sh._x;break;}}
+      if(c.t==='a'&&Math.random()>alphaAir(bench.d)){var rx=B.srcR+(Math.min(4.3,bench.d)*(0.6+0.4*Math.random())/bench.d)*(dX-B.srcR);stopX=Math.min(stopX,rx);}
+      var e=document.createElementNS(ns,'g');e.innerHTML=partSvg(c.t);
+      beam.appendChild(e);parts.push({el:e,t:c.t,x:B.srcR,y:B.y+(Math.random()*24-12),stop:stopX,v:c.t==='a'?0.12:(c.t==='b'?0.32:0.5),fade:0});}
+    parts.forEach(function(p){if(p.x<p.stop){p.x=Math.min(p.stop,p.x+p.v*dt);}else{p.fade+=dt;}
+      p.el.setAttribute('transform','translate('+p.x.toFixed(1)+' '+p.y.toFixed(1)+')');
+      p.el.setAttribute('opacity',Math.max(0,1-p.fade/300).toFixed(2));});
+    parts=parts.filter(function(p){if(p.fade>300){p.el.remove();return false;}return true;});
+    bgParts.forEach(function(p){p.t+=dt;var f=Math.min(1,p.t/p.dur);p.el.setAttribute('transform','translate('+(p.x0+(p.x1-p.x0)*f).toFixed(1)+' '+(p.y0+(p.y1-p.y0)*f).toFixed(1)+')');p.el.setAttribute('opacity',f<1?1:Math.max(0,1-(p.t-p.dur)/250).toFixed(2));});
+    bgParts=bgParts.filter(function(p){if(p.t>p.dur+250){p.el.remove();return false;}return true;});
+  });
+}
+
+/* recording */
+function bgEstimate(){var b=trials.filter(function(t){return t.src==='none';});if(!b.length)return {v:25,est:true};return {v:b.reduce(function(a,t){return a+t.c;},0)/b.length,est:false};}
+function renderTrials(hi){var bg=bgEstimate();
+  $('#dataTable tbody').innerHTML=trials.length?trials.map(function(t,i){var net=t.src==='none'?'—':Math.max(0,Math.round(t.c-bg.v));
+    return '<tr'+(i===hi?' class="newrow"':'')+'><td>'+(i+1)+'</td><td>'+SOURCES[t.src].short+'</td><td>'+(t.sh.length?t.sh.map(function(id){return SH[id].name+' ('+SH[id].th+')';}).join(' + '):'none')+'</td><td>'+t.d+' cm</td><td><b>'+t.c+'</b></td><td>'+net+'</td></tr>';}).reverse().join(''):'<tr><td colspan="6" class="note">No trials yet. Set up a source and shields, and hold still for a moment. Readings record automatically.</td></tr>';
+  $('#bgNote').textContent=bg.est?'Net uses a typical background of 25 cpm. Record a trial with “None (background)” to measure your own.':'Net uses your measured background: '+Math.round(bg.v)+' cpm.';}
+function autoRecord(){var k=benchKey(),st=$('#autoRec');
+  if(k!==cfgKey){cfgKey=k;cfgT=performance.now();cfgDone=false;}
+  if(cfgDone)return;
+  var left=1500-(performance.now()-cfgT);
+  if(left>0){st.className='autorec busy';st.innerHTML='<span class="spin" aria-hidden="true"></span> Measuring…';return;}
+  cfgDone=true;var c=windowCpm(),i=-1;
+  trials.forEach(function(t,n){if(t.key===k)i=n;});
+  if(i>=0){trials[i].c=c;}else{trials.push({key:k,src:bench.src,sh:bench.shields.slice(),d:bench.d,c:c});i=trials.length-1;}
+  if(['am','sr','co'].indexOf(bench.src)>=0){
+    if(bench.shields.length===1){var key=bench.src+'|'+bench.shields[0];if(state.shieldTests.indexOf(key)<0)state.shieldTests.push(key);}
+    var L=state.dist[bench.src]||(state.dist[bench.src]=[]);if(L.indexOf(bench.d)<0)L.push(bench.d);save();}
+  renderTrials(i);renderChecklist();
+  st.className='autorec done';st.textContent='✓ Recorded trial #'+(i+1)+': '+c+' cpm';
+}
+$('#clearData').addEventListener('click',function(){trials=[];cfgKey='';renderTrials();});
+
+/* mystery */
+var mysterySel={};
+function renderMystery(){
+  $('#mgrid').innerHTML=['A','B','C','D'].map(function(L){var s=SOURCES['m'+L],ok=identified[L],sel=mysterySel[L]||[];
+    return '<div class="mcard'+(ok?' solved':'')+'" data-l="'+L+'"><h3>Mystery '+L+(ok?' · ✓ Identified':'')+'</h3><div class="checks">'+
+      ['a','b','g'].map(function(t){var on=ok?s.answer.indexOf(t)>=0:sel.indexOf(t)>=0;return '<label><input type="checkbox" value="'+t+'"'+(ok?' disabled':'')+(on?' checked':'')+'> '+{a:'α',b:'β',g:'γ'}[t]+'</label>';}).join('')+
+      '</div><button class="btn small" '+(ok?'disabled':'')+'>Check</button><div class="mfb" role="status"></div></div>';}).join('');
+  $$('#mgrid .mcard').forEach(function(card){var L=card.dataset.l;
+    $$('input',card).forEach(function(i){i.addEventListener('change',function(){mysterySel[L]=$$('input:checked',card).map(function(x){return x.value;});});});
+    $('button',card).addEventListener('click',function(){
+      var pick=$$('input:checked',card).map(function(i){return i.value;}).sort().join(''),ans=SOURCES['m'+L].answer.split('').sort().join(''),fb=$('.mfb',card);
+      if(!pick){fb.className='mfb fbk info';fb.textContent='Check at least one box.';return;}
+      if(pick===ans){identified[L]=true;state.mysteryOk=Math.min(4,(state.mysteryOk||0)+1);save();
+        card.classList.add('solved');$('h3',card).textContent='Mystery '+L+' · ✓ Identified';$$('input',card).forEach(function(i){i.disabled=true;});$('button',card).disabled=true;
+        fb.className='mfb fbk ok';fb.textContent='✓ Correct! '+mysteryWhy(ans);renderChecklist();}
+      else{fb.className='mfb fbk bad';fb.innerHTML='✗ Not yet. '+mysteryHint(pick,ans);}
+    });});
+}
+function mysteryWhy(a){return {a:'Paper alone drops it to background, so it is pure α.',b:'Paper barely changes it, 3 mm Al drops it to background: pure β.',g:'Paper and Al barely change it; only lead/concrete cut it, and never to zero: pure γ.',ag:'Paper cuts it a lot, but not to background, and lead cuts the rest: α + γ.',bg:'Paper barely changes it, Al cuts a lot but not to background, and lead cuts the rest: β + γ.'}[a];}
+function mysteryHint(p,a){if(a.length>1&&p.length===1)return 'Look closer: after the shield that “stops” it, is the count really down to background (≈25 cpm)? Something else may be getting through.';
+  return 'Test it with no shield, then paper, then 3 mm aluminum, then lead. Compare each count to background (≈25 cpm).';}
+
+/* lab parts */
+function showLab(L){
+  labPart=L;$$('.subtab').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lab===L?'true':'false');b.setAttribute('aria-selected',b.dataset.lab===L?'true':'false');});
+  var ac=(L==='A'||L==='C');$('#lab-AC').hidden=!ac;$('#mysteryPanel').hidden=(L!=='C');
+  if(ac){
+    $('#benchIntro').innerHTML=L==='A'?'Choose a <b>source</b>, then <b>drag a shield</b> into the slot (or tap it). Only <b>one shield</b> is used at a time; picking a new one swaps it in. Watch the <b>Geiger counter</b>. About 1.5 seconds after you stop changing things, the reading is <b>recorded automatically</b> in the data table. The reading always includes about 20–30 cpm of <b>background radiation</b>.'
+      :'Each <b>mystery source</b> gives off α, β, γ or a <b>mix</b>. Use the shields to figure out what is inside. One source gives off <b>both β and γ</b>.';
+    $('#benchTip').innerHTML=L==='A'?'<b>Inverse-square tip:</b> with Sr-90 or Co-60 and no shield, record counts at <b>5, 10 and 20 cm</b>. Each time you double the distance, the <b>net</b> count should drop to about <b>¼</b>. Alpha only travels about <b>4 cm</b> in air: try Am-241 at 2, 3, 4 and 5 cm.'
+      :'<b>Strategy:</b> no shield → paper → 3 mm aluminum → 5 cm lead. Compare each count to background. If a shield cuts the count a lot but <b>not</b> down to background, something more penetrating is also coming out.';
+    buildSrcPick();benchDraw();if(L==='C')renderMystery();benchActive(view==='lab');
+  }else{benchActive(false);}
+  renderChecklist();
+}
+$$('.subtab').forEach(function(b){b.addEventListener('click',function(){showLab(b.dataset.lab);});});
+
+/* checklist */
+function checklistStatus(){
+  var combos=0;['am','sr','co'].forEach(function(s){SHIELDS.forEach(function(sh){if(state.shieldTests.indexOf(s+'|'+sh.id)>=0)combos++;});});
+  var bestD=0;['am','sr','co'].forEach(function(s){bestD=Math.max(bestD,(state.dist[s]||[]).length);});
+  var my=Math.min(2,state.mysteryOk||0);
+  var items=[{done:combos>=18,n:combos,of:18},{done:bestD>=3,n:Math.min(3,bestD),of:3},{done:my>=2,n:my,of:2}];
+  var dc=items.filter(function(i){return i.done;}).length;return {items:items,doneCount:dc,allDone:dc===3||TEACHER};
+}
+function renderChecklist(){
+  var cs=checklistStatus(),it=cs.items;
+  function row(i,html){var d=it[i].done;return '<div class="ck'+(d?' done':'')+'"><span class="box" aria-hidden="true">'+(d?'✓':'')+'</span><div>'+html+'<span class="st">'+(d?'Done ✓':it[i].n+' of '+it[i].of)+'</span></div></div>';}
+  var grid='<table class="grid18" aria-label="Source and shield combinations tested"><tr><th></th>'+SHIELDS.map(function(s){return '<th title="'+s.name+'">'+{hand:'Hand',paper:'Pap',wood:'Wood',al:'Al',pb:'Pb',conc:'Conc'}[s.id]+'</th>';}).join('')+'</tr>'+
+    [['am','α Am'],['sr','β Sr'],['co','γ Co']].map(function(r){return '<tr><th>'+r[1]+'</th>'+SHIELDS.map(function(s){var y=state.shieldTests.indexOf(r[0]+'|'+s.id)>=0;return '<td class="'+(y?'y':'')+'">'+(y?'✓':'·')+'</td>';}).join('')+'</tr>';}).join('')+'</table>';
+  var q=quizUnlocked();
+  $('#checklist').innerHTML='<h2>Lab Checklist</h2>'+
+    row(0,'<b>Test all 3 sources with every shield</b> (a reading is recorded for each).'+grid)+
+    row(1,'<b>Get readings at 3 distances</b> (same source).')+
+    row(2,'<b>Identify 2 mystery sources.</b>')+
+    '<div class="unlock '+(q?'yes':'no')+'">'+(q?'✓ Quiz unlocked!':LOCK+' Quiz unlocks when all Learn stops are viewed ('+state.viewed.length+'/'+STOPS.length+') and this checklist is complete.')+'</div>'+
+    (q?'<button class="btn primary" style="margin-top:.5rem;width:100%" id="goQuiz">Go to the Quiz ▶</button>':'');
+  var gq=$('#goQuiz');if(gq)gq.addEventListener('click',function(){showView('quiz');});
+  updateTabs();
+}
+
+/* ---------- quiz bank ---------- */
+var MC=[
+ {q:'Which type of radiation is a helium-4 nucleus (2 protons + 2 neutrons)?',c:['Alpha (α)','Beta (β)','Gamma (γ)','A neutron'],e:'An alpha particle is exactly a helium-4 nucleus: 2 protons and 2 neutrons.',s:'Identify: helium-4 nucleus'},
+ {q:'Which type of radiation is high-energy electromagnetic radiation (a photon)?',c:['Gamma (γ)','Alpha (α)','Beta (β)','A proton'],e:'Gamma rays are photons of electromagnetic radiation, like light but far more energetic.',s:'Identify: EM photon'},
+ {q:'Which radiation is a fast electron created when a neutron changes into a proton?',c:['Beta (β⁻)','Alpha (α)','Gamma (γ)','Positron'],e:'In beta decay a neutron becomes a proton and the new electron is shot out as a beta particle.',s:'Identify: electron from n → p'},
+ {q:'A source\'s count drops all the way down to background when one sheet of paper is put in front of it. What does it give off?',c:['Alpha only','Beta only','Gamma only','Beta and gamma'],e:'Only alpha is stopped by a single sheet of paper.',s:'Shield data: paper stops it'},
+ {q:'Paper barely changes a source\'s count, but 3 mm of aluminum drops it to background. What does it give off?',c:['Beta','Alpha','Gamma','Alpha and gamma'],e:'Beta passes through paper but is stopped by a few mm of aluminum.',s:'Shield data: Al stops it'},
+ {q:'Paper and aluminum hardly change a count; 5 cm of lead lowers it a lot, but not to background. What does it give off?',c:['Gamma','Alpha','Beta','Nothing — it is background'],e:'Gamma is only reduced by thick lead and is never stopped completely.',s:'Shield data: only lead reduces it'},
+ {q:'What is the thinnest shield on this list that stops beta particles?',c:['3 mm of aluminum','A sheet of paper','5 cm of lead','Nothing can stop beta'],e:'A few millimeters of aluminum stops beta particles; paper does not.',s:'Shield that stops β'},
+ {q:'Which shield best reduces gamma radiation?',c:['5 cm of lead','A sheet of paper','3 mm of aluminum','Your hand'],e:'Dense, thick materials like several cm of lead reduce gamma the most.',s:'Best shield for γ'},
+ {q:'What stops alpha particles?',c:['A sheet of paper or the outer dead layer of skin','Only thick lead','Only 3 mm of aluminum','Nothing stops alpha'],e:'Alpha particles are stopped by paper, dead skin, or a few cm of air.',s:'Shield that stops α'},
+ {q:'Why is an alpha source most dangerous when it is inhaled or swallowed?',c:['Alpha is the most ionizing, so it damages nearby living cells','Alpha is the most penetrating','Alpha travels at the speed of light','Alpha has no charge'],e:'Inside the body, alpha dumps all its energy into nearby cells because it is the most ionizing.',s:'Why α is dangerous inside'},
+ {q:'What does the symbol ⁰₋₁e represent?',c:['A beta particle','An alpha particle','A gamma ray','A neutron'],e:'Mass number 0 and charge −1 describe an electron, which is a beta particle.',s:'Symbol ⁰₋₁e'},
+ {q:'What does the symbol ⁴₂He represent in a nuclear equation?',c:['An alpha particle','A beta particle','A gamma ray','A hydrogen atom'],e:'⁴₂He is a helium-4 nucleus, which is an alpha particle.',s:'Symbol ⁴₂He'},
+ {q:'What is the charge of a gamma ray?',c:['0','+1','−1','+2'],e:'Gamma rays are photons, so they have no charge.',s:'Charge of γ'},
+ {q:'What is the charge of an alpha particle?',c:['+2','+4','−1','0'],e:'An alpha particle has 2 protons, so its charge is +2.',s:'Charge of α'},
+ {q:'A Geiger counter is moved from 1 m to 2 m away from a source. The count will be…',c:['Fewer counts','More counts','The same'],e:'Farther away, the radiation spreads over a bigger area, so less of it hits the detector (double the distance → ¼ the counts).',s:'Inverse square: move farther away'},
+ {q:'A Geiger counter is moved from 2 m to 1 m away from a source. The count will be…',c:['More counts','Fewer counts','The same'],e:'Closer to the source, the radiation is spread over a smaller area, so more of it hits the detector (half the distance → 4× the counts).',s:'Inverse square: move closer'},
+ {q:'You walk in a circle around a small source, staying 2 m away the whole time. The count will be…',c:['About the same','More counts','Fewer counts'],e:'The count depends on the distance, and the distance never changes, so the count stays about the same (just the normal random ups and downs).',s:'Inverse square: same distance'},
+ {q:'Smoke detectors use americium-241. What does it mainly give off?',c:['Alpha particles','Beta particles','Gamma rays','X-rays'],e:'Am-241 emits alpha particles, which ionize air inside the detector.',s:'Use: smoke detector'},
+ {q:'Cobalt-60 is used to treat cancer and to sterilize medical tools. Which radiation does that job?',c:['Gamma','Alpha','Beta','Neutrons'],e:'Co-60\'s penetrating gamma rays can reach a tumor or pass through sealed packages.',s:'Use: Co-60 therapy/sterilizing'},
+ {q:'Food irradiation kills bacteria in sealed packages. Which radiation is used?',c:['Gamma','Alpha','Beta from paper-thin sources','Radon'],e:'Gamma rays penetrate packaging and food to kill microbes.',s:'Use: food irradiation'},
+ {q:'Iodine-131 treats thyroid disease. Which radiation does most of the treatment inside the thyroid?',c:['Beta particles','Alpha particles','Radio waves','Neutrons'],e:'I-131\'s beta particles travel only a few mm in tissue, delivering their dose to the thyroid.',s:'Use: I-131 thyroid'},
+ {q:'Which is the largest natural source of background radiation for most people?',c:['Radon gas','Cosmic rays','Potassium-40 in food','Smoke detectors'],e:'Radon gas from rocks and soil gives the largest natural dose.',s:'Largest natural background source'},
+ {q:'Between charged plates, a beta particle bends…',c:['strongly toward the + plate','slightly toward the − plate','strongly toward the − plate','not at all'],e:'Beta is negative (attracted to +) and very light, so it bends strongly.',s:'Deflection of β'},
+ {q:'Between charged plates, an alpha particle bends…',c:['slightly toward the − plate','strongly toward the + plate','slightly toward the + plate','not at all'],e:'Alpha is positive (attracted to −) and heavy, so it bends only slightly.',s:'Deflection of α'},
+ {q:'Why does gamma radiation go straight between charged plates?',c:['It has no charge','It is too heavy','It moves too slowly','It is stopped by the plates'],e:'With no charge, an electric field cannot push or pull gamma rays.',s:'Why γ is not deflected'},
+ {q:'Why does a beta particle bend much more than an alpha particle between charged plates?',c:['It has a much smaller mass','It has a bigger charge','It is slower','It is a photon'],e:'Beta is about 7,300 times lighter than alpha, so the same force moves it much more.',s:'Why β bends more than α'},
+ {q:'Why do unstable nuclei give off radiation?',c:['To become more stable','To gain electrons','To become heavier','Because they are hot'],e:'Radioactive decay releases particles or energy so the nucleus becomes more stable.',s:'Why decay happens'},
+ {q:'What happens inside the nucleus during beta (β⁻) decay?',c:['A neutron changes into a proton and an electron','A proton changes into a neutron','2 protons and 2 neutrons leave','Only energy leaves'],e:'In β⁻ decay, n → p⁺ + e⁻; the electron leaves as the beta particle.',s:'What happens in β decay'},
+ {q:'About how fast do alpha particles travel?',c:['About 5% of the speed of light','The speed of light','About 99% of the speed of light','The speed of sound'],e:'Alpha particles are heavy and slow, about 5% of light speed.',s:'Speed of α'},
+ {q:'Which three things reduce your radiation exposure?',c:['Time, distance and shielding','Heat, light and pressure','Speed, mass and charge','Water, air and soil'],e:'Less time, more distance and proper shielding all lower your dose.',s:'Time, distance, shielding'}
+];
+var RANK=[
+ {q:'Drag to rank by IONIZING power (most at top).',items:['Alpha (α)','Beta (β)','Gamma (γ)'],top:'Most ionizing',bot:'Least ionizing',e:'Alpha ionizes most and gamma least: α > β > γ.',s:'Rank: ionizing power'},
+ {q:'Drag to rank by PENETRATING power (most at top).',items:['Gamma (γ)','Beta (β)','Alpha (α)'],top:'Most penetrating',bot:'Least penetrating',e:'Gamma penetrates most and alpha least: γ > β > α.',s:'Rank: penetrating power'},
+ {q:'Drag to rank by MASS (heaviest at top).',items:['Alpha (α)','Beta (β)','Gamma (γ)'],top:'Heaviest',bot:'Lightest',e:'Alpha is 4 amu, beta is nearly 0, gamma has no mass.',s:'Rank: mass'},
+ {q:'Drag to rank by SPEED (fastest at top).',items:['Gamma (γ)','Beta (β)','Alpha (α)'],top:'Fastest',bot:'Slowest',e:'Gamma moves at light speed, beta up to ~99% of it, alpha only ~5%.',s:'Rank: speed'},
+ {q:'Drag to rank these shields: the one that stops ALPHA at the top, the one needed for GAMMA at the bottom.',items:['Paper','3 mm aluminum','5 cm lead'],top:'Stops alpha',bot:'Needed for gamma',e:'Paper is enough for α, aluminum for β, and thick lead is needed for γ.',s:'Rank: shields'}
+];
+var SORT=[
+ {q:'Sort each property into the correct type of radiation.',items:[['Charge +2','a'],['Mass 4 amu','a'],['Charge −1','b'],['Fast electron','b'],['No charge, no mass','g'],['Electromagnetic photon','g']],e:'α: +2 and 4 amu; β: −1 electron; γ: uncharged, massless photon.',s:'Sort: properties'},
+ {q:'Sort each shielding fact into the correct type of radiation.',items:[['Stopped by paper','a'],['Stopped by dead skin','a'],['Passes paper, stopped by 3 mm Al','b'],['Stopped by a few mm of aluminum','b'],['Only reduced by thick lead','g'],['Never completely stopped','g']],e:'Paper/skin stop α, aluminum stops β, lead only reduces γ.',s:'Sort: shielding'},
+ {q:'Sort each real-world example into the type of radiation it gives off or uses.',items:[['Am-241 smoke detector','a'],['Radon-222 in basements','a'],['Carbon-14 dating','b'],['Strontium-90','b'],['Co-60 cancer therapy','g'],['Food irradiation','g']],e:'Am-241 and Rn-222 are α emitters; C-14 and Sr-90 are β emitters; Co-60 therapy and food irradiation use γ.',s:'Sort: real-world uses'},
+ {q:'Sort each symbol into the correct type of radiation.',items:[['⁴₂He','a'],['⁴₂α','a'],['⁰₋₁e','b'],['⁰₋₁β','b'],['⁰₀γ','g'],['γ (photon)','g']],e:'⁴₂He/α is alpha, ⁰₋₁e/β is beta, ⁰₀γ is gamma.',s:'Sort: symbols'}
+];
+var DIAG=[
+ {q:'Click the path an ALPHA particle would follow between the charged plates.',d:'plates',ans:'a',e:'Alpha (+2) bends slightly toward the − plate because it is heavy.',s:'Diagram: α path'},
+ {q:'Click the path a BETA particle would follow between the charged plates.',d:'plates',ans:'b',e:'Beta (−1) bends strongly toward the + plate because it is very light.',s:'Diagram: β path'},
+ {q:'Click the path a GAMMA ray would follow between the charged plates.',d:'plates',ans:'g',e:'Gamma has no charge, so it travels straight.',s:'Diagram: γ path'},
+ {q:'Click the thinnest barrier that would stop BETA particles.',d:'barriers',ans:'al',e:'3 mm of aluminum stops beta; paper does not.',s:'Diagram: barrier for β'},
+ {q:'Click the barrier that would stop ALPHA particles first.',d:'barriers',ans:'paper',e:'A single sheet of paper stops alpha particles.',s:'Diagram: barrier for α'},
+ {q:'Click the barrier that does the most to reduce GAMMA rays.',d:'barriers',ans:'pb',e:'Thick lead reduces gamma the most, though it never stops all of it.',s:'Diagram: barrier for γ'},
+ {q:'Click the detector position that would get the MOST counts.',d:'distance',ans:'1',e:'The closest detector gets the most counts: the radiation hasn\'t spread out much yet.',s:'Diagram: most counts'},
+ {q:'Click the detector position that would get the FEWEST counts.',d:'distance',ans:'4',e:'The farthest detector gets the fewest counts because the radiation has spread over the biggest area.',s:'Diagram: fewest counts'},
+ {q:'Click the part of the atom where alpha, beta and gamma radiation come from.',d:'atom',ans:'nuc',e:'All three types of nuclear radiation come from the nucleus.',s:'Diagram: where radiation starts'}
+];
+
+function hitG(id,label,hl,vis){return '<g class="hit" data-r="'+id+'" tabindex="0" role="button" aria-label="'+label+'">'+hl+vis+'</g>';}
+function diagram(kind){
+  var L=shuffle(['A','B','C']);
+  if(kind==='plates'){
+    var paths={b:'M60 140 L150 140 Q290 140 360 80 L460 22',g:'M60 140 L520 140',a:'M60 140 L150 140 Q290 140 360 152 L520 176'},ends={b:[480,26],g:[540,145],a:[540,184]},s='';
+    s+='<g filter="url(#fShadow)">'+slab(150,38,210,16,'url(#gPlatePos)',8)+'</g><text x="255" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">+ + + + + + plate</text>';
+    s+='<g filter="url(#fShadow)">'+slab(150,228,210,16,'url(#gPlateNeg)',8)+'</g><text x="255" y="266" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">− − − − − − plate</text>';
+    s+=srcCan(36,140,.6);
+    var regs=[];['b','g','a'].forEach(function(k,i){var lab=L[i];regs.push({id:k,lab:'Path '+lab});
+      s+=hitG(k,'Path '+lab,'<path class="hl" d="'+paths[k]+'" fill="none" stroke="#f59e0b" stroke-opacity="0" stroke-width="24" stroke-linecap="round"/>','<path d="'+paths[k]+'" fill="none" stroke="#1e293b" stroke-width="4"/><circle cx="'+ends[k][0]+'" cy="'+ends[k][1]+'" r="14" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="'+ends[k][0]+'" y="'+(ends[k][1]+5)+'" text-anchor="middle" font-weight="700" font-size="15">'+lab+'</text>');});
+    return {svg:'<svg class="viz diag" viewBox="0 0 560 280">'+s+'</svg>',regs:regs};}
+  if(kind==='barriers'){
+    var bs=[['paper','Paper',150,6,'url(#gPaper)'],['al','Aluminum (3 mm)',270,14,'url(#gAl)'],['pb','Lead (5 cm)',400,50,'url(#gLead)']],s2=srcCan(36,110,.6)+'<path d="M62 110 L540 110" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 6"/>',regs2=[];
+    bs.forEach(function(b){regs2.push({id:b[0],lab:b[1]});s2+=hitG(b[0],b[1],'<rect class="hl" x="'+(b[2]-14)+'" y="22" width="'+(b[3]+28)+'" height="176" rx="8" fill="#f59e0b" fill-opacity="0" stroke="#f59e0b" stroke-opacity="0" stroke-width="5"/>','<g filter="url(#fShadow)">'+slab(b[2],38,b[3],152,b[4],10)+'</g><text x="'+(b[2]+b[3]/2)+'" y="212" text-anchor="middle" font-size="14" font-weight="700">'+b[1]+'</text>');});
+    return {svg:'<svg class="viz diag" viewBox="0 0 560 222">'+s2+'</svg>',regs:regs2};}
+  if(kind==='distance'){
+    var s3=srcCan(36,90,.55)+'<text x="36" y="134" text-anchor="middle" font-size="12">source</text><line x1="40" y1="160" x2="520" y2="160" stroke="#334155" stroke-width="2"/>',regs3=[];
+    [1,2,3,4].forEach(function(m){var x=40+m*115;regs3.push({id:String(m),lab:m+' m'});
+      s3+='<line x1="'+x+'" y1="154" x2="'+x+'" y2="166" stroke="#334155" stroke-width="2"/>'+hitG(String(m),'Detector at '+m+' m','<rect class="hl" x="'+(x-34)+'" y="48" width="68" height="134" rx="8" fill="#f59e0b" fill-opacity="0" stroke="#f59e0b" stroke-opacity="0" stroke-width="5"/>',gmTube(x-22,90,.5,false)+'<text x="'+x+'" y="182" text-anchor="middle" font-size="15" font-weight="700">'+m+' m</text>');});
+    return {svg:'<svg class="viz diag" viewBox="0 0 560 196">'+s3+'</svg>',regs:regs3};}
+  // atom
+  var s4='',regs4=[{id:'nuc',lab:'Part A'},{id:'in',lab:'Part B'},{id:'out',lab:'Part C'}],AL=['A','B','C'];
+  s4+='<circle cx="200" cy="150" r="140" fill="url(#gCloud)"/>';s4+=hitG('out','Part '+AL[2],'<circle class="hl" cx="200" cy="150" r="118" fill="none" stroke="#f59e0b" stroke-opacity="0" stroke-width="26"/>','<circle cx="200" cy="150" r="118" fill="none" stroke="#475569" stroke-width="2"/><circle cx="318" cy="150" r="7" fill="url(#gElectron)"/><circle cx="82" cy="150" r="7" fill="url(#gElectron)"/><circle cx="200" cy="32" r="7" fill="url(#gElectron)"/><circle cx="200" cy="268" r="7" fill="url(#gElectron)"/>');
+  s4+=hitG('in','Part '+AL[1],'<circle class="hl" cx="200" cy="150" r="72" fill="none" stroke="#f59e0b" stroke-opacity="0" stroke-width="24"/>','<circle cx="200" cy="150" r="72" fill="none" stroke="#475569" stroke-width="2"/><circle cx="272" cy="150" r="7" fill="url(#gElectron)"/><circle cx="128" cy="150" r="7" fill="url(#gElectron)"/>');
+  var nu='';for(var j=0;j<9;j++){var r=6.5*Math.sqrt(j+0.5),a=j*2.4;nu+='<circle cx="'+(200+r*Math.cos(a)).toFixed(1)+'" cy="'+(150+r*Math.sin(a)).toFixed(1)+'" r="6" class="'+(j%2?'proton':'neutron')+'"/>';}
+  s4+=hitG('nuc','Part '+AL[0],'<circle class="hl" cx="200" cy="150" r="30" fill="#f59e0b" fill-opacity="0" stroke="#f59e0b" stroke-opacity="0" stroke-width="6"/>',nu);
+  s4+='<g pointer-events="none" font-weight="700" font-size="16"><line x1="214" y1="140" x2="350" y2="60" stroke="#334155"/><circle cx="360" cy="54" r="13" fill="#fff" stroke="#334155"/><text x="360" y="60" text-anchor="middle">A</text>'+
+      '<line x1="128" y1="150" x2="40" y2="210" stroke="#334155"/><circle cx="32" cy="216" r="13" fill="#fff" stroke="#334155"/><text x="32" y="222" text-anchor="middle">B</text>'+
+      '<line x1="200" y1="268" x2="330" y2="285" stroke="#334155"/><circle cx="344" cy="285" r="13" fill="#fff" stroke="#334155"/><text x="344" y="291" text-anchor="middle">C</text></g>';
+  return {svg:'<svg class="viz diag" viewBox="0 0 400 302">'+s4+'</svg>',regs:regs4};
+}
+
+/* ---------- quiz engine ---------- */
+var Q=null;
+function pickQuiz(){
+  var mc=shuffle(MC).slice(0,5).map(function(x){return Object.assign({type:'mc'},x);}),
+      rk=shuffle(RANK).slice(0,2).map(function(x){return Object.assign({type:'rank'},x);}),
+      so=shuffle(SORT).slice(0,1).map(function(x){return Object.assign({type:'sort'},x);}),
+      dg=[],kinds={};shuffle(DIAG).forEach(function(x){if(dg.length<2&&!kinds[x.d]){kinds[x.d]=1;dg.push(Object.assign({type:'diag'},x));}});
+  return shuffle(mc.concat(rk,so,dg));
+}
+function renderQuizHome(){
+  var root=$('#quizRoot');
+  if(!quizUnlocked()){var cs=checklistStatus(),miss=STOPS.map(function(s,i){return state.viewed.indexOf(i)<0?'Stop '+(i+1)+': '+s.t:null;}).filter(Boolean);
+    var labs=['Test all 3 sources with every shield','Get readings at 3 distances','Identify 2 mystery sources'].filter(function(_,i){return !cs.items[i].done;});
+    root.innerHTML='<div class="card lockpanel"><h2>'+LOCK+' The Quiz is locked</h2><p>Finish these first:</p>'+
+      (miss.length?'<p><b>Learn stops not viewed yet ('+miss.length+'):</b></p><ul>'+miss.map(function(m){return '<li>'+m+'</li>';}).join('')+'</ul>':'<p>✓ All Learn stops viewed.</p>')+
+      (labs.length?'<p><b>Lab Checklist tasks left ('+labs.length+'):</b></p><ul>'+labs.map(function(m){return '<li>'+m+'</li>';}).join('')+'</ul>':'<p>✓ Lab Checklist complete.</p>')+
+      '<div class="row">'+(miss.length?'<button class="btn primary" id="goLearn">Go to Learn</button>':'')+(labs.length?'<button class="btn primary" id="goLab">Go to the Lab</button>':'')+'</div></div>';
+    var gl=$('#goLearn');if(gl)gl.addEventListener('click',function(){state.stop=state.viewed.length<STOPS.length?STOPS.findIndex(function(_,i){return state.viewed.indexOf(i)<0;}):0;showView('learn');});
+    var gb=$('#goLab');if(gb)gb.addEventListener('click',function(){showView('lab');});return;}
+  if(Q&&Q.active){renderQ();return;}
+  root.innerHTML='<div class="card" style="text-align:center"><h2 style="color:var(--accent);margin-top:0">Types of Radiation Quiz</h2>'+
+    '<p>10 questions drawn at random from a bank of '+(MC.length+RANK.length+SORT.length+DIAG.length)+'. Question types: multiple choice, drag-to-rank, drag-to-sort and click-on-diagram.</p>'+
+    '<p>You get feedback after each answer. Retake as many times as you like.</p><p><b>Attempts so far: '+state.attempts+'</b></p>'+
+    '<button class="btn primary" id="startQuiz">'+(state.attempts?'Start a new attempt ▶':'Start the quiz ▶')+'</button></div>';
+  $('#startQuiz').addEventListener('click',startQuiz);
+}
+function startQuiz(){state.attempts++;save();Q={active:true,qs:pickQuiz(),i:0,res:[],attempt:state.attempts};updateTabs();renderQ();}
+function renderQ(){
+  var q=Q.qs[Q.i],root=$('#quizRoot'),tn={mc:'Multiple choice',rank:'Drag to rank',sort:'Drag to sort',diag:'Click on the diagram'}[q.type];
+  root.innerHTML='<div class="card"><div class="qhead"><span>Question '+(Q.i+1)+' of 10 · Attempt #'+Q.attempt+'</span><span class="qtype">'+tn+'</span></div>'+
+    '<div class="progress" style="margin:.4rem 0" aria-hidden="true"><div style="width:'+(Q.i/10*100)+'%"></div></div>'+
+    '<div class="qprompt" id="qp">'+q.q+'</div><div id="qbody"></div>'+
+    '<div class="qactions"><button class="btn primary" id="qCheck" disabled>Check answer</button><button class="btn primary" id="qNext" hidden>'+(Q.i===9?'See my score card ▶':'Next question ▶')+'</button></div><div id="qfb" role="status"></div></div>';
+  var body=$('#qbody'),ans={};Q.cur=ans;
+  if(q.type==='mc'){
+    var opts=shuffle(q.c.map(function(t,i){return {t:t,ok:i===0};}));ans.opts=opts;
+    body.innerHTML='<div class="opts">'+opts.map(function(o,i){return '<button class="opt" data-i="'+i+'" aria-pressed="false"><span class="let">'+'ABCD'[i]+'</span><span>'+o.t+'</span></button>';}).join('')+'</div>';
+    $$('.opt',body).forEach(function(b){b.addEventListener('click',function(){if(Q.answered)return;$$('.opt',body).forEach(function(x){x.setAttribute('aria-pressed','false');});b.setAttribute('aria-pressed','true');ans.sel=+b.dataset.i;$('#qCheck').disabled=false;});});
+  }else if(q.type==='rank'){
+    var order;do{order=shuffle(q.items);}while(order.join()===q.items.join());
+    body.innerHTML='<div class="rankend">▲ '+q.top+'</div><ol class="ranklist" id="rl">'+order.map(function(t){return '<li class="rankitem" data-t="'+t.replace(/"/g,'&quot;')+'"><span class="grip" aria-hidden="true">⠿</span><span class="txt">'+t+'</span><button class="btn small mv" data-m="-1" aria-label="Move up">▲</button><button class="btn small mv" data-m="1" aria-label="Move down">▼</button></li>';}).join('')+'</ol><div class="rankend">▼ '+q.bot+'</div><p class="note">Drag the items, or use the ▲ ▼ buttons.</p>';
+    $('#qCheck').disabled=false;var ol=$('#rl');
+    $$('.rankitem',ol).forEach(function(li){
+      li.addEventListener('pointerdown',function(e){if(Q.answered||e.target.closest('button'))return;e.preventDefault();li.classList.add('dragging');
+        function mv(ev){var items=$$('.rankitem',ol).filter(function(x){return x!==li;}),placed=false;for(var k=0;k<items.length;k++){var r=items[k].getBoundingClientRect();if(ev.clientY<r.top+r.height/2){if(li.nextSibling!==items[k])ol.insertBefore(li,items[k]);placed=true;break;}}if(!placed&&ol.lastElementChild!==li)ol.appendChild(li);}
+        function up(){li.classList.remove('dragging');window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);}
+        window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);});
+      $$('.mv',li).forEach(function(b){b.addEventListener('click',function(){if(Q.answered)return;var m=+b.dataset.m;if(m<0&&li.previousElementSibling)ol.insertBefore(li,li.previousElementSibling);else if(m>0&&li.nextElementSibling)ol.insertBefore(li.nextElementSibling,li);b.focus();});});
+    });
+  }else if(q.type==='sort'){
+    var items=shuffle(q.items);ans.place={};
+    body.innerHTML='<p class="note" style="margin-top:0">Drag each card into a box, or tap a card and then tap a box.</p><div class="pool" id="pool" aria-label="Cards to sort">'+items.map(function(it,i){return '<button class="chip" data-k="'+i+'" aria-pressed="false">'+it[0]+'</button>';}).join('')+'</div>'+
+      '<div class="bins">'+[['a','α Alpha'],['b','β Beta'],['g','γ Gamma']].map(function(b){return '<div class="bin" data-b="'+b[0]+'" role="button" tabindex="0" aria-label="'+b[1]+' box"><h4>'+b[1]+'</h4></div>';}).join('')+'</div>';
+    var selChip=null;
+    function place(chip,target){chip.setAttribute('aria-pressed','false');selChip=null;
+      if(target==='pool'){$('#pool').appendChild(chip);delete ans.place[chip.dataset.k];}else{$('.bin[data-b="'+target+'"]',body).appendChild(chip);ans.place[chip.dataset.k]=target;}
+      $('#qCheck').disabled=Object.keys(ans.place).length<items.length;}
+    $$('.chip',body).forEach(function(ch){
+      makeDraggable(ch,{label:function(){return ch.textContent;},ignore:function(){return Q.answered;},
+        onMove:function(x,y){$$('.bin',body).forEach(function(b){b.classList.toggle('hot',x>=0&&inRect(x,y,b));});},
+        onDrop:function(x,y){$$('.bin',body).forEach(function(b){b.classList.remove('hot');});if(Q.answered)return;var bin=$$('.bin',body).filter(function(b){return inRect(x,y,b);})[0];if(bin)place(ch,bin.dataset.b);else if(inRect(x,y,$('#pool')))place(ch,'pool');},
+        onClick:function(e){if(Q.answered)return;e.stopPropagation();var inBin=ch.parentNode.classList.contains('bin');if(selChip&&selChip!==ch&&inBin){place(selChip,ch.parentNode.dataset.b);return;}if(selChip===ch){ch.setAttribute('aria-pressed','false');selChip=null;return;}$$('.chip',body).forEach(function(c){c.setAttribute('aria-pressed','false');});ch.setAttribute('aria-pressed','true');selChip=ch;}});});
+    $$('.bin',body).forEach(function(b){function go(){if(selChip&&!Q.answered)place(selChip,b.dataset.b);}b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
+    $('#pool').addEventListener('click',function(e){if(e.target===$('#pool')&&selChip&&!Q.answered)place(selChip,'pool');});
+    ans.items=items;
+  }else{
+    var D=diagram(q.d);ans.regs=D.regs;body.innerHTML=D.svg+'<p class="note" id="dsel">Nothing selected yet.</p>';
+    $$('.hit',body).forEach(function(h){function pick(){if(Q.answered)return;$$('.hit',body).forEach(function(x){x.classList.remove('sel');setHl(x,null);});h.classList.add('sel');setHl(h,'#f59e0b');ans.sel=h.dataset.r;$('#dsel').textContent='Selected: '+h.getAttribute('aria-label');$('#qCheck').disabled=false;}
+      h.addEventListener('click',pick);h.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});});
+  }
+  $('#qCheck').addEventListener('click',checkQ);
+  $('#qNext').addEventListener('click',function(){Q.i++;Q.answered=false;if(Q.i>=10){Q.active=false;showScore();}else{renderQ();window.scrollTo(0,0);}});
+}
+function setHl(g,col){var h=$('.hl',g);if(!h)return;if(col){h.setAttribute('stroke',col);h.setAttribute('stroke-opacity','.55');if(h.getAttribute('fill')!=='none'){h.setAttribute('fill',col);h.setAttribute('fill-opacity','.18');}}else{h.setAttribute('stroke-opacity','0');if(h.getAttribute('fill')!=='none')h.setAttribute('fill-opacity','0');}}
+function checkQ(){
+  if(Q.answered)return;Q.answered=true;var q=Q.qs[Q.i],a=Q.cur,body=$('#qbody'),ok=false,extra='';
+  if(q.type==='mc'){ok=a.opts[a.sel].ok;$$('.opt',body).forEach(function(b,i){b.disabled=true;if(a.opts[i].ok){b.classList.add('right');b.insertAdjacentHTML('beforeend','<span class="tag">✓ Correct answer</span>');}else if(i===a.sel){b.classList.add('wrong');b.insertAdjacentHTML('beforeend','<span class="tag">✗ Your answer</span>');}});}
+  else if(q.type==='rank'){var cur=$$('.rankitem',body).map(function(li){return li.dataset.t;});ok=cur.join('|')===q.items.join('|');$$('.rankitem .mv',body).forEach(function(b){b.disabled=true;});
+    $$('.rankitem',body).forEach(function(li,i){li.style.cursor='default';li.style.borderColor=li.dataset.t===q.items[i]?'var(--ok)':'var(--bad)';li.insertAdjacentHTML('beforeend','<span class="tag" style="color:'+(li.dataset.t===q.items[i]?'var(--ok)':'var(--bad)')+'">'+(li.dataset.t===q.items[i]?'✓':'✗')+'</span>');});
+    if(!ok)extra=' Correct order: '+q.items.join(' → ')+'.';}
+  else if(q.type==='sort'){ok=true;$$('.chip',body).forEach(function(ch){var it=a.items[+ch.dataset.k],good=a.place[ch.dataset.k]===it[1];if(!good)ok=false;ch.classList.add(good?'right':'wrong');ch.insertAdjacentHTML('beforeend',good?' ✓':' ✗ ('+{a:'α',b:'β',g:'γ'}[it[1]]+')');ch.style.cursor='default';});}
+  else{ok=a.sel===q.ans;$$('.hit',body).forEach(function(h){if(h.dataset.r===q.ans){setHl(h,'#16a34a');}else if(h.dataset.r===a.sel){setHl(h,'#dc2626');}else setHl(h,null);});
+    var right=a.regs.filter(function(r){return r.id===q.ans;})[0];$('#dsel').innerHTML='Correct answer (green): <b>'+(q.d==='plates'?$('.hit[data-r="'+q.ans+'"]',body).getAttribute('aria-label'):right.lab)+'</b>'+(ok?'':' · your answer is outlined in red');}
+  Q.res.push({s:q.s,ok:ok});
+  $('#qfb').className='fbk '+(ok?'ok':'bad');$('#qfb').innerHTML='<b>'+(ok?'✓ Correct!':'✗ Not quite.')+'</b> '+q.e+extra;
+  $('#qCheck').hidden=true;$('#qNext').hidden=false;$('#qNext').focus();
+}
+
+/* ---------- score card ---------- */
+function showScore(){
+  var score=Q.res.filter(function(r){return r.ok;}).length,when=new Date(),ds;
+  try{ds=when.toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});}catch(e){ds=when.toLocaleString();}
+  Q.final={score:score,date:ds,attempt:Q.attempt,res:Q.res};
+  $('#quizRoot').innerHTML='<div class="card scorebox"><h2 style="color:var(--accent);margin-top:0">Your score card</h2><canvas id="card"></canvas>'+
+    '<div class="row" style="justify-content:center;margin-top:.7rem"><button class="btn primary" id="dlPng">⬇ Download PNG</button><button class="btn" id="cpPng">Copy image to clipboard</button><button class="btn" id="gmail">Email via Gmail</button></div>'+
+    '<p class="scoremsg" id="smsg" role="status"></p><p class="note">To turn it in: <b>Download PNG</b>, then <b>Email via Gmail</b> and attach the PNG (or paste the copied image).</p>'+
+    '<button class="btn" id="retake">↻ Retake the quiz (new questions)</button></div>';
+  drawCard($('#card'),Q.final);
+  $('#dlPng').addEventListener('click',function(){var c=$('#card');var name='types-of-radiation-score-attempt'+Q.final.attempt+'.png';
+    try{c.toBlob(function(b){var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},4000);$('#smsg').textContent='Downloaded '+name;},'image/png');}
+    catch(e){var a2=document.createElement('a');a2.href=c.toDataURL('image/png');a2.download=name;a2.click();}});
+  $('#cpPng').addEventListener('click',function(){var c=$('#card'),m=$('#smsg');
+    if(!navigator.clipboard||!window.ClipboardItem){m.textContent='This browser can\'t copy images. Use Download PNG instead.';return;}
+    var p=new Promise(function(res){c.toBlob(res,'image/png');});
+    navigator.clipboard.write([new ClipboardItem({'image/png':p})]).then(function(){m.textContent='✓ Score card copied. Paste it into your email or assignment.';})
+      .catch(function(){p.then(function(b){return navigator.clipboard.write([new ClipboardItem({'image/png':b})]);}).then(function(){m.textContent='✓ Score card copied.';}).catch(function(){m.textContent='Copying was blocked by this browser. Use Download PNG instead.';});});});
+  $('#gmail').addEventListener('click',function(){var f=Q.final;
+    var body='Types of Radiation: Alpha, Beta & Gamma — Score Card\nchemistryteacher.net/types-of-radiation\n\nDate: '+f.date+'\nAttempt #: '+f.attempt+'\nScore: '+f.score+'/10\n\n'+
+      f.res.map(function(r,i){return (i+1)+'. '+(r.ok?'✓ Correct':'✗ Incorrect')+' — '+r.s;}).join('\n')+'\n\n(My score card PNG is attached.)';
+    var url='https://mail.google.com/mail/?view=cm&fs=1&to=&su='+encodeURIComponent('Types of Radiation – Score Card')+'&body='+encodeURIComponent(body);
+    window.open(url,'_blank','noopener');$('#smsg').textContent='Gmail opened in a new tab. Remember to attach your downloaded PNG.';});
+  $('#retake').addEventListener('click',function(){startQuiz();window.scrollTo(0,0);});
+  updateTabs();window.scrollTo(0,0);
+}
+function cTrefoil(ctx,x,y,r){ctx.save();ctx.translate(x,y);ctx.scale(r/50,r/50);ctx.beginPath();ctx.arc(0,0,47,0,7);ctx.fillStyle='#facc15';ctx.fill();ctx.lineWidth=4;ctx.strokeStyle='#111827';ctx.stroke();ctx.fillStyle='#111827';ctx.beginPath();ctx.arc(0,0,7,0,7);ctx.fill();try{ctx.fill(new Path2D(trefoilBlades(12,40)));}catch(e){}ctx.restore();}
+function drawCard(cv,f){
+  var W=1000,rowH=42,H=300+f.res.length*rowH+60,ctx=cv.getContext('2d'),FONT='"Atkinson Hyperlegible", system-ui, sans-serif';
+  cv.width=W;cv.height=H;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#1e3a8a';ctx.lineWidth=8;ctx.strokeRect(4,4,W-8,H-8);
+  var hg=ctx.createLinearGradient(0,0,W,0);hg.addColorStop(0,'#1e3a8a');hg.addColorStop(1,'#2563eb');ctx.fillStyle=hg;ctx.fillRect(8,8,W-16,112);cTrefoil(ctx,W-74,64,40);
+  ctx.fillStyle='#fff';ctx.font='bold 38px '+FONT;ctx.textBaseline='alphabetic';ctx.fillText('Types of Radiation: Alpha, Beta & Gamma',36,64);
+  ctx.font='22px '+FONT;ctx.fillText('Score Card  ·  chemistryteacher.net/types-of-radiation',36,100);
+  ctx.fillStyle='#0b1324';ctx.font='24px '+FONT;ctx.fillText('Date & time: '+f.date,36,165);ctx.fillText('Attempt #'+f.attempt,36,201);
+  ctx.textAlign='right';ctx.font='bold 72px '+FONT;ctx.fillStyle='#1e3a8a';ctx.fillText(f.score+' / 10',W-40,200);ctx.font='20px '+FONT;ctx.fillStyle='#3b4658';ctx.fillText('score',W-40,228);ctx.textAlign='left';
+  ctx.strokeStyle='#b9c4d3';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(36,246);ctx.lineTo(W-36,246);ctx.stroke();
+  f.res.forEach(function(r,i){var y=280+i*rowH,cx=58;
+    ctx.beginPath();ctx.arc(cx,y-8,15,0,7);ctx.fillStyle=r.ok?'#166534':'#991b1b';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.lineCap='round';ctx.beginPath();
+    if(r.ok){ctx.moveTo(cx-7,y-8);ctx.lineTo(cx-2,y-2);ctx.lineTo(cx+8,y-15);}else{ctx.moveTo(cx-6,y-14);ctx.lineTo(cx+6,y-2);ctx.moveTo(cx+6,y-14);ctx.lineTo(cx-6,y-2);}ctx.stroke();
+    ctx.fillStyle='#0b1324';ctx.font='24px '+FONT;var t=(i+1)+'. '+r.s;while(ctx.measureText(t).width>W-300&&t.length>4)t=t.slice(0,-2);ctx.fillText(t,90,y);
+    ctx.textAlign='right';ctx.font='bold 22px '+FONT;ctx.fillStyle=r.ok?'#166534':'#991b1b';ctx.fillText(r.ok?'Correct':'Incorrect',W-40,y);ctx.textAlign='left';});
+  ctx.fillStyle='#3b4658';ctx.font='18px '+FONT;ctx.fillText('chemistryteacher.net/types-of-radiation',36,H-26);
+}
+
+/* ---------- reset & init ---------- */
+var resetArmed=false;
+$('#resetBtn').addEventListener('click',function(){var b=this;if(!resetArmed){resetArmed=true;b.textContent='Click again to erase all progress';setTimeout(function(){resetArmed=false;b.textContent='Reset my progress';},4000);return;}
+  try{localStorage.removeItem(KEY);}catch(e){}location.reload();});
+function setTopH(){var t=$('.topbar'),h=getComputedStyle(t).position==='sticky'?t.offsetHeight:0;document.documentElement.style.setProperty('--topH',h+'px');}
+setTopH();window.addEventListener('resize',setTopH);window.addEventListener('load',setTopH);if(window.ResizeObserver){try{new ResizeObserver(setTopH).observe($('.topbar'));}catch(e){}}
+renderMute();gaugeInit();buildPalette();benchStatic();renderTrials();
+if(state.stop>=STOPS.length)state.stop=0;
+showLab('A');showView('learn');setTopH();
+})();
+</script>
+</body>
+</html>
