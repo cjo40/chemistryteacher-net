@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compounds vs Molecules: Classifying Matter</title>
+<meta name="description" content="Interactive high school chemistry activity: atoms, elements, molecules, compounds, ionic formula units, and mixtures. Learn, Lab and Quiz.">
+<style>
+:root{--ink:#0f172a;--muted:#475569;--bg:#eef2f7;--card:#fff;--line:#c5cedb;--line2:#8794a8;--blue:#0b57d0;--blue-d:#0842a0;--blue-l:#e6eefc;--good:#0a7a33;--good-l:#e3f5e9;--bad:#b42318;--bad-l:#fdecea;--warn-l:#fff4d6;--mol:#1d4ed8;--cmp:#c2410c}
+*{box-sizing:border-box}
+html{font-size:18px;-webkit-text-size-adjust:100%}
+@media (min-width:1400px){html{font-size:19px}}
+@media (max-width:640px){html{font-size:16px}.topbar{position:static}}
+body{margin:0;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.45}
+h1,h2,h3,h4{line-height:1.2}
+h3{margin:.2rem 0 .5rem;font-size:1.15rem}
+p{margin:.4rem 0}
+button{font:inherit;color:inherit;cursor:pointer;border:2px solid var(--line2);background:#fff;border-radius:10px;padding:.4em .9em;min-height:44px;touch-action:manipulation}
+button:hover:not(:disabled){border-color:var(--blue)}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){background:var(--blue-d);border-color:var(--blue-d)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.linkbtn{border:none;background:none;text-decoration:underline;min-height:0;padding:0 .2em;color:var(--blue-d)}
+sub{font-size:.68em;line-height:0}
+/* header */
+.topbar{position:sticky;top:0;z-index:50;background:#0f2a4a;color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;padding:.45rem 1rem}
+.topbar h1{font-size:1.2rem;margin:0}
+.topbar h1 span{font-weight:400;color:#cfe0ff}
+@media (max-width:1180px){.topbar h1{font-size:1.02rem}.tab{font-size:.95rem;padding:.25em .6em}.tstat{font-size:.72rem}}
+.tabs{display:flex;gap:.4rem;margin-left:auto;flex-wrap:wrap}
+.tab{background:#1b3c66;border-color:#4a6ea0;color:#fff;display:flex;align-items:center;gap:.4rem;font-weight:700;padding:.3em .8em}
+.tab:hover:not(:disabled){border-color:#fff}
+.tab[aria-selected=true]{background:#fff;color:#0f2a4a;border-color:#fff}
+.tnum{display:inline-grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;background:rgba(255,255,255,.18);font-size:.85em}
+.tab[aria-selected=true] .tnum{background:#0f2a4a;color:#fff}
+.tstat{font-weight:400;font-size:.78rem;display:flex;align-items:center;gap:.25rem}
+.tab.locked{background:#2c3e57;border-style:dashed}
+.tab.locked[aria-selected=true]{background:#fff}
+.lockico{width:1em;height:1em;flex:none}
+main{max-width:1400px;margin:0 auto;padding:.7rem 1rem 1.5rem}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.9rem 1.1rem;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:0 1rem 1.2rem}
+/* learn */
+.learn-top{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;margin-bottom:.6rem}
+.dots{display:flex;gap:.35rem;flex-wrap:wrap}
+.dot{width:42px;height:42px;min-height:42px;padding:0;border-radius:50%;font-weight:700;display:grid;place-items:center;position:relative}
+.dot.viewed{background:var(--good-l);border-color:var(--good)}
+.dot.viewed::after{content:"✓";position:absolute;right:-5px;top:-6px;font-size:.65rem;background:var(--good);color:#fff;border-radius:50%;width:17px;height:17px;display:grid;place-items:center}
+.dot.cur{background:var(--blue);border-color:var(--blue);color:#fff}
+.pwrap{flex:1;min-width:200px;display:flex;align-items:center;gap:.6rem;font-size:.9rem}
+.pbar{flex:1;height:14px;background:#d7deea;border-radius:8px;overflow:hidden;border:1px solid var(--line2)}
+.pfill{height:100%;background:linear-gradient(90deg,#0b57d0,#3b82f6);width:0;transition:width .3s}
+.stop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:1rem;align-items:start}
+.stop-text h2{margin:.1rem 0 .5rem;font-size:1.45rem}
+.stopnum{display:inline-block;background:var(--blue-l);color:var(--blue-d);border-radius:8px;padding:.05em .45em;margin-right:.35em;font-size:.85em}
+.stop-text ul{margin:0;padding-left:1.15rem}
+.stop-text li{margin:.42rem 0}
+.stop-text b{color:#0b3d91}
+.tryit{margin-top:.7rem;background:var(--warn-l);border-left:5px solid #d97706;padding:.45rem .7rem;border-radius:8px;font-size:.95rem}
+.vsvg{width:100%;height:auto;max-height:min(54vh,430px);display:block;background:#f8fafc;border:1px solid var(--line);border-radius:12px}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.1rem 0 .5rem}
+.chip{min-height:38px;padding:.2em .7em;border-radius:999px;font-weight:700}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chipgroup{font-size:.8rem;color:var(--muted);font-weight:700;align-self:center;margin-right:.2rem}
+.cap{margin:.5rem 0 0;font-size:1rem;min-height:2.9em}
+.btnrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.stopnav{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:.7rem}
+.mini-table{border-collapse:collapse;width:100%;margin-top:.5rem;font-size:.92rem}
+.mini-table th,.mini-table td{border:1px solid var(--line);padding:.3rem .45rem;text-align:left;vertical-align:top}
+.mini-table th{background:#f1f5f9}
+.props{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.4rem;align-items:center;margin-top:.5rem;font-size:.88rem}
+.prop{border:2px solid var(--line);border-radius:10px;padding:.35rem .5rem;background:#fff;min-height:100%}
+.prop b{display:block}
+.op{font-weight:700;font-size:1.3rem}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.twocol .lbl{font-weight:700;font-size:.85rem;color:var(--muted);margin-bottom:.2rem}
+.steps{margin:.5rem 0 0;padding-left:1.2rem;min-height:4.5em}
+.steps li{margin:.25rem 0}
+@media (max-width:880px){.stop{grid-template-columns:1fr}}
+@media (max-width:520px){.props{grid-template-columns:1fr}.op{text-align:center}.twocol{grid-template-columns:1fr}}
+/* lab */
+.lab-wrap{display:grid;grid-template-columns:minmax(0,1fr) 275px;gap:1rem;align-items:start}
+.checklist{position:sticky;top:70px}
+.checklist h3{margin-top:0}
+.ck{list-style:none;padding:0;margin:0}
+.ck li{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.ck li:last-child{border-bottom:none}
+.ckbox{width:30px;height:30px;border:2px solid var(--line2);border-radius:7px;display:grid;place-items:center;flex:none;font-weight:700}
+.ck li.done .ckbox{background:var(--good);border-color:var(--good);color:#fff}
+.ck small{display:block;color:var(--muted)}
+.ckdone{margin-top:.6rem;padding:.5rem .6rem;border-radius:10px;background:var(--good-l);border:2px solid var(--good);font-weight:700}
+@media (max-width:920px){.lab-wrap{grid-template-columns:1fr}.checklist{position:static;order:-1}}
+.subtabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem}
+.subtab{font-weight:700}
+.subtab[aria-selected=true]{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
+.subtab .sdone{color:var(--good)}
+.intro{margin:0 0 .6rem}
+/* sorter */
+.trayhead{font-size:.92rem;color:var(--muted);margin-bottom:.3rem}
+.tray{display:flex;flex-wrap:wrap;gap:.5rem;min-height:84px;padding:.5rem;border:2px dashed var(--line2);border-radius:12px;background:#fff;margin-bottom:.7rem}
+.tray.empty::before{content:"All items sorted. Press Check (or move items to change answers).";color:var(--muted);font-size:.9rem;align-self:center}
+.tray.over,.bin.over{border-color:var(--blue);background:var(--blue-l)}
+.bins{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:.6rem}
+.bin{border:2px solid var(--line2);border-radius:12px;background:#fff;min-height:130px;padding:.4rem;cursor:pointer}
+.binhead{display:flex;align-items:center;gap:.4rem;font-weight:700;font-size:.95rem;margin-bottom:.35rem}
+.bincount{margin-left:auto;font-weight:400;color:var(--muted);font-size:.85rem}
+.binitems{display:flex;flex-wrap:wrap;gap:.4rem}
+.item{touch-action:none;user-select:none;-webkit-user-select:none;background:#fff;border:2px solid #7c8aa0;border-radius:10px;padding:.25rem .45rem;cursor:grab;text-align:center;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.item.sel{outline:4px solid var(--blue);outline-offset:1px}
+.item.ok{border-color:var(--good);background:var(--good-l)}
+.item.no{border-color:var(--bad);background:var(--bad-l)}
+.item.ok::after,.item.no::after{position:absolute;top:-9px;right:-9px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.8rem}
+.item.ok::after{content:"✓";background:var(--good)}
+.item.no::after{content:"✗";background:var(--bad)}
+.sorter.locked .item{cursor:default}
+.ghost{position:fixed;left:0;top:0;transform:translate(-50%,-50%) scale(1.05);pointer-events:none;z-index:999;box-shadow:0 10px 24px rgba(0,0,0,.28);opacity:.95;margin:0}
+.dragsrc{opacity:.3}
+.card{min-width:98px;min-height:64px}
+.card .fml{font-size:1.4rem;font-weight:700;line-height:1.1}
+.card .nm{font-size:.72rem;color:var(--muted)}
+.card svg{width:112px;height:auto;display:block}
+.tile svg{width:150px;height:auto;display:block}
+.tile .tl{font-size:.72rem;color:var(--muted);font-weight:700}
+.vi{width:44px;height:28px;flex:none}
+.fb{margin-top:.6rem;padding:.55rem .8rem;border-radius:10px;border:2px solid var(--line);background:#fff}
+.fb:empty{display:none}
+.fb.good{border-color:var(--good);background:var(--good-l)}
+.fb.bad{border-color:var(--bad);background:var(--bad-l)}
+.fb.info{border-color:var(--blue);background:var(--blue-l)}
+.fblist{list-style:none;padding:0;margin:.4rem 0 0;font-size:.92rem;max-height:320px;overflow:auto}
+.fblist li{padding:.3rem 0;border-bottom:1px solid var(--line)}
+.mk{display:inline-grid;place-items:center;width:1.4em;height:1.4em;border-radius:50%;color:#fff;font-weight:700;font-size:.8em;margin-right:.35em}
+.mk.y{background:var(--good)}.mk.n{background:var(--bad)}
+.zoomwrap{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:.6rem;flex-wrap:wrap}
+.zoom{width:300px;max-width:100%;border:2px solid var(--line2);border-radius:12px;background:#fff;padding:.3rem}
+.zoom svg{width:100%;height:auto;display:block}
+.zoomhint{flex:1;min-width:200px;font-size:.92rem;color:var(--muted)}
+/* build */
+.lc-grid{display:grid;grid-template-columns:168px minmax(0,1fr);gap:.8rem;align-items:start}
+.palette{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.patom{touch-action:none;user-select:none;-webkit-user-select:none;padding:.2rem;display:flex;flex-direction:column;align-items:center;min-height:68px;font-size:.72rem;line-height:1.1}
+.patom svg{width:38px;height:38px}
+.ws{width:100%;height:auto;display:block;background:#f8fafc;border:2px solid var(--line2);border-radius:12px;touch-action:none;max-height:56vh}
+.ws .wsatom{cursor:grab}
+.ws-tools{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.zones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem;margin:.4rem 0}
+.zonebox{border:2px solid var(--line2);border-radius:10px;padding:.35rem;font-size:.85rem;display:flex;gap:.35rem;align-items:center}
+.zonebox.done{border-color:var(--good);background:var(--good-l)}
+.builtlist{display:flex;flex-wrap:wrap;gap:.4rem}
+.bchip{border:2px solid var(--line);border-radius:10px;padding:.2rem .5rem;font-size:.88rem;background:#fff}
+.result{display:flex;gap:.8rem;align-items:flex-start}
+.result .big{font-size:1.5rem;font-weight:700}
+details.ideas{margin-top:.5rem;font-size:.92rem}
+details.ideas summary{cursor:pointer;font-weight:700;color:var(--blue-d)}
+@media (max-width:720px){.lc-grid{grid-template-columns:1fr}.palette{grid-template-columns:repeat(5,minmax(0,1fr))}.zones{grid-template-columns:1fr 1fr}}
+/* quiz */
+.qwrap{max-width:960px;margin:0 auto}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:.4rem;color:var(--muted);font-weight:700}
+.qtype{display:inline-block;background:var(--blue-l);color:var(--blue-d);border-radius:8px;padding:.05em .5em;font-size:.8rem}
+.qtext{font-size:1.25rem;font-weight:700;margin:.3rem 0 .7rem}
+.choices{display:grid;gap:.5rem}
+.choice{text-align:left;padding:.65rem 1rem;font-size:1.05rem}
+.choice.right{border-color:var(--good);background:var(--good-l);font-weight:700}
+.choice.right::before{content:"✓ ";color:var(--good)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-l)}
+.choice.wrong::before{content:"✗ ";color:var(--bad)}
+.choice:disabled{opacity:1;cursor:default}
+.panels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem}
+.pbtn{padding:.3rem;display:flex;flex-direction:column;align-items:center;gap:.2rem;font-weight:700}
+.pbtn svg{width:100%;height:auto;display:block}
+.pbtn.right{border-color:var(--good);background:var(--good-l)}
+.pbtn.wrong{border-color:var(--bad);background:var(--bad-l)}
+.pbtn:disabled{opacity:1;cursor:default}
+@media (max-width:760px){.panels{grid-template-columns:1fr 1fr}}
+.diag{max-width:640px}
+.diag svg{width:100%;height:auto;max-height:58vh;display:block;background:#f8fafc;border:1px solid var(--line);border-radius:12px;touch-action:manipulation}
+.qnav{display:flex;justify-content:flex-end;gap:.5rem;margin-top:.7rem}
+.startbox{text-align:center;max-width:680px;margin:1rem auto}
+.startbox .big{font-size:1.1rem}
+.lockbox{max-width:680px;margin:1rem auto}
+.lockbox ul{padding-left:.2rem;list-style:none}
+.lockbox li{margin:.35rem 0}
+.cardimg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;display:block;margin:.6rem auto}
+.scorebtns{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.status{text-align:center;min-height:1.5em;font-weight:700;margin-top:.4rem}
+.fadein{animation:fi .35s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.cutting .gone{opacity:.12;transition:opacity .4s}
+.vhl{opacity:0;transition:opacity .2s;pointer-events:none}
+.vhl.on{opacity:1}
+.fnode rect{fill:#fff;stroke:#334155;stroke-width:2}
+.fnode.on rect{fill:#dbeafe;stroke:#0b57d0;stroke-width:4}
+.fnode.leaf rect{fill:#f8fafc}
+.fnode.leaf.on rect{fill:#dbeafe}
+.fnode text{font-weight:700;font-size:17px;fill:#0f172a;pointer-events:none}
+.fedge{stroke:#64748b;stroke-width:2.5;fill:none}
+.fedge.on{stroke:#0b57d0;stroke-width:6}
+.felbl{font-size:13px;fill:#334155;pointer-events:none}
+.clickable{cursor:pointer}
+.srt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){.fadein{animation:none}.pfill{transition:none}}
+</style>
+</head>
+<body>
+<svg id="gdefs" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs></defs></svg>
+<header class="topbar">
+  <h1>Compounds vs Molecules: <span>Classifying Matter</span></h1>
+  <nav class="tabs" role="tablist" aria-label="Activity sections">
+    <button class="tab" role="tab" id="tab-learn" data-pane="learn" aria-selected="true" aria-controls="pane-learn"><span class="tnum">1</span>Learn<span class="tstat" id="tstat-learn"></span></button>
+    <button class="tab" role="tab" id="tab-lab" data-pane="lab" aria-selected="false" aria-controls="pane-lab"><span class="tnum">2</span>Lab<span class="tstat" id="tstat-lab"></span></button>
+    <button class="tab" role="tab" id="tab-quiz" data-pane="quiz" aria-selected="false" aria-controls="pane-quiz"><span class="tnum">3</span>Quiz<span class="tstat" id="tstat-quiz"></span></button>
+  </nav>
+</header>
+<main>
+  <section id="pane-learn" class="pane" role="tabpanel" aria-labelledby="tab-learn">
+    <div class="learn-top">
+      <div class="dots" id="dots" aria-label="Learn stops"></div>
+      <div class="pwrap"><div class="pbar" role="progressbar" aria-label="Learn stops viewed" aria-valuemin="0" aria-valuemax="9" id="pbar"><div class="pfill" id="pfill"></div></div><span id="plabel"></span></div>
+    </div>
+    <article class="stop" id="stop">
+      <div class="stop-text panel" id="stopText"></div>
+      <div class="stop-vis panel" id="stopVis"></div>
+    </article>
+    <div class="stopnav"><button id="backBtn">◀ Back</button><span id="stopCount" aria-live="polite"></span><button id="nextBtn" class="primary">Next ▶</button></div>
+  </section>
+  <section id="pane-lab" class="pane" role="tabpanel" aria-labelledby="tab-lab" hidden>
+    <div class="lab-wrap">
+      <div class="lab-main">
+        <div class="subtabs" role="tablist" aria-label="Lab parts">
+          <button class="subtab" role="tab" data-lab="A" aria-selected="true">A · Venn Sorter <span class="sdone" id="sdA"></span></button>
+          <button class="subtab" role="tab" data-lab="B" aria-selected="false">B · Matter Sorter <span class="sdone" id="sdB"></span></button>
+          <button class="subtab" role="tab" data-lab="C" aria-selected="false">C · Build-a-Particle <span class="sdone" id="sdC"></span></button>
+        </div>
+        <div id="labA" class="labsec panel"></div>
+        <div id="labB" class="labsec panel" hidden></div>
+        <div id="labC" class="labsec panel" hidden></div>
+      </div>
+      <aside class="checklist panel" id="checklist" aria-live="polite"></aside>
+    </div>
+  </section>
+  <section id="pane-quiz" class="pane" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div id="quizRoot" class="qwrap"></div>
+  </section>
+</main>
+<footer>chemistryteacher.net/compounds-vs-molecules · Progress is saved in this browser only. <button class="linkbtn" id="resetBtn">Reset progress</button></footer>
+<script>
+'use strict';
+/* ============ helpers ============ */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+function h(tag,attrs,html){const e=document.createElement(tag);if(attrs)for(const k in attrs){if(k==='class')e.className=attrs[k];else e.setAttribute(k,attrs[k]);}if(html!=null)e.innerHTML=html;return e;}
+const SUBS='₀₁₂₃₄₅₆₇₈₉';
+const uni=s=>s.replace(/\d/g,d=>SUBS[d]);
+const F=s=>s.replace(/(\d+)/g,'<sub>$1</sub>');
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffle(a,rng){const r=rng||Math.random;const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+const rep=(x,n)=>Array.from({length:n},()=>x);
+const LOCK='<svg class="lockico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============ saved progress ============ */
+const KEY='cvm-progress-v1';
+let S={viewed:[],labABest:0,labB:false,built:[],attempts:0};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&typeof s==='object')S=Object.assign(S,s);}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ============ elements & drawing ============ */
+const EL={
+H:{c:'#f8fafc',t:'#111',r:.62,n:'hydrogen'},He:{c:'#5fdcec',t:'#062a33',r:.62,n:'helium'},
+C:{c:'#3b4251',t:'#fff',r:.9,n:'carbon'},N:{c:'#2f6fe4',t:'#fff',r:.86,n:'nitrogen'},
+O:{c:'#e03838',t:'#fff',r:.82,n:'oxygen'},F:{c:'#9ee044',t:'#111',r:.78,n:'fluorine'},
+Ne:{c:'#f6a5cf',t:'#111',r:.7,n:'neon'},Na:{c:'#8b5cf6',t:'#fff',r:1.1,n:'sodium'},
+Mg:{c:'#15803d',t:'#fff',r:1.0,n:'magnesium'},Si:{c:'#d4b07a',t:'#111',r:1.0,n:'silicon'},
+P:{c:'#fb923c',t:'#111',r:1.0,n:'phosphorus'},S:{c:'#facc15',t:'#111',r:1.0,n:'sulfur'},
+Cl:{c:'#4ade80',t:'#111',r:1.05,n:'chlorine'},Ar:{c:'#c4b5fd',t:'#111',r:.85,n:'argon'},
+K:{c:'#b26cf5',t:'#111',r:1.2,n:'potassium'},Ca:{c:'#9aa8b8',t:'#111',r:1.1,n:'calcium'},
+Fe:{c:'#a8521a',t:'#fff',r:.95,n:'iron'},Cu:{c:'#ef9455',t:'#111',r:.95,n:'copper'},
+Zn:{c:'#64748b',t:'#fff',r:.95,n:'zinc'},Br:{c:'#9f1239',t:'#fff',r:1.12,n:'bromine'},
+I:{c:'#5b21b6',t:'#fff',r:1.2,n:'iodine'},Au:{c:'#e8b40c',t:'#111',r:1.0,n:'gold'}
+};
+/* ion display radii (relative) and labels */
+const ION={Na:[.72,'Na⁺'],K:[.92,'K⁺'],Mg:[.62,'Mg²⁺'],Ca:[.8,'Ca²⁺'],Fe:[.66,'Fe²⁺'],Cl:[1.12,'Cl⁻'],O:[1.0,'O²⁻'],S:[1.15,'S²⁻'],F:[.95,'F⁻'],Br:[1.2,'Br⁻']};
+function hx(h){h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16));}
+function mix(a,b,t){const A=hx(a),B=hx(b);return'#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');}
+(function(){let s='';for(const k in EL){const c=EL[k].c;s+=`<radialGradient id="g-${k}" cx="36%" cy="30%" r="72%"><stop offset="0" stop-color="${mix(c,'#ffffff',.6)}"/><stop offset=".55" stop-color="${c}"/><stop offset="1" stop-color="${mix(c,'#000000',k==='H'?.3:.3)}"/></radialGradient>`;}$('#gdefs defs').innerHTML=s;})();
+function atomSVG(a){
+  const e=EL[a.el],lab=a.lab||a.el,r=a.r;
+  const L=[...lab].length;
+  let fs=r*(L>=3?.74:L===2?.92:1.12);
+  fs=Math.max(fs,Math.min(7.5,r*1.2));
+  return `<g class="at"><circle cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="${r.toFixed(1)}" fill="url(#g-${a.el})" stroke="#1e293b" stroke-width="${Math.max(.8,r*.07).toFixed(2)}"/><text x="${a.x.toFixed(1)}" y="${(a.y+fs*.36).toFixed(1)}" font-size="${fs.toFixed(1)}" fill="${e.t}" text-anchor="middle" font-weight="700" font-family="Atkinson Hyperlegible,system-ui,sans-serif">${lab}</text></g>`;
+}
+function bbox(at){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;at.forEach(a=>{x0=Math.min(x0,a.x-a.r);y0=Math.min(y0,a.y-a.r);x1=Math.max(x1,a.x+a.r);y1=Math.max(y1,a.y+a.r);});return{x0,y0,x1,y1,w:x1-x0,h:y1-y0};}
+function center(at){const b=bbox(at),cx=(b.x0+b.x1)/2,cy=(b.y0+b.y1)/2;return at.map(a=>Object.assign({},a,{x:a.x-cx,y:a.y-cy}));}
+function rot(at,t){const c=Math.cos(t),s=Math.sin(t);return at.map(a=>Object.assign({},a,{x:a.x*c-a.y*s,y:a.x*s+a.y*c}));}
+function boundR(at){return Math.max(...at.map(a=>Math.hypot(a.x,a.y)+a.r));}
+function lay(spec){const out=[];(function p(el,x,y,k){out.push({el,x,y,r:EL[el].r});(k||[]).forEach(([ang,c,ck])=>{const d=EL[el].r+EL[c].r,t=ang*Math.PI/180;p(c,x+d*Math.cos(t),y+d*Math.sin(t),ck);});})(spec[0],0,0,spec[1]);return center(out);}
+function ring(el,n){const r=EL[el].r,R=r/Math.sin(Math.PI/n),o=[];for(let i=0;i<n;i++){const t=i*2*Math.PI/n+Math.PI/n;o.push({el,x:R*Math.cos(t),y:R*Math.sin(t),r});}return o;}
+function ionLat(c,a,cols,rows,plain){const rc=ION[c][0],ra=ION[a][0],d=rc+ra,o=[];for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const isC=(i+j)%2===0,e=isC?c:a;o.push({el:e,x:i*d,y:j*d,r:isC?rc:ra,lab:plain?e:ION[e][1]});}return center(o);}
+function netLat(a,b,cols,rows){const ra=EL[a].r,rb=EL[b].r,d=ra+rb,o=[];for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const e=(i+j)%2===0?a:b;o.push({el:e,x:i*d,y:j*d,r:EL[e].r});}return center(o);}
+function metLat(els,cols,rows,rng){const o=[];const arr=Array.isArray(els)?els:[els];for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const el=arr[Math.floor((rng?rng():0)*arr.length)];const r=EL[el].r;o.push({el,x:i*2*r+(j%2)*r,y:j*r*Math.sqrt(3),r});}return center(o);}
+const MOL={
+ H2:['H',[[0,'H']]],N2:['N',[[0,'N']]],O2:['O',[[0,'O']]],F2:['F',[[0,'F']]],Cl2:['Cl',[[0,'Cl']]],Br2:['Br',[[0,'Br']]],I2:['I',[[0,'I']]],
+ O3:['O',[[150,'O'],[30,'O']]],
+ P4:['P',[[0,'P'],[60,'P'],[-60,'P']]],
+ S8:()=>ring('S',8),
+ H2O:['O',[[142,'H'],[38,'H']]],
+ CO2:['C',[[0,'O'],[180,'O']]],
+ CO:['C',[[0,'O']]],
+ CH4:['C',[[0,'H'],[90,'H'],[180,'H'],[270,'H']]],
+ NH3:['N',[[90,'H'],[210,'H'],[330,'H']]],
+ HCl:['H',[[0,'Cl']]],
+ C3H8:['C',[[180,'H'],[-90,'H'],[90,'H'],[0,'C',[[-90,'H'],[90,'H'],[0,'C',[[-90,'H'],[90,'H'],[0,'H']]]]]]],
+ CH3COOH:['C',[[180,'H'],[-90,'H'],[90,'H'],[0,'C',[[-60,'O'],[60,'O',[[0,'H']]]]]]],
+ C6H12O6:['C',[[-90,'O'],[90,'H'],[0,'C',[[-90,'H'],[90,'O',[[90,'H']]],[0,'C',[[90,'H'],[-90,'O',[[-90,'H']]],[0,'C',[[-90,'H'],[90,'O',[[90,'H']]],[0,'C',[[90,'H'],[-90,'O',[[-90,'H']]],[0,'C',[[-90,'H'],[90,'H'],[0,'O',[[0,'H']]]]]]]]]]]]]]]
+};
+/* species -> centered unit atoms. 'Na+' style = ion; MOL key; or element symbol (single atom) */
+function spAt(k){
+  if(/[+-]$/.test(k)){const e=k.slice(0,-1);return[{el:e,x:0,y:0,r:ION[e][0],lab:ION[e][1]}];}
+  if(MOL[k])return typeof MOL[k]==='function'?center(MOL[k]()):lay(MOL[k]);
+  return[{el:k,x:0,y:0,r:EL[k].r}];
+}
+function atomsSVG(at,sc,ox,oy,plain){return at.map(a=>atomSVG({el:a.el,x:ox+a.x*sc,y:oy+a.y*sc,r:a.r*sc,lab:plain?a.el:(a.lab||a.el)})).join('');}
+function fitSVG(at,W,H,opt){opt=opt||{};const pad=opt.pad==null?8:opt.pad;const b=bbox(at);const sc=Math.min((W-2*pad)/b.w,(H-2*pad)/b.h,opt.max||60);const cx=W/2-((b.x0+b.x1)/2)*sc,cy=H/2-((b.y0+b.y1)/2)*sc;return`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${opt.aria||'particle diagram'}">${opt.bg||''}${atomsSVG(at,sc,cx,cy,opt.plain)}</svg>`;}
+/* scatter particles into a rectangle without overlap */
+function scatter(out,specs,rect,sc,rng,placed){
+  placed=placed||[];
+  specs.forEach(sp=>{let at=rot(spAt(sp),rng()*Math.PI*2);const R=boundR(at)*sc;
+    for(let t=0;t<400;t++){const x=rect.x+R+rng()*Math.max(0,rect.w-2*R),y=rect.y+R+rng()*Math.max(0,rect.h-2*R);
+      if(placed.every(p=>Math.hypot(p.x-x,p.y-y)>p.R+R+1.5)){placed.push({x,y,R});at.forEach(a=>out.push({el:a.el,lab:a.lab,r:a.r*sc,x:x+a.x*sc,y:y+a.y*sc}));break;}}
+  });
+  return placed;
+}
+function chunk(out,at,x,y,sc,plain){at.forEach(a=>out.push({el:a.el,lab:plain?a.el:a.lab,r:a.r*sc,x:x+a.x*sc,y:y+a.y*sc}));const b=bbox(at);return{x:x-b.w*sc/2,y:y-b.h*sc/2,w:b.w*sc,h:b.h*sc};}
+
+/* ============ particle boxes (Lab B + quiz) ============ */
+const BW=200,BH=150;
+const ZN={element:'Element',compound:'Compound',homog:'Homogeneous mixture',hetero:'Heterogeneous mixture'};
+const BOXES={
+ b1:{a:'element',d:'He atoms',x:'Every particle is the same single He atom — one kind of atom, so it is an element.',mk:r=>{const o=[];scatter(o,rep('He',8),{x:4,y:4,w:192,h:142},15,r);return{o};}},
+ b2:{a:'element',d:'N₂ molecules',x:'Every particle is an identical N₂ molecule made of one kind of atom — an element (a diatomic one).',mk:r=>{const o=[];scatter(o,rep('N2',6),{x:4,y:4,w:192,h:142},13,r);return{o};}},
+ b3:{a:'element',d:'Cl₂ molecules',x:'Identical Cl₂ molecules, only chlorine atoms — an element that exists as diatomic molecules.',mk:r=>{const o=[];scatter(o,rep('Cl2',5),{x:4,y:4,w:192,h:142},12,r);return{o};}},
+ b4:{a:'element',d:'Fe lattice',x:'One kind of atom (Fe) packed in a metal lattice — an element.',mk:r=>{const o=[];chunk(o,metLat('Fe',6,5,r),100,75,14);return{o};}},
+ b5:{a:'compound',d:'H₂O molecules',x:'Every particle is the same H₂O molecule with two different elements bonded — a compound.',mk:r=>{const o=[];scatter(o,rep('H2O',6),{x:4,y:4,w:192,h:142},14,r);return{o};}},
+ b6:{a:'compound',d:'CO₂ molecules',x:'Identical CO₂ molecules: C and O bonded in a fixed 1:2 ratio — a compound.',mk:r=>{const o=[];scatter(o,rep('CO2',5),{x:4,y:4,w:192,h:142},10.5,r);return{o};}},
+ b7:{a:'compound',d:'Na/Cl lattice',x:'Na and Cl in a repeating 1:1 pattern — an ionic compound (NaCl). It is a lattice of formula units, not molecules.',mk:r=>{const o=[];chunk(o,ionLat('Na','Cl',6,4,true),100,75,16,true);return{o};}},
+ b8:{a:'compound',d:'NH₃ molecules',x:'Identical NH₃ molecules: N and H bonded in a fixed 1:3 ratio — a compound.',mk:r=>{const o=[];scatter(o,rep('NH3',5),{x:4,y:4,w:192,h:142},13,r);return{o};}},
+ b9:{a:'homog',d:'N₂ + O₂ evenly mixed',x:'Two different substances (N₂ and O₂) not bonded to each other and spread evenly — a homogeneous mixture (like air).',mk:r=>{const o=[];scatter(o,shuffle(rep('N2',5).concat(rep('O2',2)),r),{x:4,y:4,w:192,h:142},12,r);return{o};}},
+ b10:{a:'homog',d:'He + Ne evenly mixed',x:'He atoms and Ne atoms spread evenly with no bonds between them — a homogeneous mixture of two elements.',mk:r=>{const o=[];scatter(o,shuffle(rep('He',5).concat(rep('Ne',4)),r),{x:4,y:4,w:192,h:142},15,r);return{o};}},
+ b11:{a:'homog',d:'water + dissolved ions',x:'Na⁺ and Cl⁻ ions dissolved evenly among H₂O molecules — a homogeneous mixture (salt water, a solution).',mk:r=>{const o=[];scatter(o,shuffle(rep('H2O',6).concat(['Na+','Cl-','Na+','Cl-']),r),{x:4,y:4,w:192,h:142},13,r);return{o};}},
+ b12:{a:'homog',d:'Cu/Zn mixed lattice',x:'Cu and Zn atoms randomly mixed in one lattice, the same everywhere — a homogeneous mixture (an alloy like brass). There is no fixed ratio, so it is not a compound.',mk:r=>{const o=[];chunk(o,metLat(['Cu','Cu','Zn'],6,5,r),100,75,14);return{o};}},
+ b13:{a:'hetero',d:'two layers',x:'Two separate layers (hydrocarbon "oil" on top of water) with a visible boundary — a heterogeneous mixture.',mk:r=>{const o=[];scatter(o,rep('C3H8',3),{x:3,y:3,w:194,h:64},7.2,r);scatter(o,rep('H2O',5),{x:4,y:74,w:192,h:72},11,r);return{o,bg:`<rect x="1" y="1" width="198" height="69" fill="#fdf0c2"/><rect x="1" y="70" width="198" height="79" fill="#d8e8fb"/><line x1="1" y1="70" x2="199" y2="70" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/>`};}},
+ b14:{a:'hetero',d:'Fe region + S₈ region',x:'A region of iron atoms and a separate region of S₈ molecules — visibly different parts, so a heterogeneous mixture (iron filings + sulfur).',mk:r=>{const o=[];chunk(o,metLat('Fe',4,5,r),46,75,9);const pl=[];scatter(o,rep('S8',3),{x:96,y:4,w:100,h:142},7,r,pl);return{o,bg:`<rect x="1" y="1" width="88" height="148" fill="#efe3d6"/><rect x="89" y="1" width="110" height="148" fill="#fdf6d2"/><line x1="89" y1="1" x2="89" y2="149" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/>`};}},
+ b15:{a:'hetero',d:'water + solid chunk',x:'A solid chunk (sand, SiO₂) sitting in water — two visibly different parts, so a heterogeneous mixture.',mk:r=>{const o=[];const c=chunk(o,netLat('Si','O',5,3),100,118,11);scatter(o,rep('H2O',5),{x:4,y:4,w:192,h:c.y-6},12,r);return{o,bg:`<rect x="1" y="1" width="198" height="148" fill="#d8e8fb"/><rect x="${(c.x-3).toFixed(1)}" y="${(c.y-3).toFixed(1)}" width="${(c.w+6).toFixed(1)}" height="${(c.h+6).toFixed(1)}" rx="6" fill="#f1e4c8" stroke="#8a6d3b" stroke-width="2" stroke-dasharray="5 3"/>`};}}
+};
+const boxCache={};
+function boxSVG(id,lbl){
+  if(!boxCache[id]){const seed=[...id].reduce((s,c)=>s*31+c.charCodeAt(0),7);const r=mulberry(seed);const res=BOXES[id].mk(r);boxCache[id]=`${res.bg||''}${res.o.map(atomSVG).join('')}`;}
+  return`<svg viewBox="0 0 ${BW} ${BH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${lbl||'particle box'}"><rect x="1" y="1" width="${BW-2}" height="${BH-2}" fill="#fff"/>${boxCache[id]}<rect x="1" y="1" width="${BW-2}" height="${BH-2}" fill="none" stroke="#334155" stroke-width="2" rx="4"/></svg>`;
+}
+
+/* ============ Venn & flowchart diagrams ============ */
+const ZONES={molecule:'Molecule only',both:'Both',compound:'Compound only',neither:'Neither'};
+let vCount=0;
+function vennIcon(z){const id='vi'+(++vCount);
+  const mC='<circle cx="17" cy="14" r="11"/>',cC='<circle cx="27" cy="14" r="11"/>';
+  let hl='';
+  if(z==='molecule')hl=`<mask id="${id}"><rect width="44" height="28" fill="#000"/><circle cx="17" cy="14" r="11" fill="#fff"/><circle cx="27" cy="14" r="11" fill="#000"/></mask><rect width="44" height="28" fill="#1d4ed8" mask="url(#${id})"/>`;
+  if(z==='compound')hl=`<mask id="${id}"><rect width="44" height="28" fill="#000"/><circle cx="27" cy="14" r="11" fill="#fff"/><circle cx="17" cy="14" r="11" fill="#000"/></mask><rect width="44" height="28" fill="#c2410c" mask="url(#${id})"/>`;
+  if(z==='both')hl=`<clipPath id="${id}"><circle cx="17" cy="14" r="11"/></clipPath><circle cx="27" cy="14" r="11" fill="#7c3aed" clip-path="url(#${id})"/>`;
+  if(z==='neither')hl=`<mask id="${id}"><rect width="44" height="28" fill="#fff"/><circle cx="17" cy="14" r="11" fill="#000"/><circle cx="27" cy="14" r="11" fill="#000"/></mask><rect x="1" y="1" width="42" height="26" rx="4" fill="#64748b" mask="url(#${id})"/>`;
+  return`<svg class="vi" viewBox="0 0 44 28" aria-hidden="true"><rect x="1" y="1" width="42" height="26" rx="4" fill="#fff" stroke="#334155"/>${hl}<g fill="none" stroke="#0f172a" stroke-width="1.6">${mC}${cC}</g></svg>`;}
+const VG={W:600,H:400,mx:228,cx:372,cy:192,r:140};
+function vennSVG(p,withEx){
+  const{W,H,mx,cx,cy,r}=VG;
+  const ex=withEx?`<g font-size="19" font-weight="700" text-anchor="middle" fill="#0f172a" pointer-events="none">
+   <text x="160" y="150" font-size="13" fill="#1e3a8a">MOLECULE ONLY</text><text x="160" y="185">O₂</text><text x="160" y="215">N₂</text><text x="160" y="245">O₃</text>
+   <text x="300" y="150" font-size="15" fill="#5b21b6">BOTH</text><text x="300" y="185">H₂O</text><text x="300" y="215">CO₂</text><text x="300" y="245">CH₄</text>
+   <text x="440" y="150" font-size="13" fill="#9a3412">COMPOUND ONLY</text><text x="440" y="185">NaCl</text><text x="440" y="215">MgO</text><text x="440" y="245">CaCl₂</text>
+   <text x="300" y="368" font-size="15" fill="#334155">NEITHER (outside both circles)</text><text x="300" y="392">He · Ne · Fe · Cu</text></g>`:
+   `<g font-size="15" font-weight="700" text-anchor="middle" fill="#334155" pointer-events="none"><text x="300" y="378">(outside both circles)</text></g>`;
+  return`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venn diagram of molecules and compounds" class="clickable">
+  <defs>
+   <mask id="${p}m"><rect width="${W}" height="${H}" fill="#000"/><circle cx="${mx}" cy="${cy}" r="${r}" fill="#fff"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#000"/></mask>
+   <mask id="${p}c"><rect width="${W}" height="${H}" fill="#000"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff"/><circle cx="${mx}" cy="${cy}" r="${r}" fill="#000"/></mask>
+   <mask id="${p}n"><rect x="6" y="6" width="${W-12}" height="${H-12}" rx="16" fill="#fff"/><circle cx="${mx}" cy="${cy}" r="${r}" fill="#000"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#000"/></mask>
+   <clipPath id="${p}b"><circle cx="${mx}" cy="${cy}" r="${r}"/></clipPath>
+  </defs>
+  <rect x="6" y="6" width="${W-12}" height="${H-12}" rx="16" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="20" y="386" font-size="12" font-weight="700" fill="#334155">ALL PURE SUBSTANCES</text>
+  <circle cx="${mx}" cy="${cy}" r="${r}" fill="#dbe6fd"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fde5d4" fill-opacity=".85"/>
+  <rect class="vhl" data-z="neither" width="${W}" height="${H}" fill="#cbd5e1" mask="url(#${p}n)"/>
+  <rect class="vhl" data-z="molecule" width="${W}" height="${H}" fill="#93b4f8" mask="url(#${p}m)"/>
+  <rect class="vhl" data-z="compound" width="${W}" height="${H}" fill="#fbb98c" mask="url(#${p}c)"/>
+  <circle class="vhl" data-z="both" cx="${cx}" cy="${cy}" r="${r}" fill="#c4a7f7" clip-path="url(#${p}b)"/>
+  <circle cx="${mx}" cy="${cy}" r="${r}" fill="none" stroke="#1d4ed8" stroke-width="4"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#c2410c" stroke-width="4" stroke-dasharray="10 5"/>
+  <text x="${mx-60}" y="${cy-r-8}" font-size="19" font-weight="700" fill="#1d4ed8" text-anchor="middle">MOLECULES</text>
+  <text x="${cx+60}" y="${cy-r-8}" font-size="19" font-weight="700" fill="#c2410c" text-anchor="middle">COMPOUNDS</text>
+  ${ex}</svg>`;
+}
+function svgPt(svg,e){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const m=svg.getScreenCTM();return m?pt.matrixTransform(m.inverse()):{x:0,y:0};}
+function vennZoneAt(svg,e){const p=svgPt(svg,e);const{mx,cx,cy,r}=VG;const inM=Math.hypot(p.x-mx,p.y-cy)<r,inC=Math.hypot(p.x-cx,p.y-cy)<r;return inM&&inC?'both':inM?'molecule':inC?'compound':'neither';}
+function vennShow(svg,z){$$('.vhl',svg).forEach(e=>e.classList.toggle('on',e.dataset.z===z));}
+const FN={matter:[320,46,'Matter'],pure:[165,150,'Pure substance'],mixture:[475,150,'Mixture'],element:[85,262,'Element'],compound:[245,262,'Compound'],homog:[395,262,'Homogeneous'],hetero:[555,262,'Heterogeneous']};
+const FE=[['matter','pure','fixed composition'],['matter','mixture','physically combined'],['pure','element','1 kind of atom'],['pure','compound','2+ elements bonded'],['mixture','homog','uniform'],['mixture','hetero','not uniform']];
+function flowSVG(withEx){
+  let s=`<svg viewBox="0 0 640 ${withEx?360:310}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Classification of matter flowchart">`;
+  FE.forEach(([a,b,l])=>{const A=FN[a],B=FN[b];const y1=A[1]+24,y2=B[1]-24;const mx=(A[0]+B[0])/2,my=(y1+y2)/2;
+    s+=`<path class="fedge" data-e="${a}-${b}" d="M${A[0]} ${y1} C ${A[0]} ${my}, ${B[0]} ${my}, ${B[0]} ${y2}"/>`;
+    s+=`<text class="felbl" x="${mx+(B[0]<A[0]?-8:8)}" y="${my-4}" text-anchor="${B[0]<A[0]?'end':'start'}">${l}</text>`;});
+  for(const k in FN){const[x,y,t]=FN[k];const w=k==='matter'?120:(k==='pure'||k==='mixture')?170:148;const leaf=['element','compound','homog','hetero'].includes(k);
+    s+=`<g class="fnode${leaf?' leaf':''}" data-n="${k}"><rect x="${x-w/2}" y="${y-24}" width="${w}" height="48" rx="10"/><text x="${x}" y="${y+6}" text-anchor="middle">${t}</text>${leaf?`<text x="${x}" y="${y+40}" text-anchor="middle" style="font-size:13px;font-weight:400;fill:#475569">${k==='homog'||k==='hetero'?'mixture':''}</text>`:''}</g>`;}
+  if(withEx){s+=`<g font-size="14" text-anchor="middle" fill="#334155"><text x="85" y="330">O₂, Fe, He, S₈</text><text x="245" y="330">H₂O, NaCl, CO₂</text><text x="395" y="330">air, salt water, brass</text><text x="555" y="330">granite, trail mix</text></g>`;}
+  return s+'</svg>';
+}
+function flowShow(svg,nodes){$$('.fnode',svg).forEach(g=>g.classList.toggle('on',nodes.includes(g.dataset.n)));$$('.fedge',svg).forEach(p=>{const[a,b]=p.dataset.e.split('-');p.classList.toggle('on',nodes.includes(a)&&nodes.includes(b));});}
+
+/* ============ animation loop ============ */
+const anims=new Set();let rafOn=false,lastT=0;
+function addAnim(fn){anims.add(fn);if(!rafOn){rafOn=true;lastT=0;requestAnimationFrame(loop);}return()=>anims.delete(fn);}
+function loop(t){if(!anims.size){rafOn=false;return;}const dt=lastT?Math.min(.05,(t-lastT)/1000):0;lastT=t;if(!document.hidden)anims.forEach(f=>{try{f(t/1000,dt);}catch(e){anims.delete(f);console.error(e);}});requestAnimationFrame(loop);}
+
+/* ============ drag & drop (pointer events: mouse + touch + pen) ============ */
+function dragify(el,o){
+  let st=null;
+  el.addEventListener('pointerdown',e=>{if(e.button>0||(o.disabled&&o.disabled()))return;st={x:e.clientX,y:e.clientY,id:e.pointerId,drag:false,g:null,over:null};try{el.setPointerCapture(e.pointerId);}catch(_){}});
+  el.addEventListener('pointermove',e=>{if(!st||e.pointerId!==st.id)return;
+    if(!st.drag&&Math.hypot(e.clientX-st.x,e.clientY-st.y)>7){st.drag=true;const r=el.getBoundingClientRect();
+      const g=o.ghost?h('div',{class:'ghost'},o.ghost()):el.cloneNode(true);g.classList.add('ghost');g.classList.remove('sel','dragsrc');if(!o.ghost)g.style.width=r.width+'px';document.body.append(g);st.g=g;el.classList.add('dragsrc');}
+    if(st.drag){st.cx=e.clientX;st.cy=e.clientY;st.g.style.left=e.clientX+'px';st.g.style.top=e.clientY+'px';upd(st);if(!st.as){const s0=st;s0.as=true;(function sc(){if(st!==s0)return;const y=s0.cy,H=window.innerHeight;const v=y<90?-Math.min(18,(90-y)/3+4):y>H-70?Math.min(18,(y-(H-70))/3+4):0;if(v){window.scrollBy(0,v);upd(s0);}requestAnimationFrame(sc);})();}}});
+  function upd(s){const t=hit(s.cx,s.cy);if(t!==s.over){s.over&&s.over.classList.remove('over');t&&t.classList.add('over');s.over=t;}}
+  const end=(e,cancel)=>{if(!st||e.pointerId!==st.id)return;const s=st;st=null;
+    if(s.drag){s.g.remove();el.classList.remove('dragsrc');s.over&&s.over.classList.remove('over');if(!cancel)o.onDrop&&o.onDrop(hit(e.clientX,e.clientY),e);}
+    else if(!cancel)o.onTap&&o.onTap(e);};
+  el.addEventListener('pointerup',e=>end(e,false));
+  el.addEventListener('pointercancel',e=>end(e,true));
+  el.addEventListener('lostpointercapture',e=>{if(st&&st.drag)end(e,true);});
+  function hit(x,y){const ts=o.targets();for(const t of ts){const r=t.getBoundingClientRect();if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return t;}return null;}
+}
+
+/* ============ sorter widget (Lab A, Lab B, quiz) ============ */
+function Sorter(root,cfg){
+  const items=cfg.items,bins=cfg.bins;const place={},marks={};let sel=null,locked=false;
+  items.forEach(it=>place[it.id]=null);
+  root.innerHTML='';root.classList.add('sorter');
+  const th=h('div',{class:'trayhead'},cfg.hint||'<b>Unsorted</b> — drag each item into a bin, <i>or</i> tap an item, then tap a bin.');
+  const tray=h('div',{class:'tray','aria-label':'Unsorted items'});
+  const binsEl=h('div',{class:'bins'});binsEl.style.setProperty('--cols',cfg.cols||bins.length);
+  if(cfg.binStyle)binsEl.setAttribute('style',`--cols:${cfg.cols||bins.length};${cfg.binStyle}`);
+  root.append(th,tray,binsEl);
+  const binEls={};
+  bins.forEach(b=>{const be=h('div',{class:'bin',tabindex:'0',role:'button','aria-label':'Bin: '+b.label});be.dataset.bin=b.id;
+    be.innerHTML=`<div class="binhead">${b.icon||''}<span>${b.label}</span><span class="bincount"></span></div><div class="binitems"></div>`;
+    be.addEventListener('click',e=>{if(e.target.closest('.item'))return;if(sel&&!locked)move(sel,b.id);});
+    be.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&sel&&!locked){e.preventDefault();move(sel,b.id);}});
+    binEls[b.id]=be;binsEl.append(be);});
+  tray.addEventListener('click',e=>{if(e.target.closest('.item'))return;if(sel&&!locked)move(sel,null);});
+  const itemEls={};
+  items.forEach(it=>{const el=h('div',{class:'item '+(cfg.itemClass||''),tabindex:'0',role:'button','aria-label':it.aria||'item'},it.html);el.dataset.id=it.id;itemEls[it.id]=el;
+    dragify(el,{disabled:()=>locked,targets:()=>Object.values(binEls).concat([tray]),onDrop:t=>{if(!t)return;move(it.id,t===tray?null:t.dataset.bin);},onTap:()=>select(it.id)});
+    el.addEventListener('keydown',e=>{if(locked)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();select(it.id);}});});
+  function select(id){if(locked)return;sel=sel===id?null:id;render();if(sel&&cfg.onSelect)cfg.onSelect(items.find(i=>i.id===id));}
+  function move(id,bin){place[id]=bin;delete marks[id];sel=null;render();cfg.onChange&&cfg.onChange();}
+  function render(){
+    Object.values(binEls).forEach(b=>b.querySelector('.binitems').innerHTML='');tray.innerHTML='';
+    items.forEach(it=>{const el=itemEls[it.id];el.classList.toggle('sel',sel===it.id);el.classList.remove('ok','no');if(marks[it.id])el.classList.add(marks[it.id]);
+      (place[it.id]?binEls[place[it.id]].querySelector('.binitems'):tray).append(el);});
+    tray.classList.toggle('empty',items.every(i=>place[i.id]));
+    for(const k in binEls){const n=items.filter(i=>place[i.id]===k).length;binEls[k].querySelector('.bincount').textContent=n?n:'';}
+  }
+  render();
+  return{
+    allPlaced:()=>items.every(i=>place[i.id]),
+    placed:()=>items.filter(i=>place[i.id]).length,
+    check(){const res=items.map(it=>({it,bin:place[it.id],ok:place[it.id]===it.ans}));res.forEach(r=>{if(r.bin)marks[r.it.id]=r.ok?'ok':'no';});render();return res;},
+    lock(){locked=true;sel=null;root.classList.add('locked');render();},
+    showAnswers(){items.forEach(it=>{if(place[it.id]!==it.ans){place[it.id]=it.ans;marks[it.id]='no';}});render();},
+    reset(){items.forEach(i=>{place[i.id]=null;delete marks[i.id];});sel=null;locked=false;root.classList.remove('locked');render();},
+    returnWrong(){items.forEach(i=>{if(marks[i.id]==='no'){place[i.id]=null;delete marks[i.id];}});render();}
+  };
+}
+</script>
+<script>
+/* ============ LEARN ============ */
+function chipRow(list,onPick,start){const wrap=h('div',{class:'chips',role:'group'});let cur=null;
+  list.forEach((it,i)=>{if(it.group){wrap.append(h('span',{class:'chipgroup'},it.group));return;}const b=h('button',{class:'chip','aria-pressed':'false'},it.label);b.onclick=()=>{if(cur){cur.classList.remove('on');cur.setAttribute('aria-pressed','false');}cur=b;b.classList.add('on');b.setAttribute('aria-pressed','true');onPick(it);};wrap.append(b);if(i===(start||0)||(start==null&&cur==null&&!it.group&&i===0))setTimeout(()=>b.click(),0);});
+  return wrap;}
+
+/* simple particle simulation for Learn stop 2 */
+function particleSim(svg,W,H,sp,state,sc,rng){
+  const parts=[];let html='';
+  if(state==='metal'){const at=metLat(sp,9,6,rng);const b=bbox(at);const s=Math.min((W-20)/b.w,(H-20)/b.h,sc*1.3);
+    at.forEach((a,i)=>{parts.push({x:W/2+a.x*s,y:H/2+a.y*s,ph:rng()*6.28,jig:true,atoms:[{el:a.el,x:0,y:0,r:a.r}],s});});}
+  else{const base=spAt(sp);const R=boundR(base)*sc;
+    if(state==='solid'){const step=2*R+4;const cols=Math.max(1,Math.floor((W-10)/step)),rows=Math.max(1,Math.floor((H-10)/step));const ox=(W-cols*step)/2+step/2,oy=(H-rows*step)/2+step/2;
+      for(let j=0;j<rows;j++)for(let i=0;i<cols;i++)parts.push({x:ox+i*step,y:oy+j*step,a:(sp==='I2'||sp==='Br2')?0.6:0,ph:rng()*6.28,jig:true,atoms:base,s:sc,R});}
+    else{const n=state==='gas'?7:13;const placed=[];
+      for(let k=0;k<n;k++){for(let t=0;t<300;t++){const x=R+rng()*(W-2*R),y=R+rng()*(H-2*R);if(placed.every(p=>Math.hypot(p.x-x,p.y-y)>p.R+R+2)){const sp0=state==='gas'?55:14;const ang=rng()*6.28;const p={x,y,R,vx:Math.cos(ang)*sp0,vy:Math.sin(ang)*sp0,a:rng()*6.28,w:(rng()-.5)*(state==='gas'?2:0.6),atoms:base,s:sc};placed.push(p);parts.push(p);break;}}}}}
+  parts.forEach((p,i)=>{html+=`<g data-i="${i}" transform="translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})">${atomsSVG(p.atoms,p.s,0,0)}</g>`;});
+  svg.innerHTML=html;const gs=$$('g[data-i]',svg);
+  if(reduceMotion)return()=>{};
+  return addAnim((t,dt)=>{
+    parts.forEach(p=>{if(p.jig)return;p.x+=p.vx*dt;p.y+=p.vy*dt;p.a+=p.w*dt;
+      if(p.x<p.R){p.x=p.R;p.vx=Math.abs(p.vx);}if(p.x>W-p.R){p.x=W-p.R;p.vx=-Math.abs(p.vx);}
+      if(p.y<p.R){p.y=p.R;p.vy=Math.abs(p.vy);}if(p.y>H-p.R){p.y=H-p.R;p.vy=-Math.abs(p.vy);}});
+    for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++){const A=parts[i],B=parts[j];if(A.jig||B.jig)continue;const dx=B.x-A.x,dy=B.y-A.y,d=Math.hypot(dx,dy),m=A.R+B.R;
+      if(d<m&&d>0){const nx=dx/d,ny=dy/d,ov=(m-d)/2;A.x-=nx*ov;A.y-=ny*ov;B.x+=nx*ov;B.y+=ny*ov;const rv=(B.vx-A.vx)*nx+(B.vy-A.vy)*ny;if(rv<0){A.vx+=rv*nx;A.vy+=rv*ny;B.vx-=rv*nx;B.vy-=rv*ny;}}}
+    parts.forEach((p,i)=>{let x=p.x,y=p.y,a=p.a||0;if(p.jig){x+=Math.sin(t*9+p.ph)*1.4;y+=Math.cos(t*7.3+p.ph*1.3)*1.4;a+=Math.sin(t*5+p.ph)*.04;}gs[i].setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(a*57.3).toFixed(1)})`);});
+  });
+}
+
+const STOPS=[
+/* 1 Atom */
+{t:'The atom',b:`<ul>
+<li>An <b>atom</b> is the smallest particle of an <b>element</b> that is still that element.</li>
+<li>Every atom of one element has the same number of <b>protons</b> (its <b>atomic number</b>). Every copper atom has 29.</li>
+<li>Take an atom apart and you get <b>protons, neutrons and electrons</b>. None of them is copper anymore.</li>
+<li>In <b>particle diagrams</b> each atom is a circle labeled with its <b>element symbol</b>. Atoms that are bonded <b>touch</b>.</li></ul>
+<div class="tryit"><b>Try it:</b> <b>swipe across the copper</b> with your mouse or finger to cut it in half. Keep cutting. When do you have to stop?</div>`,
+init(v){v.innerHTML=`<svg class="vsvg" viewBox="0 0 440 300" id="cuSvg" role="img" aria-label="copper atoms. Swipe across the sample to cut it." style="touch-action:none;cursor:crosshair"></svg><p class="cap" id="cuCap" aria-live="polite"></p><div class="btnrow"><button id="cuCut">✂ Cut in half (button)</button><button id="cuReset">↺ Start over</button></div>`;
+  const svg=$('#cuSvg',v),cap=$('#cuCap',v),cutB=$('#cuCut',v);let c=8,r=8,busy=false,tm=null,sw=null,box=null,sc=1,msg='';
+  function draw(){const at=[];for(let j=0;j<r;j++)for(let i=0;i<c;i++)at.push({el:'Cu',x:i*1.9,y:j*1.9,r:.95,i,j});
+    const ce=center(at);const b=bbox(ce);sc=Math.min(400/b.w,250/b.h,110);box={x0:220+b.x0*sc,x1:220+b.x1*sc,y0:150+b.y0*sc,y1:150+b.y1*sc};
+    svg.innerHTML=`<g class="fadein">${ce.map(a=>`<g data-i="${a.i}" data-j="${a.j}">${atomSVG({el:'Cu',x:220+a.x*sc,y:150+a.y*sc,r:a.r*sc})}</g>`).join('')}</g><line id="cuLine" stroke="#b42318" stroke-width="4" stroke-dasharray="10 6" stroke-linecap="round" visibility="hidden"/><text x="12" y="290" font-size="14" fill="#475569">zoom ×${Math.max(1,Math.round(sc/16.45))}</text>`;
+    const n=c*r;cap.innerHTML=(msg?msg+' ':'')+(n>1?`<b>${n} copper atoms</b>, still copper. Swipe across it to cut it again.`:`<b>1 copper atom</b>. This is the smallest piece that is still copper. Cut it and you'd have protons, neutrons and electrons, not copper.`);msg='';cutB.disabled=n===1;}
+  function cut(axis){if(busy)return;if(c*r===1){cap.innerHTML='<b>You can\'t cut it any more!</b> One atom is the smallest piece of copper. Splitting it would leave protons, neutrons and electrons, which aren\'t copper.';return;}
+    if(axis==='v'&&c===1)axis='h';if(axis==='h'&&r===1)axis='v';
+    busy=true;const nc=axis==='v'?c/2:c,nr=axis==='h'?r/2:r;const dx=axis==='v'?60:0,dy=axis==='h'?45:0;
+    $$('g[data-i]',svg).forEach(g=>{if(+g.dataset.i>=nc||+g.dataset.j>=nr){g.style.transition='transform .45s ease, opacity .45s ease';requestAnimationFrame(()=>{g.style.transform=`translate(${dx}px,${dy}px)`;g.style.opacity='.12';});}});
+    tm=setTimeout(()=>{tm=null;busy=false;c=nc;r=nr;draw();},480);}
+  svg.addEventListener('pointerdown',e=>{if(busy)return;const p=svgPt(svg,e);sw={x0:p.x,y0:p.y,x1:p.x,y1:p.y,id:e.pointerId};try{svg.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+  svg.addEventListener('pointermove',e=>{if(!sw||e.pointerId!==sw.id)return;const p=svgPt(svg,e);sw.x1=p.x;sw.y1=p.y;const l=$('#cuLine',svg);if(l){l.setAttribute('x1',sw.x0);l.setAttribute('y1',sw.y0);l.setAttribute('x2',sw.x1);l.setAttribute('y2',sw.y1);l.setAttribute('visibility','visible');}});
+  const endSw=e=>{if(!sw||e.pointerId!==sw.id)return;const s=sw;sw=null;const l=$('#cuLine',svg);if(l)l.setAttribute('visibility','hidden');
+    const dx=s.x1-s.x0,dy=s.y1-s.y0;if(Math.hypot(dx,dy)<30){cap.innerHTML='Swipe <b>across</b> the copper, in one motion, to cut it.';return;}
+    const axis=Math.abs(dy)>Math.abs(dx)?'v':'h';
+    const lo=axis==='v'?Math.min(s.y0,s.y1):Math.min(s.x0,s.x1),hi=axis==='v'?Math.max(s.y0,s.y1):Math.max(s.x0,s.x1);
+    const a0=axis==='v'?box.y0:box.x0,a1=axis==='v'?box.y1:box.x1;const mid=axis==='v'?(s.x0+s.x1)/2:(s.y0+s.y1)/2;const m0=axis==='v'?box.x0:box.y0,m1=axis==='v'?box.x1:box.y1;
+    const cover=(Math.min(hi,a1)-Math.max(lo,a0))/(a1-a0);
+    if(mid<m0-20||mid>m1+20||cover<.5){cap.innerHTML='Missed! Swipe all the way <b>across</b> the copper sample to cut it.';return;}
+    cut(axis);};
+  svg.addEventListener('pointerup',endSw);svg.addEventListener('pointercancel',e=>{sw=null;const l=$('#cuLine',svg);if(l)l.setAttribute('visibility','hidden');});
+  cutB.onclick=()=>cut(c>=r?'v':'h');
+  $('#cuReset',v).onclick=()=>{clearTimeout(tm);tm=null;busy=false;c=8;r=8;draw();};
+  draw();return()=>clearTimeout(tm);}},
+/* 2 Element */
+{t:'Elements',b:`<ul>
+<li>An <b>element</b> is a pure substance made of only <b>one kind of atom</b>. It can't be broken down into simpler substances by a chemical reaction.</li>
+<li>Some elements exist as <b>single atoms</b>: the noble gases <b>He</b> and <b>Ne</b>.</li>
+<li>Metals like <b>Fe</b> and <b>Cu</b> are written as single symbols; their atoms pack into a <b>metallic lattice</b> (no molecules).</li>
+<li>Others exist as <b>molecules</b>: the 7 <b>diatomic elements</b> H₂ N₂ O₂ F₂ Cl₂ Br₂ I₂ (they make a "7" on the periodic table, plus H), and also <b>O₃</b> (ozone), <b>P₄</b> (white phosphorus), <b>S₈</b> (sulfur).</li></ul>
+<div class="tryit"><b>Try it:</b> pick each element. Is every particle made of the same kind of atom?</div>`,
+init(v){v.innerHTML=`<div id="elChips"></div><svg class="vsvg" viewBox="0 0 440 280" id="elSvg" role="img" aria-label="element particles"></svg><p class="cap" id="elCap" aria-live="polite"></p>`;
+  const L=[{group:'Single atoms / metals:'},{label:'He',sp:'He',st:'gas',d:'<b>Helium</b> — a gas of separate He atoms (noble gas).'},{label:'Ne',sp:'Ne',st:'gas',d:'<b>Neon</b> — a gas of separate Ne atoms (noble gas).'},{label:'Fe',sp:'Fe',st:'metal',d:'<b>Iron</b> — a solid; Fe atoms packed in a metallic lattice. No molecules.'},{label:'Cu',sp:'Cu',st:'metal',d:'<b>Copper</b> — a solid; Cu atoms packed in a metallic lattice. No molecules.'},
+   {group:'Diatomic:'},{label:'H₂',sp:'H2',st:'gas',d:'<b>Hydrogen</b> — a gas of H₂ molecules (diatomic).'},{label:'N₂',sp:'N2',st:'gas',d:'<b>Nitrogen</b> — a gas of N₂ molecules (diatomic).'},{label:'O₂',sp:'O2',st:'gas',d:'<b>Oxygen</b> — a gas of O₂ molecules (diatomic).'},{label:'F₂',sp:'F2',st:'gas',d:'<b>Fluorine</b> — a gas of F₂ molecules (diatomic).'},{label:'Cl₂',sp:'Cl2',st:'gas',d:'<b>Chlorine</b> — a gas of Cl₂ molecules (diatomic).'},{label:'Br₂',sp:'Br2',st:'liquid',d:'<b>Bromine</b> — a liquid of Br₂ molecules (diatomic).'},{label:'I₂',sp:'I2',st:'solid',d:'<b>Iodine</b> — a solid of I₂ molecules (diatomic).'},
+   {group:'Bigger molecules:'},{label:'O₃',sp:'O3',st:'gas',d:'<b>Ozone</b> — a gas of O₃ molecules (3 oxygen atoms). Still an element!'},{label:'P₄',sp:'P4',st:'solid',d:'<b>White phosphorus</b> — a solid of P₄ molecules (4 P atoms).'},{label:'S₈',sp:'S8',st:'solid',d:'<b>Sulfur</b> — a solid of S₈ rings (8 S atoms).'}];
+  let stop=null;const svg=$('#elSvg',v),cap=$('#elCap',v);
+  const scs={He:20,Ne:20,Fe:16,Cu:16,H2:18,N2:15,O2:15,F2:15,Cl2:13,Br2:12,I2:12,O3:14,P4:13,S8:9};
+  $('#elChips',v).append(chipRow(L,it=>{stop&&stop();stop=particleSim(svg,440,280,it.sp,it.st,scs[it.sp],mulberry(11));cap.innerHTML=it.d+` <span style="color:#475569">(${it.st==='metal'?'solid':it.st} at room temperature)</span>`;},1));
+  return()=>{stop&&stop();};}},
+/* 3 Molecule */
+{t:'Molecules',b:`<ul>
+<li>A <b>molecule</b> is 2 or more atoms held together by <b>covalent bonds</b> (shared electrons), usually between <b>nonmetal</b> atoms.</li>
+<li>The atoms can be the <b>same element</b> (O₂ is a molecule of an element) or <b>different elements</b> (H₂O, CO₂, C₆H₁₂O₆ are molecules of compounds).</li>
+<li><b>Subscripts</b> count atoms: C₆H₁₂O₆ (glucose) = 6 C + 12 H + 6 O = <b>24 atoms</b> in one molecule.</li>
+<li>One molecule is the smallest particle of a <b>molecular (covalent) substance</b>.</li></ul>`,
+init(v){v.innerHTML=`<div id="mChips"></div><svg class="vsvg" viewBox="0 0 440 280" id="mSvg" role="img" aria-label="molecule"></svg><div id="mInfo" class="cap"></div>`;
+  const L=[{label:'O₂',sp:'O2',f:'O2',k:'Molecule of an <b>element</b> (one kind of atom)'},{label:'H₂O',sp:'H2O',f:'H2O',k:'Molecule of a <b>compound</b> (2 elements)'},{label:'CO₂',sp:'CO2',f:'CO2',k:'Molecule of a <b>compound</b> (2 elements)'},{label:'C₆H₁₂O₆',sp:'C6H12O6',f:'C6H12O6',k:'Molecule of a <b>compound</b> (3 elements) — glucose, drawn in its open-chain form'}];
+  const svg=$('#mSvg',v),info=$('#mInfo',v);let stop=null;
+  $('#mChips',v).append(chipRow(L,it=>{stop&&stop();const at=spAt(it.sp);const b=bbox(at);const sc=Math.min(400/b.w,240/b.h,70);
+    svg.innerHTML=`<g id="mG" transform="translate(220 140)">${atomsSVG(at,sc,0,0)}</g>`;const g=$('#mG',svg);
+    if(!reduceMotion)stop=addAnim(t=>{g.setAttribute('transform',`translate(220 ${140+Math.sin(t*1.6)*3}) rotate(${(Math.sin(t*1.1)*5).toFixed(2)})`);});
+    const c=parseF(it.f);const tot=Object.values(c).reduce((a,b)=>a+b,0);
+    info.innerHTML=`<b>${F(it.f)}</b>: ${Object.entries(c).map(([e,n])=>`${n} ${e}`).join(' + ')} = <b>${tot} atoms</b>. ${it.k}.`;}));
+  return()=>{stop&&stop();};}},
+/* 4 Compound */
+{t:'Compounds',b:`<ul>
+<li>A <b>compound</b> is 2 or more <b>different elements</b> chemically bonded in a <b>fixed ratio</b>. Water is always 2 H : 1 O.</li>
+<li>A compound has <b>new properties</b>, different from the elements that formed it.</li>
+<li><b>Sodium</b> (soft, very reactive metal) + <b>chlorine</b> (toxic yellow-green gas) → <b>sodium chloride</b> (table salt).</li>
+<li><b>Hydrogen</b> (a gas that burns) + <b>oxygen</b> (a gas that helps things burn) → <b>water</b> (a liquid that puts out fires).</li>
+<li>A compound can be broken back into its elements only by <b>chemical means</b> (a chemical reaction such as electrolysis), not by filtering, boiling or a magnet.</li></ul>
+<div class="tryit"><b>Try it:</b> pick a reaction and press React. Compare the properties before and after.</div>`,
+init(v){v.innerHTML=`<div id="rxChips"></div><svg class="vsvg" viewBox="0 0 460 300" id="rxSvg" role="img" aria-label="elements reacting to form a compound"></svg>
+  <div class="btnrow"><button class="primary" id="rxGo">▶ React</button><button id="rxReset">↺ Reset</button></div><div class="props" id="rxProps"></div>`;
+  const svg=$('#rxSvg',v),props=$('#rxProps',v);let stop=null,P=[],gs=[],cur=null;
+  const RX=[
+   {label:'Sodium + chlorine → sodium chloride',sc:22,
+    build(){const P=[];const sc=this.sc;metLat('Na',4,2,null).forEach(a=>P.push({el:'Na',x0:115+a.x*sc,y0:140+a.y*sc,r0:EL.Na.r*sc}));
+      [[318,70,.3],[405,125,1.9],[305,185,1.2],[400,232,.1]].forEach(([x,y,t])=>{rot(spAt('Cl2'),t).forEach(a=>P.push({el:'Cl',x0:x+a.x*sc,y0:y+a.y*sc,r0:EL.Cl.r*sc}));});
+      const fin=ionLat('Na','Cl',4,4);const na=fin.filter(a=>a.el==='Na'),cl=fin.filter(a=>a.el==='Cl');let ni=0,ci=0;
+      P.forEach(p=>{const s=p.el==='Na'?na[ni++]:cl[ci++];p.x1=230+s.x*sc;p.y1=140+s.y*sc;p.r1=s.r*sc;p.l1=s.lab;});return P;},
+    lbl:'<text x="115" y="215">sodium metal (Na)</text><text x="355" y="290">chlorine gas (Cl₂)</text>',eq:'2Na + Cl₂ → 2NaCl  (a lattice of Na⁺ and Cl⁻ ions)',
+    props:['<b>Sodium, Na</b>soft silvery metal; reacts violently with water','<b>Chlorine, Cl₂</b>toxic yellow-green gas','<b>Sodium chloride, NaCl</b>white crystals; table salt; safe to eat in small amounts']},
+   {label:'Hydrogen + oxygen → water',sc:24,
+    build(){const P=[];const sc=this.sc;
+      const hPos=[[70,70,.2],[150,110,1.6],[75,175,2.4],[160,225,.7]],oPos=[[330,95,1.2],[380,205,.4]];
+      const H=[],O=[];hPos.forEach(([x,y,t])=>rot(spAt('H2'),t).forEach(a=>{const p={el:'H',x0:x+a.x*sc,y0:y+a.y*sc,r0:EL.H.r*sc};P.push(p);H.push(p);}));
+      oPos.forEach(([x,y,t])=>rot(spAt('O2'),t).forEach(a=>{const p={el:'O',x0:x+a.x*sc,y0:y+a.y*sc,r0:EL.O.r*sc};P.push(p);O.push(p);}));
+      const w=spAt('H2O');const wO=w.find(a=>a.el==='O'),wH=w.filter(a=>a.el==='H');
+      [[160,95],[300,95],[160,195],[300,195]].forEach(([x,y],k)=>{const o=O[k];o.x1=x+wO.x*sc;o.y1=y+wO.y*sc;H[2*k].x1=x+wH[0].x*sc;H[2*k].y1=y+wH[0].y*sc;H[2*k+1].x1=x+wH[1].x*sc;H[2*k+1].y1=y+wH[1].y*sc;});
+      P.forEach(p=>{p.r1=p.r0;p.l1=p.el;});return P;},
+    lbl:'<text x="115" y="290">hydrogen gas (H₂)</text><text x="355" y="290">oxygen gas (O₂)</text>',eq:'2H₂ + O₂ → 2H₂O  (water molecules)',
+    props:['<b>Hydrogen, H₂</b>colorless gas; burns (even explodes) in air','<b>Oxygen, O₂</b>colorless gas; helps things burn','<b>Water, H₂O</b>liquid at room temperature; puts out fires']}
+  ];
+  function setT(u){const e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;P.forEach((p,i)=>{const x=p.x0+(p.x1-p.x0)*e,y=p.y0+(p.y1-p.y0)*e,r=p.r0+(p.r1-p.r0)*e;gs[i].innerHTML=atomSVG({el:p.el,x,y,r,lab:u>.65?p.l1:p.el});});const L=$('#rxLbl',svg),E=$('#rxEq',svg);if(L)L.setAttribute('opacity',String(Math.max(0,1-u*3)));if(E)E.setAttribute('opacity',String(Math.max(0,u*3-2)));}
+  function load(rx){stop&&stop();stop=null;cur=rx;P=rx.build();
+    svg.innerHTML=P.map((p,i)=>`<g data-i="${i}"></g>`).join('')+`<g id="rxLbl" font-size="15" font-weight="700" fill="#334155" text-anchor="middle">${rx.lbl}</g><text id="rxEq" x="230" y="292" font-size="17" font-weight="700" text-anchor="middle" fill="#0f172a" opacity="0">${rx.eq}</text>`;
+    gs=$$('g[data-i]',svg);setT(0);props.innerHTML=`<div class="prop">${rx.props[0]}</div><div class="op">+</div><div class="prop">${rx.props[1]}</div><div class="op">→</div><div class="prop">${rx.props[2]}</div>`;}
+  $('#rxChips',v).append(chipRow(RX,load));
+  $('#rxGo',v).onclick=()=>{if(!cur)return;stop&&stop();if(reduceMotion){setT(1);return;}let t0=null;stop=addAnim(t=>{if(t0==null)t0=t;const u=Math.min(1,(t-t0)/1.8);setT(u);if(u>=1){stop();stop=null;}});};
+  $('#rxReset',v).onclick=()=>{stop&&stop();stop=null;setT(0);};
+  return()=>{stop&&stop();};}},
+/* 5 Ionic */
+{t:'Ionic compounds are not molecules',b:`<ul>
+<li>When a <b>metal</b> reacts with a <b>nonmetal</b>, electrons transfer and make <b>ions</b>: Na → Na⁺ and Cl → Cl⁻.</li>
+<li>Opposite charges pull the ions into a repeating 3-D <b>crystal lattice</b>. In 3-D each Na⁺ touches 6 Cl⁻, so there is <b>no separate "NaCl molecule."</b></li>
+<li>The formula shows the smallest whole-number ratio of ions — one <b>formula unit</b>.</li>
+<li>So ionic compounds are <b>compounds, but not molecules</b>.</li></ul>
+<div class="tryit"><b>Try it:</b> tap any ion to see its neighbors and one formula unit.</div>`,
+init(v){v.innerHTML=`<div class="chips"><button class="chip on" id="ioLat" aria-pressed="true">NaCl lattice</button><button class="chip" id="ioWat" aria-pressed="false">Compare: water molecules</button></div><svg class="vsvg" viewBox="0 0 460 300" id="ioSvg" role="img" aria-label="sodium chloride lattice"></svg><p class="cap" id="ioCap" aria-live="polite"></p>
+  <table class="mini-table"><tr><th>Ionic compound</th><th>Ions</th><th>Formula unit (ratio)</th></tr><tr><td>NaCl</td><td>Na⁺, Cl⁻</td><td>1 : 1</td></tr><tr><td>MgO</td><td>Mg²⁺, O²⁻</td><td>1 : 1</td></tr><tr><td>CaCl₂</td><td>Ca²⁺, Cl⁻</td><td>1 : 2</td></tr><tr><td>Al₂O₃</td><td>Al³⁺, O²⁻</td><td>2 : 3</td></tr></table>`;
+  const svg=$('#ioSvg',v),cap=$('#ioCap',v);const sc=26;const cols=8,rows=6;
+  function lattice(){const at=ionLat('Na','Cl',cols,rows);const d=(ION.Na[0]+ION.Cl[0])*sc;
+    svg.innerHTML=at.map((a,i)=>`<g class="clickable" data-i="${i}" data-c="${i%cols}" data-r="${Math.floor(i/cols)}">${atomSVG({el:a.el,x:230+a.x*sc,y:150+a.y*sc,r:a.r*sc,lab:a.lab})}</g>`).join('')+`<g id="ioHL" pointer-events="none"></g>`;
+    cap.innerHTML='Tap an ion. (This is one flat slice of a 3-D crystal.)';
+    $$('g[data-i]',svg).forEach(g=>g.addEventListener('click',()=>{const i=+g.dataset.i,c=+g.dataset.c,r=+g.dataset.r;const a=at[i];const x=230+a.x*sc,y=150+a.y*sc;
+      const pc=c<cols-1?c+1:c-1;const p=at[r*cols+pc];const px=230+p.x*sc;const x0=Math.min(x,px)-d*.62,w=Math.abs(px-x)+d*1.24;
+      const nb=[[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>[c+dx,r+dy]).filter(([cc,rr])=>cc>=0&&cc<cols&&rr>=0&&rr<rows).map(([cc,rr])=>at[rr*cols+cc]);
+      $('#ioHL',svg).innerHTML=nb.map(n=>`<circle cx="${230+n.x*sc}" cy="${150+n.y*sc}" r="${n.r*sc+5}" fill="none" stroke="#f59e0b" stroke-width="4"/>`).join('')+`<rect x="${x0}" y="${y-d*.62}" width="${w}" height="${d*1.24}" rx="12" fill="#fde68a" fill-opacity=".28" stroke="#b45309" stroke-width="4" stroke-dasharray="8 5"/>`;
+      const other=a.el==='Na'?'Cl⁻':'Na⁺';
+      cap.innerHTML=`This ${a.lab} touches <b>${nb.length} ${other} ions</b> in this slice (6 in 3-D). No pair belongs together, so we just count the ratio: the dashed box is <b>one formula unit</b> = 1 Na⁺ : 1 Cl⁻.`;}));}
+  function water(){const o=[];scatter(o,rep('H2O',9),{x:10,y:10,w:440,h:280},22,mulberry(5));svg.innerHTML=o.map(atomSVG).join('');cap.innerHTML='Water is different: it is made of <b>separate H₂O molecules</b>. Each one is a molecule <i>and</i> a compound.';}
+  const bL=$('#ioLat',v),bW=$('#ioWat',v);
+  bL.onclick=()=>{bL.classList.add('on');bW.classList.remove('on');bL.setAttribute('aria-pressed','true');bW.setAttribute('aria-pressed','false');lattice();};
+  bW.onclick=()=>{bW.classList.add('on');bL.classList.remove('on');bW.setAttribute('aria-pressed','true');bL.setAttribute('aria-pressed','false');water();};
+  lattice();}},
+/* 6 Venn */
+{t:'The Venn diagram',b:`<ul>
+<li>"Molecule" and "compound" answer <b>two different questions</b>: Is it a covalently bonded unit? Does it contain 2 or more elements?</li>
+<li><b>Molecule only</b> — elements made of molecules: O₂, N₂, O₃.</li>
+<li><b>Both</b> — <b>molecular (covalent) compounds</b>: H₂O, CO₂, CH₄.</li>
+<li><b>Compound only</b> — <b>ionic compounds</b> (formula units): NaCl, MgO, CaCl₂.</li>
+<li><b>Neither</b> — elements that are not molecules: noble gases He, Ne and metals Fe, Cu.</li></ul>
+<div class="tryit"><b>Try it:</b> tap each region of the diagram.</div>`,
+init(v){v.innerHTML=`<div class="diag">${vennSVG('lv',true)}</div><p class="cap" id="vCap" aria-live="polite">Tap a region.</p>`;
+  const svg=$('svg',v),cap=$('#vCap',v);
+  const T={molecule:'<b>Molecule only:</b> covalently bonded atoms of <b>one element</b> — O₂, N₂, O₃ (also H₂, Cl₂, P₄, S₈).',both:'<b>Both:</b> covalently bonded atoms of <b>2+ different elements</b> — H₂O, CO₂, CH₄. Molecular compounds.',compound:'<b>Compound only:</b> 2+ elements but held in an ionic lattice, so they come in <b>formula units</b>, not molecules — NaCl, MgO, CaCl₂.',neither:'<b>Neither:</b> one element and no molecules — noble gases (He, Ne) are single atoms; metals (Fe, Cu) are metallic lattices.'};
+  svg.addEventListener('click',e=>{const z=vennZoneAt(svg,e);vennShow(svg,z);cap.innerHTML=T[z];});}},
+/* 7 Pure vs mixture */
+{t:'Pure substances vs. mixtures',b:`<ul>
+<li>A <b>pure substance</b> (an element or a compound) has a <b>fixed composition</b> — every sample is the same.</li>
+<li>A <b>mixture</b> is 2 or more substances <b>physically combined</b>, not chemically bonded.</li>
+<li>Mixtures have <b>variable composition</b>, and each part <b>keeps its own properties</b>.</li>
+<li>Mixtures separate by <b>physical means</b>: <b>filtration</b>, <b>distillation</b>, <b>evaporation</b>, a <b>magnet</b> (also chromatography and sieving).</li></ul>
+<div class="tryit"><b>Try it:</b> use the magnet on the mixture, then on the compound.</div>`,
+init(v){v.innerHTML=`<div class="chips"><button class="chip on" id="fsMix" aria-pressed="true">Mixture: iron + sulfur</button><button class="chip" id="fsCmp" aria-pressed="false">Compound: iron(II) sulfide, FeS</button></div>
+ <svg class="vsvg" viewBox="0 0 460 280" id="fsSvg" role="img" aria-label="iron and sulfur"></svg><div class="btnrow"><button class="primary" id="fsMag">🧲 Use magnet</button><button id="fsReset">↺ Reset</button></div><p class="cap" id="fsCap" aria-live="polite"></p>
+ <table class="mini-table"><tr><th>Method</th><th>Separates…</th><th>Example</th></tr><tr><td><b>Filtration</b></td><td>an undissolved solid from a liquid</td><td>sand from water</td></tr><tr><td><b>Distillation</b></td><td>a liquid, by boiling and condensing it</td><td>pure water from salt water</td></tr><tr><td><b>Evaporation</b></td><td>a dissolved solid (the liquid is lost)</td><td>salt from salt water</td></tr><tr><td><b>Magnet</b></td><td>a magnetic metal (iron, nickel, cobalt)</td><td>iron filings from sulfur or sand</td></tr></table>`;
+  const svg=$('#fsSvg',v),cap=$('#fsCap',v);let mode='mix',stop=null;
+  const magnet=`<g transform="translate(418 140)"><rect x="-24" y="-62" width="48" height="124" rx="8" fill="#e5e7eb" stroke="#334155" stroke-width="2"/><rect x="-24" y="-62" width="48" height="40" rx="8" fill="#dc2626"/><rect x="-24" y="22" width="48" height="40" rx="8" fill="#2563eb"/><text y="-36" text-anchor="middle" fill="#fff" font-weight="700" font-size="20">N</text><text y="49" text-anchor="middle" fill="#fff" font-weight="700" font-size="20">S</text></g>`;
+  let parts=[];
+  function build(){stop&&stop();stop=null;parts=[];let html='';const rng=mulberry(21);
+    if(mode==='mix'){const fe=metLat('Fe',3,2,null);const spots=[[80,90],[200,170],[300,80]];spots.forEach(([x,y])=>parts.push({x0:x,y0:y,x,y,fe:true,atoms:fe,s:11}));
+      [[60,215],[160,60],[150,240],[270,245],[250,128]].forEach(([x,y],i)=>parts.push({x0:x,y0:y,x,y,fe:false,atoms:rot(spAt('S8'),i),s:7}));
+      cap.innerHTML='<b>Mixture:</b> clumps of iron (Fe) and separate S₈ molecules. Not bonded — the iron is still magnetic.';}
+    else{const fs=ionLat('Fe','S',6,5);parts.push({x0:195,y0:140,x:195,y:140,fe:false,atoms:fs,s:25});cap.innerHTML='<b>Compound:</b> Fe²⁺ and S²⁻ ions bonded in a fixed 1:1 ratio. New substance, new properties.';}
+    html=parts.map((p,i)=>`<g data-i="${i}" transform="translate(${p.x} ${p.y})">${atomsSVG(p.atoms,p.s,0,0)}</g>`).join('');svg.innerHTML=html+magnet;}
+  $('#fsMag',v).onclick=()=>{if(stop)return;const gs=$$('g[data-i]',svg);
+    if(mode==='mix'){if(reduceMotion){parts.forEach((p,i)=>{if(p.fe){p.x=372;p.y=70+i*70;gs[i].setAttribute('transform',`translate(${p.x} ${p.y})`);}});cap.innerHTML='The magnet pulls the <b>iron</b> out; the sulfur stays. A <b>physical</b> separation — it works because this is a mixture.';return;}
+      let t0=null;const tg=[[352,80],[352,140],[352,200]];let k=0;parts.forEach(p=>{if(p.fe){p.tx=tg[k][0];p.ty=tg[k][1];k++;}});
+      stop=addAnim(t=>{if(t0==null)t0=t;const u=Math.min(1,(t-t0)/1.4);const e=u*u*(3-2*u);parts.forEach((p,i)=>{if(!p.fe)return;const x=p.x0+(p.tx-p.x0)*e,y=p.y0+(p.ty-p.y0)*e;gs[i].setAttribute('transform',`translate(${x} ${y})`);});if(u>=1){stop();stop=null;cap.innerHTML='The magnet pulls the <b>iron</b> out; the sulfur stays behind. A <b>physical</b> separation — it works because this is a mixture.';}});}
+    else{let t0=null;stop=addAnim(t=>{if(t0==null)t0=t;const u=(t-t0);gs[0].setAttribute('transform',`translate(${195+Math.sin(u*30)*2*(1-Math.min(1,u))} 140)`);if(u>1.2){stop();stop=null;}});
+      cap.innerHTML='Nothing separates. The iron is <b>chemically bonded</b> to sulfur in FeS, so a magnet can\'t pull it back out. Only a <b>chemical</b> reaction could.';}};
+  $('#fsReset',v).onclick=build;
+  const bM=$('#fsMix',v),bC=$('#fsCmp',v);
+  bM.onclick=()=>{mode='mix';bM.classList.add('on');bC.classList.remove('on');bM.setAttribute('aria-pressed','true');bC.setAttribute('aria-pressed','false');build();};
+  bC.onclick=()=>{mode='cmp';bC.classList.add('on');bM.classList.remove('on');bC.setAttribute('aria-pressed','true');bM.setAttribute('aria-pressed','false');build();};
+  build();return()=>{stop&&stop();};}},
+/* 8 Homogeneous vs heterogeneous */
+{t:'Homogeneous vs. heterogeneous mixtures',b:`<ul>
+<li><b>Homogeneous mixture</b> (also called a <b>solution</b>): <b>uniform</b> — the same composition throughout; you can't see separate parts.</li>
+<li>Examples: <b>salt water</b>, <b>air</b>, <b>brass</b> (copper + zinc alloy), <b>vinegar</b> (acetic acid in water).</li>
+<li><b>Heterogeneous mixture</b>: <b>not uniform</b> — you can see different parts, pieces or layers.</li>
+<li>Examples: <b>sand + water</b>, <b>trail mix</b>, <b>oil + water</b>, <b>granite</b>.</li></ul>
+<div class="tryit"><b>Quick test:</b> would every scoop or sample have exactly the same makeup?</div>`,
+init(v){v.innerHTML=`<div id="hhChips"></div><div class="twocol"><div><div class="lbl">What you see</div><svg class="vsvg" viewBox="0 0 220 200" id="hhMac" role="img" aria-label="what the mixture looks like"></svg></div><div><div class="lbl">Zoomed-in view</div><svg class="vsvg" viewBox="0 0 220 200" id="hhMic" role="img" aria-label="particle view"></svg></div></div><p class="cap" id="hhCap" aria-live="polite"></p>`;
+  const mac=$('#hhMac',v),mic=$('#hhMic',v),cap=$('#hhCap',v);
+  const beaker=(inner)=>`<defs><clipPath id="bk"><path d="M50 40 V170 a12 12 0 0 0 12 12 H158 a12 12 0 0 0 12 -12 V40 Z"/></clipPath></defs><g clip-path="url(#bk)">${inner}</g><path d="M44 36 H50 V170 a12 12 0 0 0 12 12 H158 a12 12 0 0 0 12 -12 V36 H176" fill="none" stroke="#334155" stroke-width="4"/>`;
+  const rng=()=>mulberry(9);
+  const E=[
+   {label:'Salt water',k:'homog',mac:beaker('<rect x="40" y="70" width="140" height="120" fill="#bfdbfe"/>'),mic:()=>{const o=[];scatter(o,shuffle(rep('H2O',8).concat(['Na+','Cl-','Na+','Cl-']),rng()),{x:4,y:4,w:212,h:192},15,rng());return o;},c:'<b>Homogeneous.</b> The salt dissolves into Na⁺ and Cl⁻ ions spread evenly among water molecules.'},
+   {label:'Air',k:'homog',mac:'<rect x="20" y="20" width="180" height="160" rx="12" fill="#f0f9ff" stroke="#334155" stroke-width="3"/><text x="110" y="105" text-anchor="middle" font-size="16" fill="#475569">clear, uniform</text>',mic:()=>{const o=[];scatter(o,shuffle(rep('N2',7).concat(rep('O2',2),['Ar']),rng()),{x:4,y:4,w:212,h:192},14,rng());return o;},c:'<b>Homogeneous.</b> Mostly N₂ (~78%) and O₂ (~21%) plus a little Ar, evenly mixed.'},
+   {label:'Brass',k:'homog',mac:'<defs><linearGradient id="br" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6d77a"/><stop offset="1" stop-color="#b8892b"/></linearGradient></defs><path d="M30 120 L60 70 H190 L160 120 Z" fill="#f3d36b" stroke="#6b4f12" stroke-width="2"/><rect x="30" y="120" width="130" height="40" fill="url(#br)" stroke="#6b4f12" stroke-width="2"/><path d="M160 120 L190 70 V110 L160 160 Z" fill="#a67c22" stroke="#6b4f12" stroke-width="2"/>',mic:()=>{const o=[];chunk(o,metLat(['Cu','Cu','Zn'],7,6,rng()),110,100,15);return o;},c:'<b>Homogeneous</b> (an alloy). Cu and Zn atoms are mixed evenly in one lattice. The Cu:Zn ratio can vary, so it is not a compound.'},
+   {label:'Vinegar',k:'homog',mac:beaker('<rect x="40" y="60" width="140" height="130" fill="#fef3c7"/>'),mic:()=>{const o=[];scatter(o,shuffle(rep('H2O',8).concat(['CH3COOH','CH3COOH']),rng()),{x:4,y:4,w:212,h:192},13,rng());return o;},c:'<b>Homogeneous.</b> A few acetic acid molecules (CH₃COOH) dissolved evenly in water.'},
+   {label:'Sand + water',k:'hetero',mac:beaker('<rect x="40" y="60" width="140" height="130" fill="#bfdbfe"/>'+Array.from({length:60},(_,i)=>{const r=mulberry(i+3);return`<circle cx="${55+r()*110}" cy="${160+r()*22}" r="${2+r()*3}" fill="#c8a165" stroke="#8a6d3b" stroke-width=".6"/>`;}).join('')),mic:()=>{const o=[];const c=chunk(o,netLat('Si','O',5,3),110,160,13);scatter(o,rep('H2O',6),{x:4,y:4,w:212,h:c.y-8},15,rng());return o;},c:'<b>Heterogeneous.</b> Sand grains (SiO₂) settle and stay separate from the water.'},
+   {label:'Trail mix',k:'hetero',mac:`<path d="M20 90 Q110 210 200 90 Z" fill="#e7d3b0" stroke="#6b4f12" stroke-width="3"/>`+Array.from({length:26},(_,i)=>{const r=mulberry(i*7+1);const x=45+r()*130,y=95+r()*35;const t=i%4;return t===0?`<ellipse cx="${x}" cy="${y}" rx="9" ry="5" fill="#c08a4d" stroke="#5b3a1a"/>`:t===1?`<circle cx="${x}" cy="${y}" r="5" fill="#4a2c2a"/>`:t===2?`<circle cx="${x}" cy="${y}" r="6" fill="${['#e11d48','#2563eb','#16a34a','#f59e0b'][i%4]}" stroke="#111" stroke-width=".8"/>`:`<rect x="${x-6}" y="${y-4}" width="12" height="8" rx="3" fill="#f5deb3" stroke="#8a6d3b"/>`;}).join(''),mic:null,c:'<b>Heterogeneous.</b> You can see — and pick out — the nuts, raisins and candy. No zoom needed.'},
+   {label:'Oil + water',k:'hetero',mac:beaker('<rect x="40" y="70" width="140" height="40" fill="#fde68a"/><rect x="40" y="110" width="140" height="80" fill="#bfdbfe"/><line x1="40" y1="110" x2="180" y2="110" stroke="#334155" stroke-width="2"/>'),mic:()=>{const o=[];scatter(o,rep('C3H8',3),{x:2,y:2,w:216,h:76},8,rng());scatter(o,rep('H2O',6),{x:4,y:86,w:212,h:110},14,rng());return o;},bg:'<rect x="0" y="0" width="220" height="80" fill="#fef3c7"/><rect x="0" y="80" width="220" height="120" fill="#dbeafe"/><line x1="0" y1="80" x2="220" y2="80" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/>',c:'<b>Heterogeneous.</b> Oil (hydrocarbon molecules, simplified here) floats as a separate layer on water.'},
+   {label:'Granite',k:'hetero',mac:`<path d="M25 120 L50 50 L120 30 L190 60 L200 140 L140 180 L50 170 Z" fill="#e5e1dc" stroke="#334155" stroke-width="3"/>`+Array.from({length:70},(_,i)=>{const r=mulberry(i*13+5);const x=50+r()*135,y=50+r()*115;return`<rect x="${x}" y="${y}" width="${4+r()*8}" height="${3+r()*6}" transform="rotate(${r()*90} ${x} ${y})" fill="${['#f4b6a6','#1f2937','#fafafa','#9ca3af'][i%4]}"/>`;}).join(''),mic:null,c:'<b>Heterogeneous.</b> You can see separate mineral grains: quartz (glassy), feldspar (pink/white) and mica or hornblende (black).'}
+  ];
+  const list=[{group:'Homogeneous:'}].concat(E.slice(0,4),[{group:'Heterogeneous:'}],E.slice(4));
+  $('#hhChips',v).append(chipRow(list,it=>{mac.innerHTML=`<rect width="220" height="200" fill="#f8fafc"/>${it.mac}`;
+    if(it.mic){mic.innerHTML=(it.bg||'')+it.mic().map(atomSVG).join('');}
+    else{mic.innerHTML=it.label==='Granite'?`<path d="M0 0 H120 L90 90 L0 110Z" fill="#e2e8f0"/><path d="M120 0 H220 V100 L90 90Z" fill="#fbcfc4"/><path d="M0 110 L90 90 L220 100 V200 H0Z" fill="#374151"/><g font-size="15" font-weight="700" text-anchor="middle"><text x="50" y="50" fill="#0f172a">quartz</text><text x="165" y="50" fill="#0f172a">feldspar</text><text x="110" y="160" fill="#fff">mica</text></g><text x="110" y="192" font-size="12" text-anchor="middle" fill="#fff">separate grains = separate regions</text>`:`<text x="110" y="95" font-size="15" text-anchor="middle" fill="#334155">No zoom needed —</text><text x="110" y="118" font-size="15" text-anchor="middle" fill="#334155">you can already see</text><text x="110" y="141" font-size="15" text-anchor="middle" fill="#334155">the different pieces.</text>`;}
+    cap.innerHTML=it.c;},1));}},
+/* 9 Flowchart */
+{t:'Classifying matter: the flowchart',b:`<ul>
+<li><b>Step 1:</b> Can it be separated by <b>physical means</b>? Yes → <b>mixture</b>. No → <b>pure substance</b>.</li>
+<li><b>Pure substance:</b> only <b>one kind of atom</b> → <b>element</b>. 2+ elements <b>chemically bonded</b> → <b>compound</b>.</li>
+<li><b>Mixture:</b> <b>uniform</b> throughout → <b>homogeneous</b>. Visibly <b>different parts</b> → <b>heterogeneous</b>.</li>
+<li>"Molecule or not?" is a <b>separate question</b> about how the particles are held together — that's the Venn diagram.</li></ul>
+<div class="tryit"><b>Try it:</b> pick a sample and follow its path.</div>`,
+init(v){v.innerHTML=`<div id="fcChips"></div><div class="diag">${flowSVG(true)}</div><ol class="steps" id="fcSteps" aria-live="polite"></ol>`;
+  const svg=$('.diag svg',v),st=$('#fcSteps',v);
+  const PH='Can it be separated by physical means?';
+  const X=[{label:'O₂',p:['matter','pure','element'],s:[PH+' <b>No</b> → pure substance','One kind of atom? <b>Yes</b> (only O) → <b>element</b>']},
+   {label:'Fe',p:['matter','pure','element'],s:[PH+' <b>No</b> → pure substance','One kind of atom? <b>Yes</b> (only Fe) → <b>element</b>']},
+   {label:'H₂O',p:['matter','pure','compound'],s:[PH+' <b>No</b> → pure substance','One kind of atom? <b>No</b> — H and O are bonded in a fixed 2:1 ratio → <b>compound</b>']},
+   {label:'NaCl',p:['matter','pure','compound'],s:[PH+' <b>No</b> → pure substance','One kind of atom? <b>No</b> — Na⁺ and Cl⁻ bonded 1:1 → <b>compound</b>']},
+   {label:'Air',p:['matter','mixture','homog'],s:[PH+' <b>Yes</b> — N₂, O₂, Ar are not bonded to each other → mixture','Uniform throughout? <b>Yes</b> → <b>homogeneous mixture</b>']},
+   {label:'Salt water',p:['matter','mixture','homog'],s:[PH+' <b>Yes</b> — evaporate the water and the salt is left → mixture','Uniform throughout? <b>Yes</b> → <b>homogeneous mixture</b>']},
+   {label:'Brass',p:['matter','mixture','homog'],s:[PH+' <b>Yes</b> — Cu:Zn ratio varies; it can be melted apart → mixture','Uniform throughout? <b>Yes</b> → <b>homogeneous mixture</b> (alloy)']},
+   {label:'Granite',p:['matter','mixture','hetero'],s:[PH+' <b>Yes</b> — the grains can be broken apart → mixture','Uniform throughout? <b>No</b>, you can see different grains → <b>heterogeneous mixture</b>']},
+   {label:'Trail mix',p:['matter','mixture','hetero'],s:[PH+' <b>Yes</b> — pick the pieces apart by hand → mixture','Uniform throughout? <b>No</b> → <b>heterogeneous mixture</b>']}];
+  $('#fcChips',v).append(chipRow(X,it=>{flowShow(svg,it.p);st.innerHTML=it.s.map(s=>`<li>${s}</li>`).join('');}));}}
+];
+
+let curStop=0,stopCleanup=null;
+function learnInit(){
+  const dots=$('#dots');dots.innerHTML='';
+  STOPS.forEach((s,i)=>{const b=h('button',{class:'dot','aria-label':`Stop ${i+1}: ${s.t}`,title:s.t},String(i+1));b.onclick=()=>showStop(i);dots.append(b);});
+  $('#backBtn').onclick=()=>showStop(curStop-1);
+  $('#nextBtn').onclick=()=>{if(curStop<STOPS.length-1)showStop(curStop+1);else setPane('lab');};
+}
+function showStop(i){
+  if(i<0||i>=STOPS.length)return;
+  stopCleanup&&stopCleanup();stopCleanup=null;curStop=i;const s=STOPS[i];
+  $('#stopText').innerHTML=`<h2><span class="stopnum">${i+1}</span>${s.t}</h2>${s.b}`;
+  const v=$('#stopVis');v.innerHTML='';const c=s.init(v);if(typeof c==='function')stopCleanup=c;
+  if(!S.viewed.includes(i)){S.viewed.push(i);save();}
+  updateLearnUI();updateStatus();
+}
+function updateLearnUI(){
+  $$('#dots .dot').forEach((d,k)=>{d.classList.toggle('viewed',S.viewed.includes(k));d.classList.toggle('cur',k===curStop);d.setAttribute('aria-current',k===curStop?'step':'false');});
+  const n=S.viewed.length;$('#pfill').style.width=(n/STOPS.length*100)+'%';$('#pbar').setAttribute('aria-valuenow',n);
+  $('#plabel').textContent=`Viewed ${n}/${STOPS.length}`;$('#stopCount').textContent=`Stop ${curStop+1} of ${STOPS.length}`;
+  $('#backBtn').disabled=curStop===0;$('#nextBtn').textContent=curStop===STOPS.length-1?'Go to Lab ▶':'Next ▶';
+}
+</script>
+<script>
+/* ============ LAB ============ */
+const VBINS=[{id:'molecule',label:'Molecule only',icon:vennIcon('molecule')},{id:'both',label:'Both',icon:vennIcon('both')},{id:'compound',label:'Compound only',icon:vennIcon('compound')},{id:'neither',label:'Neither',icon:vennIcon('neither')}];
+const LABA=[
+ {id:'a1',f:'CO2',nm:'carbon dioxide',ans:'both',x:'CO₂ is all nonmetals (covalent), so it is a molecule and a compound: both.'},
+ {id:'a2',f:'NH3',nm:'ammonia',ans:'both',x:'NH₃ is covalent (N and H are nonmetals): both.'},
+ {id:'a3',f:'C6H12O6',nm:'glucose',ans:'both',x:'Glucose is a covalent molecule of C, H and O: both.'},
+ {id:'a4',f:'SO2',nm:'sulfur dioxide',ans:'both',x:'SO₂ is covalent (S and O are nonmetals): both.'},
+ {id:'a5',f:'N2O',nm:'dinitrogen monoxide',ans:'both',x:'N₂O is covalent (two nonmetals): both.'},
+ {id:'a6',f:'CCl4',nm:'carbon tetrachloride',ans:'both',x:'CCl₄ is covalent (C and Cl are nonmetals): both.'},
+ {id:'a7',f:'H2O2',nm:'hydrogen peroxide',ans:'both',x:'H₂O₂ is covalent (H and O are nonmetals): both.'},
+ {id:'a8',f:'C2H6',nm:'ethane',ans:'both',x:'C₂H₆ is covalent (C and H are nonmetals): both.'},
+ {id:'a9',d:'H2O',n:2,ans:'both',x:'The diagram shows separate H₂O molecules (covalent): both.'},
+ {id:'a10',d:'CH4',n:1,ans:'both',x:'The diagram shows a CH₄ molecule (covalent): both.'},
+ {id:'a11',d:'HCl',n:2,ans:'both',x:'The diagram shows separate HCl molecules (covalent): both.'},
+ {id:'a12',d:'CO',n:3,ans:'both',x:'The diagram shows separate CO molecules (covalent): both.'},
+ {id:'a13',f:'CaCl2',nm:'calcium chloride',ans:'compound',x:'CaCl₂ is a metal + nonmetal (ionic): formula units, not molecules. Compound only.'},
+ {id:'a14',f:'KBr',nm:'potassium bromide',ans:'compound',x:'KBr is ionic (K⁺ and Br⁻): compound only.'},
+ {id:'a15',f:'Fe2O3',nm:'iron(III) oxide',ans:'compound',x:'Fe₂O₃ is ionic (Fe³⁺ and O²⁻): compound only.'},
+ {id:'a16',f:'Na2O',nm:'sodium oxide',ans:'compound',x:'Na₂O is ionic (Na⁺ and O²⁻): compound only.'},
+ {id:'a17',f:'MgCl2',nm:'magnesium chloride',ans:'compound',x:'MgCl₂ is ionic (Mg²⁺ and Cl⁻): compound only.'},
+ {id:'a18',f:'Al2O3',nm:'aluminum oxide',ans:'compound',x:'Al₂O₃ is ionic (Al³⁺ and O²⁻): compound only.'},
+ {id:'a19',f:'LiF',nm:'lithium fluoride',ans:'compound',x:'LiF is ionic (Li⁺ and F⁻): compound only.'},
+ {id:'a20',f:'K2S',nm:'potassium sulfide',ans:'compound',x:'K₂S is ionic (K⁺ and S²⁻): compound only.'},
+ {id:'a21',lat:['Na','Cl'],ans:'compound',x:'The diagram shows a repeating Na/Cl lattice, an ionic compound (NaCl): compound only.'},
+ {id:'a22',lat:['Mg','O'],ans:'compound',x:'The diagram shows a repeating Mg/O lattice, an ionic compound (MgO): compound only.'},
+ {id:'a23',lat:['K','Cl'],ans:'compound',x:'The diagram shows a repeating K/Cl lattice, an ionic compound (KCl): compound only.'},
+ {id:'a24',lat:['Ca','O'],ans:'compound',x:'The diagram shows a repeating Ca/O lattice, an ionic compound (CaO): compound only.'}
+];
+const ABINS=VBINS.filter(b=>b.id!=='neither');
+function cardAtoms(it){
+  if(it.lat)return ionLat(it.lat[0],it.lat[1],4,3,true);
+  if(it.met)return metLat(it.met,4,3,null);
+  let at=[],x=0;const base=spAt(it.d);const R=boundR(base);
+  for(let k=0;k<it.n;k++){rot(base,k*1.1+.4).forEach(a=>at.push(Object.assign({},a,{x:a.x+x,y:a.y+(k%2?R*.5:-R*.5)})));x+=2*R+.5;}
+  return at;
+}
+function cardHTML(it,big){
+  if(it.f)return`<div class="fml"${big?' style="font-size:3rem"':''}>${F(it.f)}</div><div class="nm"${big?' style="font-size:1.1rem"':''}>${it.nm}</div>`;
+  return fitSVG(cardAtoms(it),big?300:120,big?200:80,{max:big?40:16,pad:big?14:5,plain:true,aria:'particle diagram card'})+(big?'':'<div class="nm">diagram</div>');
+}
+function zoomPanel(root,txt){const z=h('div',{class:'zoomwrap'});z.innerHTML=`<div class="zoom" aria-live="polite"><div style="padding:2rem 1rem;text-align:center;color:#475569">Tap an item to see it larger here.</div></div><div class="zoomhint">${txt}</div>`;root.append(z);return $('.zoom',z);}
+
+let sorterA,sorterB;
+function labAInit(){
+  const root=$('#labA');root.innerHTML=`<h3>A · Venn Sorter</h3><p class="intro">Every card is a <b>compound</b>. Sort all 24 into the Venn zone where each belongs. You need <b>80% or better</b>. Formula cards and particle-diagram cards are mixed together.</p>`;
+  const zoom=zoomPanel(root,'<b>Rule:</b> covalent compounds (all nonmetals) are made of molecules, so they go in <b>Both</b>. Ionic compounds (metal + nonmetal) are lattices of formula units, not molecules, so they go in <b>Compound only</b>.');
+  const sr=h('div');root.append(sr);
+  const items=shuffle(LABA,mulberry(Date.now()%100000)).map(it=>({id:it.id,ans:it.ans,html:cardHTML(it),aria:it.f?it.f+' '+it.nm:'particle diagram card',src:it}));
+  sorterA=Sorter(sr,{items,bins:ABINS,cols:3,itemClass:'card',onSelect:it=>{zoom.innerHTML=cardHTML(it.src,true);},onChange:()=>{fb.innerHTML='';}});
+  const row=h('div',{class:'btnrow'});row.innerHTML=`<button class="primary" id="aCheck">✓ Check</button><button id="aBack">Return wrong cards to tray</button><button id="aReset">↺ Start over</button>`;root.append(row);
+  const fb=h('div',{class:'fb','aria-live':'polite'});root.append(fb,labNext('A'));
+  $('#aCheck').onclick=()=>{if(!sorterA.allPlaced()){fb.className='fb info';fb.innerHTML=`Place all 24 cards first (${24-sorterA.placed()} left in the tray).`;return;}
+    const res=sorterA.check();const n=res.filter(r=>r.ok).length;const pct=n/res.length;if(pct>S.labABest){S.labABest=pct;save();}
+    res.sort((a,b)=>a.ok-b.ok);const pass=pct>=.8;fb.className='fb '+(pass?'good':'bad');
+    fb.innerHTML=`<b>${n}/24 correct (${Math.round(pct*100)}%).</b> ${pass?'Checklist task complete! ✓':'You need 80% (20/24). Fix the ✗ cards and check again.'}<ul class="fblist">${res.map(r=>`<li><span class="mk ${r.ok?'y':'n'}">${r.ok?'✓':'✗'}</span><b>${r.it.src.f?F(r.it.src.f):'Diagram'}</b> → ${ZONES[r.it.ans]}. ${r.it.src.x}</li>`).join('')}</ul>`;updateStatus();};
+  $('#aBack').onclick=()=>{sorterA.returnWrong();};
+  $('#aReset').onclick=()=>{sorterA.reset();fb.innerHTML='';};
+}
+function labBInit(){
+  const root=$('#labB');const ids=Object.keys(BOXES);
+  root.innerHTML=`<h3>B · Matter Sorter</h3><p class="intro">Each box is a zoomed-in sample. Sort all ${ids.length} boxes: <b>element</b>, <b>compound</b>, <b>homogeneous mixture</b> or <b>heterogeneous mixture</b>. Get them all correct to complete this task.</p>`;
+  const zoom=zoomPanel(root,'<b>Clues:</b> Are all the particles identical? (pure substance) Is each particle one kind of atom (element) or 2+ elements bonded (compound)? Different particles spread evenly = homogeneous. Visible separate regions = heterogeneous.');
+  const sr=h('div');root.append(sr);
+  const items=shuffle(ids,mulberry(Date.now()%100000+3)).map((id,i)=>({id,ans:BOXES[id].a,html:`<div class="tl">Box ${String.fromCharCode(65+ids.indexOf(id))}</div>${boxSVG(id,'particle box '+String.fromCharCode(65+ids.indexOf(id)))}`,aria:'particle box '+String.fromCharCode(65+ids.indexOf(id))}));
+  sorterB=Sorter(sr,{items,bins:[{id:'element',label:'Element'},{id:'compound',label:'Compound'},{id:'homog',label:'Homogeneous mixture'},{id:'hetero',label:'Heterogeneous mixture'}],cols:2,itemClass:'tile',onSelect:it=>{zoom.innerHTML=`<div class="tl" style="font-weight:700">Box ${String.fromCharCode(65+ids.indexOf(it.id))} (zoomed)</div>`+boxSVG(it.id);},onChange:()=>{fb.innerHTML='';}});
+  const row=h('div',{class:'btnrow'});row.innerHTML=`<button class="primary" id="bCheck">✓ Check</button><button id="bBack">Return wrong boxes to tray</button><button id="bReset">↺ Start over</button>`;root.append(row);
+  const fb=h('div',{class:'fb','aria-live':'polite'});root.append(fb,labNext('B'));
+  $('#bCheck').onclick=()=>{if(!sorterB.allPlaced()){fb.className='fb info';fb.innerHTML=`Sort every box first (${ids.length-sorterB.placed()} left).`;return;}
+    const res=sorterB.check();const n=res.filter(r=>r.ok).length;const all=n===res.length;if(all&&!S.labB){S.labB=true;save();}
+    res.sort((a,b)=>a.ok-b.ok);fb.className='fb '+(all?'good':'bad');
+    fb.innerHTML=`<b>${n}/${res.length} correct.</b> ${all?'All boxes sorted correctly — checklist task complete! ✓':'Fix the ✗ boxes and check again.'}<ul class="fblist">${res.map(r=>`<li><span class="mk ${r.ok?'y':'n'}">${r.ok?'✓':'✗'}</span><b>Box ${String.fromCharCode(65+ids.indexOf(r.it.id))}</b> → ${ZN[r.it.ans]}. ${BOXES[r.it.id].x}</li>`).join('')}</ul>`;updateStatus();};
+  $('#bBack').onclick=()=>sorterB.returnWrong();
+  $('#bReset').onclick=()=>{sorterB.reset();fb.innerHTML='';};
+}
+
+/* ---------- Build-a-Particle ---------- */
+function parseF(f){const tok=f.match(/[A-Z][a-z]?|\d+|\(|\)/g)||[];const st=[{}];for(let i=0;i<tok.length;i++){const t=tok[i];
+  if(t==='('){st.push({});}else if(t===')'){const g=st.pop();let m=1;if(/^\d+$/.test(tok[i+1]||'')){m=+tok[++i];}const top=st[st.length-1];for(const k in g)top[k]=(top[k]||0)+g[k]*m;}
+  else if(!/^\d+$/.test(t)){let n=1;if(/^\d+$/.test(tok[i+1]||'')){n=+tok[++i];}const top=st[st.length-1];top[t]=(top[t]||0)+n;}}return st[0];}
+const ckey=c=>Object.keys(c).sort().map(k=>k+c[k]).join('');
+/* [formula, name, kind, particle, zone, note] */
+const SUBST=[
+ ['He','helium','element','single atom','neither','A noble gas — exists as separate He atoms.'],
+ ['Fe','iron','element','metal (atoms in a metallic lattice)','neither','Metals are written as single symbols; no molecules.'],
+ ['Na','sodium','element','metal (atoms in a metallic lattice)','neither','A soft, very reactive metal.'],
+ ['Mg','magnesium','element','metal (atoms in a metallic lattice)','neither','A light metal that burns with a bright white flame.'],
+ ['C','carbon (diamond / graphite)','element','covalent network (written as C)','neither','Carbon forms giant networks of atoms, not small molecules.'],
+ ['H2','hydrogen','element','molecule (diatomic)','molecule','One of the 7 diatomic elements.'],
+ ['N2','nitrogen','element','molecule (diatomic)','molecule','About 78% of air.'],
+ ['O2','oxygen','element','molecule (diatomic)','molecule','The oxygen we breathe.'],
+ ['Cl2','chlorine','element','molecule (diatomic)','molecule','A toxic yellow-green gas.'],
+ ['O3','ozone','element','molecule','molecule','Three O atoms — still the element oxygen.'],
+ ['S8','sulfur','element','molecule (ring of 8)','molecule','Sulfur\'s common form is S₈ rings.'],
+ ['H2O','water','compound','molecule','both',''],['H2O2','hydrogen peroxide','compound','molecule','both',''],
+ ['CO2','carbon dioxide','compound','molecule','both',''],['CO','carbon monoxide','compound','molecule','both','A toxic gas.'],
+ ['CH4','methane','compound','molecule','both','Natural gas.'],['C2H6','ethane','compound','molecule','both',''],
+ ['C2H4','ethene (ethylene)','compound','molecule','both',''],['C2H2','ethyne (acetylene)','compound','molecule','both',''],
+ ['C3H8','propane','compound','molecule','both','Grill fuel.'],['CH4O','methanol','compound','molecule','both','Formula usually written CH₃OH.'],
+ ['CH2O','formaldehyde','compound','molecule','both',''],['CHCl3','chloroform','compound','molecule','both',''],
+ ['CCl4','carbon tetrachloride','compound','molecule','both',''],['CS2','carbon disulfide','compound','molecule','both',''],
+ ['HCN','hydrogen cyanide','compound','molecule','both',''],['NH3','ammonia','compound','molecule','both',''],
+ ['N2H4','hydrazine','compound','molecule','both','A rocket fuel.'],['NCl3','nitrogen trichloride','compound','molecule','both',''],
+ ['NO','nitrogen monoxide','compound','molecule','both',''],['NO2','nitrogen dioxide','compound','molecule','both',''],
+ ['N2O','dinitrogen monoxide','compound','molecule','both','"Laughing gas."'],['HCl','hydrogen chloride','compound','molecule','both',''],
+ ['H2S','hydrogen sulfide','compound','molecule','both','Smells like rotten eggs.'],['SO2','sulfur dioxide','compound','molecule','both',''],
+ ['SO3','sulfur trioxide','compound','molecule','both',''],['SCl2','sulfur dichloride','compound','molecule','both',''],
+ ['H2SO4','sulfuric acid','compound','molecule','both',''],['HNO3','nitric acid','compound','molecule','both',''],
+ ['NaCl','sodium chloride','compound','formula unit (ionic)','compound','Table salt.'],['MgO','magnesium oxide','compound','formula unit (ionic)','compound',''],
+ ['MgCl2','magnesium chloride','compound','formula unit (ionic)','compound',''],['Na2O','sodium oxide','compound','formula unit (ionic)','compound',''],
+ ['Na2S','sodium sulfide','compound','formula unit (ionic)','compound',''],['MgS','magnesium sulfide','compound','formula unit (ionic)','compound',''],
+ ['NaH','sodium hydride','compound','formula unit (ionic)','compound',''],['Mg3N2','magnesium nitride','compound','formula unit (ionic)','compound',''],
+ ['FeO','iron(II) oxide','compound','formula unit (ionic)','compound',''],['Fe2O3','iron(III) oxide','compound','formula unit (ionic)','compound','The main part of rust.'],
+ ['Fe3O4','iron(II,III) oxide (magnetite)','compound','formula unit (ionic)','compound',''],['FeS','iron(II) sulfide','compound','formula unit (ionic)','compound',''],
+ ['FeCl2','iron(II) chloride','compound','formula unit (ionic)','compound',''],['FeCl3','iron(III) chloride','compound','formula unit (ionic)','compound',''],
+ ['NaOH','sodium hydroxide','compound','formula unit (ionic, with a polyatomic ion)','compound',''],['Mg(OH)2','magnesium hydroxide','compound','formula unit (ionic, with a polyatomic ion)','compound','Milk of magnesia.'],
+ ['Na2CO3','sodium carbonate','compound','formula unit (ionic, with a polyatomic ion)','compound','Washing soda.'],['NaHCO3','sodium hydrogen carbonate','compound','formula unit (ionic, with a polyatomic ion)','compound','Baking soda.'],
+ ['Na2SO4','sodium sulfate','compound','formula unit (ionic, with a polyatomic ion)','compound',''],['MgSO4','magnesium sulfate','compound','formula unit (ionic, with a polyatomic ion)','compound','Epsom salt.'],
+ ['NaNO3','sodium nitrate','compound','formula unit (ionic, with a polyatomic ion)','compound','']
+];
+const SUBDB={};SUBST.forEach(s=>{SUBDB[ckey(parseF(s[0]))]={f:s[0],name:s[1],kind:s[2],part:s[3],zone:s[4],note:s[5]};});
+const DIAT={H:'H₂',N:'N₂',O:'O₂',Cl:'Cl₂'};
+const CZ=['both','compound','neither'];
+function builtZones(){const z=new Set();S.built.forEach(f=>{const d=SUBDB[ckey(parseF(f))];if(d&&CZ.includes(d.zone))z.add(d.zone);});return z;}
+const CBINS=VBINS.filter(b=>CZ.includes(b.id));
+
+function labCInit(){
+  const root=$('#labC');
+  root.innerHTML=`<h3>C · Build-a-Particle</h3><p class="intro">Drag atoms into the build area (or tap an atom to add it). New atoms <b>snap</b> so they touch the nearest atom. Tap an atom to select it; drag it off the area to remove it. Then press <b>Check particle</b>. Goal: build <b>4 real particles</b> that cover <b>all 3 Venn zones</b>: Both, Compound only and Neither.</p>
+  <div class="lc-grid"><div class="palette" id="pal" aria-label="Atom palette"></div>
+  <div><svg class="ws" id="ws" viewBox="0 0 640 400" role="application" aria-label="Build area"></svg>
+  <div class="ws-tools"><button class="primary" id="lcCheck">✓ Check particle</button><button id="lcDel">Remove selected</button><button id="lcClear">Clear all</button></div>
+  <div class="fb" id="lcMsg" aria-live="polite"></div>
+  <details class="ideas"><summary>Need ideas?</summary>Try one He atom… one Fe atom… one O with two H… one C with four H… one Na with one Cl… one Mg with one O.</details></div></div>
+  <h3 style="margin-top:.9rem">Your real particles</h3><div class="zones" id="zoneTrack" style="grid-template-columns:repeat(3,minmax(0,1fr))"></div><div class="builtlist" id="builtList"></div><div id="nextC"></div>`;
+  const PAL=['H','C','N','O','Na','Cl','Mg','He','Fe','S'];const SC=26;const W=640,H=400;
+  const ws=$('#ws'),msg=$('#lcMsg');let atoms=[],nid=1,selId=null,lastId=null;
+  const pal=$('#pal');
+  PAL.forEach(el=>{const b=h('button',{class:'patom','aria-label':`Add ${EL[el].n} atom`},`<svg viewBox="0 0 40 40">${atomSVG({el,x:20,y:20,r:17})}</svg>${EL[el].n}`);pal.append(b);
+    dragify(b,{targets:()=>[ws],ghost:()=>`<svg viewBox="0 0 60 60" width="${Math.round(EL[el].r*SC*2+6)}" style="border-radius:50%">${atomSVG({el,x:30,y:30,r:27})}</svg>`,onDrop:(t,e)=>{if(!t)return;const p=svgPt(ws,e);addAtom(el,p.x,p.y,null);},onTap:()=>{const anchor=atoms.find(a=>a.id===selId)||atoms.find(a=>a.id===lastId)||atoms[atoms.length-1];if(!anchor)addAtom(el,W/2,H/2,null);else addAtom(el,anchor.x+40,anchor.y,anchor);}});
+    b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();b.dispatchEvent(new PointerEvent('pointerup',{pointerId:-1}));}});});
+  const R=el=>EL[el].r*SC;
+  const clampP=(x,y,r)=>({x:Math.max(r+2,Math.min(W-r-2,x)),y:Math.max(r+2,Math.min(H-r-2,y))});
+  function free(x,y,r,ex){return x>=r&&x<=W-r&&y>=r&&y<=H-r&&atoms.every(o=>ex.includes(o.id)||Math.hypot(o.x-x,o.y-y)>=o.r+r-1.5);}
+  function spot(n,r,a0,selfId){for(let k=0;k<24;k++){for(const sg of k?[1,-1]:[1]){const a=a0+sg*k*Math.PI/12;const x=n.x+(n.r+r)*Math.cos(a),y=n.y+(n.r+r)*Math.sin(a);if(free(x,y,r,[n.id,selfId]))return{x,y};}}return null;}
+  function nearest(x,y,ex){let best=null,bd=1e9;atoms.forEach(o=>{if(o.id===ex)return;const d=Math.hypot(o.x-x,o.y-y)-o.r;if(d<bd){bd=d;best=o;}});return best?{a:best,d:bd}:null;}
+  function addAtom(el,x,y,anchor){if(atoms.length>=30){say('info','That\'s plenty of atoms (30 max). Remove some first.');return;}
+    const r=R(el);let p=clampP(x,y,r);
+    if(atoms.length){const nn=anchor?{a:anchor,d:0}:nearest(x,y);if(nn&&(anchor||nn.d-r<80)){const a0=anchor?0:Math.atan2(y-nn.a.y,x-nn.a.x);let s=spot(nn.a,r,a0,-1);if(!s&&anchor){for(const o of atoms){s=spot(o,r,0,-1);if(s)break;}}if(s)p=s;}}
+    const a={id:nid++,el,x:p.x,y:p.y,r};atoms.push(a);lastId=a.id;draw();clearMsg();}
+  function snapExisting(a){const nn=nearest(a.x,a.y,a.id);if(!nn||nn.d-a.r>80)return;const s=spot(nn.a,a.r,Math.atan2(a.y-nn.a.y,a.x-nn.a.x),a.id);if(s){a.x=s.x;a.y=s.y;}}
+  function draw(){ws.innerHTML=`<defs><pattern id="wsg" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#e2e8f0" stroke-width="1"/></pattern></defs><rect width="${W}" height="${H}" fill="url(#wsg)"/>`+(atoms.length?'':`<text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="20" fill="#64748b">Drag or tap atoms from the palette</text>`)+
+    atoms.map(a=>`<g class="wsatom" data-id="${a.id}">${a.id===selId?`<circle cx="${a.x}" cy="${a.y}" r="${a.r+6}" fill="none" stroke="#0b57d0" stroke-width="3" stroke-dasharray="6 4"/>`:''}${atomSVG(a)}</g>`).join('');}
+  let drag=null;
+  ws.addEventListener('pointerdown',e=>{const g=e.target.closest('.wsatom');if(!g)return;const a=atoms.find(x=>x.id===+g.dataset.id);if(!a)return;drag={a,sx:e.clientX,sy:e.clientY,moved:false,id:e.pointerId,ox:a.x,oy:a.y};try{ws.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+  ws.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6)drag.moved=true;if(drag.moved){const p=svgPt(ws,e);drag.a.x=p.x;drag.a.y=p.y;draw();}});
+  ws.addEventListener('pointerup',e=>{if(!drag||e.pointerId!==drag.id)return;const d=drag;drag=null;
+    if(!d.moved){selId=selId===d.a.id?null:d.a.id;draw();return;}
+    const r=ws.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom){atoms=atoms.filter(x=>x!==d.a);if(selId===d.a.id)selId=null;draw();clearMsg();return;}
+    const p=clampP(d.a.x,d.a.y,d.a.r);d.a.x=p.x;d.a.y=p.y;snapExisting(d.a);draw();clearMsg();});
+  ws.addEventListener('pointercancel',()=>{if(drag){drag.a.x=drag.ox;drag.a.y=drag.oy;drag=null;draw();}});
+  ws.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&selId){atoms=atoms.filter(a=>a.id!==selId);selId=null;draw();}});
+  $('#lcDel').onclick=()=>{if(!selId){say('info','Tap an atom in the build area to select it first.');return;}atoms=atoms.filter(a=>a.id!==selId);selId=null;draw();clearMsg();};
+  $('#lcClear').onclick=()=>{atoms=[];selId=null;draw();clearMsg();};
+  function say(cls,t){msg.className='fb '+cls;msg.innerHTML=t;}
+  function clearMsg(){msg.className='fb';msg.innerHTML='';}
+  function connected(){if(!atoms.length)return false;const seen=new Set([atoms[0].id]);const q=[atoms[0]];while(q.length){const a=q.pop();atoms.forEach(b=>{if(!seen.has(b.id)&&Math.hypot(a.x-b.x,a.y-b.y)<=a.r+b.r+4){seen.add(b.id);q.push(b);}});}return seen.size===atoms.length;}
+  $('#lcCheck').onclick=()=>{
+    if(!atoms.length){say('info','Add some atoms first.');return;}
+    if(!connected()){say('bad','Some atoms are not touching. Snap all the atoms together into one particle, then check again.');return;}
+    const c={};atoms.forEach(a=>c[a.el]=(c[a.el]||0)+1);const k=ckey(c);const d=SUBDB[k];
+    const fml=Object.keys(c).sort((a,b)=>{const o=x=>x==='C'?0:x==='H'?1:2;return o(a)-o(b)||a.localeCompare(b);}).map(e=>e+(c[e]>1?c[e]:'')).join('');
+    if(d){const isNew=!S.built.includes(d.f);if(isNew){S.built.push(d.f);save();}
+      const zl=d.zone==='molecule'?'':` · Venn zone: <b>${ZONES[d.zone]}</b>`;say('good',`<div class="result">${d.zone==='molecule'?'':vennIcon(d.zone).replace('class="vi"','class="vi" style="width:66px;height:42px"')}<div><div class="big">${F(d.f)} — ${d.name}</div>
+      <b>${d.kind==='element'?'Element':'Compound'}</b> · ${d.part}${zl}${d.note?'<br>'+d.note:''}${isNew?'':'<br><i>You already built this one — try a different particle.</i>'}</div></div>`);
+      renderBuilt();updateStatus();return;}
+    const keys=Object.keys(c);let hint='';
+    if(keys.length===1&&c[keys[0]]===1&&DIAT[keys[0]])hint=` Hint: a lone ${keys[0]} atom isn't stable — elemental ${EL[keys[0]].n} exists as ${DIAT[keys[0]]}.`;
+    else if(keys.length===1&&keys[0]==='S')hint=' Hint: elemental sulfur\'s common form is S₈ — a ring of 8 S atoms.';
+    else{const g=Object.values(c).reduce((a,b)=>{while(b){[a,b]=[b,a%b];}return a;});if(g>1){const red={};keys.forEach(e=>red[e]=c[e]/g);const d2=SUBDB[ckey(red)];if(d2&&d2.zone==='compound')hint=` Hint: that's ${g} formula units of ${uni(d2.f)} stuck together. An ionic formula is the smallest ratio — build just one.`;}}
+    say('bad',`<b>${uni(fml)}</b>: Not a real substance; try again.${hint}`);};
+  function renderBuilt(){const z=builtZones();
+    $('#zoneTrack').innerHTML=CBINS.map(b=>`<div class="zonebox${z.has(b.id)?' done':''}">${b.icon}<span>${z.has(b.id)?'✓ ':''}${b.label}</span></div>`).join('');
+    $('#builtList').innerHTML=S.built.length?S.built.map(f=>{const d=SUBDB[ckey(parseF(f))];return`<span class="bchip"><b>${F(f)}</b> ${d.name} · ${d.zone==='molecule'?'element (molecule)':ZONES[d.zone]}</span>`;}).join(''):'<span style="color:#475569">None yet.</span>';
+    $('#builtList').insertAdjacentHTML('beforeend',`<span style="align-self:center;color:#475569;font-size:.9rem">${S.built.length}/4+ built, ${z.size}/3 zones</span>`);}
+  draw();renderBuilt();
+}
+
+/* ---------- lab tabs & checklist ---------- */
+function labStatus(){return{a:S.labABest>=.8,b:!!S.labB,c:S.built.length>=4&&builtZones().size===3};}
+function renderChecklist(){const st=labStatus();const z=builtZones();
+  const L=[['a','Venn Sorter: score 80% or better',S.labABest?`Best: ${Math.round(S.labABest*100)}%`:'Not checked yet'],['b','Matter Sorter: all boxes sorted correctly',S.labB?'Done':'Not done yet'],['c','Build-a-Particle: 4 real particles covering all 3 Venn zones',`${S.built.length} built · ${z.size}/3 zones`]];
+  const all=st.a&&st.b&&st.c;const learnDone=S.viewed.length>=STOPS.length;
+  $('#checklist').innerHTML=`<h3>Lab Checklist</h3><ul class="ck">${L.map(([k,t,s])=>`<li class="${st[k]?'done':''}"><span class="ckbox" aria-hidden="true">${st[k]?'✓':''}</span><span>${t}<small>${st[k]?'✓ Complete — ':''}${s}</small></span><span class="srt">${st[k]?'complete':'not complete'}</span></li>`).join('')}</ul>`+
+   (all?`<div class="ckdone">✓ Lab complete!${learnDone?' The Quiz is unlocked.':' View every Learn stop to unlock the Quiz.'}</div>${learnDone?'<button class="primary" style="margin-top:.5rem;width:100%" id="goQuiz">Go to Quiz ▶</button>':''}`:'');
+  const g=$('#goQuiz');if(g)g.onclick=()=>setPane('quiz');
+  updateLabNext();$('#sdA').textContent=st.a?'✓':'';$('#sdB').textContent=st.b?'✓':'';$('#sdC').textContent=st.c?'✓':'';}
+function labNext(k){return h('div',{class:'stopnav',id:'next'+k,style:'justify-content:flex-end'});}
+function goLab(k){$(`.subtab[data-lab="${k}"]`).click();window.scrollTo(0,0);}
+function updateLabNext(){const st=labStatus();const learnDone=S.viewed.length>=STOPS.length;
+  const A=$('#nextA'),B=$('#nextB'),C=$('#nextC');if(!A||!B||!C)return;
+  A.innerHTML=st.a?'<span style="color:var(--good);font-weight:700">✓ Part A passed</span><button class="primary">Next: B · Matter Sorter ▶</button>':'';
+  B.innerHTML=st.b?'<span style="color:var(--good);font-weight:700">✓ Part B passed</span><button class="primary">Next: C · Build-a-Particle ▶</button>':'';
+  C.className='stopnav';C.style.justifyContent='flex-end';
+  const qOpen=!quizLocked();
+  C.innerHTML=st.c?`<span style="color:var(--good);font-weight:700">✓ Part C passed</span><button class="primary">${qOpen?'Next: Quiz ▶':(!st.a?'Next: finish Part A ▶':!st.b?'Next: finish Part B ▶':'Next: finish Learn stops ▶')}</button>`:'';
+  const a=$('button',A),b=$('button',B),c=$('button',C);
+  if(a)a.onclick=()=>goLab('B');if(b)b.onclick=()=>goLab('C');
+  if(c)c.onclick=()=>{if(qOpen)setPane('quiz');else if(!st.a)goLab('A');else if(!st.b)goLab('B');else{setPane('learn');showStop(STOPS.map((_,i)=>i).find(i=>!S.viewed.includes(i))||0);}};}
+let labInited=false;
+function labInit(){if(labInited)return;labInited=true;labAInit();labBInit();labCInit();
+  $$('.subtab').forEach(b=>b.onclick=()=>{$$('.subtab').forEach(x=>x.setAttribute('aria-selected',String(x===b)));['A','B','C'].forEach(k=>$('#lab'+k).hidden=k!==b.dataset.lab);});}
+</script>
+<script>
+/* ============ QUIZ ============ */
+const VC=['Both a molecule and a compound','Compound only (not a molecule)','Neither a molecule nor a compound'];
+const vq=(f,z,expl)=>{const i={both:0,compound:1,neither:2}[z];return{t:'mc',q:`How is <b>${F(f)}</b> best classified?`,ch:VC.slice(),ans:VC[i],short:`Classify ${uni(f)}`,x:expl};};
+const BANK=[
+ vq('CO2','both','CO₂ is a covalent molecule made of two different elements, so it is both.'),
+ vq('MgO','compound','MgO is ionic (Mg²⁺ and O²⁻), so it is a compound made of formula units, not molecules.'),
+ vq('Ne','neither','Neon is a noble gas of single atoms of one element — neither.'),
+ vq('CH4','both','CH₄ is a covalent molecule of C and H — both.'),
+ vq('NH3','both','NH₃ is a covalent molecule of N and H, so it is both.'),
+ vq('Al2O3','compound','Al₂O₃ is ionic (Al³⁺ and O²⁻), so it is a compound made of formula units, not molecules.'),
+ vq('KCl','compound','KCl is ionic (metal + nonmetal), so it is a compound but not a molecule.'),
+ vq('Cu','neither','Copper is a metal element; its atoms form a metallic lattice, not molecules.'),
+ {t:'mc',q:'Which formula is an element that exists as <b>diatomic molecules</b>?',ch:['Br₂','CO','NaCl','He'],short:'Pick the diatomic element',x:'Br₂ is one of the 7 diatomic elements (H₂ N₂ O₂ F₂ Cl₂ Br₂ I₂).'},
+ {t:'mc',q:'Which is a <b>compound but NOT a molecule</b>?',ch:['CaCl₂','CO₂','Cl₂','C₆H₁₂O₆'],short:'Compound but not a molecule',x:'CaCl₂ is ionic, so it exists as formula units in a lattice, not molecules.'},
+ {t:'mc',q:'The smallest whole-number ratio of ions in an ionic compound is called a…',ch:['formula unit','molecule','atom','mixture'],short:'Name for the ionic ratio unit',x:'Ionic compounds have no molecules; the ratio unit (like NaCl) is a formula unit.'},
+ {t:'mc',q:'Sodium (a reactive metal) and chlorine (a toxic gas) form table salt. This shows that a compound…',ch:['has properties different from its elements','keeps the properties of its elements','can be separated by filtering','has a variable composition'],short:'Compound properties vs. its elements',x:'A compound is a new substance with new properties, unlike its elements.'},
+ {t:'mc',q:'How can water be broken down into hydrogen and oxygen?',ch:['By a chemical change, such as electrolysis','By filtering it','By boiling it','By using a magnet'],short:'Breaking down water',x:'Compounds break down only by chemical means; boiling just turns liquid water into water vapor.'},
+ {t:'mc',q:'Which is a <b>pure substance</b>?',ch:['Distilled water','Salt water','Air','Brass'],short:'Pick the pure substance',x:'Distilled water is only H₂O (a compound); the others are mixtures.'},
+ {t:'mc',q:'Which is a <b>homogeneous</b> mixture?',ch:['Brass','Granite','Trail mix','Oil and water'],short:'Pick the homogeneous mixture',x:'Brass is an alloy with Cu and Zn evenly mixed; the others have visible parts.'},
+ {t:'mc',q:'Which is a <b>heterogeneous</b> mixture?',ch:['Sand and water','Vinegar','Air','Salt water'],short:'Pick the heterogeneous mixture',x:'Sand stays as separate visible grains in water; the others are uniform.'},
+ {t:'mc',q:'Which method best separates <b>iron filings from sand</b>?',ch:['A magnet','Filtration','Distillation','Evaporation'],short:'Separate iron filings from sand',x:'Iron is magnetic and sand is not, so a magnet pulls the iron out.'},
+ {t:'mc',q:'Which method recovers the <b>salt</b> from salt water?',ch:['Evaporation','Filtration','A magnet','Sorting by hand'],short:'Recover salt from salt water',x:'Dissolved salt passes through filter paper; evaporating the water leaves the salt behind.'},
+ {t:'mc',q:'Which method separates <b>sand from water</b>?',ch:['Filtration','A magnet','A chemical reaction','Electrolysis'],short:'Separate sand from water',x:'Filter paper lets water through but traps the undissolved sand.'},
+ {t:'mc',q:'Which method collects <b>pure drinking water</b> from salt water?',ch:['Distillation','Filtration','A magnet','Evaporation into the open air'],short:'Get pure water from salt water',x:'Distillation boils the water and condenses the vapor; evaporation into the air loses the water.'},
+ {t:'mc',q:'Which statement describes a <b>mixture</b>?',ch:['Variable composition; each part keeps its own properties','Elements bonded in a fixed ratio','Can be separated only by chemical means','Made of only one kind of atom'],short:'Describe a mixture',x:'Mixtures are physically combined, so the amounts can vary and each part keeps its properties.'},
+ {t:'mc',q:'A sample contains only phosphorus atoms, grouped as P₄ molecules. It is…',ch:['an element','a compound','a homogeneous mixture','a heterogeneous mixture'],short:'Classify P₄',x:'Only one kind of atom means an element, even though it is made of molecules.'},
+ {t:'mc',q:'Water from a glacier and water made in a lab both have 2 H atoms for every O atom because…',ch:['a compound has a fixed composition','mixtures have variable composition','water is an element','H and O are only physically mixed'],short:'Why water is always 2 H : 1 O',x:'Every sample of a compound has the same elements in the same fixed ratio.'},
+ {t:'tf',q:'True or false: “All compounds are molecules.”',a:false,short:'T/F: All compounds are molecules',x:'False — ionic compounds like NaCl are lattices of ions (formula units), not molecules.'},
+ {t:'tf',q:'True or false: “Ionic compounds like NaCl are made of molecules.”',a:false,short:'T/F: Ionic compounds are molecules',x:'False — ionic compounds are lattices of ions; the smallest ratio is a formula unit, not a molecule.'},
+ {t:'tf',q:'True or false: “Every compound contains at least two different elements.”',a:true,short:'T/F: Compounds have 2+ elements',x:'True — that is the definition of a compound.'},
+ {t:'tf',q:'True or false: “Air is a compound because it contains N₂ and O₂.”',a:false,short:'T/F: Air is a compound',x:'False — the gases in air are not bonded to each other; air is a homogeneous mixture.'},
+ {t:'tf',q:'True or false: “Brass is a compound of copper and zinc.”',a:false,short:'T/F: Brass is a compound',x:'False — brass is an alloy (a homogeneous mixture); its Cu:Zn ratio can vary.'},
+ {t:'tf',q:'True or false: “Helium is an element but not a molecule.”',a:true,short:'T/F: He is an element, not a molecule',x:'True — helium exists as separate single atoms.'},
+ {t:'sort',q:'Sort each substance: <b>element</b> or <b>compound</b>?',bins:[['element','Element'],['compound','Compound']],items:[['O2','element'],['Fe','element'],['S8','element'],['H2O','compound'],['NaCl','compound'],['CO2','compound']],short:'Sort: element vs. compound',x:'One kind of atom = element (O₂, Fe, S₈); 2+ elements bonded = compound (H₂O, NaCl, CO₂).'},
+ {t:'sort',q:'Sort each mixture: <b>homogeneous</b> or <b>heterogeneous</b>?',bins:[['hom','Homogeneous'],['het','Heterogeneous']],items:[['air','hom'],['vinegar','hom'],['brass','hom'],['granite','het'],['trail mix','het'],['oil + water','het']],txt:true,short:'Sort: homogeneous vs. heterogeneous',x:'Uniform: air, vinegar, brass. Visible parts: granite, trail mix, oil + water.'},
+ {t:'sort',q:'Sort each substance: made of <b>molecules</b> or <b>not molecules</b>?',bins:[['m','Molecules'],['n','Not molecules']],items:[['H2O','m'],['NH3','m'],['CH4','m'],['NaCl','n'],['He','n'],['MgO','n']],short:'Sort: molecules vs. not molecules',x:'Covalent compounds are molecules (H₂O, NH₃, CH₄); ionic lattices and single atoms are not (NaCl, MgO, He).'},
+ {t:'sort',q:'Sort each sample: <b>pure substance</b> or <b>mixture</b>?',bins:[['p','Pure substance'],['m','Mixture']],items:[['distilled water','p'],['oxygen gas (O₂)','p'],['table salt (NaCl)','p'],['salt water','m'],['air','m'],['sand + water','m']],txt:true,short:'Sort: pure substance vs. mixture',x:'Pure substances have fixed composition; mixtures are physically combined.'},
+ {t:'sort',q:'Sort each into its <b>Venn zone</b>.',bins:[['both','Both'],['compound','Compound only'],['neither','Neither']],items:[['CO2','both'],['H2O','both'],['NaCl','compound'],['MgO','compound'],['Ne','neither'],['Fe','neither']],short:'Sort formulas into Venn zones',x:'Covalent CO₂ and H₂O are both; ionic NaCl and MgO are compound only; Ne and Fe are neither.'},
+ {t:'sort',q:'Match each job to the best <b>separation method</b>.',bins:[['f','Filtration'],['e','Evaporation'],['g','Magnet']],items:[['sand from water','f'],['salt from salt water','e'],['iron from sulfur','g']],txt:true,short:'Match separation methods',x:'Filtration traps undissolved solids, evaporation leaves dissolved solids, a magnet pulls out iron.'},
+ {t:'panels',q:'Click the box that shows a <b>compound</b>.',boxes:['b5','b1','b9','b2'],short:'Click the compound box',x:'Identical H₂O molecules, each with 2 elements bonded, make a compound.'},
+ {t:'panels',q:'Click the box that shows an <b>element made of diatomic molecules</b>.',boxes:['b3','b1','b6','b10'],short:'Click the diatomic element box',x:'Identical Cl₂ molecules: one kind of atom, two atoms per molecule.'},
+ {t:'panels',q:'Click the box that shows a <b>heterogeneous mixture</b>.',boxes:['b13','b9','b5','b4'],short:'Click the heterogeneous mixture',x:'Two separate layers with a visible boundary = heterogeneous.'},
+ {t:'panels',q:'Click the box that shows a <b>homogeneous mixture</b>.',boxes:['b11','b14','b7','b2'],short:'Click the homogeneous mixture',x:'Ions dissolved evenly among water molecules = homogeneous (a solution).'},
+ {t:'panels',q:'Click the box that shows an <b>ionic compound</b> (formula units, not molecules).',boxes:['b7','b6','b4','b12'],short:'Click the ionic compound',x:'A repeating 1:1 Na/Cl lattice is an ionic compound; Fe and Cu/Zn lattices are an element and an alloy.'},
+ {t:'venn',q:'Click the region of the Venn diagram where <b>H₂O</b> belongs.',a:'both',short:'Venn: place H₂O',x:'H₂O is a covalent molecule of 2 elements — the overlap (both).'},
+ {t:'venn',q:'Click the region of the Venn diagram where <b>NaCl</b> belongs.',a:'compound',short:'Venn: place NaCl',x:'NaCl is ionic: a compound, but not a molecule.'},
+ {t:'venn',q:'Click the region of the Venn diagram where <b>Fe</b> belongs.',a:'neither',short:'Venn: place Fe',x:'Iron is a metal element — not a molecule and not a compound.'},
+ {t:'venn',q:'Click the region of the Venn diagram where <b>CH₄</b> belongs.',a:'both',short:'Venn: place CH₄',x:'CH₄ is a covalent molecule of 2 elements — the overlap (both).'},
+ {t:'flow',q:'Click the flowchart box where <b>trail mix</b> belongs.',a:'hetero',short:'Flowchart: place trail mix',x:'Trail mix has visible, separable pieces — heterogeneous mixture.'},
+ {t:'flow',q:'Click the flowchart box where <b>brass</b> belongs.',a:'homog',short:'Flowchart: place brass',x:'Brass is a uniform alloy — homogeneous mixture.'},
+ {t:'flow',q:'Click the flowchart box where <b>carbon dioxide (CO₂)</b> belongs.',a:'compound',short:'Flowchart: place CO₂',x:'CO₂ is a pure substance of 2 bonded elements — compound.'},
+ {t:'flow',q:'Click the flowchart box where <b>neon (Ne)</b> belongs.',a:'element',short:'Flowchart: place Ne',x:'Neon is a pure substance of one kind of atom — element.'}
+];
+const TYPEL={mc:'Multiple choice',tf:'True / False',sort:'Drag to sort',panels:'Click the diagram',venn:'Click the diagram',flow:'Click the diagram'};
+let Q=null;
+function quizLocked(){const st=labStatus();return!(S.viewed.length>=STOPS.length&&st.a&&st.b&&st.c);}
+function renderQuiz(){const root=$('#quizRoot');
+  if(quizLocked()){const st=labStatus();const miss=STOPS.map((s,i)=>i).filter(i=>!S.viewed.includes(i));
+    root.innerHTML=`<div class="panel lockbox"><h2 style="display:flex;gap:.5rem;align-items:center;margin-top:0">${LOCK} Quiz locked</h2><p>The quiz unlocks after you view <b>every Learn stop</b> and finish the <b>Lab Checklist</b>. Still needed:</p><ul>
+     ${miss.length?`<li>Learn: view stop${miss.length>1?'s':''} ${miss.map(i=>`<button class="linkbtn" data-stop="${i}">${i+1}</button>`).join(', ')}</li>`:'<li>✓ Learn: all stops viewed</li>'}
+     <li>${st.a?'✓':'✗'} Lab A · Venn Sorter ≥ 80% ${st.a?'':`<button class="linkbtn" data-lab="A">go</button>`}</li>
+     <li>${st.b?'✓':'✗'} Lab B · Matter Sorter all correct ${st.b?'':`<button class="linkbtn" data-lab="B">go</button>`}</li>
+     <li>${st.c?'✓':'✗'} Lab C · 4 real particles in all 3 Venn zones ${st.c?'':`<button class="linkbtn" data-lab="C">go</button>`}</li></ul></div>`;
+    $$('[data-stop]',root).forEach(b=>b.onclick=()=>{setPane('learn');showStop(+b.dataset.stop);});
+    $$('[data-lab]',root).forEach(b=>b.onclick=()=>{setPane('lab');$(`.subtab[data-lab="${b.dataset.lab}"]`).click();});return;}
+  if(Q&&!Q.done){showQ();return;}
+  if(Q&&Q.done){showScore();return;}
+  root.innerHTML=`<div class="panel startbox"><h2 style="margin-top:0">Quiz: Compounds vs Molecules</h2><p class="big">10 questions drawn at random from a bank of ${BANK.length}. Mixed formats: multiple choice, true/false, drag-to-sort and click-on-diagram. Feedback after every answer. Unlimited retakes.</p><p>Attempts so far: <b>${S.attempts}</b></p><button class="primary" id="qStart" style="font-size:1.15rem;padding:.5em 1.6em">Start attempt #${S.attempts+1} ▶</button></div>`;
+  $('#qStart').onclick=startQuiz;}
+function startQuiz(){S.attempts++;save();
+  const sorts=shuffle(BANK.filter(q=>q.t==='sort')).slice(0,2);const clicks=shuffle(BANK.filter(q=>['panels','venn','flow'].includes(q.t))).slice(0,2);
+  const rest=shuffle(BANK.filter(q=>!sorts.includes(q)&&!clicks.includes(q))).slice(0,6);
+  Q={items:shuffle(sorts.concat(clicks,rest)).map(q=>({q,ok:null,ch:q.ch?shuffle(q.ch):null,boxes:q.boxes?shuffle(q.boxes):null})),i:0,attempt:S.attempts,done:false,answered:false};
+  showQ();}
+function showQ(){const root=$('#quizRoot');const it=Q.items[Q.i],q=it.q;const score=Q.items.filter(x=>x.ok).length;
+  root.innerHTML=`<div class="panel"><div class="qhead"><span>Question ${Q.i+1} of 10 · <span class="qtype">${TYPEL[q.t]}</span></span><span>Attempt #${Q.attempt} · Score so far: ${score}</span></div><div class="pbar" style="margin-bottom:.6rem"><div class="pfill" style="width:${Q.i*10}%"></div></div><div class="qtext">${q.q}</div><div id="qBody"></div><div class="fb" id="qFb" aria-live="polite"></div><div class="qnav"><button class="primary" id="qNext" hidden>${Q.i===9?'See score card ▶':'Next question ▶'}</button></div></div>`;
+  const body=$('#qBody'),fb=$('#qFb'),nx=$('#qNext');Q.answered=false;
+  const finish=ok=>{it.ok=ok;Q.answered=true;fb.className='fb '+(ok?'good':'bad');fb.innerHTML=`<b>${ok?'✓ Correct.':'✗ Not quite.'}</b> ${q.x}`;nx.hidden=false;nx.focus();};
+  nx.onclick=()=>{if(Q.i<9){Q.i++;showQ();}else{Q.done=true;showScore();}};
+  if(q.t==='mc'||q.t==='tf'){const ch=q.t==='tf'?['True','False']:it.ch;const right=q.t==='tf'?(q.a?'True':'False'):(q.ans||q.ch[0]);
+    body.innerHTML=`<div class="choices">${ch.map((c,k)=>`<button class="choice" data-k="${k}">${String.fromCharCode(65+k)}. ${c}</button>`).join('')}</div>`;
+    $$('.choice',body).forEach(b=>b.onclick=()=>{if(Q.answered)return;const c=ch[+b.dataset.k];const ok=c===right;$$('.choice',body).forEach(x=>{x.disabled=true;if(ch[+x.dataset.k]===right)x.classList.add('right');});if(!ok)b.classList.add('wrong');finish(ok);});}
+  else if(q.t==='sort'){const items=shuffle(q.items).map((p,k)=>({id:'q'+k,ans:p[1],html:q.txt?`<div style="font-weight:700;padding:.3rem .2rem">${p[0]}</div>`:`<div class="fml" style="font-size:1.35rem;font-weight:700">${F(p[0])}</div>`,aria:p[0]}));
+    const sw=h('div');body.append(sw);const btn=h('button',{class:'primary'},'✓ Check my sort');const row=h('div',{class:'btnrow'});row.append(btn);body.append(row);
+    const so=Sorter(sw,{items,bins:q.bins.map(b=>({id:b[0],label:b[1],icon:['both','compound','neither'].includes(b[0])?vennIcon(b[0]):''})),cols:q.bins.length,itemClass:'card'});
+    btn.onclick=()=>{if(Q.answered)return;if(!so.allPlaced()){fb.className='fb info';fb.textContent='Sort every item first.';return;}const res=so.check();so.lock();btn.disabled=true;const ok=res.every(r=>r.ok);if(!ok)fb.dataset.n=res.filter(r=>r.ok).length;finish(ok);if(!ok)fb.innerHTML+=` <i>(${res.filter(r=>r.ok).length}/${res.length} placed correctly — all must be right to earn the point.)</i>`;};}
+  else if(q.t==='panels'){body.innerHTML=`<div class="panels">${it.boxes.map((b,k)=>`<button class="pbtn" data-b="${b}">Box ${String.fromCharCode(65+k)}${boxSVG(b,'Box '+String.fromCharCode(65+k))}</button>`).join('')}</div>`;
+    $$('.pbtn',body).forEach(b=>b.onclick=()=>{if(Q.answered)return;const ok=b.dataset.b===q.boxes[0];$$('.pbtn',body).forEach(x=>{x.disabled=true;if(x.dataset.b===q.boxes[0])x.classList.add('right');});if(!ok)b.classList.add('wrong');finish(ok);});}
+  else if(q.t==='venn'){body.innerHTML=`<div class="diag">${vennSVG('qv'+Q.i,false)}</div>`;const svg=$('svg',body);
+    svg.addEventListener('click',e=>{if(Q.answered)return;const z=vennZoneAt(svg,e);vennShow(svg,q.a);const ok=z===q.a;finish(ok);if(!ok)fb.innerHTML+=` You clicked <b>${ZONES[z]}</b>; the correct region (${ZONES[q.a]}) is now shaded.`;});}
+  else if(q.t==='flow'){body.innerHTML=`<div class="diag">${flowSVG(false)}</div>`;const svg=$('svg',body);$$('.fnode',svg).forEach(g=>g.classList.add('clickable'));
+    svg.addEventListener('click',e=>{if(Q.answered)return;const g=e.target.closest('.fnode');if(!g)return;const n=g.dataset.n;const path=q.a==='element'||q.a==='compound'?['matter','pure',q.a]:['matter','mixture',q.a];flowShow(svg,path);const ok=n===q.a;finish(ok);if(!ok)fb.innerHTML+=` You clicked <b>${FN[n][2]}</b>; the correct path is highlighted.`;});}
+}
+/* ---------- score card ---------- */
+function stamp(){const d=Q.when||(Q.when=new Date());return d.toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
+function drawCard(){const n=Q.items.filter(x=>x.ok).length;const W=1000,rowH=46,H=300+10*rowH+60;const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');const FF='"Atkinson Hyperlegible", system-ui, sans-serif';
+  g.fillStyle='#fff';g.fillRect(0,0,W,H);g.fillStyle='#0f2a4a';g.fillRect(0,0,W,110);
+  g.fillStyle='#fff';g.font=`700 38px ${FF}`;g.fillText('Compounds vs Molecules: Classifying Matter',36,58);g.font=`400 22px ${FF}`;g.fillStyle='#cfe0ff';g.fillText('chemistryteacher.net/compounds-vs-molecules',36,92);
+  g.fillStyle='#0f172a';g.font=`700 24px ${FF}`;g.fillText('Score Card',36,152);g.font=`400 22px ${FF}`;g.fillText(`Date & time: ${stamp()}`,36,190);g.fillText(`Attempt #${Q.attempt}`,36,224);
+  g.beginPath();g.arc(870,195,72,0,Math.PI*2);g.fillStyle=n>=8?'#e3f5e9':n>=6?'#fff4d6':'#fdecea';g.fill();g.lineWidth=6;g.strokeStyle=n>=8?'#0a7a33':n>=6?'#b45309':'#b42318';g.stroke();
+  g.fillStyle='#0f172a';g.textAlign='center';g.font=`700 46px ${FF}`;g.fillText(`${n}/10`,870,205);g.font=`400 18px ${FF}`;g.fillText('score',870,236);g.textAlign='left';
+  g.strokeStyle='#c5cedb';g.lineWidth=2;g.beginPath();g.moveTo(36,262);g.lineTo(W-36,262);g.stroke();
+  Q.items.forEach((it,k)=>{const y=300+k*rowH;if(k%2===0){g.fillStyle='#f4f6fa';g.fillRect(30,y-30,W-60,rowH);}
+    g.fillStyle=it.ok?'#0a7a33':'#b42318';g.beginPath();g.arc(62,y-8,15,0,Math.PI*2);g.fill();g.fillStyle='#fff';g.font=`700 20px ${FF}`;g.textAlign='center';g.fillText(it.ok?'✓':'✗',62,y-1);g.textAlign='left';
+    g.fillStyle='#0f172a';g.font=`400 22px ${FF}`;g.fillText(`${k+1}. ${it.q.short}`,92,y);g.font=`700 18px ${FF}`;g.fillStyle=it.ok?'#0a7a33':'#b42318';g.textAlign='right';g.fillText(it.ok?'Correct':'Incorrect',W-48,y);g.textAlign='left';});
+  g.fillStyle='#475569';g.font=`400 17px ${FF}`;g.fillText('✓ = correct   ✗ = incorrect',36,H-24);return c;}
+function showScore(){const root=$('#quizRoot');const n=Q.items.filter(x=>x.ok).length;const c=drawCard();
+  root.innerHTML=`<div class="panel"><h2 style="margin-top:0;text-align:center">Attempt #${Q.attempt}: ${n}/10</h2><img class="cardimg" alt="Score card: ${n} out of 10, attempt ${Q.attempt}" src="${c.toDataURL('image/png')}">
+   <div class="scorebtns"><button class="primary" id="sDl">⬇ Download PNG</button><button id="sCp">⧉ Copy image</button><button id="sGm">✉ Email via Gmail</button><button id="sRe">↺ Retake quiz</button></div><p class="status" id="sSt" aria-live="polite"></p>
+   <p style="text-align:center;color:#475569;font-size:.9rem">To email: download the PNG first, then open Gmail and attach it. No names are collected.</p></div>`;
+  const st=$('#sSt');const fname=`compounds-vs-molecules-score-attempt${Q.attempt}.png`;
+  $('#sDl').onclick=()=>{c.toBlob(b=>{const u=URL.createObjectURL(b);const a=h('a',{href:u,download:fname});document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);st.textContent='Downloaded '+fname;},'image/png');};
+  $('#sCp').onclick=async()=>{try{if(!navigator.clipboard||!window.ClipboardItem)throw 0;await navigator.clipboard.write([new ClipboardItem({'image/png':new Promise(r=>c.toBlob(r,'image/png'))})]);st.textContent='Score card copied — paste it anywhere.';}catch(e){st.textContent='This browser can\'t copy images. Use Download PNG instead.';}};
+  $('#sGm').onclick=()=>{const body=`Compounds vs Molecules: Classifying Matter\nchemistryteacher.net/compounds-vs-molecules\nDate & time: ${stamp()}\nAttempt #${Q.attempt}\nScore: ${n}/10\n\n${Q.items.map((it,k)=>`${it.ok?'✓':'✗'} ${k+1}. ${it.q.short}`).join('\n')}\n\n(Score card PNG attached.)`;
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=&su=${encodeURIComponent('Compounds vs Molecules – Score Card')}&body=${encodeURIComponent(body)}`,'_blank','noopener');st.textContent='Gmail opened in a new tab — attach the downloaded PNG.';};
+  $('#sRe').onclick=()=>{Q=null;renderQuiz();};}
+
+/* ============ tabs, status, init ============ */
+let curPane='learn';
+function setPane(p){curPane=p;$$('.tab').forEach(t=>t.setAttribute('aria-selected',String(t.dataset.pane===p)));
+  ['learn','lab','quiz'].forEach(k=>$('#pane-'+k).hidden=k!==p);
+  if(p==='learn')showStop(curStop);else{stopCleanup&&stopCleanup();stopCleanup=null;}
+  if(p==='lab')labInit();if(p==='quiz')renderQuiz();updateStatus();window.scrollTo(0,0);}
+function updateStatus(){const n=S.viewed.length,st=labStatus(),labN=[st.a,st.b,st.c].filter(Boolean).length;
+  $('#tstat-learn').textContent=n>=STOPS.length?'✓':`${n}/${STOPS.length}`;
+  $('#tstat-lab').textContent=labN===3?'✓':`${labN}/3`;
+  const lk=quizLocked();const tq=$('#tab-quiz');tq.classList.toggle('locked',lk);
+  const need=[];if(n<STOPS.length)need.push(`${STOPS.length-n} stop${STOPS.length-n>1?'s':''}`);if(labN<3)need.push(`${3-labN} lab task${3-labN>1?'s':''}`);
+  $('#tstat-quiz').innerHTML=lk?`${LOCK}<span>needs ${need.join(' + ')}</span>`:'';
+  tq.setAttribute('aria-label',lk?`Quiz (locked: needs ${need.join(' and ')})`:'Quiz');
+  if(labInited)renderChecklist();}
+$$('.tab').forEach(t=>t.onclick=()=>setPane(t.dataset.pane));
+$('#resetBtn').onclick=function(){if(this.dataset.arm){S={viewed:[],labABest:0,labB:false,built:[],attempts:0};save();location.reload();}else{this.dataset.arm='1';this.textContent='Click again to confirm reset';setTimeout(()=>{delete this.dataset.arm;this.textContent='Reset progress';},4000);}};
+learnInit();showStop(0);updateStatus();
+</script>
+</body>
+</html>
