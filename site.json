@@ -3,7 +3,7 @@
   "base_url": "https://chemistryteacher.net",
   "tagline": "Free interactive chemistry simulations and practice for high school",
   "home_title": "Free Chemistry Simulations & Interactive Labs | ChemistryTeacher.net",
-  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, atoms, isotopes, alpha, beta and gamma radiation and nuclear equations. No login.",
+  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, atoms, isotopes, alpha, beta and gamma radiation, a cloud chamber and nuclear equations. No login.",
   "home_intro": "Free, hands-on chemistry simulations built by a high school chemistry teacher for real classrooms. Every activity runs right in the browser on Chromebooks, laptops, tablets and classroom projectors. No logins, no ads, and no student data collected.",
   "about_site": "ChemistryTeacher.net is made by a high school chemistry teacher with about twenty years in the classroom. Each activity was built to fix a spot where students usually get stuck, then tested with real classes. Teachers are welcome to use every activity with their students for free. Please link to the page here instead of re-posting the files.",
   "license": "Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosting.",
@@ -32,7 +32,11 @@
     "/radiation": "/types-of-radiation",
     "/alpha-beta-gamma": "/types-of-radiation",
     "/types-of-radiation-lab": "/types-of-radiation",
-    "/radiation-shielding": "/types-of-radiation"
+    "/radiation-shielding": "/types-of-radiation",
+    "/cloud-chamber-simulator": "/cloud-chamber",
+    "/cloud-chamber-sim": "/cloud-chamber",
+    "/cloud-chamber-lab": "/cloud-chamber",
+    "/particle-tracks": "/cloud-chamber"
   },
   "activities": {
     "dimensional-analysis": {
@@ -141,12 +145,43 @@
       "classroom": "Use it as notes and a virtual lab when you can't use real sources, as a pre-lab before a Geiger counter demo, or as review before a nuclear chemistry quiz. The score card can be turned in through Google Classroom or Gmail.",
       "bar": "bl"
     },
+    "cloud-chamber": {
+      "name": "Cloud Chamber Simulator",
+      "title": "Cloud Chamber Simulator: See Alpha, Beta, Gamma & Muon Tracks",
+      "description": "Free interactive cloud chamber: watch alpha, beta, gamma-electron and cosmic-ray muon tracks form in alcohol vapor. Real sources, shields, magnetic field and quiz.",
+      "unit": "Atomic Structure",
+      "order": 4,
+      "card": "Watch alpha, beta and muon tracks form in a virtual cloud chamber, test shields and a magnet, then identify tracks in a game.",
+      "topics": [
+        "cloud chamber",
+        "alpha particles",
+        "beta particles",
+        "gamma rays",
+        "cosmic rays",
+        "muons",
+        "particle tracks",
+        "radiation shielding",
+        "magnetic field",
+        "background radiation",
+        "radioactive sources",
+        "nuclear chemistry"
+      ],
+      "about": "Students learn how a diffusion cloud chamber works: dry ice chills alcohol vapor until it is supersaturated, and charged particles leave trails of droplets. In the Lab they watch realistic tracks from a smoke-detector source, a thorium lantern mantle, uranium glass and sealed Sr-90, Cs-137, Co-60 and Po-210 sources, block them with paper, aluminum or lead, bend them with a magnetic field, and name tracks in a Track-ID game.",
+      "how": [
+        "Work through the 8 Learn stops (Back/Next or tap a numbered stop).",
+        "In the Lab, choose a source, then try each shield and the magnetic field. The Lab Checklist ticks itself off.",
+        "Play the Track-ID Game: name 10 tracks and score 8 or more.",
+        "Then take the 10-question quiz and download or email your score card."
+      ],
+      "classroom": "Use it before or alongside a real cloud chamber demo, when you don't have dry ice or sources, or as review for nuclear chemistry. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "th"
+    },
     "nuclear-equations": {
       "name": "Nuclear Equation Builder",
       "title": "Nuclear Equation Builder: Alpha, Beta, Gamma Decay Practice",
       "description": "Free interactive practice balancing nuclear equations: alpha decay, beta decay, positron emission, gamma radiation, fission and fusion. Check mass and atomic numbers.",
       "unit": "Atomic Structure",
-      "order": 4,
+      "order": 5,
       "card": "Balance nuclear equations for alpha, beta, positron and gamma decay by matching mass and atomic numbers.",
       "topics": [
         "nuclear equations",
