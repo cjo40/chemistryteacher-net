@@ -3,7 +3,7 @@
   "base_url": "https://chemistryteacher.net",
   "tagline": "Free interactive chemistry simulations and practice for high school",
   "home_title": "Free Chemistry Simulations & Interactive Labs | ChemistryTeacher.net",
-  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, atoms, isotopes and nuclear equations. No login.",
+  "home_description": "Free interactive chemistry simulations for high school: gas laws, Lewis dot structures, naming compounds, heating curves, calorimetry, atoms, isotopes, alpha, beta and gamma radiation and nuclear equations. No login.",
   "home_intro": "Free, hands-on chemistry simulations built by a high school chemistry teacher for real classrooms. Every activity runs right in the browser on Chromebooks, laptops, tablets and classroom projectors. No logins, no ads, and no student data collected.",
   "about_site": "ChemistryTeacher.net is made by a high school chemistry teacher with about twenty years in the classroom. Each activity was built to fix a spot where students usually get stuck, then tested with real classes. Teachers are welcome to use every activity with their students for free. Please link to the page here instead of re-posting the files.",
   "license": "Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosting.",
@@ -28,7 +28,11 @@
     "/dimensional-analysis-lab": "/dimensional-analysis",
     "/atomic-theory-history": "/atomic-theory",
     "/history-of-atomic-theory": "/atomic-theory",
-    "/nuclear-equation-builder": "/nuclear-equations"
+    "/nuclear-equation-builder": "/nuclear-equations",
+    "/radiation": "/types-of-radiation",
+    "/alpha-beta-gamma": "/types-of-radiation",
+    "/types-of-radiation-lab": "/types-of-radiation",
+    "/radiation-shielding": "/types-of-radiation"
   },
   "activities": {
     "dimensional-analysis": {
@@ -107,12 +111,42 @@
       "classroom": "Great for the first day of isotopes and ions, as a projector demo, or as practice before a quiz on subatomic particles.",
       "bar": "br"
     },
+    "types-of-radiation": {
+      "name": "Types of Radiation: Alpha, Beta & Gamma",
+      "title": "Alpha, Beta & Gamma Radiation: Interactive Shielding Lab & Quiz",
+      "description": "Free interactive lesson on alpha, beta and gamma radiation: penetrating vs ionizing power, shielding with paper, aluminum and lead, a Geiger counter lab, inverse-square law and quiz.",
+      "unit": "Atomic Structure",
+      "order": 3,
+      "card": "Compare alpha, beta and gamma radiation, then test shields and mystery sources with a virtual Geiger counter.",
+      "topics": [
+        "alpha radiation",
+        "beta radiation",
+        "gamma radiation",
+        "types of radiation",
+        "penetrating power",
+        "ionizing radiation",
+        "radiation shielding",
+        "Geiger counter",
+        "inverse square law",
+        "background radiation",
+        "nuclear chemistry"
+      ],
+      "about": "Students learn what alpha, beta and gamma radiation are, why ionizing and penetrating power are opposites, and how charged plates bend each type. In the Shielding Lab they block each source with skin, paper, wood, aluminum, lead or concrete and watch a Geiger counter (with real background radiation), then use those skills to identify mystery sources, including one that gives off both beta and gamma.",
+      "how": [
+        "Work through the 8 Learn stops (Back/Next or tap a numbered stop).",
+        "In the Lab, choose a source and drag one shield into the slot. Readings record automatically.",
+        "Use the shields to identify the mystery sources.",
+        "When the Lab Checklist is done, take the 10-question quiz and download or email your score card."
+      ],
+      "classroom": "Use it as notes and a virtual lab when you can't use real sources, as a pre-lab before a Geiger counter demo, or as review before a nuclear chemistry quiz. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "bl"
+    },
     "nuclear-equations": {
       "name": "Nuclear Equation Builder",
       "title": "Nuclear Equation Builder: Alpha, Beta, Gamma Decay Practice",
       "description": "Free interactive practice balancing nuclear equations: alpha decay, beta decay, positron emission, gamma radiation, fission and fusion. Check mass and atomic numbers.",
       "unit": "Atomic Structure",
-      "order": 3,
+      "order": 4,
       "card": "Balance nuclear equations for alpha, beta, positron and gamma decay by matching mass and atomic numbers.",
       "topics": [
         "nuclear equations",
