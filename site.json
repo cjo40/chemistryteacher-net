@@ -342,6 +342,36 @@
         "Open Real Lab to watch the class experiment videos, and the Reference Table for formulas and specific heat values."
       ],
       "classroom": "Use it as a full virtual lab, a pre-lab before the real calorimetry lab, or a make-up lab for absent students."
+    },
+    "compounds-vs-molecules": {
+      "name": "Compounds vs Molecules: Classifying Matter",
+      "title": "Compounds vs Molecules: Classifying Matter Interactive Lab & Quiz",
+      "description": "Free interactive lesson on atoms, elements, molecules, compounds, ionic formula units and mixtures, with particle diagrams, a Venn sorter, a build-a-particle lab and a quiz.",
+      "unit": "Bonding & Naming",
+      "order": 0,
+      "card": "Sort compounds into a Venn diagram, classify particle diagrams as elements, compounds or mixtures, and snap atoms together to build real particles.",
+      "topics": [
+        "compounds vs molecules",
+        "elements and compounds",
+        "molecules",
+        "ionic compounds",
+        "formula unit",
+        "covalent compounds",
+        "pure substances and mixtures",
+        "homogeneous mixture",
+        "heterogeneous mixture",
+        "particle diagrams",
+        "classification of matter",
+        "separation of mixtures"
+      ],
+      "about": "Students learn what atoms, elements, molecules and compounds are, why ionic compounds are compounds but not molecules, and how pure substances differ from homogeneous and heterogeneous mixtures. They cut a copper sample down to one atom, watch sodium + chlorine and hydrogen + oxygen react, pull iron out of a mixture with a magnet, then sort compounds into a Venn diagram, classify particle boxes, and snap atoms together to build real substances.",
+      "how": [
+        "Work through the 9 Learn stops (Back/Next or tap a numbered stop).",
+        "In the Lab, finish the Venn Sorter (80% or better), the Matter Sorter and Build-a-Particle. Drag items, or tap an item and then a bin.",
+        "When the Lab Checklist is done, take the 10-question quiz and download or email your score card."
+      ],
+      "classroom": "Use it as interactive notes on classifying matter, as station work, or as review before a quiz on elements, compounds and mixtures. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "bl"
     }
   }
 }
