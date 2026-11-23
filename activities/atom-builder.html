@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atom Builder: Isotopes &amp; Ions</title>
+<style>
+:root{
+  --bg:#0a1016; --panel:#111a23; --panel2:#16222d; --line:#243444; --text:#e6eef5; --muted:#8ea3b6;
+  --accent:#2dd4bf; --accent2:#14b8a6; --accentDim:rgba(45,212,191,.16);
+  --proton:#ef4444; --neutron:#9ca3af; --electron:#3b82f6;
+  --good:#22c55e; --bad:#f43f5e; --warn:#f59e0b; --reveal:#fb923c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{overflow:auto}
+button{font:inherit;color:inherit;cursor:pointer}
+#app{height:100vh;min-height:600px;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:6px;padding:6px}
+
+/* ---------- top bar ---------- */
+#top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:5px 10px}
+#top h1{font-size:17px;margin:0;white-space:nowrap;color:var(--accent);letter-spacing:.3px}
+#top h1 span{color:var(--text);font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:var(--panel2);border:0;padding:6px 11px;min-height:34px;font-size:14px;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--accent2);color:#04201c;font-weight:700}
+#levels{margin-left:auto}
+#levels.hidden{display:none}
+
+/* ---------- free-form switch ---------- */
+.switch{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;border-radius:999px;background:#0d151d;border:1px solid var(--line);padding:2px}
+.switch button{position:relative;z-index:1;border:0;background:transparent;padding:6px 16px;font-weight:700;font-size:14px;min-height:34px;border-radius:999px;color:var(--muted);transition:color .25s}
+.switch button.on{color:#04201c}
+.switch .knob{position:absolute;top:2px;bottom:2px;left:2px;width:calc(50% - 2px);border-radius:999px;background:var(--accent2);transition:transform .25s ease}
+.switch.right .knob{transform:translateX(100%)}
+.resetBtn{margin-left:auto;min-height:34px;padding:5px 14px;border-radius:8px;border:1px solid var(--bad);background:rgba(244,63,94,.12);color:#fda4af;font-weight:700}
+/* ---------- progress ---------- */
+#progress{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;padding:3px 10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-height:32px}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.b-Easy{background:rgba(34,197,94,.18);color:#86efac}
+.b-Medium{background:rgba(245,158,11,.18);color:#fcd34d}
+.b-Hard{background:rgba(244,63,94,.18);color:#fda4af}
+.dots{display:inline-flex;gap:4px;margin-left:auto}
+.dot{width:11px;height:11px;border-radius:50%;background:#253545;border:1px solid #33475a}
+.dot.cur{outline:2px solid var(--accent);outline-offset:1px}
+.dot.s100{background:var(--good)} .dot.s50{background:#a3e635} .dot.s25{background:var(--warn)} .dot.s0{background:var(--bad)}
+
+/* ---------- main ---------- */
+#main{display:grid;grid-template-columns:86px minmax(200px,1.1fr) minmax(280px,1fr) minmax(180px,250px);gap:6px;min-height:0}
+#side{display:flex;flex-direction:column;gap:6px;min-height:0}
+#side #readout{flex:1;min-height:0}
+#padSlot:empty{display:none}
+.hide{display:none!important}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-height:0}
+
+#bins{display:flex;flex-direction:column;gap:6px;padding:6px;align-items:stretch}
+.mult{display:flex;flex-direction:column;gap:3px}
+.mult button{background:var(--panel2);border:1px solid var(--line);border-radius:7px;min-height:30px;font-size:13px;font-weight:700}
+.mult button.on{background:var(--accent2);color:#04201c;border-color:var(--accent)}
+.bin{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 2px;border:1px dashed #33475a;border-radius:9px;background:var(--panel2);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.bin .ball{width:30px;height:30px;font-size:18px}
+.bin .bl{font-size:11px;color:var(--muted)}
+.bin .cnt{font-size:17px;font-weight:800}
+#bins.disabled .bin{opacity:.38;cursor:not-allowed}
+#bins.disabled .mult{opacity:.38}
+.ball{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;line-height:1}
+.ball.p{background:radial-gradient(circle at 35% 35%,#fca5a5,#dc2626 70%)}
+.ball.n{background:radial-gradient(circle at 35% 35%,#e5e7eb,#6b7280 70%)}
+.ball.e{background:radial-gradient(circle at 35% 35%,#93c5fd,#1d4ed8 70%)}
+
+#atomCol{display:flex;flex-direction:column;padding:6px;gap:4px}
+#elLabel{text-align:center;font-weight:800;font-size:17px;min-height:24px;color:var(--accent)}
+#elLabel.flash{animation:flash .9s ease}
+@keyframes flash{0%{transform:scale(1.35);color:#fff;text-shadow:0 0 14px var(--accent)}100%{transform:scale(1)}}
+#atomBox{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+#atom{touch-action:none;display:block;border-radius:50%}
+#atomBox.dropHover #atom{box-shadow:0 0 0 3px var(--accent),0 0 30px rgba(45,212,191,.35)}
+#lockTag{position:absolute;top:2px;right:2px;font-size:12px;background:var(--panel2);border:1px solid var(--line);padding:2px 7px;border-radius:999px;color:var(--muted);display:none}
+.atomTip{font-size:11.5px;color:var(--muted);text-align:center}
+
+#task{padding:8px 10px;display:flex;flex-direction:column;gap:7px;overflow:auto}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.tag{display:inline-block;font-size:11px;font-weight:700;background:var(--accentDim);color:var(--accent);padding:1px 8px;border-radius:999px;margin-bottom:3px}
+.ptext{font-size:15px;font-weight:600}
+.species{font-size:42px;text-align:center;padding:2px 0}
+.species.hy{font-size:30px;font-weight:700;font-family:"Cambria","Times New Roman",serif}
+.species .chg{display:block;font-size:15px;font-family:system-ui,sans-serif;color:var(--muted);font-weight:600;margin-top:2px}
+
+.nuc{display:inline-flex;align-items:center;font-family:"Cambria Math","STIX Two Math","Cambria","Times New Roman",serif;line-height:1}
+.nuc .lscr{display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.48em;margin-right:.06em;gap:.32em}
+.nuc .rscr{font-size:.48em;align-self:flex-start;margin-left:.04em;min-width:.2em;margin-top:.05em}
+
+.ansRow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:center}
+.fieldBox{display:flex;flex-direction:column;align-items:center;gap:3px}
+.fieldBox .fl{font-size:12.5px;color:var(--muted);font-weight:600}
+.slot{min-width:56px;min-height:44px;padding:4px 8px;border-radius:8px;border:2px solid #36506a;background:#0d151d;font-size:21px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.slot.ph{color:#55708a;font-weight:500;font-size:15px}
+.slot.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,212,191,.25)}
+.slot.wrong{border-color:var(--bad);background:rgba(244,63,94,.10)}
+.slot.right{border-color:var(--good);background:rgba(34,197,94,.10)}
+.slot.reveal{border-color:var(--reveal);color:var(--reveal);background:rgba(251,146,60,.10)}
+.slot.sm{min-width:52px;min-height:40px;font-size:18px}
+.slot.big{min-width:72px;min-height:72px;font-size:36px;font-family:"Cambria","Times New Roman",serif}
+.slot.name{min-width:130px;font-size:19px}
+.nucWrap{display:inline-flex;flex-direction:column;align-items:center}
+.nucIn{display:inline-flex;align-items:center;gap:4px}
+.nucIn .nl{display:flex;flex-direction:column;gap:4px}
+.nucIn .nr{display:flex;flex-direction:column;align-self:flex-start}
+.hyIn{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hyIn .dash{font-size:26px;font-weight:700}
+.hyIn .chl{font-size:13px;color:var(--muted);margin-left:6px}
+.chGroup{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.mirror{font-size:15px;color:var(--muted);font-style:italic}
+.nlegend{font-size:11.5px;color:var(--muted);text-align:center;margin-top:2px}
+.counts{font-size:16px;text-align:center}
+.counts b{font-size:20px}
+.cp{color:#fca5a5}.cn{color:#d1d5db}.ce{color:#93c5fd}
+
+#fb{min-height:22px;font-size:14.5px;font-weight:600;padding:6px 10px;border-radius:8px;display:none}
+#fb.show{display:block}
+#fb.good{background:rgba(34,197,94,.14);color:#86efac}
+#fb.bad{background:rgba(244,63,94,.13);color:#fda4af}
+#fb.info{background:rgba(148,163,184,.13);color:#cbd5e1}
+#fb.hint{background:rgba(45,212,191,.12);color:#99f6e4}
+#fb.reveal{background:rgba(251,146,60,.14);color:#fdba74}
+.summary{font-size:14px;text-align:center;color:#cbd5e1}
+.summary .nuc{font-size:26px;vertical-align:middle;margin-right:4px}
+.summary.rv{color:var(--reveal)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{min-height:44px;padding:8px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);font-weight:700;font-size:15px}
+.btn.primary{background:var(--accent2);color:#04201c;border-color:var(--accent)}
+.btn.ghostBtn{background:transparent}
+.btn.sm{min-height:36px;padding:5px 11px;font-size:13.5px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.muted{color:var(--muted)}
+
+/* readout */
+#readout{padding:8px 10px;overflow:auto}
+#padSlot #padWrap{flex:none}
+#readout table{width:100%;border-collapse:collapse;font-size:14px}
+#readout td{padding:4px 2px;border-bottom:1px solid #1d2b38}
+#readout td:last-child{text-align:right;font-weight:700}
+.st{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.st-stable{background:rgba(34,197,94,.18);color:#86efac}
+.st-radio{background:rgba(245,158,11,.2);color:#fcd34d}
+.st-unknown{background:rgba(244,63,94,.18);color:#fda4af}
+.st-none{background:rgba(148,163,184,.18);color:#cbd5e1}
+.warn{margin-top:6px;font-size:13px;font-weight:700;color:#fcd34d;background:rgba(245,158,11,.12);border-radius:7px;padding:4px 8px}
+
+
+/* ---------- bottom ---------- */
+#bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,236px);gap:6px}
+#ptWrap{padding:5px;overflow-x:auto}
+#pt{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));grid-template-rows:repeat(4,44px);gap:3px;min-width:0}
+.tile{border:1px solid #2a3d50;border-radius:6px;padding:1px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.02;background:var(--panel2);min-width:0;overflow:hidden}
+.tile .tz{font-size:9.5px;color:#a9bccd;align-self:flex-start;padding-left:2px}
+.tile .ts{font-size:16px;font-weight:800;margin-top:-3px}
+.tile .tm{font-size:9px;color:#a9bccd}
+.tile:hover{border-color:var(--accent)}
+.tile.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.tile.flashT{animation:tflash .5s}
+@keyframes tflash{0%{background:var(--accent);color:#000}100%{}}
+.c-alk{background:rgba(239,68,68,.16)} .c-ae{background:rgba(249,115,22,.16)} .c-tm{background:rgba(234,179,8,.12)}
+.c-post{background:rgba(148,163,184,.17)} .c-metalloid{background:rgba(45,212,191,.15)} .c-nonmetal{background:rgba(34,197,94,.15)}
+.c-hal{background:rgba(59,130,246,.18)} .c-noble{background:rgba(168,85,247,.18)}
+.ptLegend{font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+.ptKey{display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;font-size:11px;color:#cbd5e1}
+.ptKey span{padding:1px 6px;border-radius:5px}
+
+#padWrap{padding:5px;display:flex;flex-direction:column;gap:3px}
+#padTarget{font-size:12px;color:var(--muted);text-align:center;min-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pad{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:41px;gap:4px}
+#pad button{border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:19px;font-weight:700}
+#pad button:active{background:var(--accent2);color:#000}
+#pad .wide{grid-column:span 2;font-size:15px;background:rgba(45,212,191,.12)}
+#pad.disabled{opacity:.4}
+
+/* ghost + fly */
+.dragGhost{position:fixed;pointer-events:none;z-index:50;transform:translate(-50%,-50%);width:28px;height:28px;font-size:17px;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.dragGhost .gx{position:absolute;right:-16px;top:-10px;font-size:12px;background:#000;color:var(--accent);padding:1px 4px;border-radius:6px}
+.pop{position:fixed;pointer-events:none;z-index:45;width:18px;height:18px;transform:translate(-50%,-50%);animation:pop .4s ease-out forwards}
+@keyframes pop{to{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+.fly{position:fixed;pointer-events:none;z-index:40;width:16px;height:16px;transform:translate(-50%,-50%);transition:left .32s ease-in,top .32s ease-in,opacity .32s}
+
+/* toast + overlay */
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#000c;border:1px solid var(--accent);color:#fff;padding:8px 14px;border-radius:9px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:80;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.66);display:none;align-items:center;justify-content:center;z-index:90;padding:12px}
+#overlay.show{display:flex}
+.modal{background:var(--panel);border:1px solid var(--accent);border-radius:14px;padding:18px 20px;max-width:560px;width:100%;max-height:96vh;overflow:auto;text-align:center}
+.modal h2{margin:0 0 6px;color:var(--accent)}
+.bigPct{font-size:56px;font-weight:900;line-height:1.05}
+.endGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:12px 0}
+.ec{border-radius:8px;padding:5px 2px;font-size:12px;font-weight:700;border:1px solid #0003}
+.ec .nuc{font-size:20px}
+.ec.s100{background:rgba(34,197,94,.3)} .ec.s50{background:rgba(163,230,53,.28)} .ec.s25{background:rgba(245,158,11,.3)} .ec.s0{background:rgba(244,63,94,.3)}
+.endKey{font-size:12px;color:var(--muted)}
+
+/* ---------- phone ---------- */
+@media (max-width: 1100px) and (min-width: 761px){
+  #top h1{font-size:15px}
+  .seg button{padding:6px 8px;font-size:13px}
+  .ptKey{display:none}
+}
+@media (max-width: 760px){
+  #app{height:auto;min-height:0;display:flex;flex-direction:column}
+  #main,#bottom,#side,#padSlot{display:contents}
+  #top{order:1} #progress{order:2} #task{order:3;overflow:visible} #atomCol{order:4}
+  #bins{order:5} #padWrap{order:6} #ptWrap{order:7} #readout{order:8}
+  #levels{margin-left:0}
+  #top h1{font-size:15px;width:100%}
+  .seg button{padding:6px 8px;font-size:13px}
+  .dots{margin-left:0}
+  #bins{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .mult{flex-direction:row;width:100%;justify-content:center}
+  .mult button{min-width:56px;min-height:40px}
+  .bin{width:30%;min-height:84px}
+  .bin .ball{width:36px;height:36px}
+  #atomBox{flex:none;width:100%;max-width:380px;aspect-ratio:1;margin:0 auto}
+  #pt{grid-template-columns:repeat(18,46px);grid-template-rows:repeat(4,48px)}
+  #pad{grid-auto-rows:48px}
+  .species{font-size:38px}
+  .endGrid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <h1>⚛ Atom Builder: <span>Isotopes &amp; Ions</span></h1>
+    <div class="seg" id="modeSeg">
+      <button data-mode="free" class="on">Free Form</button>
+      <button data-mode="guided">Guided</button>
+    </div>
+    <div class="seg" id="levels">
+      <button data-level="1">1 Count It</button>
+      <button data-level="2">2 Build It</button>
+      <button data-level="3">3 Name It</button>
+      <button data-level="4">4 Convert It</button>
+      <button data-level="5">5 Mixed</button>
+    </div>
+  </header>
+  <div id="progress"></div>
+  <div id="main">
+    <div id="bins" class="panel">
+      <div class="mult" id="mult">
+        <button data-m="1" class="on">×1</button><button data-m="5">×5</button><button data-m="10">×10</button>
+      </div>
+      <div class="bin" data-t="p"><div class="ball p">+</div><div class="bl">Proton</div><div class="cnt" id="cnt-p">0</div></div>
+      <div class="bin" data-t="n"><div class="ball n"></div><div class="bl">Neutron</div><div class="cnt" id="cnt-n">0</div></div>
+      <div class="bin" data-t="e"><div class="ball e">−</div><div class="bl">Electron</div><div class="cnt" id="cnt-e">0</div></div>
+    </div>
+    <div id="atomCol" class="panel">
+      <div id="elLabel">—</div>
+      <div id="atomBox"><canvas id="atom" width="300" height="300"></canvas><div id="lockTag">🔒 Model locked</div></div>
+      <div class="atomTip" id="atomTip">Drag particles onto the atom · double-click a particle or drag it off to remove it</div>
+    </div>
+    <div id="task" class="panel"></div>
+    <div id="side"><div id="padSlot"></div><div id="readout" class="panel"></div></div>
+  </div>
+  <div id="bottom">
+    <div id="ptWrap" class="panel"><div id="pt"></div></div>
+    <div id="padWrap" class="panel">
+      <div id="padTarget">Tap a box, then type</div>
+      <div id="pad">
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="del" aria-label="Backspace">⌫</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="+">+</button>
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="-">−</button>
+        <button data-k="clr" aria-label="Clear box">C</button><button data-k="0">0</button><button data-k="next" class="wide">Next box ▸</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<div id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   DATA  (Z = 1–36)
+   [symbol, name, avg atomic mass, most-abundant A, stable A list,
+    [lightest, heaviest] known A, notable radioactive A list]
+   Stable = stable or observationally stable (NUBASE2020). Very long-lived
+   primordial nuclides that decay (K-40, V-50, Ca-48, Ge-76, Se-82, Kr-78)
+   are listed as radioactive.
+   ===================================================================== */
+const EL_DATA = [
+ ['H','Hydrogen',1.008,1,[1,2],[1,7],[3]],
+ ['He','Helium',4.0026,4,[3,4],[3,10],[]],
+ ['Li','Lithium',6.94,7,[6,7],[3,13],[]],
+ ['Be','Beryllium',9.0122,9,[9],[5,16],[7,10]],
+ ['B','Boron',10.81,11,[10,11],[7,21],[]],
+ ['C','Carbon',12.011,12,[12,13],[8,22],[11,14]],
+ ['N','Nitrogen',14.007,14,[14,15],[10,25],[13]],
+ ['O','Oxygen',15.999,16,[16,17,18],[11,28],[15]],
+ ['F','Fluorine',18.998,19,[19],[13,31],[18]],
+ ['Ne','Neon',20.180,20,[20,21,22],[15,34],[]],
+ ['Na','Sodium',22.990,23,[23],[17,39],[22,24]],
+ ['Mg','Magnesium',24.305,24,[24,25,26],[18,40],[28]],
+ ['Al','Aluminum',26.982,27,[27],[21,43],[26]],
+ ['Si','Silicon',28.085,28,[28,29,30],[22,44],[32]],
+ ['P','Phosphorus',30.974,31,[31],[25,47],[32,33]],
+ ['S','Sulfur',32.06,32,[32,33,34,36],[26,49],[35]],
+ ['Cl','Chlorine',35.45,35,[35,37],[28,52],[36]],
+ ['Ar','Argon',39.95,40,[36,38,40],[29,54],[39]],
+ ['K','Potassium',39.098,39,[39,41],[31,57],[40]],
+ ['Ca','Calcium',40.078,40,[40,42,43,44,46],[34,58],[41,45,48]],
+ ['Sc','Scandium',44.956,45,[45],[36,61],[46]],
+ ['Ti','Titanium',47.867,48,[46,47,48,49,50],[38,63],[44]],
+ ['V','Vanadium',50.942,51,[51],[40,66],[50]],
+ ['Cr','Chromium',51.996,52,[50,52,53,54],[42,70],[51]],
+ ['Mn','Manganese',54.938,55,[55],[44,73],[54]],
+ ['Fe','Iron',55.845,56,[54,56,57,58],[45,76],[55,59,60]],
+ ['Co','Cobalt',58.933,59,[59],[47,78],[57,60]],
+ ['Ni','Nickel',58.693,58,[58,60,61,62,64],[48,82],[59,63]],
+ ['Cu','Copper',63.546,63,[63,65],[52,84],[64,67]],
+ ['Zn','Zinc',65.38,64,[64,66,67,68,70],[54,85],[65]],
+ ['Ga','Gallium',69.723,69,[69,71],[56,87],[67,68]],
+ ['Ge','Germanium',72.630,74,[70,72,73,74],[58,90],[68,76]],
+ ['As','Arsenic',74.922,75,[75],[60,92],[73,74]],
+ ['Se','Selenium',78.971,80,[74,76,77,78,80],[63,95],[75,82]],
+ ['Br','Bromine',79.904,79,[79,81],[67,98],[82]],
+ ['Kr','Krypton',83.798,84,[80,82,83,84,86],[67,101],[78,81,85]]
+];
+const EL=[null];
+EL_DATA.forEach((d,i)=>EL.push({Z:i+1,sym:d[0],name:d[1],mass:d[2],mostA:d[3],stable:d[4],range:d[5],radio:d[6]}));
+
+const COMMON_IONS={1:[1,-1],3:[1],4:[2],7:[-3],8:[-2],9:[-1],11:[1],12:[2],13:[3],15:[-3],16:[-2],17:[-1],
+ 19:[1],20:[2],21:[3],22:[2,3,4],23:[2,3],24:[2,3],25:[2],26:[2,3],27:[2,3],28:[2],29:[1,2],30:[2],31:[3],33:[-3],34:[-2],35:[-1]};
+const LIMITS={p:36,n:60,e:40};
+const PNAME={p:'protons',n:'neutrons',e:'electrons'};
+const MINUS='−';
+const TYPE_NAMES={1:'Count It',2:'Build It',3:'Name It',4:'Convert It'};
+const LEVEL_NAMES=['','Count It','Build It','Name It','Convert It','Mixed'];
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const rand=n=>Math.floor(Math.random()*n);
+function fmtCharge(c){ if(!c) return ''; const a=Math.abs(c); return (a===1?'':a)+(c>0?'+':MINUS); }
+function chargeText(c){ return c===0?'0 (neutral atom)':fmtCharge(c); }
+function nucHTML(A,Z,sym,c){
+  return `<span class="nuc"><span class="lscr"><span>${A}</span><span>${Z}</span></span><span class="nsym">${sym}</span><span class="rscr">${fmtCharge(c)}</span></span>`;
+}
+function parseCharge(raw){
+  raw=raw||''; const hasP=raw.includes('+'), hasM=raw.includes('-'); const d=raw.replace(/[+-]/g,'');
+  if(!d && !hasP && !hasM) return {v:0,blank:true};
+  const s=hasP?1:hasM?-1:0;
+  if(!d) return {v:s};
+  const num=parseInt(d,10);
+  if(!s){ if(num===0) return {v:0}; return {v:null,invalid:true}; }
+  return {v:s*num};
+}
+function rawCharge(c){ if(!c) return ''; return Math.abs(c)+(c>0?'+':'-'); }
+function num(v){ return (v===''||v==null)?NaN:parseInt(v,10); }
+function ptPos(z){ if(z===1) return [1,1]; if(z===2) return [1,18];
+  if(z<=10) return z<=4?[2,z-2]:[2,z+8];
+  if(z<=18) return z<=12?[3,z-10]:[3,z];
+  return [4,z-18]; }
+function cat(z){ if([3,11,19].includes(z)) return 'alk'; if([4,12,20].includes(z)) return 'ae';
+  if(z>=21&&z<=30) return 'tm'; if([2,10,18,36].includes(z)) return 'noble'; if([9,17,35].includes(z)) return 'hal';
+  if([5,14,32,33].includes(z)) return 'metalloid'; if([13,31].includes(z)) return 'post'; return 'nonmetal'; }
+
+/* ---------- electron shells (K, L, M, N) ---------- */
+function neutralShells(z){
+  if(z<=0) return [];
+  if(z<=2) return [z];
+  if(z<=10) return [2,z-2];
+  if(z<=18) return [2,8,z-10];
+  if(z<=20) return [2,8,8,z-18];
+  if(z===24) return [2,8,13,1];
+  if(z===29) return [2,8,18,1];
+  if(z<=30) return [2,8,z-12,2];
+  return [2,8,18,z-28];
+}
+function shellLayout(p,e){
+  if(e<=0) return [];
+  if(p<=0 || e>=p) return neutralShells(e);           // neutral, anion, or no nucleus: isoelectronic fill
+  const s=neutralShells(p).slice(); let remove=p-e;    // cation: remove from the outermost shell first
+  for(let k=s.length-1;k>=0&&remove>0;k--){ const r=Math.min(s[k],remove); s[k]-=r; remove-=r; }
+  while(s.length && s[s.length-1]===0) s.pop();
+  return s;
+}
+function isoStatus(p,n){
+  if(p<1) return {k:'none',t:(n>0?'No protons — not an element':'—')};
+  const el=EL[p], A=p+n;
+  if(el.stable.includes(A)) return {k:'stable',t:'Stable'};
+  if(A>=el.range[0]&&A<=el.range[1]) return {k:'radio',t:'Radioactive'};
+  return {k:'unknown',t:'Not known to exist'};
+}
+function isCommonIon(z,c){ return (COMMON_IONS[z]||[]).includes(c); }
+
+/* ---------- question pools ---------- */
+function buildPools(){
+  const easy=[],medium=[],hard=[];
+  for(let z=1;z<=36;z++){
+    const el=EL[z];
+    if(Math.round(el.mass)===el.mostA) easy.push({Z:z,A:el.mostA,ch:0});
+    else medium.push({Z:z,A:el.mostA,ch:0});
+    el.stable.filter(a=>a!==el.mostA).forEach(a=>medium.push({Z:z,A:a,ch:0}));
+    el.radio.forEach(a=>medium.push({Z:z,A:a,ch:0}));
+    (COMMON_IONS[z]||[]).forEach(c=>hard.push({Z:z,A:null,ch:c}));
+  }
+  return {easy,medium,hard};
+}
+const POOLS=buildPools();
+function otherIsotopes(z){ const el=EL[z]; return [...el.stable.filter(a=>a!==el.mostA),...el.radio]; }
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const S={
+  mode:'free', level:1, mult:1, animating:false,
+  freeModel:{p:0,n:0,e:0},
+  free:{input:'build',answers:{fA:'',fZ:'',fSym:null,fCh:''},active:'fSym',fb:null},
+  g:{qs:[],idx:0,results:[],attempts:0,hints:0,hintCats:new Set(),lastWrongCats:[],done:false,reveal:false,
+     finished:false,answers:{},active:null,wrong:new Set(),fb:null,model:{p:0,n:0,e:0}}
+};
+const FIELD_INFO={
+  p:{k:'num',lbl:'Protons',cat:'element',ph:'?'},
+  n:{k:'num',lbl:'Neutrons',cat:'mass',ph:'?'},
+  e:{k:'num',lbl:'Electrons',cat:'charge',ph:'?'},
+  hEl:{k:'el',lbl:'Element name',cat:'element',ph:'element'},
+  hA:{k:'num',lbl:'Mass number',cat:'mass',ph:'mass'},
+  hCh:{k:'ch',lbl:'Charge',cat:'charge',ph:'±'},
+  nA:{k:'num',lbl:'Mass number (top left)',cat:'mass',ph:'A'},
+  nZ:{k:'num',lbl:'Atomic number (bottom left)',cat:'element',ph:'Z'},
+  nSym:{k:'el',lbl:'Symbol',cat:'element',ph:'?'},
+  nCh:{k:'ch',lbl:'Charge (top right)',cat:'charge',ph:'±'},
+  fA:{k:'num',lbl:'Mass number (top left)',ph:'A'},
+  fZ:{k:'num',lbl:'Atomic number (bottom left)',ph:'Z'},
+  fSym:{k:'el',lbl:'Symbol',ph:'?'},
+  fCh:{k:'ch',lbl:'Charge (top right)',ph:'±'}
+};
+function curQ(){ return S.g.qs[S.g.idx]; }
+function tgt(q){ return {p:q.Z,n:q.A-q.Z,e:q.Z-q.ch,A:q.A,Z:q.Z,ch:q.ch}; }
+function fieldsFor(q){
+  switch(q.type){ case 1:return ['p','n','e']; case 2:return [];
+    case 3:return ['hEl','hA','nA','nZ','nSym','nCh'];
+    case 4:return q.dir==='h2n'?['nA','nZ','nSym','nCh']:['hEl','hA','hCh']; }
+  return [];
+}
+function entryModel(){
+  const g=S.g,q=curQ(),a=g.answers,cl=(v,t)=>Math.max(0,Math.min(LIMITS[t],v||0));
+  if(q.type===1) return {p:cl(num(a.p),'p'),n:cl(num(a.n),'n'),e:cl(num(a.e),'e')};
+  const Z=(q.dir==='h2n'?(a.nSym??num(a.nZ)):a.hEl)||0;
+  const A=num(q.dir==='h2n'?a.nA:a.hA), c=parseCharge(q.dir==='h2n'?a.nCh:a.hCh);
+  const p=cl(Z,'p'); const n=(p&&A>=p)?cl(A-p,'n'):0; const e=p?cl(p-(c.v||0),'e'):0;
+  return {p,n,e};
+}
+function liveEntryModel(){ return S.mode==='guided'&&!S.g.done&&[1,4].includes(guidedType()); }
+function curModel(){ if(S.mode==='free') return S.freeModel; return liveEntryModel()?entryModel():S.g.model; }
+function guidedType(){ const q=curQ(); return q?q.type:0; }
+function modelHidden(){ return false; }
+function labelHidden(){ return S.mode==='guided' && !S.g.done && guidedType()===3; }
+function editable(){ if(S.mode==='free') return !S.animating && S.free.input==='build'; return guidedType()===2 && !S.g.done; }
+function lockReason(){
+  if(S.mode==='free') return S.animating?'Wait for the build to finish.':'Switch to “Build model” to drag particles.';
+  const t=guidedType();
+  if(S.g.done) return 'Press Next for the next question.';
+  if(t===3) return 'The model is locked — write the notations for it.';
+  return 'You don’t need the model for this question. Use the number pad.';
+}
+
+/* =====================================================================
+   GUIDED FLOW
+   ===================================================================== */
+function newSet(){
+  const g=S.g, used=new Set(), qs=[];
+  const pick=(pool,diff)=>{
+    for(let t=0;t<400;t++){
+      const it={...pool[rand(pool.length)]};
+      if(it.A==null){ const o=otherIsotopes(it.Z); it.A=(Math.random()<0.55||!o.length)?EL[it.Z].mostA:o[rand(o.length)]; }
+      const key=`${it.Z}-${it.A}-${it.ch}`; if(used.has(key)) continue;
+      used.add(key); return {...it,diff};
+    }
+  };
+  for(let i=0;i<12;i++){
+    const diff=i<4?'Easy':i<8?'Medium':'Hard';
+    const item=pick(diff==='Easy'?POOLS.easy:diff==='Medium'?POOLS.medium:POOLS.hard,diff);
+    item.type=S.level===5?1+rand(4):S.level;
+    item.form=Math.random()<0.5?'hyphen':'nuclear';
+    item.dir=Math.random()<0.5?'h2n':'n2h';
+    qs.push(item);
+  }
+  Object.assign(g,{qs,idx:0,results:[],finished:false});
+  startQ();
+}
+function startQ(){
+  S.mult=1;
+  const g=S.g,q=curQ();
+  Object.assign(g,{attempts:0,hints:0,hintCats:new Set(),lastWrongCats:[],done:false,reveal:false,wrong:new Set(),fb:null});
+  g.answers={}; fieldsFor(q).forEach(f=>g.answers[f]=FIELD_INFO[f].k==='el'?null:'');
+  g.active=fieldsFor(q)[0]||null;
+  const T=tgt(q);
+  g.model=q.type===2?{p:0,n:0,e:0}:{p:T.p,n:T.n,e:T.e};
+  lastP=-1; renderAll();
+}
+function inProgress(){
+  const g=S.g; if(!g.qs.length||g.finished) return false;
+  const any=Object.values(g.answers).some(v=>v!==''&&v!=null);
+  return g.idx>0||g.attempts>0||g.done||any||(guidedType()===2&&(g.model.p+g.model.n+g.model.e)>0);
+}
+function setFb(msg,cls){ if(S.mode==='free') S.free.fb={msg,cls}; else S.g.fb={msg,cls}; }
+
+/* ----- checking ----- */
+function elMsg(z,T){
+  if(z===T.e&&T.e!==T.p) return 'The element is set by protons, not electrons.';
+  if(z===T.n&&T.n!==T.p) return 'Use the protons (red), not the neutrons, to find the element.';
+  return 'Count the protons — that number tells you the element.';
+}
+function massMsg(v,T){
+  if(v===T.p||v===T.n) return 'The mass number counts protons AND neutrons.';
+  if(v===Math.round(EL[T.Z].mass)) return 'Mass number = protons + neutrons for THIS atom — not the rounded atomic mass from the periodic table.';
+  return 'Check the mass number: protons + neutrons.';
+}
+function zMsg(v,T){
+  if(v===T.e&&T.e!==T.p) return 'Atomic number = protons, not electrons.';
+  if(v===T.n&&T.n!==T.p) return 'Atomic number = protons, not neutrons.';
+  if(v===T.A) return 'That’s the mass number. The atomic number is the number of protons.';
+  return 'The atomic number is the number of protons.';
+}
+function chargeMsg(c,T,fallback){
+  if(c.invalid) return 'Add a + or − sign to the charge.';
+  if(c.v===T.ch) return null;
+  if(T.ch!==0&&c.v===-T.ch) return T.ch>0?'More protons than electrons means positive — positive means electrons were LOST.':'More electrons than protons means negative — negative means electrons were GAINED.';
+  if(T.ch!==0&&c.v===0) return 'Check the charge — ions don’t have equal protons and electrons.';
+  if(T.ch===0) return 'Equal protons and electrons means neutral. Leave the charge blank (or 0).';
+  return fallback||'Check the charge: protons − electrons.';
+}
+function checkPNE(P,N,E,q,isBuild){
+  const T=tgt(q),w=[]; if(P!==T.p) w.push('p'); if(N!==T.n) w.push('n'); if(E!==T.e) w.push('e');
+  let msg=null;
+  if(w.includes('p')){
+    if(isBuild&&q.ch!==0&&P-E===q.ch) msg='Changing protons changes the element! Make the charge by changing electrons.';
+    else if(isBuild&&P+N===q.A) msg='Changing protons changes the element! Isotopes differ in neutrons, not protons.';
+    else if(P===q.A) msg='That’s the mass number. The number of protons is the atomic number.';
+    else if(q.ch!==0&&P===T.e) msg='Protons don’t change in an ion — electrons do. Protons = atomic number.';
+    else msg='Check the protons — the atomic number tells you how many.';
+  } else if(w.includes('n')){
+    if(N===q.A) msg='The mass number counts protons AND neutrons.';
+    else if(N===Math.round(EL[q.Z].mass)-q.Z) msg='Use the mass number of THIS isotope, not the average atomic mass from the periodic table.';
+    else if(N===T.p) msg='Neutrons don’t always equal protons. Use the mass number.';
+    else msg='Check the neutrons: mass number − atomic number.';
+  } else if(w.includes('e')){
+    if(q.ch!==0&&E===T.p) msg='Check the charge — ions don’t have equal protons and electrons.';
+    else if(q.ch>0&&E===T.p+q.ch) msg='Positive means electrons were LOST.';
+    else if(q.ch<0&&E===T.p+q.ch) msg='Negative means electrons were GAINED.';
+    else if(q.ch===0) msg='A neutral atom has equal protons and electrons.';
+    else msg='Check the electrons — use the charge.';
+  }
+  return {wrong:w,msg};
+}
+function checkName(q,a){
+  const T=tgt(q),w=[],m=[];
+  const hA=num(a.hA),nA=num(a.nA),nZ=num(a.nZ),ch=parseCharge(a.nCh);
+  if(a.hEl!==q.Z){w.push('hEl');m.push(elMsg(a.hEl,T));}
+  if(hA!==q.A){w.push('hA');m.push(massMsg(hA,T));}
+  if(nA===q.Z&&nZ===q.A&&q.A!==q.Z){w.push('nA','nZ');m.push('Mass number goes on top.');}
+  else{ if(nA!==q.A){w.push('nA');m.push(massMsg(nA,T));} if(nZ!==q.Z){w.push('nZ');m.push(zMsg(nZ,T));} }
+  if(a.nSym!==q.Z){w.push('nSym');m.push(elMsg(a.nSym,T));}
+  const cm=chargeMsg(ch,T); if(cm){w.push('nCh');m.push(cm);}
+  return {wrong:w,msg:m[0]};
+}
+function checkH2N(q,a){
+  const T=tgt(q),w=[],m=[];
+  const nA=num(a.nA),nZ=num(a.nZ),ch=parseCharge(a.nCh);
+  if(nA===q.Z&&nZ===q.A&&q.A!==q.Z){w.push('nA','nZ');m.push('Mass number goes on top.');}
+  else{
+    if(nA!==q.A){w.push('nA');
+      if(nA===T.n) m.push('That’s the neutron count. The mass number is the number after the hyphen.');
+      else if(nA===Math.round(EL[q.Z].mass)) m.push('Use this isotope’s mass number (in the name), not the average atomic mass.');
+      else m.push('The mass number is the number after the hyphen.');}
+    if(nZ!==q.Z){w.push('nZ');
+      if(nZ===q.A) m.push('That’s the mass number. Find the atomic number on the periodic table.');
+      else if(nZ===T.e&&T.e!==T.p) m.push('Atomic number = protons, not electrons.');
+      else m.push('Find the atomic number on the periodic table.');}
+  }
+  if(a.nSym!==q.Z){w.push('nSym');m.push('The element name tells you the symbol — find it on the periodic table.');}
+  const cm=chargeMsg(ch,T,'Copy the charge from the prompt to the top right.'); if(cm){w.push('nCh');m.push(cm);}
+  return {wrong:w,msg:m[0]};
+}
+function checkN2H(q,a){
+  const T=tgt(q),w=[],m=[];
+  const hA=num(a.hA),ch=parseCharge(a.hCh);
+  if(a.hEl!==q.Z){w.push('hEl');
+    if(a.hEl===q.A) m.push('Use the bottom number (atomic number) to find the element, not the top.');
+    else if(a.hEl===T.n) m.push('Use the atomic number (bottom), not the neutron count.');
+    else m.push('The bottom number (atomic number) tells you the element.');}
+  if(hA!==q.A){w.push('hA');
+    if(hA===q.Z) m.push('Hyphen notation uses the mass number — the TOP number.');
+    else if(hA===T.n) m.push('Hyphen notation uses the mass number, not the neutron count.');
+    else m.push('The mass number is the top-left number.');}
+  const cm=chargeMsg(ch,T,'Copy the charge from the top right.'); if(cm){w.push('hCh');m.push(cm);}
+  return {wrong:w,msg:m[0]};
+}
+function check(){
+  const g=S.g; if(g.done||g.finished) return;
+  const q=curQ(), a=g.answers, fl=fieldsFor(q);
+  if(q.type!==2){
+    const empty=fl.filter(f=>FIELD_INFO[f].k!=='ch'&&(a[f]==null||a[f]===''));
+    if(empty.length){ setFb('Fill in every box first.','info'); g.active=empty[0]; renderAll(); return; }
+  } else if(g.model.p+g.model.n+g.model.e===0){ setFb('Drag particles onto the atom first.','info'); renderAll(); return; }
+  let res;
+  if(q.type===1) res=checkPNE(num(a.p),num(a.n),num(a.e),q,false);
+  else if(q.type===2) res=checkPNE(g.model.p,g.model.n,g.model.e,q,true);
+  else if(q.type===3) res=checkName(q,a);
+  else res=q.dir==='h2n'?checkH2N(q,a):checkN2H(q,a);
+  g.attempts++;
+  if(!res.wrong.length){
+    const sc=[1,.5,.25][g.attempts-1];
+    finishQ(sc,false);
+    setFb(`✓ Correct! ${sc===1?'First try — 100%':sc===.5?'2nd try — 50%':'3rd try — 25%'}`,'good');
+  } else if(g.attempts>=3){
+    revealAnswer(); finishQ(0,true);
+    setFb(`✗ ${res.msg} The answer is shown in orange (0%).`,'reveal');
+  } else {
+    g.wrong=new Set(res.wrong);
+    g.lastWrongCats=[...new Set(res.wrong.map(f=>FIELD_INFO[f].cat))];
+    setFb(`✗ ${res.msg} (Try ${g.attempts+1} of 3)`,'bad');
+  }
+  renderAll();
+}
+function finishQ(score,revealed){
+  const g=S.g,q=curQ(),T=tgt(q);
+  g.done=true; g.reveal=revealed; g.wrong=new Set(); g.results[g.idx]={score,q};
+  if(q.type!==2||revealed) g.model={p:T.p,n:T.n,e:T.e};
+}
+function revealAnswer(){
+  const g=S.g,q=curQ(),T=tgt(q),a=g.answers;
+  const vals={p:String(T.p),n:String(T.n),e:String(T.e),hEl:q.Z,hA:String(q.A),hCh:rawCharge(q.ch),
+              nA:String(q.A),nZ:String(q.Z),nSym:q.Z,nCh:rawCharge(q.ch)};
+  fieldsFor(q).forEach(f=>a[f]=vals[f]);
+}
+function nextQ(){
+  const g=S.g; if(!g.done) return;
+  if(g.idx>=g.qs.length-1){ g.finished=true; renderAll(); showEnd(); return; }
+  g.idx++; startQ();
+}
+function hintText(q,c){
+  const t=q.type;
+  if(c==='element'){
+    if(t===3) return 'Count the protons (red). Which element has that atomic number?';
+    if(t===4) return q.dir==='h2n'?'Which number tells you what element it is? Find the element on the periodic table.':'Which number tells you what element it is — top or bottom?';
+    return q.form==='nuclear'?'Which number tells you what element it is — top or bottom?':'Find the element on the periodic table. Which number tells you what element it is?';
+  }
+  if(c==='mass'){
+    if(t===3) return 'The mass number counts protons AND neutrons. What’s the total?';
+    if(t===4) return q.dir==='h2n'?'In nuclear notation, does the mass number go on the top or the bottom?':'Hyphen notation uses the mass number. Is that the top or the bottom number?';
+    return 'How can you find neutrons from the mass number and atomic number?';
+  }
+  if(t===3) return 'Compare protons and electrons. Which is bigger, and by how much?';
+  if(t===4) return q.dir==='h2n'?'In nuclear notation the charge goes at the top right. What is it here?':'Hyphen notation doesn’t include charge — what goes in the Charge box?';
+  if(q.ch===0) return 'A neutral atom has no charge. How do its electrons compare to its protons?';
+  return `A ${q.ch>0?'positive':'negative'} charge means electrons were lost or gained?`;
+}
+function giveHint(){
+  const g=S.g; if(g.done) return;
+  if(g.hints>=3){ setFb('No more hints for this question.','info'); renderAll(); return; }
+  const q=curQ(); let order=['element','mass','charge'].filter(c=>!g.hintCats.has(c));
+  if(g.lastWrongCats.length){ const w=order.filter(c=>g.lastWrongCats.includes(c)); if(w.length) order=w; }
+  const c=order[0]; g.hintCats.add(c); g.hints++;
+  setFb('💡 '+hintText(q,c),'hint'); renderAll();
+}
+function clearGuided(){
+  const g=S.g; if(g.done) return; const q=curQ();
+  if(q.type===2){ g.model={p:0,n:0,e:0}; }
+  else { fieldsFor(q).forEach(f=>g.answers[f]=FIELD_INFO[f].k==='el'?null:''); g.active=fieldsFor(q)[0]; }
+  g.wrong=new Set(); g.fb=null; renderAll();
+}
+
+/* =====================================================================
+   INPUT: number pad, periodic table, keyboard
+   ===================================================================== */
+function ctx(){
+  if(S.mode==='free') return {ans:S.free.answers,get active(){return S.free.active},set active(v){S.free.active=v},
+    fields:S.free.input==='notation'?['fA','fZ','fSym','fCh']:[],locked:S.animating};
+  const g=S.g,q=curQ(); if(!q) return null;
+  return {ans:g.answers,get active(){return g.active},set active(v){g.active=v},fields:fieldsFor(q),locked:g.done||g.finished};
+}
+function padKey(k){
+  const c=ctx(); if(!c||c.locked) return;
+  if(!c.fields.length){ toast(S.mode==='free'?'Switch to “Enter notation” to type a notation.':'Build It uses the particle bins — drag particles onto the atom.'); return; }
+  if(!c.active||!c.fields.includes(c.active)) c.active=c.fields[0];
+  const f=c.active, kd=FIELD_INFO[f].k;
+  if(k==='next'){ c.active=c.fields[(c.fields.indexOf(f)+1)%c.fields.length]; renderAll(); return; }
+  if(kd==='el'){
+    if(k==='del'||k==='clr'){ c.ans[f]=null; if(f==='fSym') c.ans.fZ=''; touched(f); }
+    else toast('Tap an element on the periodic table for this box.');
+    renderAll(); return;
+  }
+  let v=c.ans[f]||'';
+  if(kd==='num'){
+    if(/^\d$/.test(k)){ if(v==='0') v=''; if(v.length<2) v+=k; if(v.length>=targetLen(f)){ c.ans[f]=v; touched(f); advanceFrom(c,f); renderAll(); return; } }
+    else if(k==='del') v=v.slice(0,-1);
+    else if(k==='clr') v='';
+    else { toast('+ and − are only for the charge box.'); return; }
+  } else {
+    if(/^\d$/.test(k)){ if(v.replace(/[+-]/g,'').length<2) v+=k; }
+    else if(k==='+'||k==='-') v=v.replace(/[+-]/g,'')+k;
+    else if(k==='del') v=v.slice(0,-1);
+    else if(k==='clr') v='';
+  }
+  c.ans[f]=v; touched(f); renderAll();
+}
+function targetLen(f){
+  if(S.mode!=='guided') return 2;
+  const q=curQ(),T=tgt(q),v={p:T.p,n:T.n,e:T.e,hA:q.A,nA:q.A,nZ:q.Z}[f];
+  return v==null?2:String(v).length;
+}
+function advanceFrom(c,f){
+  const fl=c.fields,i=fl.indexOf(f),empty=x=>c.ans[x]===''||c.ans[x]==null;
+  const nxt=fl.slice(i+1).find(empty)||fl.slice(i+1)[0]||fl.find(empty);
+  if(nxt) c.active=nxt;
+}
+function touched(f){
+  if(S.mode==='guided'){ S.g.wrong.delete(f); return; }
+  if(f==='fZ'){ const a=S.free.answers, z=num(a.fZ);
+    if(z>=1&&z<=36){ a.fSym=z; flashTile(z); } else { a.fSym=null; if(selTile){ selTile.classList.remove('sel'); selTile=null; } } }
+}
+function pickElement(z){
+  flashTile(z);
+  if(S.mode==='free'){
+    if(S.animating) return;
+    const a=S.free.answers; a.fSym=z; a.fZ=String(z);
+    S.free.active=a.fA===''?'fA':'fCh'; renderAll(); return;
+  }
+  const g=S.g; if(g.done||g.finished){ toast(`${EL[z].name}: atomic number ${z}`); return; }
+  const fl=fieldsFor(curQ());
+  let target=(g.active&&FIELD_INFO[g.active].k==='el')?g.active:(fl.find(f=>FIELD_INFO[f].k==='el'&&g.answers[f]==null)||fl.find(f=>FIELD_INFO[f].k==='el'));
+  if(!target){ toast(`${EL[z].name} (${EL[z].sym}) — atomic number ${z}`); return; }
+  g.answers[target]=z; touched(target);
+  const i=fl.indexOf(target); const nxt=fl.slice(i+1).find(f=>g.answers[f]===''||g.answers[f]==null);
+  g.active=nxt||target; renderAll();
+}
+let selTile=null;
+function flashTile(z){
+  const t=document.querySelector(`.tile[data-z="${z}"]`); if(!t) return;
+  if(selTile) selTile.classList.remove('sel'); selTile=t; t.classList.add('sel');
+  t.classList.remove('flashT'); void t.offsetWidth; t.classList.add('flashT');
+}
+
+/* =====================================================================
+   MODEL EDITING (drag / drop)
+   ===================================================================== */
+function addParticles(type,count){
+  const m=curModel(),before=m[type]; m[type]=Math.min(LIMITS[type],m[type]+count);
+  if(m[type]===before) toast(`Limit reached: ${LIMITS[type]} ${PNAME[type]} max.`);
+  else if(m[type]-before<count) toast(`Limit: ${LIMITS[type]} ${PNAME[type]} max.`);
+  onModelChange();
+}
+function removeParticles(type,count){ const m=curModel(); m[type]=Math.max(0,m[type]-count); onModelChange(); }
+function onModelChange(){
+  if(S.mode==='guided'){ S.g.wrong=new Set(); if(S.g.fb&&S.g.fb.cls!=='hint') S.g.fb=null; }
+  renderAll();
+}
+
+/* =====================================================================
+   CANVAS DRAWING
+   ===================================================================== */
+const canvas=$('#atom'), cx2d=canvas.getContext('2d'), atomBox=$('#atomBox');
+let SIZE=300, DPR=1, mainHits=[], mainOuter=0;
+function sizeCanvas(){
+  const w=atomBox.clientWidth,h=atomBox.clientHeight||w;
+  const s=Math.max(150,Math.floor(Math.min(w,h)));
+  DPR=window.devicePixelRatio||1; SIZE=s;
+  canvas.style.width=s+'px'; canvas.style.height=s+'px';
+  canvas.width=Math.round(s*DPR); canvas.height=Math.round(s*DPR);
+}
+new ResizeObserver(sizeCanvas).observe(atomBox);
+const nucCache=new Map();
+function nucLayout(p,n,scale){
+  const key=p+','+n+','+scale.toFixed(3); if(nucCache.has(key)) return nucCache.get(key);
+  const N=p+n, rp=Math.max(6,13-N*0.08)*scale, c=rp*1.12, pts=[];
+  for(let i=0;i<N;i++){
+    const isP=Math.floor((i+1)*p/N)>Math.floor(i*p/N);
+    const r=N===1?0:c*Math.sqrt(i+0.5), a=i*2.39996323;
+    pts.push({x:r*Math.cos(a),y:r*Math.sin(a),t:isP?'p':'n'});
+  }
+  if(N>1){ const mx=pts.reduce((s,q)=>s+q.x,0)/N, my=pts.reduce((s,q)=>s+q.y,0)/N; pts.forEach(q=>{q.x-=mx;q.y-=my;}); }
+  const res={pts,rp,R:N?Math.max(...pts.map(q=>Math.hypot(q.x,q.y)))+rp:0};
+  if(nucCache.size>300) nucCache.clear(); nucCache.set(key,res); return res;
+}
+const COL={p:['#dc2626','#fca5a5','+'],n:['#6b7280','#e5e7eb',''],e:['#1d4ed8','#93c5fd',MINUS]};
+function ball(c,x,y,r,t){
+  const [col,hi,lab]=COL[t];
+  const g=c.createRadialGradient(x-r*.35,y-r*.35,r*.1,x,y,r); g.addColorStop(0,hi); g.addColorStop(1,col);
+  c.fillStyle=g; c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fill();
+  c.strokeStyle='rgba(0,0,0,.4)'; c.lineWidth=Math.max(.6,r*.08); c.stroke();
+  if(lab&&r>=6){ c.fillStyle='#fff'; c.font=`bold ${Math.round(r*1.35)}px system-ui,sans-serif`; c.textAlign='center'; c.textBaseline='middle'; c.fillText(lab,x,y+r*.06); }
+}
+function drawAtom(c,size,m,t,hits){
+  const cx=size/2,cy=size/2,scale=size/340;
+  const L=nucLayout(m.p,m.n,scale), shells=shellLayout(m.p,m.e);
+  const R0=Math.max(L.R+16*scale,34*scale), Rmax=size/2-10*scale, ns=shells.length;
+  const gap=ns>1?Math.min(40*scale,(Rmax-R0)/(ns-1)):0;
+  const radii=shells.map((_,k)=>R0+k*gap);
+  if(L.R){ const g=c.createRadialGradient(cx,cy,0,cx,cy,L.R*1.7); g.addColorStop(0,'rgba(45,212,191,.2)'); g.addColorStop(1,'rgba(45,212,191,0)');
+    c.fillStyle=g; c.beginPath(); c.arc(cx,cy,L.R*1.7,0,Math.PI*2); c.fill(); }
+  c.setLineDash([4*scale,5*scale]); c.strokeStyle='rgba(45,212,191,.38)'; c.lineWidth=1.3;
+  radii.forEach(r=>{c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.stroke();}); c.setLineDash([]);
+  for(let i=L.pts.length-1;i>=0;i--){ const pt=L.pts[i]; const x=cx+pt.x,y=cy+pt.y; ball(c,x,y,L.rp,pt.t); if(hits) hits.push({x,y,r:L.rp,t:pt.t}); }
+  const re=Math.max(4.5,6.5*scale);
+  shells.forEach((cnt,k)=>{
+    const rot=t*(0.6/(k+1))+k*0.7;
+    for(let i=0;i<cnt;i++){ const a=rot+i*2*Math.PI/cnt; const x=cx+radii[k]*Math.cos(a),y=cy+radii[k]*Math.sin(a);
+      ball(c,x,y,re,'e'); if(hits) hits.push({x,y,r:re,t:'e'}); }
+  });
+  return ns?radii[ns-1]+re:L.R;
+}
+function drawMain(t){
+  const c=cx2d; c.setTransform(DPR,0,0,DPR,0,0); c.clearRect(0,0,SIZE,SIZE);
+  const cx=SIZE/2;
+  c.fillStyle='rgba(255,255,255,.02)'; c.beginPath(); c.arc(cx,cx,SIZE/2-2,0,Math.PI*2); c.fill();
+  if(modelHidden()){
+    c.setLineDash([6,6]); c.strokeStyle='rgba(45,212,191,.4)'; c.lineWidth=2; c.beginPath(); c.arc(cx,cx,SIZE*.36,0,Math.PI*2); c.stroke(); c.setLineDash([]);
+    c.fillStyle='rgba(45,212,191,.85)'; c.font=`bold ${Math.round(SIZE*.28)}px system-ui`; c.textAlign='center'; c.textBaseline='middle'; c.fillText('?',cx,cx-SIZE*.03);
+    c.fillStyle='#8ea3b6'; c.font=`${Math.round(SIZE*.042)}px system-ui`; c.fillText('Model appears after you answer',cx,cx+SIZE*.2);
+    mainHits=[]; mainOuter=0; return;
+  }
+  const m=curModel(); mainHits=[];
+  if(m.p+m.n+m.e===0){
+    c.setLineDash([6,6]); c.strokeStyle='rgba(45,212,191,.35)'; c.lineWidth=2; c.beginPath(); c.arc(cx,cx,SIZE*.36,0,Math.PI*2); c.stroke(); c.setLineDash([]);
+    c.fillStyle='#8ea3b6'; c.font=`${Math.round(SIZE*(liveEntryModel()?.04:.048))}px system-ui`; c.textAlign='center'; c.textBaseline='middle';
+    c.fillText(editable()?'Drag particles here':(liveEntryModel()?'Your answer builds the model':'Empty'),cx,cx);
+  }
+  mainOuter=drawAtom(c,SIZE,m,t,mainHits);
+}
+function frame(ts){ drawMain(ts/1000); requestAnimationFrame(frame); }
+
+/* ---------- drag handling ---------- */
+let drag=null, lastTap=null;
+function canvasRect(){ return canvas.getBoundingClientRect(); }
+function overCanvas(x,y){ const r=canvasRect(); return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom; }
+function outsideAtom(x,y){
+  if(!overCanvas(x,y)) return true;
+  const r=canvasRect(); const dx=x-(r.left+r.width/2),dy=y-(r.top+r.height/2);
+  return Math.hypot(dx,dy)>Math.max(mainOuter+14,24);
+}
+function makeGhost(t){
+  const g=document.createElement('div'); g.className='ball dragGhost '+t; g.textContent=COL[t][2];
+  if(S.mult>1){ const x=document.createElement('span'); x.className='gx'; x.textContent=(drag.src==='atom'?'−':'+')+S.mult; g.appendChild(x); }
+  document.body.appendChild(g); return g;
+}
+document.querySelectorAll('.bin').forEach(b=>{
+  b.addEventListener('pointerdown',ev=>{
+    if(!editable()){ toast(lockReason()); return; }
+    ev.preventDefault(); drag={t:b.dataset.t,src:'bin',x0:ev.clientX,y0:ev.clientY,moved:false,ghost:null};
+  });
+});
+canvas.addEventListener('pointerdown',ev=>{
+  if(!editable()){ if(S.mode==='guided'&&!S.g.done&&guidedType()===3) toast(lockReason()); return; }
+  const r=canvasRect(),x=ev.clientX-r.left,y=ev.clientY-r.top;
+  let hit=null; for(let i=mainHits.length-1;i>=0;i--){ const h=mainHits[i]; if(Math.hypot(h.x-x,h.y-y)<=h.r+5){ hit=h; break; } }
+  if(!hit){ lastTap=null; return; }
+  ev.preventDefault();
+  const now=performance.now();
+  if(lastTap&&now-lastTap.t<450&&Math.hypot(ev.clientX-lastTap.x,ev.clientY-lastTap.y)<24&&lastTap.type===hit.t){
+    lastTap=null; drag=null; popAt(ev.clientX,ev.clientY,hit.t); removeParticles(hit.t,S.mult); return;
+  }
+  lastTap={t:now,x:ev.clientX,y:ev.clientY,type:hit.t};
+  drag={t:hit.t,src:'atom',x0:ev.clientX,y0:ev.clientY,moved:false,ghost:null};
+});
+function popAt(x,y,t){
+  const d=document.createElement('div'); d.className='ball pop '+t; d.style.left=x+'px'; d.style.top=y+'px';
+  document.body.appendChild(d); setTimeout(()=>d.remove(),420);
+}
+window.addEventListener('pointermove',ev=>{
+  if(!drag) return;
+  if(!drag.moved&&Math.hypot(ev.clientX-drag.x0,ev.clientY-drag.y0)>6){ drag.moved=true; drag.ghost=makeGhost(drag.t); }
+  if(drag.ghost){ drag.ghost.style.left=ev.clientX+'px'; drag.ghost.style.top=ev.clientY+'px';
+    atomBox.classList.toggle('dropHover',drag.src==='bin'&&overCanvas(ev.clientX,ev.clientY)); }
+});
+function endDrag(ev,cancel){
+  if(!drag) return; const d=drag; drag=null;
+  if(d.ghost) d.ghost.remove(); atomBox.classList.remove('dropHover');
+  if(cancel||!editable()) return;
+  if(d.src==='bin'){ if(!d.moved||overCanvas(ev.clientX,ev.clientY)) addParticles(d.t,S.mult); }
+  else if(d.moved&&outsideAtom(ev.clientX,ev.clientY)) removeParticles(d.t,S.mult);
+}
+window.addEventListener('pointerup',ev=>endDrag(ev,false));
+window.addEventListener('pointercancel',ev=>endDrag(ev,true));
+
+/* =====================================================================
+   FREE FORM
+   ===================================================================== */
+function freeBuild(){
+  if(S.animating) return;
+  const a=S.free.answers, Z=a.fSym;
+  const err=m=>{ setFb(m,'bad'); renderAll(); };
+  if(!Z) return err('Pick an element on the periodic table.');
+  const z=a.fZ===''?Z:num(a.fZ);
+  if(z!==Z) return err(`The atomic number doesn’t match ${EL[Z].sym}. Changing protons changes the element!`);
+  if(a.fA==='') return err('Enter a mass number (top left).');
+  const A=num(a.fA);
+  if(A<Z) return err('The mass number can’t be less than the atomic number (protons).');
+  if(A-Z>LIMITS.n) return err(`That needs ${A-Z} neutrons — this simulator allows up to ${LIMITS.n}.`);
+  const c=parseCharge(a.fCh); if(c.invalid) return err('Add a + or − sign to the charge.');
+  const e=Z-c.v;
+  if(e<0) return err('That charge would need fewer than 0 electrons.');
+  if(e>LIMITS.e) return err(`That needs ${e} electrons — this simulator allows up to ${LIMITS.e}.`);
+  S.free.fb=null; animateBuild(Z,A-Z,e);
+}
+function animateBuild(p,n,e){
+  S.animating=true; S.freeModel={p:0,n:0,e:0}; renderAll();
+  const steps=[...Array(p).fill('p'),...Array(n).fill('n'),...Array(e).fill('e')];
+  const delay=Math.max(16,Math.min(70,1800/Math.max(steps.length,1)));
+  let i=0;
+  const tick=()=>{
+    if(i>=steps.length){ S.freeModel={p,n,e}; S.animating=false; renderAll(); return; }
+    const t=steps[i++]; flyDot(t); S.freeModel[t]++; renderLight(); setTimeout(tick,delay);
+  };
+  setTimeout(tick,120);
+}
+function flyDot(t){
+  const bin=document.querySelector(`.bin[data-t="${t}"] .ball`); if(!bin) return;
+  const b=bin.getBoundingClientRect(), r=canvasRect();
+  const d=document.createElement('div'); d.className='ball fly '+t;
+  d.style.left=(b.left+b.width/2)+'px'; d.style.top=(b.top+b.height/2)+'px'; document.body.appendChild(d);
+  requestAnimationFrame(()=>{ d.style.left=(r.left+r.width/2)+'px'; d.style.top=(r.top+r.height/2)+'px'; d.style.opacity='.2'; });
+  setTimeout(()=>d.remove(),380);
+}
+
+/* =====================================================================
+   RENDERING
+   ===================================================================== */
+function speciesNuc(m){ if(m.p<1) return '<span class="muted">—</span>'; return nucHTML(m.p+m.n,m.p,EL[m.p].sym,m.p-m.e); }
+function speciesHy(m){ if(m.p<1) return '<span class="muted">—</span>'; return `${EL[m.p].name}-${m.p+m.n}`; }
+function showSpecies(q,form){
+  if(form==='nuclear') return `<div class="species">${nucHTML(q.A,q.Z,EL[q.Z].sym,q.ch)}</div>`;
+  return `<div class="species hy">${EL[q.Z].name}-${q.A}<span class="chg">Charge: ${chargeText(q.ch)}</span></div>`;
+}
+function slotHTML(f,extra){
+  const c=ctx(),info=FIELD_INFO[f],v=c.ans[f]; let txt,ph=false;
+  if(info.k==='el'){ if(v==null){txt=info.ph;ph=true;} else txt=(f==='hEl')?EL[v].name:EL[v].sym; }
+  else if(info.k==='num'){ if(v===''||v==null){txt=info.ph;ph=true;} else txt=v; }
+  else { const r=parseCharge(v); if(!v){txt=info.ph;ph=true;} else if(r.invalid) txt=v+'?'; else txt=r.v===0?'0':fmtCharge(r.v); }
+  let cls='slot '+(extra||'');
+  if(c.active===f&&!c.locked) cls+=' active';
+  if(ph) cls+=' ph';
+  if(S.mode==='guided'){ const g=S.g; if(g.reveal) cls+=' reveal'; else if(g.done) cls+=' right'; else if(g.wrong.has(f)) cls+=' wrong'; }
+  return `<button class="${cls}" data-f="${f}" aria-label="${info.lbl}">${txt}</button>`;
+}
+function nucInHTML(fa,fz,fs,fc){
+  return `<div class="nucWrap"><div class="nucIn"><div class="nl">${slotHTML(fa,'sm')}${slotHTML(fz,'sm')}</div>${slotHTML(fs,'big')}<div class="nr">${slotHTML(fc,'sm')}</div></div>
+  <div class="nlegend">top: mass # · bottom: atomic # · top right: charge</div></div>`;
+}
+function hyInHTML(fel,fa,fch,mirror){
+  return `<div class="hyIn">${slotHTML(fel,'name')}<span class="dash">-</span>${slotHTML(fa,'sm')}<span class="chGroup"><span class="chl">Charge:</span>${fch?slotHTML(fch,'sm'):`<span class="mirror">${mirror}</span>`}</span></div>`;
+}
+function fbHTML(fb){ return fb?`<div id="fb" class="show ${fb.cls}">${fb.msg}</div>`:''; }
+
+function renderTask(){
+  const box=$('#task');
+  if(S.mode==='free'){ box.innerHTML=freeTaskHTML(); return; }
+  const g=S.g,q=curQ(); if(!q){ box.innerHTML=''; return; }
+  const tag=S.level===5?`<span class="tag">${TYPE_NAMES[q.type]}</span><br>`:'';
+  let prompt='',ans='';
+  if(q.type===1){
+    prompt=`${tag}<div class="ptext">How many protons, neutrons, and electrons?</div>${showSpecies(q,q.form)}`;
+    ans=`<div class="ansRow">
+      <div class="fieldBox"><span class="fl cp">Protons p⁺</span>${slotHTML('p')}</div>
+      <div class="fieldBox"><span class="fl cn">Neutrons n⁰</span>${slotHTML('n')}</div>
+      <div class="fieldBox"><span class="fl ce">Electrons e⁻</span>${slotHTML('e')}</div></div>`;
+  } else if(q.type===2){
+    prompt=`${tag}<div class="ptext">Build this ${q.ch===0?'atom':'ion'} — drag particles onto the model:</div>${showSpecies(q,q.form)}`;
+    const m=g.model;
+    ans=`<div class="counts">Your model: <b class="cp">${m.p}</b> p⁺ · <b class="cn">${m.n}</b> n⁰ · <b class="ce">${m.e}</b> e⁻</div>`;
+  } else if(q.type===3){
+    const nc=parseCharge(g.answers.nCh);
+    const mirror=g.answers.nCh?(nc.invalid?'?':(nc.v===0?'0':fmtCharge(nc.v))):'(same as nuclear)';
+    prompt=`${tag}<div class="ptext">Write both notations for the model.</div>`;
+    ans=`<div class="ansRow">
+      <div class="fieldBox"><span class="fl">Hyphen notation</span>${hyInHTML('hEl','hA',null,mirror)}</div>
+      <div class="fieldBox"><span class="fl">Nuclear notation</span>${nucInHTML('nA','nZ','nSym','nCh')}</div></div>`;
+  } else {
+    const toNuc=q.dir==='h2n';
+    prompt=`${tag}<div class="ptext">Write this in <b>${toNuc?'nuclear':'hyphen'}</b> notation:</div>${showSpecies(q,toNuc?'hyphen':'nuclear')}`;
+    ans=`<div class="ansRow">${toNuc?nucInHTML('nA','nZ','nSym','nCh'):hyInHTML('hEl','hA','hCh')}</div>`;
+  }
+  let summary='';
+  if(g.done){
+    const T=tgt(q);
+    summary=`<div class="summary ${g.reveal?'rv':''}">${g.reveal?'Answer: ':''}${nucHTML(q.A,q.Z,EL[q.Z].sym,q.ch)} = ${EL[q.Z].name}-${q.A}, charge ${chargeText(q.ch)} · ${T.p} p⁺ · ${T.n} n⁰ · ${T.e} e⁻</div>`;
+  }
+  const btns=g.done
+    ?`<button class="btn primary" data-act="next">${g.idx>=g.qs.length-1?'Finish ▸':'Next ▸'}</button>`
+    :`<button class="btn primary" data-act="check">Check ✓</button><button class="btn" data-act="hint" ${g.hints>=3?'disabled':''}>💡 Hint (${3-g.hints})</button>${q.type===2?'':'<button class="btn ghostBtn" data-act="clear">Clear</button>'}`;
+  box.innerHTML=`<div class="card">${prompt}</div><div class="card">${ans}</div>${fbHTML(g.fb)}${summary}<div class="btns">${btns}</div>`;
+}
+function freeTaskHTML(){
+  const m=S.freeModel;
+  const live=`<div class="card"><div class="lbl">Your atom (updates live)</div>
+    <div class="ansRow" style="align-items:center">
+      <div class="species hy" style="font-size:22px">${speciesHy(m)}${m.p>0?`<span class="chg">Charge: ${chargeText(m.p-m.e)}</span>`:''}</div>
+      <div class="species" style="font-size:36px">${speciesNuc(m)}</div></div></div>`;
+  const entry=S.free.input!=='notation'?'':`<div class="card"><div class="lbl">Enter a notation, then Build</div>
+    <div class="ansRow" style="align-items:center">${nucInHTML('fA','fZ','fSym','fCh')}
+    <button class="btn primary" data-act="build" ${S.animating?'disabled':''}>Build ▸</button></div></div>`;
+  return live+entry+fbHTML(S.free.fb);
+}
+function renderReadout(){
+  const box=$('#readout');
+  if(S.mode==='guided'&&!S.g.done){ box.innerHTML='<div class="lbl">Readout</div><div class="muted" style="font-size:14px">Answer the question to see the details.</div>'; return; }
+  const m=curModel(),ch=m.p-m.e,st=isoStatus(m.p,m.n);
+  const type=m.p<1?'—':ch===0?'Neutral atom':ch>0?'Cation (+)':'Anion (−)';
+  const rows=[
+    ['Element',m.p>0?`${EL[m.p].name} (${EL[m.p].sym})`:'—'],
+    ['<span class="cp">Protons</span>',m.p],['<span class="cn">Neutrons</span>',m.n],['<span class="ce">Electrons</span>',m.e],
+    ['Mass number (A)',m.p+m.n],['Atomic number (Z)',m.p],
+    ['Charge',m.p<1&&!m.e?'—':(ch===0?'0':fmtCharge(ch))],['Type',type],
+    ['Isotope',`<span class="st st-${st.k}">${st.t}</span>`]];
+  let warn='';
+  if(m.p>0&&ch!==0&&!isCommonIon(m.p,ch)) warn=`<div class="warn">⚠ Not a common ion</div>`;
+  box.innerHTML=`<div class="lbl">Readout</div><table>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>${warn}`;
+}
+let lastP=-1;
+function renderLabel(){
+  const el=$('#elLabel'),m=curModel(); let txt;
+  if(labelHidden()) txt='?';
+  else if(m.p<1) txt=(m.n||m.e)?'No protons — no element':(editable()?'Empty — drag particles in':'—');
+  else txt=`${EL[m.p].name} (${EL[m.p].sym})`;
+  el.textContent=txt;
+  if(!labelHidden()&&m.p!==lastP&&lastP!==-1&&m.p>0){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  lastP=labelHidden()?-1:m.p;
+}
+function renderBins(){
+  const m=curModel(),ed=editable();
+  $('#bins').classList.toggle('disabled',!ed);
+  ['p','n','e'].forEach(t=>$('#cnt-'+t).textContent=labelHidden()?'?':m[t]);
+  document.querySelectorAll('#mult button').forEach(b=>b.classList.toggle('on',+b.dataset.m===S.mult));
+  $('#lockTag').style.display=(S.mode==='guided'&&guidedType()===3&&!S.g.done)?'block':'none';
+  $('#atomTip').textContent=ed?'Drag or tap a bin to add · double-click a particle or drag it off to remove'
+    :(liveEntryModel()?'Your answer builds this model as you type':S.mode==='free'&&!S.animating?'Switch to “Build model” to drag particles':(S.mode==='guided'&&guidedType()===3&&!S.g.done?'Locked model — count its particles':''));
+}
+function renderTop(){
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.mode));
+  document.querySelectorAll('#levels button').forEach(b=>b.classList.toggle('on',S.mode==='guided'&&+b.dataset.level===S.level));
+  $('#levels').classList.toggle('hidden',S.mode!=='guided');
+}
+function renderProgress(){
+  const box=$('#progress');
+  if(S.mode==='free'){
+    const b=S.free.input==='build';
+    box.innerHTML=`<b>Free Form</b><div class="switch ${b?'':'right'}"><span class="knob"></span><button data-fm="build" class="${b?'on':''}">Build model</button><button data-fm="notation" class="${b?'':'on'}">Enter notation</button></div>
+      <span class="muted" style="font-size:13px">${b?'Drag particles onto the atom — both notations update live.':'Enter a notation, then press Build.'}</span>
+      <button class="resetBtn" data-act="reset" ${S.animating?'disabled':''}>↺ Reset</button>`;
+    return;
+  }
+  const g=S.g,q=curQ(); if(!q) return;
+  const dots=g.qs.map((_,i)=>{ const r=g.results[i]; let c='dot'; if(r) c+=' s'+Math.round(r.score*100); if(i===g.idx&&!g.finished) c+=' cur'; return `<span class="${c}"></span>`; }).join('');
+  const rst=(q.type===2&&!g.done)?'<button class="resetBtn" data-act="greset" style="margin-left:0">↺ Reset model</button>':'';
+  box.innerHTML=`<b>Level ${S.level} · ${LEVEL_NAMES[S.level]}</b><span>Question ${g.idx+1} / ${g.qs.length}</span><span class="badge b-${q.diff}">${q.diff}</span>${rst}<span class="dots">${dots}</span>`;
+}
+function renderPad(){
+  const c=ctx(); const pt=$('#padTarget');
+  if(!c||c.locked||!c.fields.length){ $('#pad').classList.add('disabled'); pt.textContent=S.mode==='guided'&&guidedType()===2&&!S.g.done?'Number pad not needed — use the particle bins':'—'; return; }
+  $('#pad').classList.remove('disabled');
+  const f=c.active&&c.fields.includes(c.active)?c.active:null;
+  pt.textContent=f?('Entering: '+FIELD_INFO[f].lbl+(FIELD_INFO[f].k==='el'?' (tap the periodic table)':'')):'Tap a box, then type';
+}
+function needs(){
+  if(S.mode==='free') return S.free.input==='notation'?{pt:true,pad:true}:{pt:false,pad:false};
+  const q=curQ(); if(!q) return {pt:false,pad:false};
+  if(q.type===1) return {pt:false,pad:true};
+  if(q.type===2) return {pt:false,pad:false};
+  return {pt:true,pad:true};
+}
+function renderLayout(){
+  const nd=needs(), pw=$('#padWrap');
+  $('#ptWrap').classList.toggle('hide',!nd.pt);
+  pw.classList.toggle('hide',!nd.pad);
+  const home=(nd.pad&&!nd.pt)?$('#padSlot'):$('#bottom');
+  if(pw.parentElement!==home) home.appendChild(pw);
+  $('#bottom').classList.toggle('hide',!nd.pt);
+}
+function renderAll(){ renderLayout(); renderTop(); renderProgress(); renderTask(); renderReadout(); renderLabel(); renderBins(); renderPad(); }
+function renderLight(){ renderReadout(); renderLabel(); renderBins(); const t=$('#task'); if(S.mode==='free'&&t){ t.innerHTML=freeTaskHTML(); } }
+
+/* ---------- periodic table ---------- */
+function buildPT(){
+  const pt=$('#pt'); let h='';
+  for(let z=1;z<=36;z++){ const [r,c]=ptPos(z),e=EL[z];
+    h+=`<button class="tile c-${cat(z)}" data-z="${z}" style="grid-row:${r};grid-column:${c}" aria-label="${e.name}"><span class="tz">${z}</span><span class="ts">${e.sym}</span><span class="tm">${e.mass.toFixed(2)}</span></button>`; }
+  h+=`<div class="ptLegend" style="grid-row:1;grid-column:3 / span 10">Tap an element · tiles show atomic number, symbol, average atomic mass</div>`;
+  h+=`<div class="ptKey" style="grid-row:2 / span 2;grid-column:3 / span 10">
+    <span class="c-alk">alkali</span><span class="c-ae">alkaline earth</span><span class="c-tm">transition</span><span class="c-post">post-transition</span>
+    <span class="c-metalloid">metalloid</span><span class="c-nonmetal">nonmetal</span><span class="c-hal">halogen</span><span class="c-noble">noble gas</span></div>`;
+  pt.innerHTML=h;
+  pt.addEventListener('click',ev=>{ const t=ev.target.closest('.tile'); if(t) pickElement(+t.dataset.z); });
+}
+
+/* ---------- overlay / toast ---------- */
+let toastTimer=null;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
+function openModal(html){ $('#modal').innerHTML=html; $('#overlay').classList.add('show'); }
+function closeModal(){ $('#overlay').classList.remove('show'); }
+let pendingConfirm=null;
+function confirmModal(msg,fn){
+  pendingConfirm=fn;
+  openModal(`<h2>Are you sure?</h2><p style="font-size:16px">${msg}</p><div class="btns"><button class="btn primary" data-act="confirmYes">Yes, switch</button><button class="btn" data-act="confirmNo">Cancel</button></div>`);
+}
+function showEnd(){
+  const g=S.g,n=g.results.length;
+  const pct=Math.round(g.results.reduce((s,r)=>s+r.score,0)/n*100);
+  const first=g.results.filter(r=>r.score===1).length;
+  const now=new Date();
+  const cells=g.results.map((r,i)=>{ const q=r.q; return `<div class="ec s${Math.round(r.score*100)}"><div>Q${i+1}</div>${nucHTML(q.A,q.Z,EL[q.Z].sym,q.ch)}<div>${Math.round(r.score*100)}%</div></div>`; }).join('');
+  openModal(`<h2>Set complete!</h2>
+    <div style="font-size:16px;font-weight:700">Level ${S.level} · ${LEVEL_NAMES[S.level]}</div>
+    <div class="bigPct" style="color:${pct>=80?'#86efac':pct>=60?'#fcd34d':'#fda4af'}">${pct}%</div>
+    <div style="font-size:15px">Correct on the first try: <b>${first} / ${n}</b></div>
+    <div class="muted" style="font-size:13px">${now.toLocaleDateString()} · ${now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</div>
+    <div class="endGrid">${cells}</div>
+    <div class="endKey">🟩 1st try 100% · 🟨 2nd 50% · 🟧 3rd 25% · 🟥 missed 0%</div>
+    <div class="btns" style="margin-top:12px"><button class="btn primary" data-act="newSet">New Set</button><button class="btn" data-act="chooseLevel">Choose Level</button></div>`);
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+$('#modeSeg').addEventListener('click',ev=>{
+  const b=ev.target.closest('button'); if(!b||S.animating) return;
+  S.mode=b.dataset.mode; lastP=-1;
+  if(S.mode==='guided'&&S.g.finished) showEnd();
+  renderAll();
+});
+$('#levels').addEventListener('click',ev=>{
+  const b=ev.target.closest('button'); if(!b) return; const l=+b.dataset.level;
+  const go=()=>{ S.level=l; S.mode='guided'; closeModal(); newSet(); };
+  if(inProgress()) confirmModal(l===S.level?`Restart Level ${l}? Your current set will restart.`:`Switch to Level ${l}? Your current set will restart.`,go);
+  else go();
+});
+function resetFree(){
+  S.freeModel={p:0,n:0,e:0}; S.free.answers={fA:'',fZ:'',fSym:null,fCh:''}; S.free.active='fSym'; S.free.fb=null; S.mult=1; lastP=-1;
+  if(selTile){ selTile.classList.remove('sel'); selTile=null; } renderAll();
+}
+$('#progress').addEventListener('click',ev=>{
+  if(S.animating&&S.mode==='free') return;
+  const fm=ev.target.closest('[data-fm]');
+  if(fm){ if(S.free.input!==fm.dataset.fm){ S.free.input=fm.dataset.fm; resetFree(); } return; }
+  if(ev.target.closest('[data-act="greset"]')){ clearGuided(); return; }
+  const a=ev.target.closest('[data-act="reset"]');
+  if(a){ resetFree(); toast('Free Form reset.'); }
+});
+$('#mult').addEventListener('click',ev=>{ const b=ev.target.closest('button'); if(!b) return; S.mult=+b.dataset.m; renderBins(); });
+$('#pad').addEventListener('click',ev=>{ const b=ev.target.closest('button'); if(b) padKey(b.dataset.k); });
+$('#task').addEventListener('click',ev=>{
+  const s=ev.target.closest('[data-f]');
+  if(s){ const c=ctx(); if(c&&!c.locked){ c.active=s.dataset.f; renderAll(); } return; }
+  const a=ev.target.closest('[data-act]'); if(!a||a.disabled) return;
+  const act=a.dataset.act;
+  if(act==='check') check();
+  else if(act==='hint') giveHint();
+  else if(act==='clear') clearGuided();
+  else if(act==='next') nextQ();
+  else if(act==='build') freeBuild();
+});
+$('#overlay').addEventListener('click',ev=>{
+  const a=ev.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act==='confirmYes'){ const f=pendingConfirm; pendingConfirm=null; closeModal(); if(f) f(); }
+  else if(act==='confirmNo'){ pendingConfirm=null; closeModal(); }
+  else if(act==='newSet'){ closeModal(); newSet(); }
+  else if(act==='chooseLevel'){ closeModal(); newSet(); const lv=$('#levels'); lv.style.outline='2px solid var(--accent)'; setTimeout(()=>lv.style.outline='',1600); toast('Pick a level at the top.'); }
+});
+document.addEventListener('keydown',ev=>{
+  if($('#overlay').classList.contains('show')) return;
+  const k=ev.key;
+  if(/^[0-9]$/.test(k)) padKey(k);
+  else if(k==='+'||k==='=') padKey('+');
+  else if(k==='-'||k==='_') padKey('-');
+  else if(k==='Backspace'||k==='Delete'){ ev.preventDefault(); padKey('del'); }
+  else if(k==='Tab'){ ev.preventDefault(); padKey('next'); }
+  else if(k==='Enter'){ ev.preventDefault(); if(S.mode==='free') freeBuild(); else if(S.g.done) nextQ(); else check(); }
+});
+
+/* =====================================================================
+   SELF-TEST
+   ===================================================================== */
+function selfTest(){
+  const fails=[]; let checked=0;
+  for(let z=1;z<=36;z++){
+    const s=neutralShells(z).reduce((a,b)=>a+b,0); if(s!==z) fails.push(`Shells for Z=${z} sum to ${s}`);
+    const el=EL[z];
+    if(!el.stable.includes(el.mostA)) fails.push(`${el.sym}: most-abundant A=${el.mostA} not in stable list`);
+    [...el.stable,...el.radio].forEach(a=>{ if(a<el.range[0]||a>el.range[1]) fails.push(`${el.sym}-${a} outside known range`); });
+  }
+  const chk=(it,lvl)=>{
+    checked++; const p=it.Z,n=it.A-it.Z,e=it.Z-it.ch;
+    if(n<0||n>LIMITS.n) fails.push(`${lvl} ${EL[p].sym}-${it.A}: bad neutron count ${n}`);
+    if(e<0||e>LIMITS.e) fails.push(`${lvl} ${EL[p].sym}-${it.A}: bad electron count ${e}`);
+    if(p+n!==it.A||p-e!==it.ch) fails.push(`${lvl} ${EL[p].sym}-${it.A}: inconsistent`);
+    if(isoStatus(p,n).k==='unknown') fails.push(`${lvl} ${EL[p].sym}-${it.A}: isotope not real`);
+    if(it.ch!==0&&!isCommonIon(p,it.ch)) fails.push(`${lvl} ${EL[p].sym}${fmtCharge(it.ch)} not in common-ion list`);
+  };
+  POOLS.easy.forEach(it=>{ chk(it,'Easy'); if(Math.round(EL[it.Z].mass)!==it.A) fails.push(`Easy ${EL[it.Z].sym}-${it.A}: rounded mass ≠ A`); if(it.A!==EL[it.Z].mostA) fails.push(`Easy ${EL[it.Z].sym}-${it.A} not most abundant`); });
+  POOLS.medium.forEach(it=>chk(it,'Medium'));
+  POOLS.hard.forEach(it=>[EL[it.Z].mostA,...otherIsotopes(it.Z)].forEach(A=>chk({Z:it.Z,A,ch:it.ch},'Hard')));
+  if(fails.length){ console.warn(`Atom Builder self-test: ${fails.length} FAILURE(S) in ${checked} items`); fails.forEach(f=>console.warn('  ✗ '+f)); }
+  else console.log(`Atom Builder self-test: all ${checked} items passed (Easy ${POOLS.easy.length}, Medium ${POOLS.medium.length}, Hard ions ${POOLS.hard.length}).`);
+  return fails;
+}
+
+/* ---------- init ---------- */
+buildPT(); sizeCanvas(); selfTest(); newSet(); requestAnimationFrame(frame);
+window.AB={hits:()=>mainHits,S,curQ,tgt,fieldsFor,pickElement,padKey,check,nextQ,addParticles,removeParticles,giveHint,freeBuild,POOLS,EL,shellLayout,selfTest};
+</script>
+</body>
+</html>

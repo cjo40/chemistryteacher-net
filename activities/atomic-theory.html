@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>History of Atomic Theory</title>
+<style>
+:root{--navy:#0f1b3d;--navy2:#1b2b5c;--bg:#eef2f8;--panel:#fff;--ink:#1a2238;--muted:#5b6478;--line:#d8deea;--good:#15803d;--bad:#b91c1c}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.5}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+[hidden]{display:none!important}
+
+/* ---------- header ---------- */
+header.top{background:var(--navy);color:#fff;padding:10px 18px;display:flex;align-items:center;gap:14px 22px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:1.35rem;letter-spacing:.2px}
+.brand p{margin:0;font-size:.85rem;color:#b8c3e6}
+.modeSwitch{display:flex;background:#0a1330;border-radius:999px;padding:4px;margin-left:auto;border:1px solid #2d3d70}
+.modeSwitch button{border:0;background:transparent;color:#cbd5f5;padding:7px 20px;border-radius:999px;font-weight:700;display:flex;align-items:center;gap:6px}
+.modeSwitch button.on{background:#fff;color:var(--navy)}
+.modeSwitch button:disabled{opacity:.5;cursor:not-allowed}
+.modeSwitch button.on:disabled{opacity:1}
+.progress{display:flex;align-items:center;gap:8px;font-size:.85rem;color:#cbd5f5}
+.dots{display:flex;gap:5px}
+.dots span{width:12px;height:12px;border-radius:50%;border:2px solid #7d8bbd;display:block;transition:background .3s}
+.dots span.v{background:#facc15;border-color:#facc15}
+
+/* ---------- timeline ---------- */
+.timebar{background:var(--navy2);padding:10px 12px 10px;display:flex;align-items:center;gap:10px;box-shadow:0 3px 10px rgba(0,0,0,.18)}
+@media (min-width:900px) and (min-height:700px){.timebar{position:sticky;top:0;z-index:20}}
+.navbtn{background:#facc15;color:#0f1b3d;border:0;border-radius:12px;padding:12px 20px;font-weight:900;font-size:1.08rem;white-space:nowrap;box-shadow:0 4px 0 #b45309}
+.navbtn:hover:not(:disabled){background:#fde047}
+.navbtn:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #b45309}
+.navbtn:disabled{opacity:.3;cursor:default;box-shadow:none}
+.nudge{animation:nudge 1.8s ease-in-out infinite}
+@keyframes nudge{0%,100%{box-shadow:0 4px 0 #b45309,0 0 0 0 rgba(250,204,21,.75)}50%{box-shadow:0 4px 0 #b45309,0 0 0 10px rgba(250,204,21,0)}}
+.stopNav{display:flex;gap:10px;margin-top:16px}
+.bnav{border:0;border-radius:12px;padding:13px 16px;font-weight:900;font-size:1.05rem;color:#0f1b3d}
+.bnav.next{flex:1;background:#facc15;box-shadow:0 4px 0 #b45309}
+.bnav.next:hover{background:#fde047}
+.bnav.prev{background:#e2e8f0;box-shadow:0 4px 0 #94a3b8}
+.bnav:disabled{opacity:.35;cursor:default;box-shadow:none}
+@media (prefers-reduced-motion:reduce){.nudge{animation:none}}
+.track{position:relative;flex:1;display:flex;align-items:flex-start;padding-top:2px;user-select:none;-webkit-user-select:none;touch-action:none;min-width:0;cursor:pointer}
+.rail,.fill{position:absolute;top:15px;height:4px;border-radius:2px}
+.rail{background:#3c4f8a}
+.fill{background:#facc15;transition:width .35s ease}
+.tick{position:relative;z-index:1;background:none;border:0;color:#dbe3ff;display:flex;flex-direction:column;align-items:center;padding:0 2px;min-width:0;flex:1 1 0}
+.tick .dot{width:26px;height:26px;border-radius:50%;background:#1b2b5c;border:3px solid var(--c);display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;transition:transform .2s,background .2s}
+.tick.seen .dot{background:color-mix(in srgb,var(--c) 45%,#1b2b5c)}
+.tick.cur .dot{background:var(--c);transform:scale(1.25);box-shadow:0 0 0 4px rgba(250,204,21,.5)}
+.tick .yr{font-size:.72rem;margin-top:5px;color:#aebbe8;white-space:nowrap}
+.tick .nm{font-size:.8rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tick.cur .nm{color:#facc15}
+.gap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;color:#facc15;font-size:.68rem;font-weight:800;flex:0 0 auto;padding:0 2px;line-height:1.15;text-align:center;pointer-events:none}
+.gap svg{display:block}
+@media (max-width:760px){.tick .nm{display:none}.gap span.long{display:none}}
+@media (max-width:560px){.tick .yr{display:none}.navbtn .lbl{display:none}.navbtn{padding:10px 14px}}
+
+/* ---------- layout ---------- */
+main{max-width:1400px;margin:0 auto;padding:16px}
+.learn{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--panel);border-radius:16px;box-shadow:0 2px 10px rgba(15,27,61,.08);padding:18px 20px}
+.modelCard{position:sticky;top:96px;text-align:center}
+@media (max-width:900px){.learn{grid-template-columns:1fr}.modelCard{order:-1;position:static}}
+.era{display:inline-block;background:var(--c);color:#fff;font-size:.8rem;font-weight:700;padding:3px 12px;border-radius:999px;letter-spacing:.3px}
+.disc h2{margin:6px 0 0;font-size:1.7rem;line-height:1.2}
+.disc h3{margin:2px 0 12px;font-size:1.1rem;color:var(--muted);font-weight:600}
+.expBox{background:#0b1020;border-radius:14px;padding:10px;margin-bottom:14px}
+.expTitle{color:#e2e8f0;font-weight:700;font-size:.92rem;margin:0 2px 8px}
+#expCanvas{width:100%;aspect-ratio:520/280;display:block;border-radius:10px;background:#fff}
+.expCtl{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.expCtl button{border:0;border-radius:8px;padding:6px 12px;font-weight:700;font-size:.88rem;background:#e2e8f0;color:#0f172a}
+.expCtl button.alt{background:#facc15}
+.seg{display:inline-flex;align-items:center;background:#1e293b;border-radius:999px;padding:3px;gap:2px}
+.seg .segLbl{color:#cbd5e1;font-size:.82rem;font-weight:700;padding:0 8px 0 10px}
+.expCtl .seg button{background:transparent;color:#e2e8f0;border-radius:999px;padding:5px 16px;font-size:.95rem;font-weight:900}
+.expCtl .seg button.on{background:#facc15;color:#0f172a}
+.disc p{margin:0 0 10px}
+.disc ul,.disc ol{margin:0 0 12px;padding-left:22px}
+.disc li{margin-bottom:4px}
+.callout{border-radius:12px;padding:10px 14px;margin:10px 0;border-left:6px solid}
+.callout b.h{display:block;font-size:.8rem;letter-spacing:.6px;text-transform:uppercase;margin-bottom:2px}
+.callout.key{background:#ecfdf5;border-color:#16a34a}.callout.key b.h{color:#15803d}
+.callout.lim{background:#fffbeb;border-color:#f59e0b}.callout.lim b.h{color:#b45309}
+.callout.why{background:#f5f3ff;border-color:#7c3aed}.callout.why b.h{color:#6d28d9}
+.callout.fun{background:#eff6ff;border-color:#3b82f6}.callout.fun b.h{color:#1d4ed8}
+table.cmp{width:100%;border-collapse:collapse;font-size:.92rem;margin:8px 0 4px}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+table.cmp th{background:#f1f5f9}
+table.cmp td:first-child{font-weight:700;background:#fafbfd}
+
+.modelStage{display:flex;align-items:center;justify-content:center;gap:8px;min-height:250px}
+.modelStage .cur{flex:1 1 auto;max-width:330px}
+.modelStage .ghostWrap{flex:0 1 150px;opacity:.6;filter:grayscale(.25)}
+.modelStage .ghostWrap small{display:block;font-size:.75rem;color:var(--muted);font-weight:700;line-height:1.2}
+.modelStage .arrow{font-size:1.6rem;color:#94a3b8}
+.model-svg{width:100%;height:auto;display:block}
+.modelName{font-size:1.45rem;font-weight:800;margin:8px 0 0;line-height:1.2}
+.modelMeta{color:var(--muted);font-size:.88rem;font-weight:600;margin-bottom:8px}
+.modelDesc{text-align:left;margin:8px 0}
+.changed{text-align:left;background:#f1f5f9;border-radius:10px;padding:8px 12px;font-size:.93rem}
+.mBtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.mBtns button,.btn{border:1px solid #c7d0e2;background:#fff;border-radius:10px;padding:8px 14px;font-weight:700;color:var(--navy)}
+.mBtns button[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.mBtns button:disabled{opacity:.4;cursor:default}
+
+/* ---------- quiz ---------- */
+.quizWrap{max-width:780px;margin:0 auto}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);padding:11px 22px;font-size:1.02rem}
+.btn.primary:disabled{opacity:.4;cursor:default}
+.btn.ghost{background:transparent}
+.qTop{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.qTop .bar{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.qTop .bar i{display:block;height:100%;background:#facc15;transition:width .3s}
+.qText{font-size:1.25rem;font-weight:700;margin:8px 0 12px}
+.qPic{max-width:230px;margin:0 auto 10px;background:#f8fafc;border-radius:14px;padding:6px}
+.choices{display:grid;gap:10px}
+.choice{display:flex;gap:12px;align-items:center;text-align:left;border:2px solid #d5dcea;background:#fff;border-radius:12px;padding:11px 14px;font-weight:600;color:var(--ink)}
+.choice:hover{border-color:#94a3b8}
+.choice .let{flex:0 0 30px;height:30px;border-radius:50%;background:#e2e8f0;display:grid;place-items:center;font-weight:800}
+.choice.sel{border-color:#2563eb;background:#eff6ff}
+.choice.sel .let{background:#2563eb;color:#fff}
+.qFoot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px;flex-wrap:wrap}
+.hintKeys{font-size:.8rem;color:var(--muted)}
+
+/* ---------- score ---------- */
+.scoreHead{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.bigScore{font-size:3.4rem;font-weight:900;color:var(--navy);line-height:1}
+.bigScore small{font-size:1.3rem;color:var(--muted);font-weight:700;margin-left:8px}
+.meta{color:var(--muted);font-weight:600;font-size:.95rem}
+.share{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 6px}
+.share .btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.share .btn.primary{color:#fff}
+.small{font-size:.85rem;color:var(--muted)}
+.small a,.linkish{color:#1d4ed8;background:none;border:0;padding:0;text-decoration:underline;font-weight:600;font-size:inherit}
+.shortcuts{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:8px 12px;font-size:.88rem;margin:8px 0 14px}
+kbd{background:#fff;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:0 5px;font-size:.82rem;font-family:inherit}
+.res{display:flex;gap:12px;border-top:1px solid var(--line);padding:12px 0;align-items:flex-start}
+.res .mark{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-size:1.1rem}
+.res .mark.ok{background:var(--good)}.res .mark.no{background:var(--bad)}
+.res .body{flex:1;min-width:0}
+.res .q{font-weight:700}
+.res .ya.ok{color:var(--good)}.res .ya.no{color:var(--bad)}
+.res .ca{color:var(--good)}
+.res .ex{color:var(--muted);font-size:.92rem}
+.res .th{flex:0 0 72px}
+.endBtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* ---------- modal / toast ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,15,35,.7);display:grid;place-items:center;z-index:100;padding:16px}
+.modal .box{background:#fff;border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:18px}
+.modal img{width:100%;border:1px solid var(--line);border-radius:10px;display:block;margin:10px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);background:#111827;color:#fff;padding:11px 18px;border-radius:12px;font-weight:600;opacity:0;transition:.3s;z-index:120;max-width:92vw;text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:6px 12px 22px}
+
+/* ---------- model animations ---------- */
+.spin{transform-origin:120px 120px;animation:spin 10s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.drift1{animation:d1 5s ease-in-out infinite alternate}
+.drift2{animation:d2 6s ease-in-out infinite alternate}
+.drift3{animation:d3 4.5s ease-in-out infinite alternate}
+.drift4{animation:d4 5.5s ease-in-out infinite alternate}
+@keyframes d1{to{transform:translate(7px,-5px)}}
+@keyframes d2{to{transform:translate(-6px,6px)}}
+@keyframes d3{to{transform:translate(5px,7px)}}
+@keyframes d4{to{transform:translate(-7px,-4px)}}
+.jig{animation:jig 1.5s ease-in-out infinite alternate}
+@keyframes jig{to{transform:translate(2px,1.6px)}}
+.bob{animation:bob 2.8s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-7px)}}
+.shim{animation:shim 2.2s ease-in-out infinite alternate}
+@keyframes shim{from{opacity:1}to{opacity:.3}}
+.blink{animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.pulse{transform-origin:120px 120px;animation:pulse 3.5s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:scale(1.035)}}
+@media (prefers-reduced-motion:reduce){.model-svg *{animation:none!important}.fill,.tick .dot{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1>History of Atomic Theory</h1>
+    <p>Travel through time with the timeline. View all 8 stops to unlock the quiz.</p>
+  </div>
+  <div class="modeSwitch" role="group" aria-label="Mode">
+    <button id="mLearn" class="on" aria-pressed="true">📘 Learn</button>
+    <button id="mQuiz" aria-pressed="false" disabled title="View all 8 stops to unlock the quiz"><span id="lockIcon">🔒</span> Quiz</button>
+  </div>
+  <div class="progress" aria-live="polite"><span id="progTxt">Viewed 1/8</span><div class="dots" id="dots"></div></div>
+</header>
+
+<nav class="timebar" id="timebar" aria-label="Timeline">
+  <button class="navbtn" id="prev">◄ <span class="lbl">Prev</span></button>
+  <div class="track" id="track"><div class="rail" id="rail"></div><div class="fill" id="fill"></div></div>
+  <button class="navbtn" id="next"><span class="lbl">Next</span> ►</button>
+</nav>
+
+<main>
+  <!-- LEARN -->
+  <section id="learnView" class="learn">
+    <article class="card disc" id="disc">
+      <div id="discHead"></div>
+      <div class="expBox">
+        <div class="expTitle" id="expTitle"></div>
+        <canvas id="expCanvas" aria-label="Animated experiment"></canvas>
+        <div class="expCtl" id="expCtl"></div>
+      </div>
+      <div id="discBody"></div>
+    </article>
+    <aside class="card modelCard" aria-live="polite">
+      <div class="modelStage" id="modelStage"></div>
+      <div class="modelName" id="modelName"></div>
+      <div class="modelMeta" id="modelMeta"></div>
+      <div class="modelDesc" id="modelDesc"></div>
+      <div class="changed" id="modelChanged"></div>
+      <div class="mBtns">
+        <button id="btnCompare" aria-pressed="false">⇆ Compare to previous model</button>
+      </div>
+      <div class="stopNav"><button class="bnav prev" id="bPrev">◄ Back</button><button class="bnav next" id="bNext">Next ►</button></div>
+    </aside>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quizView" class="quizWrap" hidden><div class="card" id="quizCard"></div></section>
+
+  <!-- SCORE -->
+  <section id="scoreView" class="quizWrap" hidden><div class="card" id="scoreCard"></div></section>
+</main>
+
+<footer>No names or personal information are collected. Nothing is sent anywhere unless you choose to share your score.</footer>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="box">
+    <h3 id="modalTitle" style="margin:0">Your score card</h3>
+    <p class="small" id="modalMsg" style="margin:6px 0 0"></p>
+    <img id="modalImg" alt="Quiz score card image">
+    <div class="endBtns">
+      <a class="btn" id="modalNewTab" href="#" target="_blank" rel="noopener">↗ Open this app in a new tab</a>
+      <button class="btn primary" id="modalClose">Close</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduced=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ease=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){let u=0;while(!u)u=r();const v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return mem[k]??d}},set(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}};
+const mem={};
+
+/* =====================================================================
+   SVG MODELS  (self-contained: presentation attributes only, so they
+   can also be drawn onto the score-card canvas)
+   ===================================================================== */
+let UID=0;
+const FONT='font-family="Arial, Helvetica, sans-serif"';
+function svg(label,inner,defs){return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" class="model-svg" role="img" aria-label="${esc(label)}"><defs>${defs||''}</defs>${inner}</svg>`}
+function radGrad(id,c1,c2,fx,fy){return `<radialGradient id="${id}" cx="50%" cy="50%" r="60%" fx="${fx||35}%" fy="${fy||30}%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></radialGradient>`}
+function plusSign(x,y,s,color){const t=s*0.24;return `<rect x="${x-s/2}" y="${y-t/2}" width="${s}" height="${t}" fill="${color}"/><rect x="${x-t/2}" y="${y-s/2}" width="${t}" height="${s}" fill="${color}"/>`}
+function electron(x,y,r,spin){r=r||7;return `<circle cx="${x}" cy="${y}" r="${r}" fill="#2563eb" stroke="#1e3a8a" stroke-width="1"/>`+(spin?`<circle cx="${x-r*0.3}" cy="${y-r*0.3}" r="${r*0.32}" fill="#bfdbfe"/>`:`<rect x="${x-r*0.5}" y="${y-r*0.13}" width="${r}" height="${r*0.26}" fill="#fff"/>`)}
+function proton(x,y,r,gid){return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#${gid})" stroke="#7f1d1d" stroke-width="1"/>`+plusSign(x,y,r*1.05,'#fff')}
+function neutron(x,y,r,gid){return `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#${gid})" stroke="#374151" stroke-width="1"/><circle cx="${x}" cy="${y}" r="${r*0.36}" fill="none" stroke="#fff" stroke-width="${r*0.2}"/>`}
+function lab(x,y,t,a,c,s){return `<text x="${x}" y="${y}" font-size="${s||11}" font-weight="700" text-anchor="${a||'middle'}" fill="${c||'#1e293b'}" ${FONT} paint-order="stroke" stroke="#ffffff" stroke-width="3" stroke-linejoin="round">${esc(t)}</text>`}
+function lead(x1,y1,x2,y2){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#334155" stroke-width="1.2"/>`}
+
+const cloudCache={};
+function cloudDots(key,n,sigma,seed,color,op,rad,clip){rad=rad||1.7;clip=clip||108;
+  if(!cloudCache[key]){
+    const r=rng(seed);const groups=['','',''];let k=0;
+    while(k<n){const x=gauss(r)*sigma,y=gauss(r)*sigma;if(x*x+y*y>clip*clip)continue;groups[k%3]+=`<circle cx="${(120+x).toFixed(1)}" cy="${(120+y).toFixed(1)}" r="${rad}"/>`;k++}
+    cloudCache[key]=groups.map((g,i)=>`<g class="shim" style="animation-delay:${-i*0.7}s" fill="${color}" fill-opacity="${op}">${g}</g>`).join('');
+  }
+  return cloudCache[key];
+}
+
+const MODELS={
+  democritus(L){
+    const u='u'+(++UID);
+    const f=`fill="url(#${u}a)" stroke="#6b3d0c" stroke-width="1.2"`;
+    const s=[
+      `<g class="drift1"><circle cx="62" cy="70" r="20" ${f}/></g>`,
+      `<g class="drift2"><rect x="138" y="44" width="34" height="34" rx="5" ${f} transform="rotate(15 155 61)"/></g>`,
+      `<g class="drift3"><polygon points="190,100 214,142 166,142" ${f}/></g>`,
+      `<g class="drift4"><circle cx="100" cy="150" r="13" ${f}/></g>`,
+      `<g class="drift2"><polygon points="150,160 160,170 175,166 170,182 182,194 164,194 156,208 148,194 132,192 142,180 136,166" ${f}/></g>`,
+      `<g class="drift1"><circle cx="208" cy="200" r="11" ${f}/></g>`,
+      `<g class="drift3"><rect x="34" y="176" width="26" height="18" rx="4" ${f} transform="rotate(-20 47 185)"/></g>`,
+      `<g class="drift4"><circle cx="118" cy="100" r="9" ${f}/></g>`,
+      `<g class="drift1"><ellipse cx="60" cy="128" rx="16" ry="10" ${f}/></g>`
+    ].join('');
+    const l=L?lead(62,50,62,30)+lab(62,24,'solid, uncuttable atom','start')+lab(120,229,'empty space between = the “void”','middle','#7c2d12',10.5):'';
+    return svg('Democritus model: solid indivisible particles of different shapes in empty space',
+      `<rect x="4" y="4" width="232" height="232" rx="16" fill="#fffaf0" stroke="#ead7b5" stroke-dasharray="5 5"/>`+s+l, radGrad(u+'a','#f6d9a8','#9a5b16'));
+  },
+  aristotle(L){
+    const E=[['Fire',120,42,'#f97316','#fff'],['Air',42,120,'#bae6fd','#0c4a6e'],['Water',120,198,'#2563eb','#fff'],['Earth',198,120,'#a16207','#fff']];
+    const Q=[['HOT',81,81],['WET',81,163],['COLD',159,163],['DRY',159,81]];
+    let g=`<polygon points="120,42 42,120 120,198 198,120" fill="#fef3c7" stroke="#d6b97a" stroke-width="2"/>`;
+    g+=Q.map(q=>`<rect x="${q[1]-20}" y="${q[2]-10}" width="40" height="17" rx="8" fill="#fff" stroke="#cbd5e1"/><text x="${q[1]}" y="${q[2]+3}" font-size="10" font-weight="800" text-anchor="middle" fill="#475569" ${FONT}>${q[0]}</text>`).join('');
+    g+=E.map(e=>`<circle cx="${e[1]}" cy="${e[2]}" r="31" fill="${e[3]}" stroke="#fff" stroke-width="3"/><text x="${e[1]}" y="${e[2]+5}" font-size="14" font-weight="800" text-anchor="middle" fill="${e[4]}" ${FONT}>${e[0]}</text>`).join('');
+    const l=L?lab(6,18,'✗ No atoms','start','#7c2d12',11)+lab(234,18,'✗ No empty space','end','#7c2d12',11):'';
+    return svg('Aristotle four elements: fire, air, water, earth',`<g class="pulse">${g}</g>`+l);
+  },
+  dalton(L){
+    const u='u'+(++UID);
+    const l=L?lab(120,22,'solid, indivisible sphere')+lab(120,232,'no parts inside','middle','#475569'):'';
+    return svg('Dalton solid sphere model',`<ellipse cx="120" cy="208" rx="55" ry="8" fill="#000" fill-opacity=".14"/><g class="bob"><circle cx="120" cy="118" r="74" fill="url(#${u}a)" stroke="#1e293b" stroke-width="1.5"/></g>`+l,
+      radGrad(u+'a','#f8fafc','#334155',32,28));
+  },
+  thomson(L){
+    const u='u'+(++UID);
+    const P=[[80,58],[150,52],[58,104],[118,86],[178,100],[98,136],[150,138],[72,172],[128,192],[186,168],[108,44],[44,146],[204,128],[130,118],[168,206]];
+    const Ev=[[100,72],[160,78],[84,116],[142,104],[192,140],[116,162],[166,176],[60,142],[96,200],[200,84]];
+    let g=`<circle cx="120" cy="122" r="96" fill="url(#${u}a)" stroke="#ef4444" stroke-width="2"/>`;
+    g+=P.map(p=>plusSign(p[0],p[1],11,'#b91c1c')).join('');
+    g+=Ev.map((e,i)=>`<g class="jig" style="animation-delay:${-i*0.37}s">${electron(e[0],e[1],8)}</g>`).join('');
+    const l=L?lab(120,16,'+ positive “pudding” (spread out)','middle','#991b1b')+lab(120,234,'– electrons = the “plums”','middle','#1e3a8a'):'';
+    return svg('Thomson plum pudding model',g+l,radGrad(u+'a','#fff1f2','#fca5a5',40,35));
+  },
+  rutherford(L){
+    const u='u'+(++UID);
+    let g=`<circle cx="120" cy="120" r="106" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 5"/>`;
+    g+=`<circle cx="120" cy="120" r="14" fill="#dc2626" fill-opacity=".15"/><circle cx="120" cy="120" r="5.5" fill="url(#${u}p)" stroke="#7f1d1d" stroke-width=".8"/>`;
+    const E=[[58,0,7,'normal'],[84,140,11,'reverse'],[99,250,15,'normal'],[72,300,9,'reverse']];
+    g+=E.map(e=>`<g class="spin" style="animation-duration:${e[2]}s;animation-direction:${e[3]}"><g transform="rotate(${e[1]} 120 120)">${electron(120+e[0],120,7,true)}</g></g>`).join('');
+    const l=L?lead(120,113,120,44)+lab(120,40,'tiny, dense + nucleus')+lab(120,186,'mostly empty space','middle','#475569')+lab(120,200,'(nucleus not to scale)','middle','#64748b',9):'';
+    return svg('Rutherford nuclear model',g+l,radGrad(u+'p','#fca5a5','#b91c1c'));
+  },
+  bohr(L){
+    const u='u'+(++UID);
+    let g=[42,72,102].map(r=>`<circle cx="120" cy="120" r="${r}" fill="none" stroke="#94a3b8" stroke-width="1.6"/>`).join('');
+    g+=`<circle cx="120" cy="120" r="13" fill="url(#${u}p)" stroke="#7f1d1d"/>`+plusSign(120,120,12,'#fff');
+    const orb=[[42,[0,180],5,],[72,[45,135,225,315],9],[102,[30,210],14]];
+    g+=orb.map(o=>`<g class="spin" style="animation-duration:${o[2]}s">${o[1].map(a=>`<g transform="rotate(${a} 120 120)">${electron(120+o[0],120,7,true)}</g>`).join('')}</g>`).join('');
+    let l='';
+    if(L){
+      const a=145*Math.PI/180,P3=[120+102*Math.cos(a),120+102*Math.sin(a)],P2=[120+74*Math.cos(a),120+74*Math.sin(a)];
+      let w='';const s0=[P2[0]-6,P2[1]+10],s1=[6,214],dx=s1[0]-s0[0],dy=s1[1]-s0[1],ln=Math.hypot(dx,dy);
+      for(let k=0;k<=40;k++){const t=k/40,wv=Math.sin(t*Math.PI*8)*4;w+=(k?'L':'M')+(s0[0]+dx*t-dy/ln*wv).toFixed(1)+' '+(s0[1]+dy*t+dx/ln*wv).toFixed(1)}
+      l=lab(120,75,'n = 1')+lab(120,45,'n = 2')+lab(120,15,'n = 3')
+       +`<g class="blink"><circle cx="${P3[0].toFixed(1)}" cy="${P3[1].toFixed(1)}" r="6" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="2 2"/>`
+       +`<line x1="${P3[0].toFixed(1)}" y1="${P3[1].toFixed(1)}" x2="${(P2[0]+4).toFixed(1)}" y2="${(P2[1]-3).toFixed(1)}" stroke="#dc2626" stroke-width="2.5" marker-end="url(#${u}ar)"/>`
+       +`<path d="${w}" fill="none" stroke="#dc2626" stroke-width="2.5"/></g>`
+       +lab(4,232,'falls → LIGHT!','start','#dc2626',11)+lab(236,232,'energy levels','end','#475569',10.5);
+    }
+    return svg('Bohr planetary model',g+l,radGrad(u+'p','#fca5a5','#b91c1c')+`<marker id="${u}ar" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>`);
+  },
+  schrodinger(L){
+    const u='u'+(++UID);
+    const g=`<circle cx="120" cy="120" r="70" fill="url(#${u}c)"/>`+cloudDots('s3',1700,23,11,'#4c1d95',0.42,1.25,95)+`<circle cx="120" cy="120" r="4.5" fill="#dc2626"/>`;
+    const l=L?lab(120,18,'s orbital = a fuzzy BALL (sphere)','middle','#4c1d95',11.5)+lab(120,233,'denser = electron more likely here','middle','#5b21b6')+lead(124,123,180,186)+lab(182,196,'nucleus','start'):'';
+    return svg('Quantum mechanical electron cloud model',g+l,`<radialGradient id="${u}c"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".45"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>`);
+  },
+  chadwick(L){
+    const u='u'+(++UID);
+    let g=`<circle cx="120" cy="120" r="80" fill="url(#${u}c)"/>`+cloudDots('c3',1600,26,23,'#4c1d95',0.48,1.25,100);
+    const N=[[-16,0,'p'],[16,0,'n'],[-8,13.9,'p'],[8,13.9,'n'],[0,0,'p'],[-8,-13.9,'n'],[8,-13.9,'p']];
+    g+=`<circle cx="120" cy="120" r="27" fill="#fff" fill-opacity=".8"/>`;
+    g+=N.map(p=>p[2]==='p'?proton(120+p[0],120+p[1],9.5,u+'p'):neutron(120+p[0],120+p[1],9.5,u+'n')).join('');
+    const l=L?lead(135,98,196,40)+lab(234,34,'proton (+)','end','#991b1b',11.5)+lead(105,98,46,40)+lab(6,34,'neutron (0)','start','#374151',11.5)+lab(120,232,'electron cloud','middle','#5b21b6'):'';
+    return svg('Modern model: electron cloud around a nucleus of protons and neutrons',g+l,
+      radGrad(u+'p','#fca5a5','#b91c1c')+radGrad(u+'n','#e5e7eb','#4b5563')+`<radialGradient id="${u}c"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".4"/><stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>`);
+  }
+};
+
+/* =====================================================================
+   TIMELINE CONTENT
+   ===================================================================== */
+const ERAS={ancient:{n:'Ancient Greece',c:'#b7791f'},c1800:{n:'1800s',c:'#2f855a'},c1900:{n:'Early 1900s',c:'#2b6cb0'},quantum:{n:'Quantum Era',c:'#6b46c1'}};
+const STOPS=[
+{alwaysLabels:true,key:'democritus',era:'ancient',short:'400 BC',year:'c. 400 BC',who:'Democritus',title:'The idea of the “atomos”',exp:'cut',
+ body:`<p>Democritus (c. 460–370 BC) was a Greek philosopher. He did <b>no experiments</b>. He used reasoning: if you keep cutting a piece of matter in half, eventually you must reach a piece so small it <b>cannot</b> be cut. He called it <b><i>atomos</i></b>, Greek for “uncuttable.”</p>
+ <ul><li>All matter is made of tiny, solid, indivisible particles (atoms).</li><li>Atoms move through <b>empty space</b>, called the “void.”</li><li>Atoms come in different shapes and sizes, which explains why materials differ.</li></ul>`,
+ find:'All matter is made of atoms with empty space between them.',
+ lim:['Weakness','No experimental evidence. It was only an idea, and the famous philosopher Aristotle (next stop) argued against it.'],
+ model:{name:'Indivisible Particles',date:'Democritus · c. 400 BC',desc:'Atoms are tiny, solid, uncuttable particles of many shapes and sizes, moving through empty space. They have no parts inside.',changed:'The first atomic idea. Before this, there was no concept of atoms.'}},
+{alwaysLabels:true,key:'aristotle',era:'ancient',short:'350 BC',year:'c. 350 BC',who:'Aristotle',title:'Four elements — and no atoms',exp:'compare',
+ body:`<p>Aristotle (384–322 BC) <b>rejected atoms and empty space</b>. He taught that matter is <b>continuous</b> (it can be divided forever) and is made of four elements: <b>earth, water, air, and fire</b>. Each element was a pair of qualities (hot or cold, wet or dry), and changing a quality could turn one element into another.</p>`,
+ why:'Aristotle was one of the most respected thinkers in history. His four-element view was taught for roughly <b>2,000 years</b>, and the atom idea was largely set aside. Alchemists spent centuries trying to turn one substance into another based on it. The lesson: <b>science must rest on evidence, not on the fame or authority of the person making the claim.</b>',
+ compare:[['Smallest piece of matter?','Atoms, which can’t be cut','None: matter can be divided forever'],['Empty space?','Yes, the void','No empty space'],['Everything is made of…','Atoms of different shapes','Earth, water, air, fire'],['Evidence used','Reasoning only','Reasoning and everyday observation'],['Who was believed?','Mostly ignored','Accepted for ~2,000 years']],
+ find:'The four-element model replaced atoms in most people’s thinking until the 1800s.',
+ lim:['Weakness','Like Democritus, Aristotle did no controlled experiments. His ideas were believed because of his reputation.'],
+ model:{name:'Four Elements (Not an Atomic Model)',date:'Aristotle · c. 350 BC',desc:'Continuous matter with no atoms and no empty space. Fire = hot + dry, Air = hot + wet, Water = cold + wet, Earth = cold + dry.',changed:'A step away from atoms: particles and empty space were replaced by four continuous elements.'}},
+{alwaysLabels:true,key:'dalton',era:'c1800',short:'1803',year:'1803–1808',who:'John Dalton',title:'Atomic theory backed by evidence',exp:'ratio',
+ body:`<p>English chemist John Dalton brought atoms back, this time supported by measured laws: Lavoisier’s <b>law of conservation of mass</b> (1789), Proust’s <b>law of definite proportions</b> (1799), and Dalton’s own <b>law of multiple proportions</b>. Gases showed whole-number ratios too: in 1800, Nicholson and Carlisle used electricity to split water into hydrogen and oxygen in a <b>2 : 1</b> volume ratio, and in 1808 Gay-Lussac showed that gases combine in simple whole-number volume ratios. Dalton’s atomic theory stated:</p>
+ <ol><li>All elements are made of tiny, indivisible particles called atoms.</li><li>Atoms of the same element are identical in mass and properties.</li><li>Atoms of different elements are different.</li><li>Atoms combine in simple, whole-number ratios to form compounds.</li><li>In a chemical reaction, atoms are rearranged. They are never created or destroyed.</li></ol>`,
+ find:'Atoms explain why elements combine in fixed, whole-number ratios by mass.',
+ lim:['Later shown wrong','Atoms <b>are</b> divisible: they contain electrons, protons, and neutrons. And <b>isotopes</b> mean atoms of the same element can have different masses.'],
+ model:{name:'Solid Sphere (“Billiard Ball”) Model',date:'John Dalton · 1803',desc:'Each atom is a tiny, solid, indivisible sphere, like a billiard ball. Atoms of one element are identical; different elements have different atoms.',changed:'Back to atoms, and now supported by experimental laws instead of reasoning alone.'}},
+{key:'thomson',era:'c1900',short:'1897',year:'1897 (model 1904)',who:'J.J. Thomson',title:'Cathode ray tube → the electron',exp:'cathode',
+ body:`<p>Thomson studied <b>cathode rays</b>, beams that travel from the negative electrode (cathode) through a tube with almost all the air removed.</p>
+ <ul><li>The beam bent <b>toward a positive plate</b> (and in a magnetic field), so it is made of <b>negatively charged particles</b>.</li><li>He measured their charge-to-mass ratio. The particles were more than 1,000 times lighter than a hydrogen atom.</li><li>The particles were the same no matter what metal the cathode was made of, so they must be in <b>all</b> atoms.</li></ul>`,
+ find:'Atoms contain tiny negative particles: electrons. The atom is divisible!',
+ lim:['What it couldn’t explain','Atoms are neutral, so Thomson assumed the positive charge was spread through the whole atom. He had no evidence for where the positive charge actually was.'],
+ model:{name:'Plum Pudding Model',date:'J.J. Thomson · 1904',desc:'A sphere of spread-out positive charge with negative electrons scattered throughout, like plums in a pudding (or chocolate chips in a cookie). Overall the atom is neutral.',changed:'The first model with parts inside the atom: electrons.'}},
+{key:'rutherford',era:'c1900',short:'1911',year:'1909–1911',who:'Ernest Rutherford',title:'Gold foil experiment → the nucleus',exp:'foil',
+ body:`<p>Rutherford’s team (Hans Geiger and Ernest Marsden) fired positive <b>alpha (α) particles</b> at gold foil only a few hundred atoms thick. A zinc-sulfide screen flashed wherever a particle hit. If the plum pudding model were right, nearly every α particle should pass straight through.</p>
+ <ul><li><b>Most passed straight through</b> → the atom is mostly <b>empty space</b>.</li><li><b>A few were deflected</b> at large angles → something small, dense, and positive repelled them.</li><li><b>About 1 in 8,000 bounced almost straight back</b> → nearly all the mass is packed into a tiny center: the <b>nucleus</b>.</li></ul>
+ <p>Rutherford compared it to firing an artillery shell at tissue paper and having it bounce back at you.</p>`,
+ find:'The atom has a small, dense, positive nucleus with electrons outside it, and is mostly empty space. Rutherford later identified the <b>proton</b> (1917–1919).',
+ fun:'If an atom were the size of a football stadium, its nucleus would be about the size of a marble on the 50-yard line.',
+ lim:['What it couldn’t explain','Why don’t the electrons spiral into the nucleus? And why do atoms give off only certain colors of light?'],
+ model:{name:'Nuclear Model',date:'Ernest Rutherford · 1911',desc:'A tiny, dense, positively charged nucleus holds almost all of the atom’s mass. Electrons move around it through mostly empty space.',changed:'Positive charge moved from “spread out” to a tiny central nucleus.'}},
+{key:'bohr',era:'c1900',short:'1913',year:'1913',who:'Niels Bohr',title:'Hydrogen’s line spectrum → energy levels',exp:'spectrum',
+ body:`<p>When hydrogen gas is energized, it does <b>not</b> glow with a full rainbow. A prism splits its light into just a few sharp colored lines: its <b>line emission spectrum</b>.</p>
+ <ul><li>Bohr proposed that electrons can only exist in certain fixed <b>energy levels</b> (n = 1, 2, 3…).</li><li>An electron <b>absorbs</b> energy to jump up to a higher level.</li><li>When it <b>falls</b> to a lower level, it releases a photon with exactly the energy difference, which is one specific color.</li></ul>`,
+ find:'Electron energy is quantized: electrons occupy fixed energy levels, and each jump down gives off a specific color.',
+ lim:['What it couldn’t explain','It worked for hydrogen (one electron) but failed for atoms with more electrons. Electrons don’t really travel in neat circular paths.'],
+ model:{name:'Bohr (Planetary) Model',date:'Niels Bohr · 1913',desc:'Electrons orbit the nucleus in fixed circular paths called energy levels, like planets around the sun. Electrons absorb energy to jump up and give off light when they fall down.',changed:'Electrons are now placed in specific energy levels instead of anywhere around the nucleus.'}},
+{key:'schrodinger',era:'quantum',short:'1926',year:'1926',who:'Erwin Schrödinger',title:'Electrons as waves → orbitals',exp:'cloud',
+ body:`<p>Louis de Broglie (1924) proposed that electrons behave like <b>waves</b>. Erwin Schrödinger wrote a <b>wave equation</b> that describes an electron in an atom. Werner Heisenberg (1927) showed you cannot know both an electron’s exact position and its exact motion at the same time: the <b>uncertainty principle</b>.</p>
+ <ul><li>The solutions to Schrödinger’s equation are <b>orbitals</b>: 3-D regions where an electron is most likely to be found.</li><li>Orbitals have different shapes: s orbitals are spheres, p orbitals are dumbbells.</li></ul>`,
+ find:'We can’t know an electron’s exact path, only the probability of finding it in a region (an orbital).',
+ lim:['Still a puzzle','Atoms were heavier than their protons alone could explain. Helium has 2 protons but about 4 times the mass of hydrogen. (Solved next!)'],
+ model:{name:'Quantum Mechanical (Electron Cloud) Model',date:'Erwin Schrödinger · 1926',desc:'Electrons are not in fixed orbits. They exist in orbitals, which are fuzzy regions of probability. The denser the cloud, the more likely the electron is there.',changed:'Fixed orbits were replaced by probability clouds (orbitals).'}},
+{key:'chadwick',era:'quantum',short:'1932',year:'1932',who:'James Chadwick',title:'Beryllium radiation → the neutron',exp:'neutron',
+ body:`<p>James Chadwick aimed alpha particles at <b>beryllium</b>, which gave off a mysterious radiation with <b>no charge</b>: it wasn’t bent by electric or magnetic fields.</p>
+ <ul><li>When this radiation hit <b>paraffin wax</b>, it knocked <b>protons</b> out of the wax.</li><li>By measuring those protons, Chadwick showed the radiation was a <b>neutral particle with about the same mass as a proton</b>: the <b>neutron</b>.</li></ul>`,
+ find:'The nucleus contains protons (+) and neutrons (no charge). Neutrons explain the “extra” mass of atoms and why isotopes exist.',
+ lim:['Today','This is the modern model taught in chemistry. (Physicists later found that protons and neutrons are made of even smaller particles called quarks.)'],
+ model:{name:'Modern Model (Electron Cloud + Nucleus)',date:'James Chadwick · 1932',desc:'An electron cloud surrounds a tiny nucleus made of protons (+) and neutrons (0). The number of protons determines the element; neutrons add mass.',changed:'Neutrons were added to the nucleus.'}}
+];
+
+/* =====================================================================
+   EXPERIMENT ANIMATIONS (canvas, logical size 520 x 280)
+   ===================================================================== */
+const W=520,H=280;
+function T(c,s,x,y,o){o=o||{};c.font=`${o.w||600} ${o.s||13}px system-ui, Arial, sans-serif`;c.fillStyle=o.c||'#1e293b';c.textAlign=o.a||'left';c.textBaseline=o.b||'alphabetic';c.fillText(s,x,y)}
+function circ(c,x,y,r,fill,stroke,lw){c.beginPath();c.arc(x,y,r,0,Math.PI*2);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=lw||1;c.stroke()}}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function caption(c,lines,color){lines=[].concat(lines);const h=lines.length*18+12;c.fillStyle='rgba(15,27,61,.9)';c.fillRect(0,H-h,W,h);lines.forEach((s,i)=>{c.font='600 13px system-ui, Arial, sans-serif';const fs=Math.min(13,13*(W-16)/c.measureText(s).width);T(c,s,W/2,H-h+20+i*18,{a:'center',c:color||'#fff',s:fs,w:600})})}
+function ball(c,x,y,r,c1,c2,txt){const g=c.createRadialGradient(x-r*.35,y-r*.35,r*.1,x,y,r);g.addColorStop(0,c1);g.addColorStop(1,c2);circ(c,x,y,r,g);if(txt)T(c,txt,x,y+1,{a:'center',b:'middle',c:'#fff',w:800,s:r*0.9})}
+function glow(c,x,y,r,col,a){const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col.replace('A',a));g.addColorStop(1,col.replace('A',0));c.fillStyle=g;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill()}
+function wl2rgb(w){let r=0,g=0,b=0;if(w<440){r=-(w-440)/60;b=1}else if(w<490){g=(w-440)/50;b=1}else if(w<510){g=1;b=-(w-510)/20}else if(w<580){r=(w-510)/70;g=1}else if(w<645){r=1;g=-(w-645)/65}else{r=1}let f=1;if(w<420)f=.3+.7*(w-380)/40;else if(w>700)f=.3+.7*(780-w)/80;return `rgb(${Math.round(255*r*f)},${Math.round(255*g*f)},${Math.round(255*b*f)})`}
+
+const EXP={};
+/* 1. Democritus: keep cutting */
+EXP.cut={title:'🔪 Thought experiment: click or tap the piece to cut it in half',
+ reset(){this.cuts=0;this.anim=-1;this.auto=true;this.idle=0;this.hover=null;this.done=false},
+ pointer(x,y,type){if(type==='leave'){this.hover=null;return}this.hover={x,y};if(type==='pointerdown'){this.auto=false;this.cut()}},
+ cut(){if(this.anim>=0)return;if(this.done){this.cuts=0;this.done=false;return}this.anim=0},
+ step(dt){
+  if(this.anim>=0){this.anim+=dt/0.9;if(this.anim>=1){this.anim=-1;this.cuts++;if(this.cuts>=6)this.done=true}}
+  else if(this.auto){this.idle+=dt;if(this.idle>(this.done?3.5:1.0)){this.idle=0;this.cut()}}
+ },
+ draw(c){
+  c.fillStyle='#fffaf0';c.fillRect(0,0,W,H);
+  const cx=260,cy=132,h=56;
+  const piece=(x,w,a)=>{c.globalAlpha=a;const g=c.createLinearGradient(0,cy-h/2,0,cy+h/2);g.addColorStop(0,'#e8c38a');g.addColorStop(1,'#a0662a');rr(c,x-w/2,cy-h/2,w,h,Math.min(6,w/3));c.fillStyle=g;c.fill();c.strokeStyle='#6b3d0c';c.lineWidth=1.2;c.stroke();c.globalAlpha=1};
+  const knife=(x,ty)=>{c.fillStyle='#94a3b8';c.beginPath();c.moveTo(x,ty);c.lineTo(x+16,ty-34);c.lineTo(x+16,ty-70);c.lineTo(x,ty-70);c.closePath();c.fill();c.strokeStyle='#64748b';c.lineWidth=1;c.stroke();c.fillStyle='#475569';c.fillRect(x,ty-92,16,24)};
+  if(this.done){
+   T(c,'After 6 cuts…',20,32,{s:18,w:800,c:'#7c2d12'});
+   glow(c,cx,cy,40,'rgba(234,179,8,A)',.5);ball(c,cx,cy,11,'#f6d9a8','#9a5b16');
+   T(c,'ATOMOS = “uncuttable”',cx,cy-36,{a:'center',s:22,w:800,c:'#7c2d12'});
+   T(c,'Click or tap to start over',cx,cy+44,{a:'center',s:13,w:700,c:'#92400e'});
+   caption(c,['You can’t cut forever. Eventually you reach a piece that cannot be cut: an atom.']);return;
+  }
+  const w=320/Math.pow(2,this.cuts);
+  T(c,'Cuts: '+this.cuts+' of 6',20,32,{s:18,w:800,c:'#7c2d12'});
+  T(c,'Piece width: '+(w>=10?w.toFixed(0):w.toFixed(1))+' units',20,54,{s:13,c:'#92400e'});
+  if(this.anim<0){
+   piece(cx,w,1);
+   const hv=this.hover,near=hv&&Math.abs(hv.y-cy)<90&&Math.abs(hv.x-cx)<w/2+60;
+   c.setLineDash([4,4]);c.strokeStyle='#7c2d12';c.lineWidth=1.2;c.beginPath();c.moveTo(cx,cy-h/2-6);c.lineTo(cx,cy+h/2+6);c.stroke();c.setLineDash([]);
+   knife(cx,cy-h/2-(near?6:24));
+   T(c,'👆 Click or tap to cut!',W-16,32,{a:'right',s:15,w:900,c:'#b45309'});
+  }else{
+   const p=this.anim;
+   if(p<0.4){piece(cx,w,1);knife(cx,cy-h/2-24+(p/0.4)*(24+h))}
+   else{const e=ease((p-0.4)/0.6);piece(cx-w/4*(1-e),w/2,1);piece(cx+w/4+e*70,w/2,1-e)}
+  }
+  caption(c,['Democritus asked: what happens if you keep cutting something in half?']);
+ }};
+EXP.compare={title:'⚖️ Democritus vs. Aristotle: move your mouse (or finger) through both boxes',
+ reset(){this.t=0;this.ptr=null;this.touched=false;const r=rng(7);this.ps=Array.from({length:9},()=>({x:40+r()*170,y:60+r()*90,vx:(r()-.5)*80,vy:(r()-.5)*80,r:5+r()*7}));
+  const TY=['fire','air','water','earth'];this.ic=[];
+  for(let rw=0;rw<6;rw++)for(let k=0;k<11;k++){const h1=Math.sin(rw*12.9898+k*78.233)*43758.5453,f=h1-Math.floor(h1),h2=Math.sin(rw*39.3468+k*11.135)*24634.6345,g2=h2-Math.floor(h2);
+   const hx=291+k*19.5+(rw%2)*5+(f-.5)*4,hy=56+rw*19+(g2-.5)*4;this.ic.push({hx,hy,x:hx,y:hy,vx:0,vy:0,f,g:g2,type:TY[(k*3+rw*2+(g2>.5?1:0))%4]})}},
+ pointer(x,y,type){if(type==='leave'){this.ptr=null;return}this.ptr={x,y};this.touched=true},
+ step(dt){this.t+=dt;const P=this.ptr;
+  for(const p of this.ps){
+   if(P){const dx=p.x-P.x,dy=p.y-P.y,d=Math.hypot(dx,dy)||1;if(d<60){const a=14000/(d+10);p.vx+=a*dx/d*dt;p.vy+=a*dy/d*dt}}
+   const sp=Math.hypot(p.vx,p.vy);if(sp>320){p.vx*=320/sp;p.vy*=320/sp}if(sp>80){p.vx*=1-0.9*dt;p.vy*=1-0.9*dt}else if(sp<25){p.vx*=1.05;p.vy*=1.05}
+   p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.x<20+p.r){p.x=20+p.r;p.vx=Math.abs(p.vx)}if(p.x>240-p.r){p.x=240-p.r;p.vx=-Math.abs(p.vx)}if(p.y<44+p.r){p.y=44+p.r;p.vy=Math.abs(p.vy)}if(p.y>160-p.r){p.y=160-p.r;p.vy=-Math.abs(p.vy)}}
+  for(const q of this.ic){let ax=(q.hx-q.x)*30-q.vx*6,ay=(q.hy-q.y)*30-q.vy*6;
+   if(P){const dx=q.x-P.x,dy=q.y-P.y,d=Math.hypot(dx,dy)||1;if(d<42){const a=5200/(d+6);ax+=a*dx/d;ay+=a*dy/d}}
+   q.vx+=ax*dt;q.vy+=ay*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.x=clamp(q.x,284,496);q.y=clamp(q.y,50,154)}
+ },
+ draw(c){
+  c.fillStyle='#ffffff';c.fillRect(0,0,W,H);
+  T(c,'Democritus: atoms + empty space',130,30,{a:'center',s:13,w:800,c:'#7c2d12'});
+  rr(c,20,44,220,116,8);c.fillStyle='#fffaf0';c.fill();c.strokeStyle='#d6b97a';c.lineWidth=1.5;c.stroke();
+  for(const p of this.ps)ball(c,p.x,p.y,p.r,'#f6d9a8','#9a5b16');
+  T(c,'Aristotle: four elements, no atoms',390,30,{a:'center',s:13,w:800,c:'#1e3a8a'});
+  const icon=(type,x,y,z)=>{c.save();c.translate(x,y);c.scale(z,z);c.lineJoin='round';c.lineCap='round';
+   if(type==='fire'){c.beginPath();c.moveTo(0,-9);c.bezierCurveTo(5,-3,8,1,6,5);c.bezierCurveTo(4,9,-4,9,-6,5);c.bezierCurveTo(-8,1,-3,-1,0,-9);c.fillStyle='#f97316';c.fill();
+    c.beginPath();c.moveTo(0,-2);c.bezierCurveTo(3,1,4,4,2.5,6);c.bezierCurveTo(1,7.5,-1,7.5,-2.5,6);c.bezierCurveTo(-4,4,-2,1,0,-2);c.fillStyle='#fde047';c.fill()}
+   else if(type==='water'){c.beginPath();c.moveTo(0,-9);c.bezierCurveTo(4,-3,7,1,7,4);c.arc(0,4,7,0,Math.PI);c.bezierCurveTo(-7,1,-4,-3,0,-9);c.fillStyle='#2563eb';c.fill();
+    c.beginPath();c.arc(-2.5,4,2,0,Math.PI*2);c.fillStyle='rgba(255,255,255,.7)';c.fill()}
+   else if(type==='air'){c.strokeStyle='#38bdf8';c.lineWidth=2;
+    c.beginPath();c.moveTo(-8,-4);c.lineTo(3,-4);c.arc(3,-6.5,2.5,Math.PI/2,-Math.PI*0.9,true);c.stroke();
+    c.beginPath();c.moveTo(-8,1);c.lineTo(6,1);c.stroke();
+    c.beginPath();c.moveTo(-8,6);c.lineTo(1,6);c.arc(1,8.5,2.5,-Math.PI/2,Math.PI*0.9);c.stroke()}
+   else{c.beginPath();c.moveTo(-8,6);c.lineTo(-6,-1);c.lineTo(-2,-6);c.lineTo(3,-5);c.lineTo(7,0);c.lineTo(8,6);c.closePath();c.fillStyle='#92400e';c.fill();
+    c.fillStyle='#d6a26a';c.beginPath();c.arc(-2,0,1.3,0,7);c.fill();c.beginPath();c.arc(3,2,1.1,0,7);c.fill();c.beginPath();c.arc(0,4,0.9,0,7);c.fill()}
+   c.restore()};
+  rr(c,280,44,220,116,8);c.fillStyle='#f8fafc';c.fill();
+  c.save();rr(c,280,44,220,116,8);c.clip();
+  const TY=['fire','air','water','earth'];
+  for(const q of this.ic)icon(q.type,q.x+Math.sin(this.t*1.1+q.f*6)*1.5,q.y+Math.cos(this.t*0.9+q.g*6)*1.5,0.85);
+  c.restore();rr(c,280,44,220,116,8);c.strokeStyle='#1e3a8a';c.lineWidth=1.5;c.stroke();
+  if(this.ptr&&this.ptr.y<170){c.setLineDash([3,3]);circ(c,this.ptr.x,this.ptr.y,16,'rgba(250,204,21,.18)','#b45309',1.5);c.setLineDash([])}
+  if(!this.touched)T(c,'👆 Move your mouse or finger through the boxes!',W/2,13,{a:'center',s:11.5,w:800,c:'#b45309'});
+  // legends
+  ball(c,30,178,5,'#f6d9a8','#9a5b16');T(c,'= atom (with empty space around it)',40,182,{s:11,w:700,c:'#7c2d12'});
+  TY.forEach((e,n)=>{const lx=292+n*54;icon(e,lx,177,0.8);T(c,e,lx+10,182,{s:11,w:700,c:'#334155'})});
+  const tl=this.t%11,pr=clamp(tl/7,0,1),x0=40,x1=480,y=222;
+  T(c,'How long people believed Aristotle’s four elements:',x0,y-14,{s:12.5,w:700,c:'#334155'});
+  rr(c,x0,y,x1-x0,16,8);c.fillStyle='#e2e8f0';c.fill();
+  if(pr>0){rr(c,x0,y,Math.max(16,(x1-x0)*pr),16,8);c.fillStyle='#d97706';c.fill()}
+  T(c,'350 BC',x0,y+34,{s:12,w:700,c:'#92400e'});T(c,'1803 AD',x1,y+34,{a:'right',s:12,w:700,c:'#15803d'});
+  if((x1-x0)*pr>90)T(c,Math.round(pr*2150).toLocaleString()+' years',x0+(x1-x0)*pr-10,y+12.5,{a:'right',s:11.5,w:800,c:'#fff'});
+  if(pr>=1)T(c,'1803: Dalton brings atoms back!',(x0+x1)/2,y+34,{a:'center',s:13,w:800,c:'#15803d'});
+ }};
+
+/* 3. Dalton: whole-number ratios */
+EXP.ratio={get title(){return this.mode==='water'?'💧 Splitting water: click the power switch to turn it on':'⚗️ Atoms combine in whole-number ratios (by mass)'},
+ controls:[{hidden:()=>EXP.ratio.mode!=='water',label:()=>EXP.ratio.on?'⏻ Power: ON':'⏻ Power: OFF',click(){const e=EXP.ratio;if(e.mode==='water')e.toggle()}},
+           {label:()=>EXP.ratio.mode==='water'?'Show: CO / CO₂ mass ratios':'Show: splitting water (gas ratios)',click(){const e=EXP.ratio;e.mode=e.mode==='water'?'mass':'water';e.t=0;$('#expTitle').textContent=e.title}}],
+ reset(){this.t=0;this.mode=this.mode||'mass';this.on=false;this.vh=0;this.vo=0;this.bh=[];this.bo=[];this.acH=0;this.acO=0;this.full=false},
+ toggle(){if(this.full){this.vh=0;this.vo=0;this.full=false;this.on=true}else this.on=!this.on;renderExpControls()},
+ pointer(x,y,type){if(type==='pointerdown'&&this.mode==='water')this.toggle()},
+ step(dt){this.t+=dt;if(this.mode!=='water'){this.t%=7.5;return}
+  const top=150;
+  if(this.on){this.vh+=4*dt;this.vo+=2*dt;if(this.vh>=40){this.vh=40;this.vo=20;this.on=false;this.full=true;renderExpControls()}
+   this.acH+=dt*18;this.acO+=dt*9;
+   while(this.acH>=1){this.acH--;this.bh.push({x:164+(Math.random()-.5)*8,y:196,r:1.5+Math.random()*1.5,ph:Math.random()*6})}
+   while(this.acO>=1){this.acO--;this.bo.push({x:284+(Math.random()-.5)*8,y:196,r:1.5+Math.random()*1.5,ph:Math.random()*6})}}
+  const lh=top,lo=top;
+  for(const b of this.bh)b.y-=45*dt;for(const b of this.bo)b.y-=45*dt;
+  this.bh=this.bh.filter(b=>b.y>lh);this.bo=this.bo.filter(b=>b.y>lo);
+ },
+ draw(c){
+  if(this.mode==='water'){this.drawWater(c);return}
+  c.fillStyle='#f0fdf4';c.fillRect(0,0,W,H);
+  const p=ease(clamp((this.t-0.8)/1.6,0,1)),show=clamp((this.t-2.6)/0.6,0,1);
+  const C=(x,y)=>ball(c,x,y,20,'#9ca3af','#1f2937','C'),O=(x,y)=>ball(c,x,y,18,'#fca5a5','#b91c1c','O');
+  const lerp=(a,b)=>a+(b-a)*p;
+  const row=(y,start,end,name,ratio)=>{
+   c.globalAlpha=1-clamp(p*3,0,1);for(let i=0;i<start.length-1;i++)T(c,'+',(start[i][1]+start[i+1][1])/2,y+6,{a:'center',s:24,w:800,c:'#334155'});c.globalAlpha=1;
+   c.strokeStyle='#64748b';c.lineWidth=3;c.beginPath();c.moveTo(248,y);c.lineTo(300,y);c.stroke();c.beginPath();c.moveTo(300,y);c.lineTo(290,y-7);c.lineTo(290,y+7);c.closePath();c.fillStyle='#64748b';c.fill();
+   start.forEach((a,i)=>{const x=lerp(a[1],end[i][1]);(a[0]==='C'?C:O)(x,y)});
+   c.globalAlpha=show;T(c,name,400,y-32,{a:'center',s:13,w:800,c:'#14532d'});T(c,ratio,400,y+42,{a:'center',s:15,w:800,c:'#15803d'});c.globalAlpha=1;
+  };
+  row(82,[['C',50],['O',125]],[['C',382],['O',418]],'Carbon monoxide (CO)','1 C : 1 O');
+  row(178,[['C',50],['O',125],['O',195]],[['C',400],['O',364],['O',436]],'Carbon dioxide (CO₂)','1 C : 2 O');
+  caption(c,['Oxygen per 1 g of carbon:  CO → 1.33 g    CO₂ → 2.67 g    ratio = 1 : 2 (whole numbers!)']);
+ },
+ drawWater(c){
+  c.fillStyle='#f8fafc';c.fillRect(0,0,W,H);
+  const top=150,bot=212,water='rgba(125,211,252,.6)',glass='rgba(100,116,139,.9)';
+  // wires
+  c.strokeStyle='#dc2626';c.lineWidth=2.5;c.beginPath();c.moveTo(284,224);c.lineTo(284,236);c.lineTo(400,236);c.lineTo(400,230);c.stroke();
+  c.strokeStyle='#111827';c.beginPath();c.moveTo(164,224);c.lineTo(164,244);c.lineTo(480,244);c.lineTo(480,230);c.stroke();
+  // simple U-shaped apparatus full of water
+  rr(c,150,bot,148,14,6);c.fillStyle=water;c.fill();c.strokeStyle=glass;c.lineWidth=2;c.stroke();
+  for(const x of [150,270]){c.fillStyle=water;c.fillRect(x,top,28,bot-top+2);c.strokeStyle=glass;c.lineWidth=2;c.strokeRect(x,top,28,bot-top);c.fillStyle='#94a3b8';c.fillRect(x+10,top-12,8,12)}
+  c.fillStyle='#374151';c.fillRect(159,194,10,14);c.fillRect(279,194,10,14);
+  for(const b of this.bh){if(b.y>top)circ(c,b.x+Math.sin(b.y*0.2+b.ph)*1.5,b.y,b.r,'rgba(255,255,255,.9)','#3b82f6',.8)}
+  for(const b of this.bo){if(b.y>top)circ(c,b.x+Math.sin(b.y*0.2+b.ph)*1.5,b.y,b.r,'rgba(255,255,255,.9)','#ef4444',.8)}
+  T(c,'(–)',146,204,{a:'right',s:12,w:900,c:'#111827'});T(c,'(+)',302,204,{s:12,w:900,c:'#dc2626'});
+  // balloons (area doubles when volume doubles)
+  const balloon=(x,v,fill,edge,lab)=>{const r=Math.max(5,Math.sqrt(v)*6.6),cy=top-12-r*1.15;
+   c.strokeStyle=edge;c.lineWidth=1.5;c.beginPath();c.moveTo(x,top-12);c.lineTo(x,cy+r*1.1);c.stroke();
+   const g=c.createRadialGradient(x-r*.35,cy-r*.4,1,x,cy,r*1.2);g.addColorStop(0,'#ffffff');g.addColorStop(1,fill);
+   c.beginPath();c.ellipse(x,cy,r,r*1.15,0,0,Math.PI*2);c.fillStyle=g;c.fill();c.strokeStyle=edge;c.lineWidth=2;c.stroke();
+   if(r>14)T(c,lab,x,cy+6,{a:'center',s:Math.min(22,r*0.55),w:900,c:edge});else T(c,lab,x,cy-r*1.15-5,{a:'center',s:12,w:900,c:edge})};
+  balloon(164,this.vh,'#60a5fa','#1d4ed8','H₂');balloon(284,this.vo,'#f87171','#b91c1c','O₂');
+  // readouts
+  T(c,'Hydrogen gas',12,30,{s:11,w:700,c:'#1d4ed8'});T(c,'H₂: '+this.vh.toFixed(1)+' mL',12,48,{s:15,w:900,c:'#1d4ed8'});
+  T(c,'Oxygen gas',12,72,{s:11,w:700,c:'#b91c1c'});T(c,'O₂: '+this.vo.toFixed(1)+' mL',12,90,{s:15,w:900,c:'#b91c1c'});
+  T(c,'H₂ : O₂',12,120,{s:12,w:800,c:'#334155'});T(c,this.vo>0.4?(this.vh/this.vo).toFixed(1)+' : 1':'— : —',12,144,{s:22,w:900,c:'#15803d'});
+  // power supply
+  rr(c,370,150,135,80,10);c.fillStyle='#1f2937';c.fill();
+  T(c,'Power supply',437,168,{a:'center',s:12,w:800,c:'#e5e7eb'});
+  rr(c,402,178,70,28,14);c.fillStyle=this.on?'#16a34a':'#6b7280';c.fill();
+  circ(c,this.on?458:416,192,11,'#fff');T(c,this.on?'ON':'OFF',this.on?422:452,197,{a:'center',s:11,w:900,c:'#fff'});
+  glow(c,488,165,9,this.on?'rgba(74,222,128,A)':'rgba(107,114,128,A)',.9);circ(c,488,165,3.5,this.on?'#4ade80':'#6b7280');
+  T(c,'+',400,225,{a:'center',s:14,w:900,c:'#f87171'});T(c,'–',480,225,{a:'center',s:14,w:900,c:'#e5e7eb'});
+  if(!this.on&&!this.full){T(c,'👆 Click to turn on!',437,142,{a:'center',s:14,w:900,c:'#b45309'})}
+  ['(The Hofmann apparatus','in the simulation was','invented later, in 1866,','to demonstrate this.)'].forEach((l,i)=>T(c,l,W-12,26+i*15,{a:'right',s:10.5,w:600,c:'#64748b'}));
+  T(c,'2 H₂O → 2 H₂ + O₂',437,110,{a:'center',s:15,w:900,c:'#0f172a'});
+  let cap;
+  if(this.full)cap=['Tubes full: 40 mL H₂ and 20 mL O₂ → exactly 2 : 1. Click to empty and run again.'];
+  else if(this.on)cap=['Electricity splits water: twice as much hydrogen as oxygen, a 2 : 1 whole-number ratio!'];
+  else cap=['Click anywhere (or the power switch) to send electricity through the water.'];
+  caption(c,cap,this.full?'#bbf7d0':'#fff');
+ }};
+
+/* 4. Thomson: cathode ray tube (interactive) */
+EXP.cathode={title:'⚡ Cathode ray tube: move your mouse (or drag a finger) over the tube to bend the beam',
+ controls:[{label:()=>'Charged rod: '+(EXP.cathode.q>0?'＋ positive':'－ negative'),click(){const e=EXP.cathode;e.q=-e.q;e.auto=false}},
+           {label:()=>'Electric plates: '+(EXP.cathode.on?'ON':'OFF'),click(){const e=EXP.cathode;e.on=!e.on;e.auto=false}}],
+ reset(){this.on=false;this.auto=true;this.at=0;this.ps=[];this.sp=0;this.hits=[];this.q=1;this.probe=null;this.t=0},
+ pointer(x,y,type){if(type==='leave'){this.probe=null;return}this.probe={x,y};if(this.auto){this.auto=false;this.on=false;renderExpControls()}},
+ wall(x){return x<400?[92,188]:[92-(x-400)*42/82,188+(x-400)*42/82]},
+ step(dt){
+  this.t+=dt;
+  if(this.auto){this.at+=dt;if(this.at>4){this.at=0;this.on=!this.on;renderExpControls()}}
+  this.sp+=dt;while(this.sp>0.025){this.sp-=0.025;this.ps.push({x:60,y:140+(Math.random()-.5)*3,vx:260,vy:0})}
+  for(const p of this.ps){
+   let ax=0,ay=0;
+   if(this.on&&p.x>220&&p.x<320)ay-=150;
+   if(this.probe){const dx=this.probe.x-p.x,dy=this.probe.y-p.y,d2=dx*dx+dy*dy,d=Math.sqrt(d2)||1,a=this.q*600000/(d2+500);ax+=a*dx/d;ay+=a*dy/d}
+   p.vx+=ax*dt;p.vy+=ay*dt;const sp=Math.hypot(p.vx,p.vy),mx=420;if(sp>mx){p.vx*=mx/sp;p.vy*=mx/sp}
+   p.x+=p.vx*dt;p.y+=p.vy*dt;
+  }
+  this.ps=this.ps.filter(p=>{
+   if(p.x>=478){if(p.y>56&&p.y<224)this.hits.push({y:p.y,l:0.8});return false}
+   const w=this.wall(p.x);if(p.x<14||p.y<w[0]||p.y>w[1])return false;return true});
+  for(const h of this.hits)h.l-=dt;this.hits=this.hits.filter(h=>h.l>0);
+ },
+ draw(c){
+  c.fillStyle='#0b1020';c.fillRect(0,0,W,H);
+  c.beginPath();c.moveTo(60,92);c.lineTo(400,92);c.lineTo(482,50);c.lineTo(482,230);c.lineTo(400,188);c.lineTo(60,188);c.arc(60,140,48,Math.PI/2,Math.PI*1.5);c.closePath();
+  c.fillStyle='rgba(160,190,255,.07)';c.fill();c.strokeStyle='#9fb3d9';c.lineWidth=2;c.stroke();
+  c.fillStyle='#64748b';c.fillRect(46,112,8,56);
+  c.fillStyle='#94a3b8';c.fillRect(108,100,6,34);c.fillRect(108,146,6,34);
+  const on=this.on;c.fillStyle=on?'#ef4444':'#64748b';c.fillRect(220,104,100,7);c.fillStyle=on?'#3b82f6':'#64748b';c.fillRect(220,170,100,7);
+  if(on){for(let x=232;x<320;x+=20){T(c,'+',x,99,{a:'center',s:14,w:800,c:'#fca5a5'});T(c,'–',x,193,{a:'center',s:14,w:800,c:'#93c5fd'})}}
+  c.fillStyle='#34d399';c.fillRect(479,56,5,168);
+  for(const h of this.hits)glow(c,481,h.y,16,'rgba(52,211,153,A)',h.l*0.6);
+  for(const p of this.ps){glow(c,p.x,p.y,5,'rgba(147,197,253,A)',.7);circ(c,p.x,p.y,1.8,'#dbeafe')}
+  const L={s:11.5,w:700,c:'#cbd5e1',a:'center'};
+  T(c,'Cathode (–)',50,214,L);T(c,'Anode (+)',111,84,L);T(c,'Deflection plates',270,214,L);T(c,'Glowing screen',470,42,Object.assign({},L,{a:'right'}));
+  if(this.probe){
+   const pr=this.probe,pos=this.q>0;
+   glow(c,pr.x,pr.y,34,pos?'rgba(239,68,68,A)':'rgba(59,130,246,A)',.55);
+   c.fillStyle=pos?'#b91c1c':'#1d4ed8';c.fillRect(pr.x-4,pr.y-60,8,48);
+   circ(c,pr.x,pr.y,13,pos?'#ef4444':'#3b82f6','#fff',2);
+   T(c,pos?'+':'–',pr.x,pr.y+1,{a:'center',b:'middle',s:20,w:900,c:'#fff'});
+  }else if(!this.auto){
+   T(c,'👆 Move your mouse or finger over the tube',W/2,30,{a:'center',s:14,w:800,c:'#facc15'});
+  }else{
+   T(c,'Plates: '+(on?'ON':'OFF'),20,28,{s:14,w:800,c:on?'#facc15':'#94a3b8'});
+   T(c,'👆 Try it: move over the tube!',W-12,28,{a:'right',s:13,w:800,c:'#facc15'});
+  }
+  let cap,col='#fff';
+  if(this.probe){cap=this.q>0?['The beam bends TOWARD the + rod. Opposite charges attract,','so the beam must be NEGATIVE: electrons!']:['The beam bends AWAY from the – rod. Like charges repel,','so the beam must be NEGATIVE: electrons!'];col='#fde68a'}
+  else cap=on?['Plates ON: the beam bends toward the + plate → the particles are NEGATIVE (electrons).']:['Plates OFF: the beam travels straight from the cathode to the screen.'];
+  caption(c,cap,on||this.probe?'#fde68a':'#fff');
+ }};
+
+/* 5. Rutherford: gold foil */
+EXP.foil={title:'🥇 Gold foil experiment: prediction vs. result',
+ NY:[140],
+ controls:[{label:()=>EXP.foil.actual?'Showing: ACTUAL result (switch to prediction)':'Showing: PREDICTION (switch to actual)',click(){const e=EXP.foil;e.actual=!e.actual;e.auto=false;e.clear()}}],
+ clear(){this.ps=[];this.fl=[];this.tags=[];this.nfl=[];this.tal=[0,0,0]},
+ reset(){this.actual=false;this.auto=true;this.at=0;this.sp=0;this.clear()},
+ step(dt){
+  if(this.auto){this.at+=dt;if(this.at>(this.actual?14:6)){this.at=0;this.actual=!this.actual;this.clear();renderExpControls()}}
+  this.sp+=dt;
+  while(this.sp>0.05){this.sp-=0.05;
+   let out=0,y=128+Math.random()*24,ny=0;
+   if(this.actual){const r=Math.random();out=r<0.06?2:r<0.16?1:0;
+    if(out){ny=140;const off=(out===2?0.5+Math.random()*2.5:4+Math.random()*8)*(Math.random()<.5?-1:1);y=ny+off}}
+   this.ps.push({x:72,y,vx:220,vy:0,cr:false,out,ny,tr:[]})}
+  const cx=300,cy=140;
+  for(const p of this.ps){
+   if(p.cr&&p.out){p.tr.push([p.x,p.y]);if(p.tr.length>40)p.tr.shift()}
+   p.x+=p.vx*dt;p.y+=p.vy*dt;
+   if(!p.cr&&p.x>=cx){p.cr=true;let th;
+    if(p.out===2)th=(110+Math.random()*60)*Math.PI/180;
+    else if(p.out===1)th=(12+Math.random()*55)*Math.PI/180;
+    else th=(Math.random()-.5)*0.04;
+    if(p.out){th*=(p.y<p.ny?-1:1);this.nfl.push({y:p.ny,l:p.out===2?0.9:0.5})}
+    this.tal[p.out]++;
+    const v=p.out===2?170:220;p.vx=v*Math.cos(th);p.vy=v*Math.sin(th);p.tr=[[cx,p.y]];}
+  }
+  this.ps=this.ps.filter(p=>{const d=Math.hypot(p.x-cx,p.y-cy);
+   if(p.cr&&d>=104){this.fl.push({x:p.x,y:p.y,l:1.6,o:p.out});if(p.out===2)this.tags.push({x:p.x,y:p.y,l:2});return false}
+   return p.x>-10&&p.x<W+10&&p.y>-10&&p.y<H+10});
+  for(const a of [this.fl,this.tags,this.nfl])for(const f of a)f.l-=dt;
+  this.fl=this.fl.filter(f=>f.l>0);this.tags=this.tags.filter(f=>f.l>0);this.nfl=this.nfl.filter(f=>f.l>0);
+ },
+ draw(c){
+  c.fillStyle='#0b1020';c.fillRect(0,0,W,H);
+  const cx=300,cy=140;
+  c.strokeStyle='#166534';c.lineWidth=7;c.beginPath();c.arc(cx,cy,108,Math.PI+0.2,Math.PI-0.2+2*Math.PI);c.stroke();
+  T(c,'Detector screen',cx+86,cy-92,{s:11,w:700,c:'#86efac'});
+  c.fillStyle='#475569';c.fillRect(18,116,54,48);T(c,'α source',45,108,{a:'center',s:11,w:700,c:'#cbd5e1'});
+  c.fillStyle='#eab308';c.fillRect(cx-3,36,6,208);
+  if(this.actual){for(let y=60;y<=220;y+=40){c.setLineDash([3,3]);circ(c,cx,y,18,null,'rgba(253,224,71,.45)');c.setLineDash([]);
+    const nf=this.nfl.find(f=>f.y===y);if(nf)glow(c,cx,y,22,'rgba(239,68,68,A)',Math.min(1,nf.l*1.5));circ(c,cx,y,2.8,'#ef4444')}}
+  else{for(let y=58;y<=222;y+=41)circ(c,cx,y,20,'rgba(252,165,165,.35)','rgba(252,165,165,.7)')}
+  T(c,'Gold foil',cx,30,{a:'center',s:11,w:700,c:'#fde68a'});
+  const FC=['rgba(134,239,172,A)','rgba(250,204,21,A)','rgba(248,113,113,A)'];
+  for(const f of this.fl)glow(c,f.x,f.y,f.o===2?20:10,FC[f.o],Math.min(1,f.l));
+  for(const p of this.ps){
+   if(p.out&&p.tr.length>1){c.strokeStyle=p.out===2?'rgba(248,113,113,.9)':'rgba(250,204,21,.75)';c.lineWidth=p.out===2?3:2;c.beginPath();p.tr.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.lineTo(p.x,p.y);c.stroke()}
+   if(p.cr&&p.out===2){glow(c,p.x,p.y,14,'rgba(248,113,113,A)',1);circ(c,p.x,p.y,4.5,'#fecaca','#ef4444',1.5)}
+   else if(p.cr&&p.out===1){glow(c,p.x,p.y,8,'rgba(250,204,21,A)',.9);circ(c,p.x,p.y,3,'#fef08a')}
+   else{glow(c,p.x,p.y,5,'rgba(251,146,60,A)',.8);circ(c,p.x,p.y,2,'#fed7aa')}
+  }
+  for(const t of this.tags){c.globalAlpha=Math.min(1,t.l);const tx=clamp(t.x,60,W-60),ty=clamp(t.y-14,70,H-50);rr(c,tx-58,ty-14,116,22,8);c.fillStyle='#b91c1c';c.fill();T(c,'↩ BOUNCED BACK!',tx,ty+2,{a:'center',s:12,w:900,c:'#fff'});c.globalAlpha=1}
+  T(c,this.actual?'ACTUAL RESULT':'PREDICTION (plum pudding)',12,24,{s:13,w:800,c:this.actual?'#86efac':'#fbbf24'});
+  T(c,'Straight through: '+this.tal[0],12,46,{s:12,w:700,c:'#e2e8f0'});
+  T(c,'Deflected: '+this.tal[1],12,64,{s:12,w:700,c:'#fde68a'});
+  T(c,'Bounced back: '+this.tal[2],12,82,{s:12.5,w:900,c:'#f87171'});
+  caption(c,this.actual?['Actual: most pass through, a few deflect (yellow), some BOUNCE BACK (red)!','(Exaggerated so you can see it: really only about 1 in 8,000 bounced back.)']:['Plum pudding prediction: the positive charge is spread out and too weak to deflect α particles.','Every particle should pass straight through.'],this.actual?'#bbf7d0':'#fde68a');
+ }};
+
+/* 6. Bohr: hydrogen spectrum */
+EXP.spectrum={title:'💡 Electrons falling to a lower energy level give off LIGHT',
+ L:[[3,656],[4,486],[5,434],[6,410]],CY:4.6,
+ reset(){this.t=0;this.lit=[]},
+ step(dt){this.t+=dt;if(this.t>4*this.CY+3){this.t=0;this.lit=[]}},
+ draw(c){
+  c.fillStyle='#0b1020';c.fillRect(0,0,W,H);
+  const CY=this.CY,ax=112,ay=150,R=n=>10+14*n,done=this.t>=4*CY;
+  const idx=Math.min(3,Math.floor(this.t/CY)),ct=done?99:this.t-idx*CY,[nh,wl]=this.L[idx],col=wl2rgb(wl);
+  if(!done&&ct>=1.9&&ct<2.9){c.globalAlpha=0.22*(1-(ct-1.9));c.fillStyle=col;c.fillRect(0,0,W,H);c.globalAlpha=1}
+  for(let n=1;n<=6;n++){circ(c,ax,ay,R(n),null,n===2||(!done&&n===nh)?'rgba(203,213,225,.8)':'rgba(148,163,184,.35)',n===2||(!done&&n===nh)?1.6:1);T(c,'n='+n,ax,ay-R(n)-2,{a:'center',s:8.5,w:700,c:'#94a3b8'})}
+  circ(c,ax,ay,5,'#ef4444');
+  let r=R(2);
+  if(!done){if(ct<0.7)r=R(2);else if(ct<1.1)r=R(2)+(R(nh)-R(2))*ease((ct-.7)/.4);else if(ct<1.9)r=R(nh);else if(ct<2.3)r=R(nh)+(R(2)-R(nh))*ease((ct-1.9)/.4)}
+  const ang=-2.3+Math.sin(this.t*0.4)*0.25,ux=Math.cos(ang),uy=Math.sin(ang),ex=ax+r*ux,ey=ay+r*uy;
+  if(!done&&ct<1.1){
+   const k=clamp(ct/0.7,0,1),sx=ax+(R(6)+30)*ux,sy=ay+(R(6)+30)*uy,hx=sx+(ex-sx)*k,hy=sy+(ey-sy)*k;
+   c.strokeStyle='#facc15';c.lineWidth=3;c.beginPath();c.moveTo(sx,sy);c.lineTo(sx+(hx-sx)*.5-6,sy+(hy-sy)*.5+6);c.lineTo(hx,hy);c.stroke();
+   glow(c,ex,ey,18,'rgba(250,204,21,A)',.8);
+  }
+  if(!done&&ct>=1.9&&ct<3.2){
+   const a1=R(nh),a2=R(2);c.strokeStyle=col;c.lineWidth=3;c.setLineDash([5,4]);c.beginPath();c.moveTo(ax+a1*ux,ay+a1*uy);c.lineTo(ax+(a2+7)*ux,ay+(a2+7)*uy);c.stroke();c.setLineDash([]);
+   const tx=ax+(a2+7)*ux,ty=ay+(a2+7)*uy;c.fillStyle=col;c.beginPath();c.moveTo(tx-ux*0,ty);c.lineTo(tx+uy*6+ux*9,ty-ux*6+uy*9);c.lineTo(tx-uy*6+ux*9,ty+ux*6+uy*9);c.closePath();c.fill();
+  }
+  const emX=ax+R(2)*ux,emY=ay+R(2)*uy;
+  if(!done&&ct>=2.1&&ct<3.2){const k=(ct-2.1)/1.1;c.globalAlpha=1-k;c.strokeStyle=col;c.lineWidth=5;circ(c,emX,emY,10+k*90,null,col,5);c.lineWidth=2;circ(c,emX,emY,6+k*55,null,col,2);c.globalAlpha=1;glow(c,emX,emY,40,'rgba(255,255,255,A)',(1-k)*.6)}
+  circ(c,ex,ey,6,'#3b82f6','#bfdbfe',1.5);
+  const sx=250,sw=250,X=w=>sx+(w-400)/300*sw;
+  T(c,'White light: continuous spectrum',sx,58,{s:11.5,w:700,c:'#cbd5e1'});
+  for(let i=0;i<sw;i++){c.fillStyle=wl2rgb(400+i/sw*300);c.fillRect(sx+i,64,1.2,20)}
+  T(c,'Hydrogen: line spectrum',sx,150,{s:11.5,w:700,c:'#cbd5e1'});
+  c.fillStyle='#000';c.fillRect(sx,158,sw,36);c.strokeStyle='#334155';c.lineWidth=1;c.strokeRect(sx,158,sw,36);
+  for(const i of this.lit){const w=this.L[i][1],nw=i===idx&&!done;glow(c,X(w),176,nw?26:14,'rgba(255,255,255,A)',nw?.35:.15);c.fillStyle=wl2rgb(w);c.fillRect(X(w)-2,158,4,36);T(c,w+'',X(w),206,{a:'center',s:9.5,w:700,c:'#cbd5e1'})}
+  [400,500,600,700].forEach(w=>T(c,w+' nm',X(w),224,{a:'center',s:9,w:600,c:'#64748b'}));
+  if(!done&&ct>=2.1&&ct<3.5){
+   const p=clamp((ct-2.1)/1.2,0,1),tx=X(wl),ty=176,px=emX+(tx-emX)*p,py=emY+(ty-emY)*p;
+   const dx=tx-emX,dy=ty-emY,len=Math.hypot(dx,dy)||1,vx=dx/len,vy=dy/len;
+   c.save();c.shadowColor=col;c.shadowBlur=14;c.strokeStyle=col;c.lineWidth=4;c.beginPath();
+   for(let k=0;k<=44;k++){const d=-44+k;const wv=Math.sin(k*0.75+this.t*22)*6;const qx=px+vx*d-vy*wv,qy=py+vy*d+vx*wv;k?c.lineTo(qx,qy):c.moveTo(qx,qy)}c.stroke();c.restore();
+   if(p<1)T(c,'LIGHT!',px+8,py-12,{s:14,w:900,c:col});
+   if(p>=1&&!this.lit.includes(idx))this.lit.push(idx);
+  }
+  let txt,tc='#facc15';
+  if(done){txt='Hydrogen gives off only these 4 visible colors: its “fingerprint”!';tc='#e2e8f0'}
+  else if(ct<1.1)txt='① Electron ABSORBS energy and jumps UP: n=2 → n='+nh;
+  else if(ct<1.9)txt='② Electron is in a higher energy level (n='+nh+')';
+  else{txt=`③ Electron FALLS n=${nh} → n=2 and gives off LIGHT (${wl} nm)`;tc=col}
+  c.font='800 15px system-ui, Arial, sans-serif';const fs=Math.min(15,15*(W-24)/c.measureText(txt).width);
+  T(c,txt,12,26,{s:fs,w:800,c:tc});
+  caption(c,['Each fall from a higher level to a lower one gives off one exact color of light.']);
+ }};
+
+/* 7. Schrödinger: probability cloud */
+EXP.cloud={title:'☁️ Building an orbital one “measurement” at a time',
+ controls:[{name:'Orbital:',seg:[['s','s'],['p','p'],['d','d']],get:()=>EXP.cloud.mode,set(m){const e=EXP.cloud;if(e.mode!==m){e.mode=m;e.dots=[];e.hold=0}}}],
+ reset(){this.mode='s';this.dots=[];this.acc=0;this.hold=0},
+ step(dt){
+  if(this.dots.length>=4000){this.hold+=dt;if(this.hold>3.5){this.dots=[];this.hold=0}return}
+  this.acc+=dt*260;const r=Math.random;
+  while(this.acc>=1){this.acc--;let x,y;
+   if(this.mode==='s'){do{x=gauss(r)*24;y=gauss(r)*24}while(x*x+y*y>95*95)}
+   else if(this.mode==='p'){const s=r()<.5?-1:1;x=gauss(r)*12;y=s*Math.abs(40+gauss(r)*11)}
+   else{const th=(Math.PI/4)+Math.floor(r()*4)*Math.PI/2,rad=Math.abs(42+gauss(r)*11),tt=gauss(r)*9*(rad/42);x=rad*Math.cos(th)-tt*Math.sin(th);y=rad*Math.sin(th)+tt*Math.cos(th)}
+   this.dots.push([x,y])}
+ },
+ draw(c){
+  c.fillStyle='#faf5ff';c.fillRect(0,0,W,H);
+  const ox=140,oy=132,n=this.dots.length,fade=clamp((n-600)/800,0,1);
+  const sphere=(x,y,rx,ry)=>{const g=c.createRadialGradient(x-rx*.35,y-ry*.4,2,x,y,Math.max(rx,ry));g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(.45,'rgba(196,181,253,.75)');g.addColorStop(1,'rgba(109,40,217,.75)');c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fillStyle=g;c.fill();c.strokeStyle='rgba(91,33,182,.8)';c.lineWidth=2;c.stroke()};
+  c.fillStyle='rgba(76,29,149,.38)';for(const d of this.dots){c.fillRect(ox+d[0]-0.9,oy+d[1]-0.9,1.8,1.8)}
+  circ(c,ox,oy,4,'#dc2626');
+  if(fade>0.5){c.globalAlpha=(fade-.5)*2;const lb=this.mode==='s'?'s orbital = a fuzzy BALL (sphere)':this.mode==='p'?'p orbital = a DUMBBELL':'d orbital = a 4-leaf CLOVER';
+   c.font='900 15px system-ui, Arial, sans-serif';const tw=c.measureText(lb).width;rr(c,ox-tw/2-10,10,tw+20,26,10);c.fillStyle='#5b21b6';c.fill();T(c,lb,ox,28,{a:'center',s:15,w:900,c:'#fff'});c.globalAlpha=1}
+  const x=292;
+  T(c,this.mode==='s'?'1s orbital (sphere)':this.mode==='p'?'2p orbital (dumbbell)':'3d orbital (cloverleaf)',x,52,{s:16,w:800,c:'#4c1d95'});
+  T(c,'Dots plotted: '+n,x,76,{s:13,w:700,c:'#6d28d9'});
+  ['Each dot = one place the electron','was found.','','Crowded dots = HIGH probability.','','Keep watching: the dots build','up into a 3-D shape!'].forEach((s,i)=>T(c,s,x,104+i*19,{s:12.5,w:600,c:'#334155'}));
+  caption(c,['Electrons behave like waves. Orbitals show where an electron is most likely to be found.']);
+ }};
+
+/* 8. Chadwick: neutron */
+EXP.neutron={title:'🧪 Chadwick’s experiment: finding the neutral particle',
+ reset(){this.a=[];this.n=[];this.p=[];this.fl=0;this.sp=0;this.count=0},
+ step(dt){
+  this.sp+=dt;if(this.sp>0.45){this.sp=0;this.a.push({x:62,y:140+(Math.random()-.5)*24})}
+  for(const q of this.a)q.x+=140*dt;
+  this.a=this.a.filter(q=>{if(q.x>=128){this.n.push({x:142,y:q.y});return false}return true});
+  for(const q of this.n)q.x+=170*dt;
+  this.n=this.n.filter(q=>{if(q.x>=300){this.p.push({x:330,y:q.y,vy:(Math.random()-.5)*50});return false}return true});
+  for(const q of this.p){q.x+=200*dt;q.y+=q.vy*dt}
+  this.p=this.p.filter(q=>{if(q.x>=420){this.count++;this.fl=0.35;return false}return true});
+  this.fl=Math.max(0,this.fl-dt);
+ },
+ draw(c){
+  c.fillStyle='#0b1020';c.fillRect(0,0,W,H);
+  const found=this.count>=6;
+  c.fillStyle='#475569';c.fillRect(12,118,50,44);T(c,'α source',37,110,{a:'center',s:11,w:700,c:'#cbd5e1'});
+  c.fillStyle='#9ca3af';c.fillRect(128,92,14,96);T(c,'Beryllium',135,84,{a:'center',s:11,w:700,c:'#e5e7eb'});
+  c.fillStyle='#b91c1c';c.fillRect(180,52,90,18);T(c,'N',225,66,{a:'center',s:13,w:800,c:'#fff'});
+  c.fillStyle='#1d4ed8';c.fillRect(180,210,90,18);T(c,'S',225,224,{a:'center',s:13,w:800,c:'#fff'});
+  T(c,'magnet: no bending!',225,44,{a:'center',s:11,w:700,c:'#fca5a5'});
+  c.fillStyle='#fef3c7';c.fillRect(300,92,30,96);T(c,'Paraffin wax',315,84,{a:'center',s:11,w:700,c:'#fde68a'});
+  rr(c,420,98,84,84,10);c.fillStyle=this.fl>0?'#166534':'#1e293b';c.fill();c.strokeStyle='#64748b';c.stroke();
+  T(c,'Detector',462,90,{a:'center',s:11,w:700,c:'#cbd5e1'});
+  T(c,'Protons:',462,134,{a:'center',s:12,w:700,c:'#e2e8f0'});T(c,String(this.count),462,160,{a:'center',s:20,w:800,c:'#fca5a5'});
+  for(const q of this.a){glow(c,q.x,q.y,7,'rgba(251,146,60,A)',.8);circ(c,q.x,q.y,3,'#fdba74')}
+  c.setLineDash([3,2]);for(const q of this.n){circ(c,q.x,q.y,4.5,null,'#e5e7eb',1.4)}c.setLineDash([]);
+  for(const q of this.p){circ(c,q.x,q.y,3.2,'#ef4444')}
+  T(c,found?'n⁰ = NEUTRON!':'? neutral radiation',225,100,{a:'center',s:12,w:800,c:found?'#86efac':'#e5e7eb'});
+  T(c,'α particle',95,104,{a:'center',s:11,w:700,c:'#fdba74'});T(c,'p⁺ protons',375,104,{a:'center',s:12,w:800,c:'#fca5a5'});
+  caption(c,found?['A neutral particle with about the mass of a proton knocks protons out of wax: the NEUTRON!']:['The mystery radiation isn’t bent by the magnet, so it has NO charge.'],found?'#bbf7d0':'#fff');
+ }};
+
+/* =====================================================================
+   LEARN VIEW
+   ===================================================================== */
+let cur=0,labelsOn=true,compareOn=false,view='learn';
+const visited=new Set([0]);
+const cv=$('#expCanvas'),cx=cv.getContext('2d');
+let curExp=null,playing=!reduced,last=0;
+
+function fitCanvas(){const w=cv.clientWidth||520,dpr=window.devicePixelRatio||1;cv.width=Math.round(w*dpr);cv.height=Math.round(w*H/W*dpr);cx.setTransform(cv.width/W,0,0,cv.height/H,0,0);drawExp()}
+function drawExp(){if(curExp)curExp.draw(cx)}
+function renderExpControls(){
+  const box=$('#expCtl');box.innerHTML='';
+  const mk=(t,fn,cls)=>{const b=document.createElement('button');b.textContent=t;if(cls)b.className=cls;b.onclick=fn;box.appendChild(b)};
+  mk(playing?'⏸ Pause':'▶ Play',()=>{playing=!playing;renderExpControls()});
+  mk('↺ Replay',()=>{curExp.reset();drawExp()});
+  (curExp.controls||[]).forEach(ct=>{if(ct.hidden&&ct.hidden())return;
+    if(ct.seg){const d=document.createElement('div');d.className='seg';d.setAttribute('role','group');if(ct.name)d.innerHTML=`<span class="segLbl">${ct.name}</span>`;
+      ct.seg.forEach(o=>{const b=document.createElement('button');b.textContent=o[1];b.className=ct.get()===o[0]?'on':'';b.setAttribute('aria-pressed',String(ct.get()===o[0]));b.onclick=()=>{ct.set(o[0]);renderExpControls();drawExp()};d.appendChild(b)});box.appendChild(d)}
+    else mk(ct.label(),()=>{ct.click();renderExpControls();drawExp()},'alt')});
+}
+function loop(ts){
+  if(playing&&curExp&&view==='learn'&&!document.hidden){const dt=last?Math.min((ts-last)/1000,0.05):0;curExp.step(dt);curExp.draw(cx)}
+  last=ts;requestAnimationFrame(loop);
+}
+
+// timeline
+const track=$('#track');
+STOPS.forEach((s,i)=>{
+  if(i===2){const g=document.createElement('div');g.className='gap';g.innerHTML=`<svg width="40" height="34" viewBox="0 0 40 34" aria-hidden="true"><rect x="0" y="10" width="40" height="14" fill="#1b2b5c"/><polyline points="4,8 10,26 16,8 22,26 28,8 34,26" fill="none" stroke="#facc15" stroke-width="2.4"/></svg><span>≈2,000<span class="long"> yrs</span></span>`;track.appendChild(g)}
+  const b=document.createElement('button');b.className='tick';b.style.setProperty('--c',ERAS[s.era].c);b.dataset.i=i;
+  b.setAttribute('aria-label',`${s.who}, ${s.year}`);
+  b.innerHTML=`<span class="dot">${i+1}</span><span class="yr">${s.short}</span><span class="nm">${s.who.split(' ').slice(-1)[0]}</span>`;
+  track.appendChild(b);
+});
+const ticks=[...track.querySelectorAll('.tick')];
+function tickCenter(i){const t=ticks[i].getBoundingClientRect(),r=track.getBoundingClientRect();return t.left+t.width/2-r.left}
+function layoutRail(){const a=tickCenter(0),b=tickCenter(STOPS.length-1);$('#rail').style.left=a+'px';$('#rail').style.width=(b-a)+'px';$('#fill').style.left=a+'px';$('#fill').style.width=(tickCenter(cur)-a)+'px'}
+let dragging=false;
+function nearest(clientX){const r=track.getBoundingClientRect();let best=0,bd=1e9;ticks.forEach((t,i)=>{const d=Math.abs(tickCenter(i)-(clientX-r.left));if(d<bd){bd=d;best=i}});return best}
+track.addEventListener('pointerdown',e=>{if(view!=='learn')return;dragging=true;try{track.setPointerCapture(e.pointerId)}catch(_){}go(nearest(e.clientX))});
+track.addEventListener('pointermove',e=>{if(dragging)go(nearest(e.clientX))});
+['pointerup','pointercancel'].forEach(ev=>track.addEventListener(ev,()=>dragging=false));
+ticks.forEach((t,i)=>t.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go(i)}}));
+$('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
+$('#bPrev').onclick=()=>go(cur-1);
+$('#bNext').onclick=()=>{if(cur<STOPS.length-1)go(cur+1);else if(visited.size===STOPS.length){setMode('quiz');quizIntro()}};
+function cvPos(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H]}
+['pointermove','pointerdown'].forEach(ev=>cv.addEventListener(ev,e=>{if(curExp&&curExp.pointer){const q=cvPos(e);curExp.pointer(q[0],q[1],ev);if(ev==='pointerdown'){try{cv.setPointerCapture(e.pointerId)}catch(_){}}if(!playing)drawExp()}}));
+cv.addEventListener('pointerleave',e=>{if(curExp&&curExp.pointer&&e.pointerType==='mouse'){curExp.pointer(0,0,'leave');if(!playing)drawExp()}});
+document.addEventListener('keydown',e=>{
+  if(!$('#modal').hidden){if(e.key==='Escape')closeModal();return}
+  if(view==='learn'){if(e.key==='ArrowRight'){go(cur+1);e.preventDefault()}else if(e.key==='ArrowLeft'){go(cur-1);e.preventDefault()}}
+  else if(view==='quiz'&&quiz.active)quizKey(e);
+});
+
+// progress dots
+const dotsEl=$('#dots');STOPS.forEach(()=>dotsEl.appendChild(document.createElement('span')));
+function renderProgress(){
+  [...dotsEl.children].forEach((d,i)=>d.classList.toggle('v',visited.has(i)));
+  $('#progTxt').textContent=`Viewed ${visited.size}/${STOPS.length}`;
+  const unlocked=visited.size===STOPS.length;
+  $('#lockIcon').textContent=unlocked?'':'🔒';
+  $('#mQuiz').disabled=!unlocked||(view==='quiz'&&quiz.active);
+  $('#mQuiz').title=unlocked?'Take the quiz':'View all 8 stops to unlock the quiz';
+  $('#mLearn').disabled=quiz.active;
+  $('#mLearn').title=quiz.active?'Finish or quit the quiz first':'';
+}
+
+function go(i){
+  if(i<0||i>=STOPS.length||(i===cur&&curExp))return;
+  cur=i;const before=visited.size;visited.add(i);
+  renderStop();renderProgress();
+  if(before<STOPS.length&&visited.size===STOPS.length)toast('🔓 Quiz unlocked! Click “Quiz” at the top when you’re ready.');
+}
+
+function renderStop(){
+  const s=STOPS[cur],era=ERAS[s.era];
+  ticks.forEach((t,i)=>{t.classList.toggle('cur',i===cur);t.classList.toggle('seen',visited.has(i));t.setAttribute('aria-current',i===cur?'step':'false')});
+  layoutRail();
+  $('#prev').disabled=cur===0;$('#next').disabled=cur===STOPS.length-1;
+  const nxt=STOPS[cur+1],unl=visited.size===STOPS.length;
+  $('#bPrev').disabled=cur===0;
+  $('#bNext').textContent=nxt?`Next: ${nxt.who} (${nxt.short}) ►`:(unl?'Take the quiz ►':'Visit every stop to unlock the quiz');
+  $('#bNext').disabled=!nxt&&!unl;
+  const nudge=!!nxt&&!visited.has(cur+1);$('#next').classList.toggle('nudge',nudge);$('#bNext').classList.toggle('nudge',nudge||(!nxt&&unl));
+  cv.style.touchAction=EXP[s.exp].pointer?'none':'auto';cv.style.cursor=EXP[s.exp].pointer?'crosshair':'default';
+  $('#discHead').innerHTML=`<span class="era" style="--c:${era.c}">${era.n} · ${s.year}</span><h2>${s.who}</h2><h3>${s.title}</h3>`;
+  let b=s.body;
+  if(s.why)b+=`<div class="callout why"><b class="h">Why Aristotle matters</b>${s.why}</div>`;
+  if(s.compare)b+=`<table class="cmp"><thead><tr><th></th><th>Democritus</th><th>Aristotle</th></tr></thead><tbody>${s.compare.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>`;
+  b+=`<div class="callout key"><b class="h">Key finding</b>${s.find}</div>`;
+  if(s.fun)b+=`<div class="callout fun"><b class="h">Picture this</b>${s.fun}</div>`;
+  b+=`<div class="callout lim"><b class="h">${s.lim[0]}</b>${s.lim[1]}</div>`;
+  $('#discBody').innerHTML=b;
+  curExp=EXP[s.exp];$('#expTitle').textContent=curExp.title;curExp.reset();
+  renderExpControls();fitCanvas();
+  renderModel();
+}
+function renderModel(){
+  const s=STOPS[cur];
+  const curSvg=MODELS[s.key](true);
+  if(compareOn&&cur>0){const p=STOPS[cur-1];
+    $('#modelStage').innerHTML=`<div class="ghostWrap">${MODELS[p.key](false)}<small>Before: ${p.model.name}</small></div><div class="arrow">→</div><div class="cur">${curSvg}</div>`;
+  }else $('#modelStage').innerHTML=`<div class="cur">${curSvg}</div>`;
+  $('#modelName').textContent=s.model.name;
+  $('#modelMeta').textContent=s.model.date;
+  $('#modelDesc').textContent=s.model.desc;
+  $('#modelChanged').innerHTML=`<b>What changed:</b> ${esc(s.model.changed)}`;
+  $('#btnCompare').disabled=cur===0;
+  $('#btnCompare').setAttribute('aria-pressed',String(compareOn&&cur>0));
+}
+$('#btnCompare').onclick=function(){compareOn=!compareOn;renderModel()};
+
+/* =====================================================================
+   QUIZ
+   ===================================================================== */
+const BANK=[
+ {q:'Which atomic model is shown?',pic:'thomson',a:['Plum pudding model','Nuclear model','Bohr model','Solid sphere model'],ex:'Electrons (–) scattered through a sphere of positive charge is Thomson’s 1904 plum pudding model.'},
+ {q:'Which scientist proposed the model shown?',pic:'dalton',a:['John Dalton','J.J. Thomson','Ernest Rutherford','Niels Bohr'],ex:'Dalton pictured atoms as tiny, solid, indivisible spheres (1803–1808).'},
+ {q:'Which atomic model is shown?',pic:'bohr',a:['Bohr (planetary) model','Electron cloud model','Nuclear model','Plum pudding model'],ex:'Electrons in fixed circular energy levels around a nucleus is Bohr’s 1913 model.'},
+ {q:'Which atomic model is shown?',pic:'schrodinger',a:['Quantum mechanical (electron cloud) model','Bohr model','Plum pudding model','Solid sphere model'],ex:'A fuzzy probability cloud of electrons is the quantum mechanical model (Schrödinger, 1926).'},
+ {q:'Which experiment led to the model shown?',pic:'rutherford',a:['Gold foil experiment','Cathode ray tube','Hydrogen line spectrum','Beryllium radiation'],ex:'Rutherford’s gold foil experiment (1909–1911) revealed the tiny, dense, positive nucleus.'},
+ {q:'Thomson’s cathode ray experiment showed that atoms contain…',a:['negatively charged electrons','a dense nucleus','neutrons','energy levels'],ex:'The beam bent toward the + plate, so the particles were negative: electrons.'},
+ {q:'Most alpha particles passed straight through the gold foil. This showed that…',a:['the atom is mostly empty space','atoms are solid spheres','electrons are negative','the nucleus is negative'],ex:'If most particles hit nothing, the atom must be mostly empty space.'},
+ {q:'A few alpha particles bounced straight back from the gold foil. This showed…',a:['a small, dense, positive nucleus','that electrons have mass','that atoms are neutral','that gold is radioactive'],ex:'Only a tiny, dense, positive center could push positive α particles straight back.'},
+ {q:'Which model first placed electrons in fixed energy levels?',a:['Bohr model','Rutherford’s nuclear model','Thomson’s plum pudding model','Schrödinger’s electron cloud model'],ex:'Bohr (1913) placed electrons in fixed, quantized energy levels.'},
+ {q:'Bohr’s model was based on evidence from…',a:['hydrogen’s line emission spectrum','the gold foil experiment','cathode rays','beryllium radiation'],ex:'Hydrogen gives off only certain colors; Bohr explained them as electrons dropping between energy levels.'},
+ {q:'In the electron cloud model, an orbital is…',a:['a region where an electron is most likely to be found','a fixed circular path','a sphere of positive charge','the nucleus'],ex:'An orbital is a 3-D region with a high probability of finding an electron.'},
+ {q:'Which part of Dalton’s atomic theory was later shown to be wrong?',a:['Atoms are indivisible','Atoms combine in whole-number ratios','Reactions rearrange atoms','Elements are made of atoms'],ex:'Thomson’s discovery of the electron proved atoms can be divided.'},
+ {q:'James Chadwick discovered the…',a:['neutron','proton','electron','nucleus'],ex:'Chadwick discovered the neutral neutron in 1932.'},
+ {q:'Which is the correct order of atomic models, oldest → newest?',a:['Dalton → Thomson → Rutherford → Bohr → Electron cloud','Thomson → Dalton → Rutherford → Bohr → Electron cloud','Dalton → Rutherford → Thomson → Bohr → Electron cloud','Dalton → Thomson → Bohr → Rutherford → Electron cloud'],ex:'Dalton (1803) → Thomson (1904) → Rutherford (1911) → Bohr (1913) → Schrödinger (1926).'},
+ {q:'Democritus’s idea of the atom was based on…',a:['reasoning, not experiments','the gold foil experiment','cathode rays','measuring masses of elements'],ex:'Democritus was a philosopher. His atom idea came from reasoning, not experiments.'},
+ {q:'Why was the idea of atoms largely set aside for about 2,000 years?',a:['The very influential Aristotle rejected atoms and taught four elements','Democritus’s experiments failed','Atoms were proven not to exist','No one wrote the idea down'],ex:'Aristotle’s great influence kept the four-element idea in place for about 2,000 years.'},
+ {q:'Aristotle taught that all matter is made of four elements. What were they?',a:['Earth, water, air, fire','Solid, liquid, gas, plasma','Protons, neutrons, electrons, ions','Hydrogen, oxygen, carbon, nitrogen'],ex:'Aristotle taught that everything was made of earth, water, air, and fire.'},
+ {q:'In the plum pudding model, the “plums” represent…',a:['electrons','protons','neutrons','nuclei'],ex:'The negative electrons are the “plums” scattered in the positive “pudding.”'},
+ {q:'What could Rutherford’s nuclear model NOT explain?',a:['Why atoms give off only certain colors of light','That atoms have a nucleus','That electrons are negative','That atoms are mostly empty space'],ex:'The nuclear model didn’t explain line spectra; Bohr’s energy levels did.'},
+ {q:'Which model replaced fixed orbits with regions of probability?',a:['Quantum mechanical (electron cloud) model','Bohr model','Nuclear model','Plum pudding model'],ex:'Schrödinger’s quantum mechanical model describes orbitals as probability regions, not fixed paths.'},
+ {q:'Chadwick’s discovery helped explain…',a:['why atoms have more mass than their protons alone','why electrons are negative','why hydrogen has a line spectrum','why atoms are mostly empty space'],ex:'Neutrons add mass without charge, explaining the “extra” mass of atoms and isotopes.'},
+ {q:'Which model shows a sphere of positive charge with electrons spread throughout?',a:['Plum pudding model','Nuclear model','Bohr model','Solid sphere model'],ex:'Thomson’s plum pudding model spreads the positive charge throughout the atom.'}
+];
+const quiz={active:false,qs:[],i:0};
+let lastResult=null,cardPromise=null,blobPromise=null;
+
+function getAttempts(){return parseInt(store.get('athq_attempts','0'),10)||0}
+function setMode(m){
+  view=m;
+  $('#learnView').hidden=m!=='learn';$('#quizView').hidden=m!=='quiz';$('#scoreView').hidden=m!=='score';
+  $('#timebar').style.display=m==='learn'?'':'none';
+  $('#mLearn').classList.toggle('on',m==='learn');$('#mQuiz').classList.toggle('on',m!=='learn');
+  $('#mLearn').setAttribute('aria-pressed',String(m==='learn'));$('#mQuiz').setAttribute('aria-pressed',String(m!=='learn'));
+  renderProgress();
+  if(m==='learn'){requestAnimationFrame(()=>{layoutRail();fitCanvas()})}
+  window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});
+}
+$('#mLearn').onclick=()=>{if(!quiz.active)setMode('learn')};
+$('#mQuiz').onclick=()=>{if(visited.size===STOPS.length&&!quiz.active){setMode('quiz');quizIntro()}};
+
+function quizIntro(){
+  $('#quizCard').innerHTML=`<h2 style="margin-top:0">📝 Atomic Models Quiz</h2>
+  <p>You will get <b>5 questions</b> drawn at random from a bank of ${BANK.length}. Answer choices are shuffled every time.</p>
+  <ul><li>No names needed. Your score card shows only the score, date/time, and attempt number.</li><li>While the quiz is running, Learn mode is locked.</li><li>You can retake the quiz as many times as you like.</li></ul>
+  <p class="small">Next attempt: <b>#${getAttempts()+1}</b></p>
+  <div class="endBtns"><button class="btn primary" id="startQ">Start quiz ▶</button><button class="btn" id="backL">← Back to Learn</button></div>`;
+  $('#startQ').onclick=startQuiz;$('#backL').onclick=()=>setMode('learn');$('#startQ').focus();
+}
+function startQuiz(){
+  const pics=shuffle(BANK.filter(b=>b.pic)).slice(0,2);
+  const rest=shuffle(BANK.filter(b=>!pics.includes(b))).slice(0,3);
+  quiz.qs=shuffle(pics.concat(rest)).map(b=>({b,choices:shuffle(b.a.map((t,i)=>({t,ok:i===0}))),pick:-1}));
+  quiz.i=0;quiz.active=true;renderProgress();renderQ();
+}
+function renderQ(){
+  const q=quiz.qs[quiz.i],n=quiz.qs.length,L='ABCD';
+  $('#quizCard').innerHTML=`<div class="qTop"><b>Question ${quiz.i+1} of ${n}</b><div class="bar"><i style="width:${quiz.i/n*100}%"></i></div><button class="btn ghost" id="quitQ">Quit quiz</button></div>
+  <div class="qText" id="qText">${esc(q.b.q)}</div>
+  ${q.b.pic?`<div class="qPic">${MODELS[q.b.pic](false)}</div>`:''}
+  <div class="choices" role="radiogroup" aria-labelledby="qText">${q.choices.map((c,i)=>`<button class="choice${q.pick===i?' sel':''}" role="radio" aria-checked="${q.pick===i}" data-i="${i}"><span class="let">${L[i]}</span><span>${esc(c.t)}</span></button>`).join('')}</div>
+  <div class="qFoot"><span class="hintKeys">Tip: press A–D to choose, Enter for next.</span><button class="btn primary" id="nextQ" ${q.pick<0?'disabled':''}>${quiz.i===n-1?'Finish ✓':'Next ►'}</button></div>`;
+  $('#quizCard').querySelectorAll('.choice').forEach(b=>b.onclick=()=>pick(+b.dataset.i));
+  $('#nextQ').onclick=nextQ;
+  const qb=$('#quitQ');qb.onclick=()=>{if(qb.dataset.armed){quiz.active=false;setMode('learn')}else{qb.dataset.armed='1';qb.textContent='Click again to quit';qb.style.color='#b91c1c'}};
+}
+function pick(i){quiz.qs[quiz.i].pick=i;renderQ();const b=$('#quizCard').querySelectorAll('.choice')[i];if(b)b.focus()}
+function nextQ(){if(quiz.qs[quiz.i].pick<0)return;if(quiz.i<quiz.qs.length-1){quiz.i++;renderQ()}else finishQuiz()}
+function quizKey(e){
+  const k=e.key.toUpperCase(),m={A:0,B:1,C:2,D:3,'1':0,'2':1,'3':2,'4':3};
+  if(k in m&&!e.ctrlKey&&!e.metaKey&&!e.altKey){pick(m[k]);e.preventDefault()}
+  else if(e.key==='Enter'&&document.activeElement&&!document.activeElement.classList.contains('choice')&&document.activeElement.id!=='quitQ'){nextQ();e.preventDefault()}
+}
+
+/* =====================================================================
+   SCORE + SHARING
+   ===================================================================== */
+function pad2(n){return String(n).padStart(2,'0')}
+function finishQuiz(){
+  quiz.active=false;
+  const attempt=getAttempts()+1;store.set('athq_attempts',String(attempt));
+  const now=new Date();
+  let whenTxt;try{whenTxt=now.toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'})}catch(e){whenTxt=now.toLocaleString()}
+  const items=quiz.qs.map(q=>{const c=q.choices.find(x=>x.ok);const y=q.choices[q.pick];return{q:q.b.q,pic:q.b.pic||null,your:y?y.t:'—',correct:c.t,ok:!!(y&&y.ok),ex:q.b.ex}});
+  const score=items.filter(x=>x.ok).length;
+  lastResult={score,total:items.length,pct:Math.round(score/items.length*100),when:whenTxt,attempt,items,
+    fname:`atomic-theory-quiz-${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}-${pad2(now.getHours())}${pad2(now.getMinutes())}.png`};
+  cardPromise=buildCard(lastResult);
+  blobPromise=cardPromise.then(c=>new Promise(res=>c.toBlob(res,'image/png')));
+  setMode('score');renderScore();
+}
+function mailBody(R){
+  let s=`History of Atomic Theory – Quiz Results\nScore: ${R.score}/${R.total} (${R.pct}%)\nDate/time: ${R.when}\nAttempt #: ${R.attempt}\n\n`;
+  R.items.forEach((it,i)=>{s+=`Q${i+1} ${it.ok?'✓':'✗'} ${it.q}\n   Your answer: ${it.your}\n`;if(!it.ok)s+=`   Correct answer: ${it.correct}\n`});
+  return s+'\nScore card image: paste (Ctrl+V) or attach the downloaded PNG.\n';
+}
+function renderScore(){
+  const R=lastResult,subj=`Atomic Theory Quiz – ${R.score}/${R.total} (Attempt ${R.attempt})`,body=mailBody(R);
+  const gmail=`https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+  const mailto=`mailto:?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+  const msg=R.pct===100?'Perfect score! 🎉':R.pct>=80?'Great work! 🌟':R.pct>=60?'Good effort. Review the ones you missed.':'Keep going! Review the timeline and try again.';
+  $('#scoreCard').innerHTML=`<div class="scoreHead"><div class="bigScore">${R.score} / ${R.total}<small>${R.pct}%</small></div>
+   <div><div style="font-weight:800;font-size:1.15rem">${msg}</div><div class="meta">🕒 ${esc(R.when)} · Attempt #${R.attempt}</div></div></div>
+   <div class="share">
+    <button class="btn primary" id="dlBtn">⬇ Download PNG</button>
+    <button class="btn" id="cpBtn">📋 Copy image</button>
+    <a class="btn" id="gmBtn" href="${gmail}" target="_blank" rel="noopener">✉ Email (Gmail)</a>
+   </div>
+   <div class="small">Trouble? <button class="linkish" id="showImg">Show the score card image</button> · <a href="${mailto}">Use a different email app</a> · Emailing? Copy or download the image first, then paste or attach it.</div>
+   <div class="shortcuts"><b>Screenshot shortcuts:</b> Chromebook: <kbd>Ctrl</kbd>+<kbd>Show windows</kbd> (full screen) or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Show windows</kbd> (part of the screen) · Windows: <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></div>
+   ${R.items.map((it,i)=>`<div class="res"><div class="mark ${it.ok?'ok':'no'}">${it.ok?'✓':'✗'}</div><div class="body"><div class="q">Q${i+1}. ${esc(it.q)}</div>
+    <div class="ya ${it.ok?'ok':'no'}">Your answer: ${esc(it.your)}</div>${it.ok?'':`<div class="ca">Correct answer: ${esc(it.correct)}</div>`}<div class="ex">${esc(it.ex)}</div></div>${it.pic?`<div class="th">${MODELS[it.pic](false)}</div>`:''}</div>`).join('')}
+   <div class="endBtns"><button class="btn primary" id="retake">↺ Retake quiz</button><button class="btn" id="toLearn">📘 Back to Learn</button></div>`;
+  $('#dlBtn').onclick=downloadCard;$('#cpBtn').onclick=copyCard;$('#showImg').onclick=()=>showModal('Right-click the image → “Copy image” or “Save image as…”. On a touch screen, press and hold the image.');
+  $('#gmBtn').onclick=()=>toast('Opening Gmail… Paste (Ctrl+V) or attach your score card image.');
+  $('#retake').onclick=()=>{setMode('quiz');startQuiz()};$('#toLearn').onclick=()=>setMode('learn');
+}
+const inFrame=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+async function downloadCard(){
+  try{
+    const blob=await blobPromise;if(!blob)throw new Error('no blob');
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=lastResult.fname;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+    toast(inFrame?'Downloading… If nothing appears, click “Show the score card image”.':'Saved to your Downloads folder ✓');
+  }catch(e){showModal('Download is blocked here. Right-click the image → “Save image as…” (or press and hold on a touch screen).')}
+}
+async function copyCard(){
+  try{
+    if(!navigator.clipboard||!window.ClipboardItem)throw new Error('unsupported');
+    await navigator.clipboard.write([new ClipboardItem({'image/png':blobPromise})]);
+    toast('📋 Copied! Paste into Gmail or a Google Classroom comment with Ctrl+V.');
+  }catch(e){showModal('Copying is blocked here. Right-click the image → “Copy image” (or press and hold on a touch screen).')}
+}
+async function showModal(msg){
+  const c=await cardPromise;$('#modalImg').src=c.toDataURL('image/png');$('#modalMsg').textContent=msg;
+  $('#modalNewTab').href=location.href;$('#modalNewTab').hidden=!inFrame;
+  $('#modal').hidden=false;$('#modalClose').focus();
+}
+function closeModal(){$('#modal').hidden=true}
+$('#modalClose').onclick=closeModal;$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+function wrapText(g,text,maxW){const words=String(text).split(' '),lines=[];let line='';for(const w of words){const t=line?line+' '+w:w;if(g.measureText(t).width>maxW&&line){lines.push(line);line=w}else line=t}if(line)lines.push(line);return lines}
+function loadSvg(s){return new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)})}
+async function buildCard(R){
+  const CW=1200,P=48,TH=120,textW=CW-P*2-60-TH-30;
+  const qF='700 24px system-ui, Arial, sans-serif',aF='500 21px system-ui, Arial, sans-serif',eF='italic 400 18px system-ui, Arial, sans-serif';
+  const m=document.createElement('canvas').getContext('2d');
+  const rows=R.items.map((it,i)=>{m.font=qF;const ql=wrapText(m,`Q${i+1}. ${it.q}`,textW);m.font=aF;const al=wrapText(m,'Your answer: '+it.your,textW);const cl=it.ok?[]:wrapText(m,'Correct answer: '+it.correct,textW);m.font=eF;const el=wrapText(m,it.ex,textW);
+    const th=ql.length*32+al.length*28+cl.length*28+el.length*25+8;return{it,ql,al,cl,el,h:Math.max(it.pic?TH:0,th)+34}});
+  const headH=210,footH=70,CH=headH+rows.reduce((s,r)=>s+r.h,0)+footH;
+  const c=document.createElement('canvas');c.width=CW;c.height=CH;const g=c.getContext('2d');
+  const imgs=await Promise.all(rows.map(r=>r.it.pic?loadSvg(MODELS[r.it.pic](false)):Promise.resolve(null)));
+  g.fillStyle='#ffffff';g.fillRect(0,0,CW,CH);
+  g.fillStyle='#0f1b3d';g.fillRect(0,0,CW,headH-20);
+  g.fillStyle='#facc15';g.fillRect(0,headH-26,CW,6);
+  g.fillStyle='#fff';g.font='800 34px system-ui, Arial, sans-serif';g.textBaseline='alphabetic';g.fillText('History of Atomic Theory · Quiz Score Card',P,62);
+  g.fillStyle='#facc15';g.font='900 78px system-ui, Arial, sans-serif';g.fillText(`${R.score} / ${R.total}`,P,158);
+  const sw=g.measureText(`${R.score} / ${R.total}`).width;
+  g.fillStyle='#e2e8f0';g.font='800 34px system-ui, Arial, sans-serif';g.fillText(R.pct+'%',P+sw+22,156);
+  g.font='600 24px system-ui, Arial, sans-serif';g.fillStyle='#cbd5f5';g.textAlign='right';
+  g.fillText('🕒 '+R.when,CW-P,116);g.fillText('Attempt #'+R.attempt,CW-P,152);g.textAlign='left';
+  let y=headH;
+  rows.forEach((r,i)=>{
+    if(i>0){g.fillStyle='#e2e8f0';g.fillRect(P,y,CW-P*2,2)}
+    const ok=r.it.ok,mx=P+24,my=y+40;
+    g.fillStyle=ok?'#15803d':'#b91c1c';g.beginPath();g.arc(mx,my,22,0,Math.PI*2);g.fill();
+    g.strokeStyle='#fff';g.lineWidth=5;g.lineCap='round';g.beginPath();
+    if(ok){g.moveTo(mx-10,my+1);g.lineTo(mx-3,my+9);g.lineTo(mx+11,my-8)}else{g.moveTo(mx-8,my-8);g.lineTo(mx+8,my+8);g.moveTo(mx+8,my-8);g.lineTo(mx-8,my+8)}
+    g.stroke();
+    let ty=y+44;const tx=P+60;
+    g.font=qF;g.fillStyle='#0f172a';r.ql.forEach(l=>{g.fillText(l,tx,ty);ty+=32});
+    g.font=aF;g.fillStyle=ok?'#15803d':'#b91c1c';r.al.forEach(l=>{g.fillText(l,tx,ty);ty+=28});
+    g.fillStyle='#15803d';r.cl.forEach(l=>{g.fillText(l,tx,ty);ty+=28});
+    g.font=eF;g.fillStyle='#64748b';r.el.forEach(l=>{g.fillText(l,tx,ty);ty+=25});
+    if(imgs[i]){const ix=CW-P-TH,iy=y+16;g.fillStyle='#f8fafc';g.fillRect(ix-4,iy-4,TH+8,TH+8);g.drawImage(imgs[i],ix,iy,TH,TH)}
+    y+=r.h;
+  });
+  g.fillStyle='#e2e8f0';g.fillRect(0,CH-footH,CW,2);
+  g.fillStyle='#64748b';g.font='500 18px system-ui, Arial, sans-serif';
+  g.fillText('No names or personal information collected · Generated on this device',P,CH-footH+42);
+  return c;
+}
+
+/* =====================================================================
+   MISC
+   ===================================================================== */
+let toastT=0;
+function toast(s){const t=$('#toast');t.textContent=s;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3800)}
+let rzT=0;window.addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if(view==='learn'){layoutRail();fitCanvas()}},80)});
+if(window.ResizeObserver)new ResizeObserver(()=>{if(view==='learn')fitCanvas()}).observe(cv);
+
+renderStop();renderProgress();requestAnimationFrame(loop);
+// test hook (no effect for students)
+window.__ATH={go,visited,STOPS,startQuiz,pick,nextQ,setMode,get quiz(){return quiz}};
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lewis Dot Builder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: toolbar + how-to strip, a periodic-table shelf (table | electron box + key), then a full-width whiteboard build area.
+   Deliberately light-only: a high-contrast whiteboard for projectors and Smartboards. */
+:root{
+  --paper:#eceeeb; --board:#ffffff; --ink:#0d1117; --ink-2:#3b424c; --rule:#aab1b9; --grid:#d9dde2;
+  --bond:#d10a0a; --ionic:#1a4fd6; --ghost:#bcc1c7;
+  --metal:#ffc23d; --metal-var:#ffe08f; --nonmetal:#2fd38a; --noble:#b38bff; --off:#e1e3e5; --off-ink:#7d838b;
+  --good:#0a7a33; --warn:#c45500; --deny:#c8001e;
+  --font:"Atkinson Hyperlegible","Segoe UI",Verdana,Arial,sans-serif;
+  --cell:clamp(18px, min(calc((100vw - 420px) / 18.6), 4.6vh), 46px);
+  color-scheme:light;
+}
+html,body{height:100%}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  background:var(--paper); color:var(--ink); font-family:var(--font); font-size:15px; margin:0;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:10px; display:flex; flex-direction:column; gap:8px; overflow-y:auto;
+  -webkit-user-select:none; user-select:none;
+}
+button{font:inherit}
+
+/* ---------- toolbar ---------- */
+.bar{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; min-width:0; flex-wrap:wrap}
+.brand h1{font-size:22px; margin:0; letter-spacing:.2px; text-wrap:balance}
+.brand svg{flex:none}
+.tools{display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+.btn{background:var(--board); color:var(--ink); border:2px solid var(--ink); border-radius:8px; padding:6px 12px; font-weight:700; font-size:14px; cursor:pointer; line-height:1.2}
+.btn:hover{background:#f3f5f7}
+.btn:focus-visible,.cell:focus-visible,.edot:focus-visible{outline:3px solid var(--ionic); outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--ink); color:#fff}
+.btn.primary{background:var(--ink); color:#fff}
+.btn:disabled{opacity:.4; cursor:default}
+.seg{display:inline-flex}
+.seg .btn{border-radius:0}
+.seg .btn:first-child{border-radius:8px 0 0 8px}
+.seg .btn:last-child{border-radius:0 8px 8px 0; border-left:0}
+
+/* ---------- how-to strip ---------- */
+.guide{list-style:none; margin:0; padding:7px 12px; display:flex; flex-wrap:wrap; gap:4px 18px; background:var(--board); border:2px solid var(--ink); border-radius:10px; font-size:14px; line-height:1.35}
+.guide li{min-width:0}
+.guide b{text-transform:uppercase; letter-spacing:.06em; font-size:12px; margin-right:4px}
+.k-bond{color:var(--bond); font-weight:700}
+.k-ion{color:var(--ionic); font-weight:700}
+
+/* ---------- shelf: periodic table + electron box + key ---------- */
+.shelf{display:flex; gap:10px; align-items:stretch; flex-wrap:wrap}
+.tablewrap{position:relative; background:var(--board); border:2px solid var(--ink); border-radius:10px; padding:8px; overflow-x:auto; min-width:0; max-width:100%}
+.ptable{display:grid; grid-template-columns:repeat(18, var(--cell)); grid-template-rows:repeat(7, var(--cell)); gap:3px}
+.cell{width:var(--cell); height:var(--cell); border:1.5px solid var(--ink); border-radius:5px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:calc(var(--cell) * .44); line-height:1; position:relative; touch-action:none}
+.cell .z{position:absolute; top:2px; left:3px; font-size:calc(var(--cell) * .2); font-weight:400}
+.cell.on{cursor:grab; transition:transform .08s}
+.cell.on:hover{transform:translateY(-2px); box-shadow:0 2px 0 var(--ink)}
+.cell.m{background:var(--metal)} .cell.nm{background:var(--nonmetal)} .cell.ng{background:var(--noble)}
+.cell.off{background:var(--off); color:var(--off-ink); border-color:var(--rule)}
+.cell.ph{font-size:calc(var(--cell) * .24); font-weight:400}
+.tablewrap::after{content:"Drop here to remove"; position:absolute; inset:0; display:none; align-items:center; justify-content:center; font-weight:700; font-size:20px; color:var(--deny); border:3px dashed var(--deny); border-radius:9px; background:rgba(255,255,255,.55); pointer-events:none}
+.tablewrap.armed::after{display:flex}
+.tablewrap.hot::after{background:rgba(255,225,228,.88); content:"Release to remove"}
+
+.side{display:flex; flex-direction:column; gap:8px; flex:1 1 230px; min-width:0; max-width:320px}
+.reservoir.hot{background:#ffe1e4; border-color:var(--deny)}
+.reservoir{display:flex; align-items:center; gap:12px; background:var(--board); border:2px dashed var(--ink); border-radius:10px; padding:8px 12px}
+.edot{width:30px; height:30px; border-radius:50%; background:var(--ink); flex:none; cursor:grab; touch-action:none; box-shadow:0 0 0 5px #fff, 0 0 0 7px var(--ink)}
+.reservoir .rt{display:flex; flex-direction:column; min-width:0}
+.reservoir strong{font-size:15px}
+.reservoir span{font-size:13px; color:var(--ink-2)}
+.legend{background:var(--board); border:2px solid var(--ink); border-radius:10px; padding:8px 12px; display:grid; grid-template-columns:auto 1fr; gap:4px 10px; align-items:center; font-size:13px}
+.legend svg{display:block}
+.swatch{width:22px; height:16px; border:1.5px solid var(--ink); border-radius:4px}
+.legend .sep{grid-column:1 / -1; border-top:1px solid var(--rule); margin:2px 0}
+
+/* ---------- build area ---------- */
+.stage{position:relative; flex:1 1 auto; min-height:300px; background-color:var(--board);
+  background-image:radial-gradient(circle, var(--grid) 1.2px, transparent 1.4px); background-size:24px 24px;
+  border:2px solid var(--ink); border-radius:12px; touch-action:none}
+.stage .tag{position:absolute; top:8px; left:12px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-2); pointer-events:none}
+#ws{position:absolute; inset:0; overflow:visible; touch-action:none}
+#ws text{font-family:var(--font)}
+#ws [data-kind="atom"]{cursor:grab}
+#ws [data-kind="dot"]{cursor:crosshair}
+#ws [data-kind="bond"],#ws [data-kind="arrow"]{cursor:pointer}
+.foot{position:absolute; left:10px; right:10px; bottom:8px; display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; pointer-events:none}
+.formula{background:rgba(255,255,255,.92); border:1.5px solid var(--rule); border-radius:8px; padding:4px 10px; font-size:16px; min-width:0}
+.formula .fx{font-weight:700}
+.formula .nm{color:var(--ink-2)}
+.formula .nm.tc{font-style:italic}
+.formula .sepdot{margin:0 8px; color:var(--rule)}
+.g-name{display:block; font-size:15px; color:var(--ink-2); margin-top:2px}
+.formula b{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2); margin-right:6px}
+.status{background:rgba(255,255,255,.92); border-radius:8px; padding:4px 10px; font-size:14px; color:var(--ink-2); max-width:60ch; min-width:0}
+.status.deny{color:var(--deny); font-weight:700; border:1.5px solid var(--deny)}
+.status.good{color:var(--good)}
+.flash{position:absolute; left:50%; top:42%; transform:translate(-50%,-50%); background:#fff; color:var(--deny); border:5px solid var(--deny); border-radius:14px; padding:10px 26px; font-size:clamp(26px, 5vw, 54px); font-weight:700; letter-spacing:.04em; pointer-events:none; box-shadow:0 6px 0 rgba(200,0,30,.25)}
+.chip{position:fixed; left:0; top:0; z-index:50; pointer-events:none; width:46px; height:46px; border:2px solid var(--ink); border-radius:7px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:22px; box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.chip.e{width:16px; height:16px; border-radius:50%; background:var(--ink); border:0; box-shadow:0 0 0 3px #fff}
+
+/* ---------- save dialog ---------- */
+.modal{position:fixed; inset:0; z-index:60; background:rgba(13,17,23,.55); display:flex; align-items:center; justify-content:center; padding:16px}
+.modal .card{background:var(--board); border:2px solid var(--ink); border-radius:12px; padding:16px; max-width:min(900px, 100%); max-height:100%; overflow:auto; display:flex; flex-direction:column; gap:10px}
+.modal img{border:1px solid var(--rule); max-height:60vh; object-fit:contain; background:#fff; -webkit-user-select:auto; user-select:auto}
+.modal p{margin:0; font-size:14px; color:var(--ink-2); max-width:65ch}
+.modal .row{display:flex; gap:8px; flex-wrap:wrap}
+.modal .card.small{max-width:min(360px, 100%)}
+.qopt{font-size:22px; min-width:72px; padding:8px 14px; background:var(--metal)}
+.qopt:hover{background:#ffb000}
+.qopt sup{font-size:14px}
+body[data-mode="easy"]:not([data-btype="covalent"]) .cell.var{cursor:grab; background:var(--metal-var); border:1.5px dashed var(--ink); color:var(--ink)}
+body[data-mode="easy"]:not([data-btype="covalent"]) .cell.var:hover{transform:translateY(-2px); box-shadow:0 2px 0 var(--ink-2)}
+
+/* ---------- modes ---------- */
+.modes .btn{padding:6px 14px}
+.btn.answer{background:var(--good); border-color:var(--good); color:#fff}
+.btn.answer:hover{background:#0c6a2e}
+body[data-btype="covalent"] .cell.on.m{background:var(--off); color:var(--off-ink); border-color:var(--rule); cursor:not-allowed}
+body[data-btype="covalent"] .cell.on.m:hover{transform:none; box-shadow:none}
+body[data-mode="guided"] .legend{display:none}
+
+/* ---------- guided panel ---------- */
+.guided{background:var(--board); border:2px solid var(--good); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; flex:1 1 auto}
+.g-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px}
+.g-label{display:block; font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-2)}
+.g-formula{display:block; font-size:34px; font-weight:700; line-height:1.05}
+.g-streak{text-align:right; font-weight:700; font-size:15px; font-variant-numeric:tabular-nums; line-height:1.25}
+.g-streak span{font-weight:400; font-size:13px; color:var(--ink-2)}
+.g-steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:14px}
+.g-steps li{display:flex; gap:8px; align-items:flex-start; min-width:0}
+.g-steps li > div{min-width:0}
+.mark{flex:none; width:22px; height:22px; border-radius:50%; border:2px solid var(--rule); color:var(--off-ink); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700}
+.g-steps li.now .mark{border-color:var(--ink); background:var(--ink); color:#fff}
+.g-steps li.done .mark{border-color:var(--good); background:var(--good); color:#fff}
+.g-steps li.done strong{color:var(--good)}
+.g-note{font-size:13px; color:var(--ink-2)}
+.g-note.bad{color:var(--deny); font-weight:700}
+.chips{display:flex; flex-wrap:wrap; gap:4px; margin-top:3px}
+.chips span{border:1.5px solid var(--ink); border-radius:6px; padding:1px 7px; font-size:13px; font-weight:700; font-variant-numeric:tabular-nums}
+.chips .ok{background:var(--good); border-color:var(--good); color:#fff}
+.chips .over{background:#fff; border-color:var(--deny); color:var(--deny)}
+.g-foot{display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:auto}
+.seg.small .btn{padding:4px 8px; font-size:12px}
+.guided.solved{border-color:var(--good); box-shadow:0 0 0 3px rgba(10,122,51,.25)}
+
+@media (max-width:760px){
+  :root{--cell:clamp(15px, calc((100vw - 32px - 16px - 51px) / 18), 40px)}
+  .cell .z{display:none}
+  .side{max-width:none}
+  .brand h1{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){ .cell.on{transition:none} }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <svg width="58" height="34" viewBox="0 0 58 34" aria-hidden="true">
+      <text x="10" y="18" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#0d1117" font-family="Atkinson Hyperlegible, Arial, sans-serif">H</text>
+      <line x1="20" y1="18" x2="36" y2="18" stroke="#d10a0a" stroke-width="4" stroke-linecap="round"/>
+      <text x="46" y="18" font-size="20" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#0d1117" font-family="Atkinson Hyperlegible, Arial, sans-serif">F</text>
+      <circle cx="42" cy="4" r="2" fill="#0d1117"/><circle cx="50" cy="4" r="2" fill="#0d1117"/>
+      <circle cx="42" cy="31" r="2" fill="#0d1117"/><circle cx="50" cy="31" r="2" fill="#0d1117"/>
+      <circle cx="56" cy="14" r="2" fill="#0d1117"/><circle cx="56" cy="22" r="2" fill="#0d1117"/>
+    </svg>
+    <h1>Lewis Dot Builder</h1>
+    <div class="seg modes" role="group" aria-label="Mode">
+      <button class="btn" id="modeGuided" type="button" aria-pressed="false">Guided</button>
+      <button class="btn" id="modeEasy" type="button" aria-pressed="true">Free Draw</button>
+    </div>
+    <div class="seg modes" role="group" aria-label="Bond type">
+      <button class="btn" id="typeCov" type="button" aria-pressed="false">Covalent</button>
+      <button class="btn" id="typeIon" type="button" aria-pressed="false">Ionic</button>
+      <button class="btn" id="typeMix" type="button" aria-pressed="true">Mix</button>
+    </div>
+  </div>
+  <div class="tools">
+    <button class="btn" id="undoBtn" type="button" title="Undo (Ctrl+Z)">Undo</button>
+    <button class="btn" id="checkBtn" type="button" aria-pressed="false">Check octets</button>
+    <button class="btn" id="arrowBtn" type="button" aria-pressed="true">Arrows shown</button>
+    <button class="btn" id="clearBtn" type="button">Clear</button>
+    <button class="btn primary" id="saveBtn" type="button">Save image</button>
+  </div>
+</header>
+
+<ul class="guide">
+  <li><b>Add atom</b>Drag a colored symbol from the table into the build area.</li>
+  <li><b>Bond</b>Drag a dot onto another atom. Two nonmetals share a pair <span class="k-bond">(covalent)</span>. A metal gives its electron to a nonmetal <span class="k-ion">(ionic)</span>.</li>
+  <li><b>Break bond</b>Grab a red bond or blue arrow and pull it sideways until it snaps.</li>
+  <li><b>Electrons</b>Drag the black dot from the Electron box onto an atom to add one. Drag an atom's dot onto the table or the Electron box to remove it.</li>
+  <li><b>Remove atom</b>Drag it back onto the table.</li>
+</ul>
+
+<section class="shelf">
+  <div class="tablewrap" id="tableWrap">
+    <div class="ptable" id="ptable" aria-label="Periodic table. Drag a colored element into the build area."></div>
+  </div>
+  <div class="side">
+    <div class="reservoir" id="reservoir">
+      <div class="edot" id="eDot" tabindex="0" role="button" aria-label="Electron box: drag this electron onto an atom"></div>
+      <div class="rt"><strong>Electron box</strong><span>Add: drag this dot onto an atom.</span><span>Remove: drag an atom's dot here.</span></div>
+    </div>
+    <div class="guided" id="guided" hidden>
+      <div class="g-top">
+        <div><span class="g-label">Build</span><span class="g-formula" id="gFormula">H₂O</span><span class="g-name" id="gName"></span></div>
+        <div class="g-streak" id="gStreak">Streak 0<br><span>Best 0</span></div>
+      </div>
+      <ol class="g-steps">
+        <li id="gs1"><span class="mark">1</span><div><strong>Add the atoms</strong><div class="chips" id="gChips"></div></div></li>
+        <li id="gs2"><span class="mark">2</span><div><strong>Join them into one compound</strong><div class="g-note" id="gNote2"></div></div></li>
+        <li id="gs3"><span class="mark">3</span><div><strong>Fill every outer shell</strong><div class="g-note" id="gNote3"></div></div></li>
+        <li id="gs4"><span class="mark">4</span><div><strong>Press Check answer</strong><div class="g-note" id="gNote4"></div></div></li>
+      </ol>
+      <div class="g-foot">
+        <button class="btn" id="skipBtn" type="button">Skip</button>
+        <button class="btn primary" id="nextBtn" type="button" hidden>Next compound</button>
+      </div>
+    </div>
+    <div class="legend" aria-label="Color key">
+      <svg width="30" height="14" aria-hidden="true"><line x1="3" y1="7" x2="27" y2="7" stroke="#d10a0a" stroke-width="5" stroke-linecap="round"/></svg><span>Covalent bond (shared pair)</span>
+      <svg width="30" height="16" aria-hidden="true"><defs><marker id="lgah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0L10,5L0,10z" fill="#1a4fd6"/></marker></defs><path d="M3,13 Q15,0 25,10" stroke="#1a4fd6" stroke-width="3" fill="none" marker-end="url(#lgah)"/></svg><span>Ionic: electron transferred</span>
+      <svg width="30" height="14" aria-hidden="true"><circle cx="8" cy="7" r="5" fill="#bcc1c7" stroke="#8d939a"/><circle cx="22" cy="7" r="5" fill="#1a4fd6"/></svg><span>Electron lost (gray) · gained (blue)</span>
+      <div class="sep"></div>
+      <div class="swatch" style="background:var(--metal)"></div><span>Metal</span>
+      <div class="swatch" style="background:var(--metal-var); border-style:dashed"></div><span>Metal, pick its charge (Free Draw: Ionic or Mix)</span>
+      <div class="swatch" style="background:var(--nonmetal)"></div><span>Nonmetal</span>
+      <div class="swatch" style="background:var(--off); border-color:var(--rule)"></div><span>Not used (includes noble gases)</span>
+    </div>
+  </div>
+</section>
+
+<main class="stage" id="stage">
+  <span class="tag">Build area</span>
+  <svg id="ws" xmlns="http://www.w3.org/2000/svg" aria-label="Build area"></svg>
+  <div class="foot">
+    <div class="formula" id="formula"></div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </div>
+  <div class="flash" id="flash" hidden>NOT ALLOWED</div>
+</main>
+
+<div class="chip" id="chip" hidden></div>
+
+<div class="modal" id="chargeModal" hidden>
+  <div class="card small" role="dialog" aria-modal="true" aria-labelledby="chargeQ">
+    <strong id="chargeQ">What do you want the charge to be?</strong>
+    <div class="row" id="chargeOpts"></div>
+    <div class="row"><button class="btn" id="chargeCancel" type="button">Cancel</button></div>
+  </div>
+</div>
+
+<div class="modal" id="saveModal" hidden>
+  <div class="card" role="dialog" aria-modal="true" aria-label="Save image">
+    <strong>Save your Lewis structure</strong>
+    <img id="saveImg" alt="Picture of the Lewis structures in the build area">
+    <p>Copy image puts the picture on your clipboard and takes you back to the builder. Download PNG saves a file. If either does nothing here, right-click the picture (or press and hold on a touchscreen) and choose Copy image or Save image.</p>
+    <p id="copyNote" hidden style="color:var(--deny); font-weight:700">Copying is blocked here. Right-click the picture and choose Copy image.</p>
+    <div class="row">
+      <button class="btn primary" id="dlBtn" type="button">Download PNG</button>
+      <button class="btn" id="copyBtn" type="button">Copy image</button>
+      <button class="btn" id="closeBtn" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C = {ink:css('--ink'), bond:css('--bond'), ionic:css('--ionic'), ghost:css('--ghost'),
+  metal:css('--metal'), nonmetal:css('--nonmetal'), noble:css('--noble'),
+  good:css('--good'), warn:css('--warn'), deny:css('--deny')};
+
+/* ---------------- element data ---------------- */
+// [symbol, name, Z, period, group, category]  m=metal nm=nonmetal ng=noble gas md=metalloid x=superheavy
+const ELEMENTS = [
+ ['H','Hydrogen',1,1,1,'nm'],['He','Helium',2,1,18,'ng'],
+ ['Li','Lithium',3,2,1,'m'],['Be','Beryllium',4,2,2,'m'],['B','Boron',5,2,13,'md'],['C','Carbon',6,2,14,'nm'],['N','Nitrogen',7,2,15,'nm'],['O','Oxygen',8,2,16,'nm'],['F','Fluorine',9,2,17,'nm'],['Ne','Neon',10,2,18,'ng'],
+ ['Na','Sodium',11,3,1,'m'],['Mg','Magnesium',12,3,2,'m'],['Al','Aluminum',13,3,13,'m'],['Si','Silicon',14,3,14,'md'],['P','Phosphorus',15,3,15,'nm'],['S','Sulfur',16,3,16,'nm'],['Cl','Chlorine',17,3,17,'nm'],['Ar','Argon',18,3,18,'ng'],
+ ['K','Potassium',19,4,1,'m'],['Ca','Calcium',20,4,2,'m'],['Ga','Gallium',31,4,13,'m'],['Ge','Germanium',32,4,14,'md'],['As','Arsenic',33,4,15,'md'],['Se','Selenium',34,4,16,'nm'],['Br','Bromine',35,4,17,'nm'],['Kr','Krypton',36,4,18,'ng'],
+ ['Rb','Rubidium',37,5,1,'m'],['Sr','Strontium',38,5,2,'m'],['In','Indium',49,5,13,'off'],['Sn','Tin',50,5,14,'off'],['Sb','Antimony',51,5,15,'md'],['Te','Tellurium',52,5,16,'md'],['I','Iodine',53,5,17,'nm'],['Xe','Xenon',54,5,18,'ng'],
+ ['Cs','Cesium',55,6,1,'m'],['Ba','Barium',56,6,2,'m'],['Tl','Thallium',81,6,13,'off'],['Pb','Lead',82,6,14,'off'],['Bi','Bismuth',83,6,15,'off'],['Po','Polonium',84,6,16,'off'],['At','Astatine',85,6,17,'nm'],['Rn','Radon',86,6,18,'ng'],
+ ['Zn','Zinc',30,4,12,'m'],['Ag','Silver',47,5,11,'m'],
+ ['Fr','Francium',87,7,1,'m'],['Ra','Radium',88,7,2,'m'],['Nh','Nihonium',113,7,13,'x'],['Fl','Flerovium',114,7,14,'x'],['Mc','Moscovium',115,7,15,'x'],['Lv','Livermorium',116,7,16,'x'],['Ts','Tennessine',117,7,17,'x'],['Og','Oganesson',118,7,18,'x'],
+];
+const TRANSITION = {
+ 4:[21,'Sc Ti V Cr Mn Fe Co Ni Cu Zn'], 5:[39,'Y Zr Nb Mo Tc Ru Rh Pd Ag Cd'],
+ 6:[72,'* Hf Ta W Re Os Ir Pt Au Hg'],  7:[104,'** Rf Db Sg Bh Hs Mt Ds Rg Cn'],
+};
+const VALENCE = {1:1,2:2,13:3,14:4,15:5,16:6,17:7,18:8};
+const CATNAME = {m:'metal', nm:'nonmetal', ng:'noble gas'};
+const INFO = {};
+const V_OVERRIDE = {He:2, Zn:2, Ag:1};   // Zn and Ag each form only one ion: Zn²⁺, Ag⁺
+for (const [sym,name,z,p,g,cat] of ELEMENTS) INFO[sym] = {sym,name,z,p,g,cat,v: V_OVERRIDE[sym] || VALENCE[g]};
+// Metals with a charge the student picks (Free Draw + Ionic only). [name, common charges]
+const VAR = {
+  Sc:['Scandium',[3]], Ti:['Titanium',[2,3,4]], V:['Vanadium',[2,3,4,5]], Cr:['Chromium',[2,3,6]], Mn:['Manganese',[2,3,4,7]],
+  Fe:['Iron',[2,3]], Co:['Cobalt',[2,3]], Ni:['Nickel',[2,3]], Cu:['Copper',[1,2]],
+  Y:['Yttrium',[3]], Zr:['Zirconium',[4]], Nb:['Niobium',[3,5]], Mo:['Molybdenum',[4,6]], Ru:['Ruthenium',[3,4]], Rh:['Rhodium',[3]], Pd:['Palladium',[2,4]], Cd:['Cadmium',[2]],
+  Hf:['Hafnium',[4]], Ta:['Tantalum',[5]], W:['Tungsten',[4,6]], Re:['Rhenium',[4,7]], Os:['Osmium',[4]], Ir:['Iridium',[3,4]], Pt:['Platinum',[2,4]], Au:['Gold',[1,3]], Hg:['Mercury',[1,2]],
+  Sn:['Tin',[2,4]], Pb:['Lead',[2,4]],
+};
+const ELSET = new Set(ELEMENTS.map(e => e[0]));
+for (const [sym,[name]] of Object.entries(VAR)) if (!INFO[sym]) INFO[sym] = {sym, name, cat:'off', v:0};
+const isMetalEl = e => INFO[e].cat === 'm' || !!VAR[e];
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+const varOn = () => mode === 'easy' && btype !== 'covalent';
+
+/* ---------------- state ---------------- */
+let S = {atoms:[], bonds:[], xfers:[], nid:1};
+const undoStack = [];
+let checking=false, showArrows=true, mode='easy', btype='mix';   // mode: 'easy' = Free Draw, 'guided'
+let W=800, H=500, drag=null, raf=0;
+
+const A = id => S.atoms.find(a => a.id === id);
+const catOf = a => a.vc ? 'm' : INFO[a.el].cat;          // a.vc = charge picked for a variable-charge metal
+const capOf = a => (a.el==='H' || a.el==='He') ? 2 : 8;
+const bondsOf = id => S.bonds.filter(b => b.a===id || b.b===id);
+const Bsum = id => bondsOf(id).reduce((s,b) => s + b.order, 0);
+const ghostsOf = id => S.xfers.filter(x => x.from===id);
+const recvOf = id => S.xfers.filter(x => x.to===id);
+const layoutCount = a => a.n + ghostsOf(a.id).length;            // real dots + gray "lost" dots
+const total = a => 2*Bsum(a.id) + layoutCount(a);                  // electrons drawn around the atom
+const own = a => 2*Bsum(a.id) + a.n;                               // electrons the atom actually has around it
+const valOf = a => a.vc || INFO[a.el].v;
+const charge = a => valOf(a) - a.n - Bsum(a.id);               // ion charge / formal charge
+const unpairedFor = (count,B,cap) => Math.max(0, Math.min(count, cap - 2*B - count));
+const unpaired = a => unpairedFor(a.n, Bsum(a.id), capOf(a));
+const bondBetween = (i,j) => S.bonds.find(b => (b.a===i&&b.b===j) || (b.a===j&&b.b===i));
+const partnerOf = (b,id) => b.a===id ? b.b : b.a;
+
+/* ---------------- text measuring ---------------- */
+const mctx = document.createElement('canvas').getContext('2d');
+let wcache = {};
+function halfW(el){
+  if (wcache[el] == null){
+    mctx.font = '700 32px "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif';
+    wcache[el] = Math.max(9, mctx.measureText(el).width / 2);
+  }
+  return wcache[el];
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { wcache = {}; render(); });
+
+/* ---------------- dot layout ---------------- */
+const SIDES = ['top','right','bottom','left'];
+const SIDE_ANG = {right:0, bottom:90, left:180, top:-90};
+const angDiff = (a,b) => { let d = Math.abs(a-b) % 360; return d > 180 ? 360-d : d; };
+
+function assignSides(a, parts){
+  const res = {}; const k = Math.min(parts.length, 4); if (!k) return res;
+  const angs = parts.slice(0,k).map(p => Math.atan2(p.y-a.y, p.x-a.x) * 180 / Math.PI);
+  let best = null, bc = Infinity;
+  (function rec(i, cost, pick){
+    if (cost >= bc) return;
+    if (i === k){ bc = cost; best = pick.slice(); return; }
+    for (const s of SIDES){
+      if (pick.includes(s)) continue;
+      const d = angDiff(angs[i], SIDE_ANG[s]);
+      pick.push(s); rec(i+1, cost + d*d, pick); pick.pop();
+    }
+  })(0, 0, []);
+  parts.slice(0,k).forEach((p,i) => res[p.id] = best[i]);
+  return res;
+}
+
+// Dots fill one per side (top, right, bottom, left) then pair up. Sides facing a bond partner stay clear.
+function layout(a){
+  const hw = halfW(a.el), dx = hw + 10, dy = 24;
+  const parts = [...new Set(bondsOf(a.id).map(b => partnerOf(b, a.id)))].map(A);
+  const sideOf = assignSides(a, parts);
+  const used = new Set(Object.values(sideOf));
+  const free = SIDES.filter(s => !used.has(s));
+  const count = layoutCount(a);
+  let u = unpairedFor(count, Bsum(a.id), capOf(a));
+  let p = (count - u) / 2;
+  while (p + u > free.length && u >= 2){ u -= 2; p += 1; }
+  const groups = free.slice(0, p + u);
+  const pos = (side, off) => side==='top' ? [off,-dy] : side==='bottom' ? [off,dy] : side==='left' ? [-dx,off] : [dx,off];
+  const slots = [];
+
+  // Ions: put the lost (gray) and gained (blue) electrons on the side facing the partner ion.
+  const xs = ghostsOf(a.id).map(x => ({x, partner:A(x.to), kind:'ghost'}))
+    .concat(recvOf(a.id).map(x => ({x, partner:A(x.from), kind:'gain'})));
+  if (xs.length && free.length){
+    const need = {}; free.forEach(s => need[s] = 0);
+    for (const t of xs){
+      const ang = Math.atan2(t.partner.y - a.y, t.partner.x - a.x) * 180 / Math.PI;
+      const near = free.slice().sort((s1,s2) => angDiff(ang, SIDE_ANG[s1]) - angDiff(ang, SIDE_ANG[s2]));
+      t.side = near.find(s => need[s] < 2) || near[0];
+      need[t.side]++;
+    }
+    const ordered = free.slice().sort((s1,s2) => need[s2] - need[s1]);
+    const sizes = Array(p).fill(2).concat(Array(u).fill(1));
+    const cnt = {}; ordered.forEach((s,i) => cnt[s] = sizes[i] || 0);
+    for (const s of ordered){
+      while (need[s] > cnt[s]){
+        const donor = ordered.slice().reverse().find(d => d !== s && cnt[d] > need[d]);
+        if (!donor) break;
+        cnt[donor]--; cnt[s]++;
+      }
+    }
+    for (const s of free){
+      if (cnt[s] === 2){ for (const off of [-7, 7]){ const [x,y] = pos(s, off); slots.push({x:a.x+x, y:a.y+y, side:s, kind:'real'}); } }
+      else if (cnt[s] === 1){ const [x,y] = pos(s, 0); slots.push({x:a.x+x, y:a.y+y, side:s, kind:'real'}); }
+    }
+    for (const t of xs){
+      const onSide = slots.filter(s => s.side === t.side && s.kind === 'real');
+      const s = onSide[onSide.length - 1] || slots.filter(q => q.kind === 'real').pop();
+      if (s){ s.kind = t.kind; s.xfer = t.x.id; }
+    }
+    slots.forEach((s,i) => s.i = i);
+    return {hw, dx, dy, slots, sideOf};
+  }
+
+  groups.forEach((s,i) => { const [x,y] = pos(s, i < p ? -7 : 0); slots.push({x:a.x+x, y:a.y+y, side:s}); });
+  groups.slice(0,p).forEach(s => { const [x,y] = pos(s, 7); slots.push({x:a.x+x, y:a.y+y, side:s}); });
+  const gh = new Map(ghostsOf(a.id).map(x => [x.slot, x]));
+  slots.forEach((s,i) => { s.i = i; if (gh.has(i)){ s.kind='ghost'; s.xfer=gh.get(i).id; } else s.kind='real'; });
+  const real = slots.filter(s => s.kind==='real');
+  const rv = recvOf(a.id), k = rv.length;
+  rv.forEach((x,j) => { const s = real[real.length - k + j]; if (s){ s.kind='gain'; s.xfer=x.id; } });
+  return {hw, dx, dy, slots, sideOf};
+}
+
+/* ---------------- rules ---------------- */
+function judge(a, b){
+  const ca = catOf(a), cb = catOf(b);
+  if (ca==='ng' || cb==='ng'){
+    const g = ca==='ng' ? a : b;
+    return {ok:false, msg:`${INFO[g.el].name} is a noble gas. It already has a full shell and does not bond here.`};
+  }
+  if (btype === 'ionic' && ca !== 'm' && cb !== 'm')
+    return {ok:false, msg:`Ionic is selected, so covalent bonds are off. Drag a metal's dot onto a nonmetal, or choose Covalent or Mix.`};
+  if (btype === 'covalent' && (ca === 'm' || cb === 'm'))
+    return {ok:false, msg:`Covalent is selected, so ionic bonds are off. Choose Ionic or Mix to use metals.`};
+  if (ca==='m' && cb==='m') return {ok:false, msg:`${a.el} and ${b.el} are both metals. Metal–metal bonding is not modeled here.`};
+  if (ca==='nm' && cb==='m') return {ok:false, msg:`Electrons move from the metal to the nonmetal. Drag a dot from ${b.el} onto ${a.el} instead.`};
+  if (ca==='m'){
+    if (own(b) + 1 > capOf(b)) return {ok:false, msg:`${b.el} already has a full ${capOf(b)===2?'shell (2 electrons)':'octet (8 electrons)'}.`};
+    return {ok:true, kind:'ionic'};
+  }
+  const bd = bondBetween(a.id, b.id);
+  if (bd && bd.order >= 3) return {ok:false, msg:`${a.el} and ${b.el} already share a triple bond, the most two atoms can share.`};
+  const normalOk = unpaired(b) >= 1 && own(a) + 1 <= capOf(a) && own(b) + 1 <= capOf(b);
+  if (normalOk) return {ok:true, kind:'covalent'};
+  const plainH = z => z.el === 'H' && z.n === 1 && Bsum(z.id) === 0;
+  const full = plainH(b) ? a : plainH(a) ? b : null;
+  if (full && full.el !== 'H' && own(full) === capOf(full) && Bsum(full.id) > 0)
+    return {ok:false, msg:`${full.el} already has 8 electrons. First drag one of ${full.el}'s dots onto the periodic table (${full.el} becomes ${full.el}⁺), then bond the H.`};
+  if (unpaired(b) < 1) return {ok:false, msg:`${b.el} has no unpaired electron to share.`};
+  if (own(a) + 1 > capOf(a)) return {ok:false, msg:`${a.el} would have more than ${capOf(a)} electrons around it.`};
+  if (own(b) + 1 > capOf(b)) return {ok:false, msg:`${b.el} would have more than ${capOf(b)} electrons around it.`};
+  return {ok:true, kind:'covalent'};
+}
+
+function addAtom(el, x, y, vc){
+  const a = {id:S.nid++, el, x, y, n: vc || INFO[el].v};
+  if (vc) a.vc = vc;
+  S.atoms.push(a); return a;
+}
+function dropXfer(x){            // electron leaves the system: arrow + gray dot disappear, metal keeps its charge
+  S.xfers = S.xfers.filter(y => y !== x);
+  for (const y of ghostsOf(x.from)) if (y.slot > x.slot) y.slot--;
+}
+function normalize(){
+  for (const a of S.atoms){
+    let rv = recvOf(a.id);
+    while (rv.length > a.n){ dropXfer(rv[rv.length-1]); rv = recvOf(a.id); }
+  }
+}
+function doBond(a, slot, b){
+  const j = judge(a, b);
+  if (!j.ok){ deny(j.msg, b.id); return false; }
+  pushUndo();
+  if (j.kind === 'ionic'){
+    S.xfers.push({id:S.nid++, from:a.id, to:b.id, slot});
+    a.n--; b.n++;
+    say(`Ionic: ${a.el} gave an electron to ${b.el}. Now ${a.el}${supCharge(charge(a))} and ${b.el}${supCharge(charge(b))}.`, 'good');
+    sfx('ionic');
+  } else {
+    let bd = bondBetween(a.id, b.id);
+    if (!bd){ bd = {id:S.nid++, a:a.id, b:b.id, order:0, units:[]}; S.bonds.push(bd); }
+    if (j.kind === 'proton'){
+      const h = j.h, d = j.donor;
+      if (bd.a !== d.id && bd.b !== d.id){ S.bonds.pop(); bd = {id:S.nid++, a:d.id, b:h.id, order:0, units:[]}; S.bonds.push(bd); }
+      h.n = 0; bd.order++; bd.units.push(d.id); d.n -= 2;
+      say(`H lost its electron to become H⁺. ${d.el} then gave both electrons of a lone pair to H⁺ (coordinate bond).`, 'good');
+      sfx('dative');
+      normalize(); return true;
+    }
+    bd.order++;
+    if (j.kind === 'dative'){
+      bd.units.push(a.id); a.n -= 2;
+      say(`Coordinate bond: ${a.el} gave both electrons of a lone pair to ${b.el}.`, 'good');
+      sfx('dative');
+    } else {
+      bd.units.push(null); a.n--; b.n--;
+      say(`Covalent: ${a.el} and ${b.el} now share a ${['','single','double','triple'][bd.order]} bond.`, 'good');
+      sfx('bond');
+    }
+  }
+  normalize();
+  return true;
+}
+function breakBond(id){
+  const b = S.bonds.find(x => x.id===id); if (!b) return;
+  pushUndo();
+  const u = (b.units || []).pop();
+  b.order--;
+  if (u){ A(u).n += 2; say(`Coordinate bond broken. ${A(u).el} took back its lone pair.`); }
+  else { A(b.a).n++; A(b.b).n++; say(`Bond broken. ${A(b.a).el} and ${A(b.b).el} each took back one electron.`); }
+  if (b.order <= 0) S.bonds = S.bonds.filter(x => x !== b);
+  sfx('crack');
+}
+function reverseXfer(id){
+  const x = S.xfers.find(y => y.id===id); if (!x) return;
+  pushUndo();
+  const m = A(x.from), t = A(x.to);
+  S.xfers = S.xfers.filter(y => y !== x);   // gray dot on the metal becomes real again
+  m.n++; t.n--;
+  say(`Transfer undone. The electron went back from ${t.el} to ${m.el}.`);
+  sfx('unionic');
+}
+function deleteAtom(id){
+  for (const b of bondsOf(id)){
+    const o = A(partnerOf(b,id)); if (!o) continue;
+    for (const u of (b.units || [])) o.n += u == null ? 1 : (u === o.id ? 2 : 0);
+  }
+  S.bonds = S.bonds.filter(b => b.a!==id && b.b!==id);
+  for (const x of S.xfers.filter(x => x.from===id)){ const t = A(x.to); if (t) t.n -= 1; }
+  for (const x of S.xfers.filter(x => x.to===id)){ const m = A(x.from); if (m) m.n += 1; }
+  S.xfers = S.xfers.filter(x => x.from!==id && x.to!==id);
+  S.atoms = S.atoms.filter(a => a.id!==id);
+}
+function removeElectron(id, slotIdx){
+  const a = A(id); const s = layout(a).slots[slotIdx];
+  if (!s || s.kind==='ghost') return;
+  pushUndo();
+  if (s.kind === 'gain'){ dropXfer(S.xfers.find(x => x.id===s.xfer)); }
+  else { for (const x of ghostsOf(id)) if (x.slot > slotIdx) x.slot--; }
+  a.n--;
+  normalize();
+  const q = charge(a);
+  say(`Removed an electron from ${a.el}.${q ? ` It is now ${a.el}${supCharge(q)}.` : ''}`);
+  sfx('eDown');
+}
+function addElectron(id){
+  const a = A(id);
+  if (total(a) + 1 > capOf(a)){ deny(`${a.el} already has ${capOf(a)} electrons around it.`, id); return; }
+  pushUndo();
+  a.n++;
+  const q = charge(a);
+  say(`Added an electron to ${a.el}.${q ? ` It is now ${a.el}${supCharge(q)}.` : ''}`);
+  sfx('eUp');
+}
+function molecule(id){
+  const seen = new Set([id]), q = [id];
+  while (q.length){ const c = q.pop(); for (const b of bondsOf(c)){ const o = partnerOf(b,c); if (!seen.has(o)){ seen.add(o); q.push(o); } } }
+  return [...seen];
+}
+
+/* ---------------- undo ---------------- */
+function snapshot(){ return JSON.stringify(S); }
+function pushUndo(snap){
+  undoStack.push(snap || snapshot());
+  if (undoStack.length > 150) undoStack.shift();
+  setChecking(false);
+  $('#undoBtn').disabled = false;
+}
+function undo(){
+  if (!undoStack.length) return;
+  S = JSON.parse(undoStack.pop());
+  setChecking(false);
+  $('#undoBtn').disabled = !undoStack.length;
+  say('Undone.'); render();
+}
+
+/* ---------------- feedback ---------------- */
+let sayTimer = 0, flashTimer = 0, ac = null, shakeId = null, shakeTimer = 0;
+function say(msg, kind){
+  const el = $('#status'); el.textContent = msg; el.className = 'status' + (kind ? ' ' + kind : '');
+  clearTimeout(sayTimer); sayTimer = setTimeout(() => { el.textContent = ''; el.className = 'status'; }, kind==='deny' ? 6000 : 4500);
+}
+function deny(msg, atomId){
+  say(msg, 'deny');
+  const f = $('#flash'); f.hidden = false;
+  clearTimeout(flashTimer); flashTimer = setTimeout(() => { f.hidden = true; }, 500);
+  buzz();
+  if (atomId != null){ shakeId = atomId; clearTimeout(shakeTimer); shakeTimer = setTimeout(() => { shakeId = null; render(); }, 500); }
+}
+function audioInit(){
+  try {
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+  } catch (e) { ac = null; }
+}
+function buzz(){
+  if (!ac) return;
+  try {
+    const t = ac.currentTime;
+    [[0, 160], [0.2, 120]].forEach(([d, f]) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'square'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t+d);
+      g.gain.exponentialRampToValueAtTime(0.16, t+d+0.02);
+      g.gain.setValueAtTime(0.16, t+d+0.16);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+d+0.22);
+      o.connect(g); g.connect(ac.destination); o.start(t+d); o.stop(t+d+0.24);
+    });
+  } catch (e) {}
+}
+
+let noiseBuf = null;
+function tone(f0, f1, dur, type, vol, delay){
+  const t = ac.currentTime + (delay || 0), o = ac.createOscillator(), g = ac.createGain();
+  o.type = type || 'sine';
+  o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.15, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + dur + 0.02);
+}
+function noise(dur, f0, f1, vol, ftype, delay){
+  if (!noiseBuf){
+    noiseBuf = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
+    const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2 - 1;
+  }
+  const t = ac.currentTime + (delay || 0), src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  src.buffer = noiseBuf; f.type = ftype || 'bandpass'; f.Q.value = 1.1;
+  f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f); f.connect(g); g.connect(ac.destination); src.start(t); src.stop(t + dur + 0.02);
+}
+const SFX = {
+  place:     () => tone(560, 240, 0.11, 'sine', 0.22),
+  bond:      () => { tone(660, 660, 0.06, 'triangle', 0.18); tone(990, 990, 0.14, 'triangle', 0.16, 0.06); },
+  dative:    () => { tone(523, 523, 0.07, 'triangle', 0.16); tone(659, 659, 0.07, 'triangle', 0.16, 0.07); tone(988, 988, 0.16, 'triangle', 0.15, 0.14); },
+  ionic:     () => { noise(0.38, 300, 3200, 0.28); tone(300, 950, 0.32, 'sine', 0.08); },
+  unionic:   () => { noise(0.32, 3200, 300, 0.25); tone(950, 300, 0.28, 'sine', 0.07); },
+  crack:     () => { noise(0.09, 2600, 1800, 0.45, 'highpass'); tone(520, 110, 0.17, 'square', 0.07); },
+  eUp:       () => tone(880, 1480, 0.08, 'sine', 0.18),
+  eDown:     () => tone(1480, 760, 0.08, 'sine', 0.18),
+  swish:     () => noise(0.28, 2200, 180, 0.3),
+  chime:     () => [523, 659, 784].forEach((f, i) => tone(f, f, 0.3, 'sine', 0.15, i * 0.09)),
+  incomplete:() => { tone(330, 330, 0.15, 'triangle', 0.16); tone(247, 247, 0.24, 'triangle', 0.16, 0.16); },
+  fanfare:   () => [523, 659, 784, 1047].forEach((f, i) => tone(f, f, i === 3 ? 0.5 : 0.14, 'square', 0.07, i * 0.12)),
+  wrong:     () => { tone(220, 200, 0.18, 'sawtooth', 0.08); tone(180, 150, 0.3, 'sawtooth', 0.08, 0.18); },
+};
+function sfx(name){ if (!ac) return; try { SFX[name](); } catch (e) {} }
+
+/* ---------------- text helpers ---------------- */
+const SUB = '₀₁₂₃₄₅₆₇₈₉', SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sub = n => String(n).split('').map(d => SUB[d]).join('');
+const supCharge = q => !q ? '' : (Math.abs(q) === 1 ? '' : String(Math.abs(q)).split('').map(d => SUP[d]).join('')) + (q > 0 ? '⁺' : '⁻');
+const chargeText = q => (Math.abs(q) === 1 ? '' : Math.abs(q)) + (q > 0 ? '+' : '−');
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* ---------------- formulas ---------------- */
+const ORDER = ['Fr','Cs','Rb','K','Na','Li','Ra','Ba','Sr','Ca','Mg','Be','Ag','Zn','Tl','In','Ga','Al','Pb','Sn','Bi','Po',
+               'Rn','Xe','Kr','Ar','Ne','He','C','P','N','H','Se','S','At','I','Br','Cl','O','F'];
+function groupsOfAtoms(){
+  const parent = {}; S.atoms.forEach(a => parent[a.id] = a.id);
+  const find = x => parent[x]===x ? x : (parent[x] = find(parent[x]));
+  const join = (x,y) => { parent[find(x)] = find(y); };
+  S.bonds.forEach(b => join(b.a, b.b)); S.xfers.forEach(x => join(x.from, x.to));
+  const g = {}; S.atoms.forEach(a => (g[find(a.id)] ||= []).push(a)); return Object.values(g);
+}
+function orderEls(cnt){
+  const els = Object.keys(cnt);
+  const hasMetal = els.some(isMetalEl);
+  if (cnt.C && !hasMetal) els.sort((x,y) => { const r = e => e==='C' ? 0 : e==='H' ? 1 : 2; return r(x)-r(y) || x.localeCompare(y); });
+  else els.sort((x,y) => ORDER.indexOf(x) - ORDER.indexOf(y));
+  return els;
+}
+function formulaOf(list){
+  const cnt = {}; let q = 0;
+  for (const a of list){ cnt[a.el] = (cnt[a.el]||0) + 1; q += charge(a); }
+  return orderEls(cnt).map(e => e + (cnt[e] > 1 ? sub(cnt[e]) : '')).join('') + supCharge(q);
+}
+
+/* ---------------- names: simple binary ionic, binary covalent (prefixes), single atoms and ions ---------------- */
+const ROOT = {H:'hydr', C:'carb', N:'nitr', O:'ox', F:'fluor', P:'phosph', S:'sulf', Cl:'chlor', Se:'selen', Br:'brom', I:'iod', At:'astat'};
+const PREFIX = ['', 'mono', 'di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa', 'nona', 'deca'];
+const lname = e => INFO[e].name.toLowerCase();
+const ideName = e => ROOT[e] ? ROOT[e] + 'ide' : lname(e);
+const capFirst = t => t ? t[0].toUpperCase() + t.slice(1) : t;
+function withPrefix(n, word, keepMono){
+  let p = (n === 1 && !keepMono) ? '' : (PREFIX[n] || '');
+  if (p && /[ao]$/.test(p) && /^o/.test(word)) p = p.slice(0, -1);      // mono + oxide -> monoxide
+  return p + word;
+}
+function nameOfCounts(cnt, q){
+  const els = orderEls(cnt);
+  if (els.length >= 3) return 'Too complicated';
+  if (els.length === 1){
+    const e = els[0], n = cnt[e];
+    if (n === 1) return q === 0 ? capFirst(lname(e)) : capFirst(q < 0 ? ideName(e) : lname(e)) + ' ion';
+    if (q !== 0) return '';
+    return capFirst(n === 2 ? lname(e) : withPrefix(n, lname(e), true));
+  }
+  if (q !== 0) return '';                                                // polyatomic ions are not named
+  const metal = els.find(isMetalEl);
+  if (metal){
+    const other = els.find(e => e !== metal);
+    return isMetalEl(other) ? '' : capFirst(lname(metal) + ' ' + ideName(other));
+  }
+  const [a, b] = els;
+  return capFirst(withPrefix(cnt[a], lname(a), false) + ' ' + withPrefix(cnt[b], ideName(b), true));
+}
+function nameOf(list){
+  const cnt = {}; let q = 0;
+  for (const a of list){ cnt[a.el] = (cnt[a.el]||0) + 1; q += charge(a); }
+  let name = nameOfCounts(cnt, q);
+  const vm = list.filter(a => a.vc);
+  if (vm.length && name && name !== 'Too complicated' && (list.length > 1 || q !== 0)){
+    const same = vm.every(a => a.el === vm[0].el && a.vc === vm[0].vc);
+    const base = capFirst(lname(vm[0].el));
+    name = same ? name.replace(base, `${base}(${ROMAN[vm[0].vc]})`) : '';
+  }
+  return name;
+}
+function updateFormula(){
+  const el = $('#formula');
+  if (!S.atoms.length){ el.innerHTML = '<b>Formula · Name</b>Drag an element down to start.'; return; }
+  const tally = new Map();
+  groupsOfAtoms().sort((a,b) => Math.min(...a.map(x=>x.x)) - Math.min(...b.map(x=>x.x)))
+    .forEach(g => { const f = formulaOf(g); const t = tally.get(f) || {n:0, name:nameOf(g)}; t.n++; tally.set(f, t); });
+  el.innerHTML = '<b>Formula · Name</b>' + [...tally].map(([f,t]) =>
+    `<span class="fx">${esc(f)}${t.n > 1 ? ` ×${t.n}` : ''}</span>${t.name ? ` <span class="nm${t.name === 'Too complicated' ? ' tc' : ''}">${esc(t.name)}</span>` : ''}`
+  ).join('<span class="sepdot">·</span>');
+}
+
+/* ---------------- drawing ---------------- */
+function ellR(hw, ux, uy){ const rx = hw + 5, ry = 17; return 1 / Math.sqrt((ux/rx)**2 + (uy/ry)**2); }
+const toward = (p, q, d) => { const dx = q.x-p.x, dy = q.y-p.y, l = Math.hypot(dx,dy) || 1; return {x:p.x+dx/l*d, y:p.y+dy/l*d}; };
+const f1 = v => Math.round(v*10)/10;
+
+// Pick the curve (above or below, normal or wider) that stays clearest of symbols and dots.
+function arrowCtrl(gs, ts, L, fromId, toId){
+  const mx = (gs.x+ts.x)/2, my = (gs.y+ts.y)/2, dx = ts.x-gs.x, dy = ts.y-gs.y, len = Math.hypot(dx,dy) || 1;
+  let nx = -dy/len, ny = dx/len; if (ny > 0){ nx = -nx; ny = -ny; }   // "up" side first
+  const base = Math.min(70, len*0.3) + 12;
+  const dots = [], labels = [];
+  for (const a of S.atoms){
+    for (const s of L[a.id].slots) if (s !== gs && s !== ts) dots.push({x:s.x, y:s.y, id:a.id});
+    if (charge(a) !== 0) labels.push({x:a.x + L[a.id].hw + 18, y:a.y - 21, id:a.id});   // charge label at upper right
+  }
+  let best = null, bestCost = Infinity;
+  [[1,1],[-1,1],[1,1.7],[-1,1.7],[1,2.4],[-1,2.4]].forEach(([side, k], idx) => {
+    const c = {x:mx+nx*base*k*side, y:my+ny*base*k*side};
+    let cost = idx * 0.01;                                              // tie-break: prefer up, then tighter
+    for (let t = 0.06; t <= 0.94; t += 0.03){
+      const u = 1-t, px = u*u*gs.x + 2*u*t*c.x + t*t*ts.x, py = u*u*gs.y + 2*u*t*c.y + t*t*ts.y;
+      for (const a of S.atoms){
+        const hw = L[a.id].hw, e = ((px-a.x)/(hw+10))**2 + ((py-a.y)/22)**2;
+        if (e < 1) cost += (1-e) * 12;
+      }
+      const own = q => (q.id === fromId && t < 0.25) || (q.id === toId && t > 0.75);   // leaving/arriving at its own ions
+      for (const s of dots){ if (own(s)) continue; const d = Math.hypot(px-s.x, py-s.y); if (d < 11) cost += (11-d); }
+      for (const g of labels) if (!own(g) && Math.abs(px-g.x) < 17 && Math.abs(py-g.y) < 13) cost += 8;
+    }
+    if (cost < bestCost){ bestCost = cost; best = c; }
+  });
+  return best;
+}
+
+function svgBody(exp){
+  const FF = exp ? ' font-family="Arial, Helvetica, sans-serif"' : '';
+  const L = {}; S.atoms.forEach(a => L[a.id] = layout(a));
+  const o = [];
+  o.push(`<defs><marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${C.ionic}"/></marker></defs>`);
+
+  // covalent bonds
+  for (const b of S.bonds){
+    const a1 = A(b.a), a2 = A(b.b);
+    const pull = (!exp && drag && drag.kind==='bond' && drag.id===b.id && drag.moved) ? drag.pt : null;
+    const dx = a2.x-a1.x, dy = a2.y-a1.y, len = Math.hypot(dx,dy) || 1, ux = dx/len, uy = dy/len, nx = -uy, ny = ux;
+    const r1 = ellR(L[a1.id].hw, ux, uy), r2 = ellR(L[a2.id].hw, ux, uy);
+    const offs = b.order===1 ? [0] : b.order===2 ? [-5,5] : [-9,0,9];
+    for (const of of offs){
+      const x1 = a1.x+ux*r1+nx*of, y1 = a1.y+uy*r1+ny*of, x2 = a2.x-ux*r2+nx*of, y2 = a2.y-uy*r2+ny*of;
+      if (pull){
+        const cx = 2*pull.x-(x1+x2)/2, cy = 2*pull.y-(y1+y2)/2;
+        o.push(`<path d="M${f1(x1)},${f1(y1)} Q${f1(cx)},${f1(cy)} ${f1(x2)},${f1(y2)}" stroke="${C.bond}" stroke-width="5" stroke-linecap="round" fill="none" stroke-dasharray="10 6"/>`);
+      } else if (len > r1 + r2 + 2){
+        o.push(`<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${C.bond}" stroke-width="5" stroke-linecap="round"/>`);
+      }
+    }
+    if (!exp) o.push(`<line data-kind="bond" data-id="${b.id}" x1="${f1(a1.x)}" y1="${f1(a1.y)}" x2="${f1(a2.x)}" y2="${f1(a2.y)}" stroke="rgba(0,0,0,0)" stroke-width="26"/>`);
+  }
+
+  // ionic transfer arrows
+  if (showArrows) for (const x of S.xfers){
+    const gs = L[x.from] && L[x.from].slots.find(s => s.kind==='ghost' && s.xfer===x.id);
+    const ts = L[x.to] && L[x.to].slots.find(s => s.kind==='gain' && s.xfer===x.id);
+    if (!gs || !ts) continue;
+    const pull = (!exp && drag && drag.kind==='arrow' && drag.id===x.id && drag.moved) ? drag.pt : null;
+    let ctrl;
+    if (pull) ctrl = {x:2*pull.x-(gs.x+ts.x)/2, y:2*pull.y-(gs.y+ts.y)/2};
+    else ctrl = arrowCtrl(gs, ts, L, x.from, x.to);
+    const s = toward(gs, ctrl, 8), e = toward(ts, ctrl, 12);
+    const d = `M${f1(s.x)},${f1(s.y)} Q${f1(ctrl.x)},${f1(ctrl.y)} ${f1(e.x)},${f1(e.y)}`;
+    o.push(`<path d="${d}" stroke="${C.ionic}" stroke-width="3" fill="none" marker-end="url(#ah)"${pull ? ' stroke-dasharray="8 5"' : ''}/>`);
+    if (!exp) o.push(`<path data-kind="arrow" data-id="${x.id}" d="${d}" stroke="rgba(0,0,0,0)" stroke-width="22" fill="none"/>`);
+  }
+
+  // atoms (the one being dragged is drawn on top)
+  const order = S.atoms.slice();
+  if (drag && drag.kind==='atom'){ const ids = drag.offs.map(q => q.id); order.sort((p,q) => ids.includes(p.id) - ids.includes(q.id)); }
+  for (const a of order){
+    const l = L[a.id], q = charge(a), cov = bondsOf(a.id).length > 0, cat = catOf(a);
+    const tint = cat==='m' ? C.metal : cat==='ng' ? C.noble : C.nonmetal;
+    const sx = (shakeId===a.id && !exp) ? 4 : 0;
+    o.push(`<g${exp ? '' : ` data-kind="atom" data-id="${a.id}"`}${sx ? ` class="shake"` : ''}>`);
+    o.push(`<ellipse cx="${f1(a.x)}" cy="${f1(a.y)}" rx="${f1(l.hw+9)}" ry="21" fill="${tint}" fill-opacity=".5"/>`);
+    o.push(`<text x="${f1(a.x)}" y="${f1(a.y+1)}" font-size="32" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="${C.ink}"${FF}>${a.el}</text>`);
+    if (!cov && q !== 0){
+      o.push(`<text x="${f1(a.x+l.hw+6)}" y="${f1(a.y-14)}" font-size="20" font-weight="700" fill="${C.ink}"${FF}>${chargeText(q)}</text>`);
+    } else if (cov && q !== 0){
+      const cx = a.x + l.hw + 13, cy = a.y - 23;
+      o.push(`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="10" fill="#fff" stroke="${C.ink}" stroke-width="1.6"/>`);
+      o.push(`<text x="${f1(cx)}" y="${f1(cy+0.5)}" font-size="${Math.abs(q)>1?11:15}" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="${C.ink}"${FF}>${chargeText(q)}</text>`);
+    }
+    for (const s of l.slots){
+      if (s.kind === 'ghost') o.push(`<circle cx="${f1(s.x)}" cy="${f1(s.y)}" r="4.6" fill="${C.ghost}" stroke="#8d939a" stroke-width="1"/>`);
+      else o.push(`<circle cx="${f1(s.x)}" cy="${f1(s.y)}" r="${s.kind==='gain'?5:4.6}" fill="${s.kind==='gain' ? C.ionic : C.ink}"/>`);
+    }
+    if (!exp) for (const s of l.slots) if (s.kind !== 'ghost')
+      o.push(`<circle data-kind="dot" data-id="${a.id}" data-slot="${s.i}" cx="${f1(s.x)}" cy="${f1(s.y)}" r="12" fill="rgba(0,0,0,0)"/>`);
+    o.push('</g>');
+  }
+
+  if (exp) return o.join('');
+
+  // octet check rings
+  if (checking) for (const a of S.atoms){
+    const l = L[a.id], have = own(a), cap = capOf(a);
+    const done = have === cap || (catOf(a)==='m' && a.n === 0 && Bsum(a.id) === 0);
+    const col = done ? C.good : C.warn;
+    o.push(`<ellipse cx="${f1(a.x)}" cy="${f1(a.y)}" rx="${f1(l.dx+20)}" ry="${f1(l.dy+17)}" fill="none" stroke="${col}" stroke-width="3"${done ? '' : ' stroke-dasharray="7 5"'} pointer-events="none"/>`);
+    const label = done ? (have === 0 ? '✓ full shell' : `✓ ${have}`) : `${have}/${cap}`;
+    o.push(`<text x="${f1(a.x)}" y="${f1(a.y+l.dy+33)}" font-size="15" font-weight="700" text-anchor="middle" fill="${col}" pointer-events="none">${label}</text>`);
+  }
+
+  // live drag feedback
+  if (drag && (drag.kind==='dot' || drag.kind==='res') && drag.pt){
+    if (drag.kind === 'dot'){
+      const src = A(drag.id), s = src && L[src.id].slots[drag.slot];
+      if (s){
+        o.push(`<line x1="${f1(s.x)}" y1="${f1(s.y)}" x2="${f1(drag.pt.x)}" y2="${f1(drag.pt.y)}" stroke="${C.bond}" stroke-width="5" stroke-linecap="round" pointer-events="none"/>`);
+        o.push(`<circle cx="${f1(drag.pt.x)}" cy="${f1(drag.pt.y)}" r="6.5" fill="${C.ink}" pointer-events="none"/>`);
+      }
+    }
+    const tgt = drag.target && A(drag.target);
+    if (tgt){
+      const l = L[tgt.id];
+      o.push(`<ellipse cx="${f1(tgt.x)}" cy="${f1(tgt.y)}" rx="${f1(l.dx+20)}" ry="${f1(l.dy+17)}" fill="none" stroke="${drag.targetOk ? C.good : C.deny}" stroke-width="3.5" stroke-dasharray="${drag.targetOk ? '0' : '6 5'}" pointer-events="none"/>`);
+    }
+  }
+  return o.join('');
+}
+
+function render(){
+  raf = 0;
+  $('#ws').innerHTML = svgBody(false);
+  updateFormula();
+  if (mode === 'guided') updateGuided();
+}
+const req = () => { if (!raf) raf = requestAnimationFrame(render); };
+
+/* ---------------- periodic table ---------------- */
+const chargeList = sym => VAR[sym][1].map(q => q + '+').join(', ');
+const varTitle = sym => `${VAR[sym][0]}: common charges ${chargeList(sym)}. In Free Draw with Ionic or Mix, drag it in and pick its charge`;
+function buildTable(){
+  const html = [];
+  const cell = (sym, z, p, g, cls, title, on, label) =>
+    html.push(`<div class="cell ${cls}" style="grid-row:${p};grid-column:${g}" data-el="${sym}" title="${title}"${on ? ' tabindex="-1"' : ''}>${z ? `<span class="z">${z}</span>` : ''}${label || sym}</div>`);
+  for (const [sym,name,z,p,g,cat] of ELEMENTS){
+    const on = cat==='m' || cat==='nm';
+    cell(sym, z, p, g, on ? `on ${cat}` : VAR[sym] ? 'off var' : 'off',
+      on ? `${name}: ${CATNAME[cat]}, ${INFO[sym].v} valence electron${INFO[sym].v>1?'s':''}` : VAR[sym] ? varTitle(sym) : `${name}: ${cat==='ng' ? 'noble gas, already has a full shell and does not bond' : cat==='md' ? 'metalloid' : cat==='x' ? 'superheavy element' : 'metal with more than one possible charge'}${cat==='ng' ? '' : ', not used in this builder'}`, on);
+  }
+  for (const p of [4,5,6,7]){
+    let [z, list] = TRANSITION[p]; let col = 3;
+    for (const s of list.split(' ')){
+      if (s === '*'){ cell('', 0, p, col++, 'off ph', 'Lanthanides 57–71: not used in this builder', false, '57–71'); continue; }
+      if (s === '**'){ cell('', 0, p, col++, 'off ph', 'Actinides 89–103: not used in this builder', false, '89–103'); continue; }
+      if (ELSET.has(s)){ z++; col++; continue; }
+      if (VAR[s]){ cell(s, z++, p, col++, 'off var', varTitle(s), false); continue; }
+      cell(s, z++, p, col++, 'off', `${s}: transition metal, not used in this builder`, false);
+    }
+  }
+  $('#ptable').innerHTML = html.join('');
+}
+
+/* ---------------- pointer handling ---------------- */
+const reservoirEl = $('#reservoir');
+const ws = $('#ws'), stage = $('#stage'), tableWrap = $('#tableWrap'), chip = $('#chip');
+const svgPt = e => { const r = ws.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; };
+const inRect = (el, e) => { const r = el.getBoundingClientRect(); return e.clientX>=r.left && e.clientX<=r.right && e.clientY>=r.top && e.clientY<=r.bottom; };
+const dist = (p,q) => Math.hypot(p.x-q.x, p.y-q.y);
+const clampX = x => Math.max(28, Math.min(W-28, x));
+const clampY = y => Math.max(34, Math.min(H-56, y));
+
+function atomAt(p, exclude){
+  let best = null, bd = 1;
+  for (const a of S.atoms){
+    if (a.id === exclude) continue;
+    const ex = (p.x-a.x)/(halfW(a.el)+24), ey = (p.y-a.y)/38, d = ex*ex + ey*ey;
+    if (d < bd){ bd = d; best = a; }
+  }
+  return best;
+}
+function setArmed(on){ tableWrap.classList.toggle('armed', on); if (!on){ tableWrap.classList.remove('hot'); reservoirEl.classList.remove('hot'); } }
+function showChip(e, el){
+  if (el){ const ct = VAR[el] ? 'm' : INFO[el].cat; chip.className = 'chip ' + ct; chip.textContent = el; chip.style.background = `var(--${ct==='m'?'metal':ct==='ng'?'noble':'nonmetal'})`; }
+  else { chip.className = 'chip e'; chip.textContent = ''; chip.style.background = ''; }
+  chip.hidden = false; moveChip(e);
+}
+function moveChip(e){ const w = chip.offsetWidth, h = chip.offsetHeight; chip.style.transform = `translate(${e.clientX - w/2}px, ${e.clientY - h/2}px)`; }
+
+ws.addEventListener('pointerdown', e => {
+  if (drag || e.button > 0) return;
+  const t = e.target.closest('[data-kind]'); if (!t) return;
+  e.preventDefault(); audioInit();
+  const kind = t.dataset.kind, id = +t.dataset.id, p = svgPt(e);
+  try { ws.setPointerCapture(e.pointerId); } catch (_) {}
+  if (kind === 'atom'){
+    const ids = [id];
+    drag = {kind:'atom', id, pid:e.pointerId, start:p, moved:false, snap:snapshot(),
+            offs: ids.map(i => { const b = A(i); return {id:i, dx:b.x-p.x, dy:b.y-p.y}; })};
+    setArmed(true);
+  } else if (kind === 'dot'){
+    drag = {kind:'dot', id, slot:+t.dataset.slot, pid:e.pointerId, pt:p, start:p};
+    setArmed(true);
+  } else {
+    drag = {kind, id, pid:e.pointerId, start:p, pt:p, moved:false};
+  }
+  req();
+});
+
+$('#ptable').addEventListener('pointerdown', e => {
+  const c = e.target.closest('.cell'); if (!c || drag) return;
+  const isVar = c.classList.contains('var') && varOn();
+  if (!c.classList.contains('on') && !isVar){
+    say(c.classList.contains('var') ? `${VAR[c.dataset.el][0]} can have more than one charge (${chargeList(c.dataset.el)}). Choose Free Draw with Ionic or Mix to use it.` : c.title + '.');
+    return;
+  }
+  if (btype === 'covalent' && c.classList.contains('m')){ say('Covalent is selected, so metals are off. Choose Ionic or Mix to use metals.'); return; }
+  e.preventDefault(); audioInit();
+  try { c.setPointerCapture(e.pointerId); } catch (_) {}
+  drag = {kind:'new', el:c.dataset.el, pid:e.pointerId};
+  showChip(e, c.dataset.el);
+});
+$('#eDot').addEventListener('pointerdown', e => {
+  if (drag) return;
+  e.preventDefault(); audioInit();
+  try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {}
+  drag = {kind:'res', pid:e.pointerId, pt:null};
+  showChip(e, null);
+});
+
+window.addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.pid) return;
+  const p = svgPt(e);
+  switch (drag.kind){
+    case 'atom':
+      if (!drag.moved && dist(p, drag.start) < 3) return;
+      drag.moved = true;
+      for (const q of drag.offs){ const a = A(q.id); a.x = p.x + q.dx; a.y = p.y + q.dy; }
+      tableWrap.classList.toggle('hot', inRect(tableWrap, e));
+      break;
+    case 'dot': {
+      drag.pt = p;
+      const overT = inRect(tableWrap, e), overR = inRect(reservoirEl, e), over = overT || overR;
+      tableWrap.classList.toggle('hot', overT); reservoirEl.classList.toggle('hot', overR);
+      const t = over ? null : atomAt(p, drag.id);
+      drag.target = t ? t.id : null; drag.targetOk = t ? judge(A(drag.id), t).ok : false;
+      break; }
+    case 'bond': case 'arrow':
+      drag.pt = p;
+      if (dist(p, drag.start) > 8) drag.moved = true;
+      if (dist(p, drag.start) > 48){
+        const k = drag.kind, id = drag.id; drag = null;
+        if (k === 'bond') breakBond(id); else reverseXfer(id);
+      }
+      break;
+    case 'new': moveChip(e); return;
+    case 'res': {
+      moveChip(e); drag.pt = p;
+      const t = inRect(stage, e) ? atomAt(p, null) : null;
+      drag.target = t ? t.id : null; drag.targetOk = t ? total(t) + 1 <= capOf(t) : false;
+      break; }
+  }
+  req();
+});
+
+function endDrag(e, cancelled){
+  if (!drag || e.pointerId !== drag.pid) return;
+  const d = drag; drag = null;
+  setArmed(false); chip.hidden = true;
+  const p = svgPt(e);
+  if (!cancelled) switch (d.kind){
+    case 'atom':
+      if (!d.moved) break;
+      if (inRect(tableWrap, e)){
+        undoStack.push(d.snap); $('#undoBtn').disabled = false; setChecking(false);
+        const names = d.offs.map(q => A(q.id).el);
+        d.offs.forEach(q => deleteAtom(q.id));
+        normalize();
+        say(`Removed ${names.join(', ')} from the build area.`);
+        sfx('swish');
+      } else {
+        for (const q of d.offs){ const a = A(q.id); a.x = clampX(a.x); a.y = clampY(a.y); }
+        undoStack.push(d.snap); $('#undoBtn').disabled = false; setChecking(false);
+      }
+      break;
+    case 'dot': {
+      if (inRect(tableWrap, e) || inRect(reservoirEl, e)){ removeElectron(d.id, d.slot); break; }
+      const t = atomAt(p, d.id);
+      if (t) doBond(A(d.id), d.slot, t);
+      else if (dist(p, d.start) > 30) say('To remove an electron, drop it on the periodic table or the Electron box. To bond, drop it on another atom.');
+      break; }
+    case 'new':
+      if (inRect(stage, e) && VAR[d.el]){ askCharge(d.el, clampX(p.x), clampY(p.y)); break; }
+      if (inRect(stage, e)){
+        pushUndo();
+        const a = addAtom(d.el, clampX(p.x), clampY(p.y));
+        const inf = INFO[d.el];
+        say(`${inf.name} (${CATNAME[inf.cat]}) has ${inf.v} valence electron${inf.v>1?'s':''}.`);
+        sfx('place');
+      }
+      break;
+    case 'res': {
+      const t = inRect(stage, e) ? atomAt(p, null) : null;
+      if (t) addElectron(t.id);
+      break; }
+  } else if (d.kind === 'atom' && d.moved){
+    S = JSON.parse(d.snap);
+  }
+  render();
+}
+window.addEventListener('pointerup', e => endDrag(e, false));
+window.addEventListener('pointercancel', e => endDrag(e, true));
+
+/* ---------------- charge picker for variable-charge metals ---------------- */
+let pending = null;
+function askCharge(el, x, y){
+  pending = {el, x, y};
+  $('#chargeQ').textContent = `What do you want the charge of ${VAR[el][0]} (${el}) to be?`;
+  $('#chargeOpts').innerHTML = VAR[el][1].map(q => `<button class="btn qopt" type="button" data-q="${q}">${el}<sup>${q === 1 ? '' : q}+</sup></button>`).join('');
+  $('#chargeModal').hidden = false;
+  const first = $('#chargeOpts .qopt'); if (first) first.focus();
+}
+function closeCharge(){ $('#chargeModal').hidden = true; pending = null; }
+$('#chargeOpts').addEventListener('click', e => {
+  const b = e.target.closest('.qopt'); if (!b || !pending) return;
+  const q = +b.dataset.q, {el, x, y} = pending; closeCharge();
+  pushUndo();
+  addAtom(el, x, y, q);
+  say(`${VAR[el][0]} will form ${el}${supCharge(q)}. Drag its ${q} dot${q > 1 ? 's' : ''} onto nonmetals.`);
+  sfx('place'); render();
+});
+$('#chargeCancel').addEventListener('click', closeCharge);
+$('#chargeModal').addEventListener('pointerdown', e => { if (e.target.id === 'chargeModal') closeCharge(); });
+
+/* ---------------- toolbar ---------------- */
+function setChecking(v){
+  checking = v; const b = $('#checkBtn'); b.setAttribute('aria-pressed', String(v));
+}
+$('#undoBtn').addEventListener('click', undo);
+$('#undoBtn').disabled = true;
+const fullShell = a => own(a) === capOf(a) || (catOf(a)==='m' && a.n===0 && Bsum(a.id)===0);
+$('#checkBtn').addEventListener('click', () => {
+  audioInit();
+  if (mode === 'guided'){ checkAnswer(); return; }
+  setChecking(!checking);
+  if (checking){
+    const n = S.atoms.length, done = S.atoms.filter(fullShell).length;
+    say(n ? `${done} of ${n} atom${n>1?'s':''} have a full outer shell. Green rings are complete; orange rings are not.` : 'Add atoms first, then check.', done===n && n ? 'good' : '');
+    if (n) sfx(done === n ? 'chime' : 'incomplete');
+  }
+  render();
+});
+$('#arrowBtn').addEventListener('click', e => {
+  showArrows = !showArrows; e.currentTarget.setAttribute('aria-pressed', String(showArrows));
+  e.currentTarget.textContent = showArrows ? 'Arrows shown' : 'Arrows hidden'; render();
+});
+$('#clearBtn').addEventListener('click', () => {
+  if (!S.atoms.length) return;
+  audioInit(); pushUndo(); S = {atoms:[], bonds:[], xfers:[], nid:S.nid};
+  say('Build area cleared. Press Undo to bring it back.'); sfx('swish'); render();
+});
+window.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z'){ e.preventDefault(); undo(); }
+  if (e.key === 'Escape'){ $('#saveModal').hidden = true; closeCharge(); }
+});
+
+/* ---------------- modes ---------------- */
+function setMode(m){
+  const prev = mode; if (m === prev) return;
+  audioInit();
+  const clear = true;   // switching between Guided and Free Draw always starts fresh
+  mode = m; document.body.dataset.mode = m;
+  $('#modeEasy').setAttribute('aria-pressed', String(m==='easy'));
+  $('#modeGuided').setAttribute('aria-pressed', String(m==='guided'));
+  if (clear){ S = {atoms:[], bonds:[], xfers:[], nid:S.nid}; undoStack.length = 0; $('#undoBtn').disabled = true; }
+  setChecking(false);
+  const cb = $('#checkBtn');
+  cb.textContent = m === 'guided' ? 'Check answer' : 'Check octets';
+  cb.classList.toggle('answer', m === 'guided');
+  $('#guided').hidden = m !== 'guided';
+  if (m === 'guided') newQuestion();
+  else say('Free Draw. The build area was cleared.');
+  render();
+}
+$('#modeEasy').addEventListener('click', () => setMode('easy'));
+$('#modeGuided').addEventListener('click', () => setMode('guided'));
+
+function setBtype(t){
+  if (t === btype) return;
+  audioInit();
+  btype = t; document.body.dataset.btype = t;
+  $('#typeCov').setAttribute('aria-pressed', String(t==='covalent'));
+  $('#typeIon').setAttribute('aria-pressed', String(t==='ionic'));
+  $('#typeMix').setAttribute('aria-pressed', String(t==='mix'));
+  if (mode === 'guided'){ G.recent = []; newQuestion(); return; }
+  say(t === 'covalent' ? 'Covalent: nonmetals share electron pairs. Metals are off.'
+    : t === 'ionic' ? 'Ionic: metals give electrons to nonmetals. Covalent bonds are off.'
+    : 'Mix: covalent and ionic bonds are both on.');
+  render();
+}
+$('#typeCov').addEventListener('click', () => setBtype('covalent'));
+$('#typeIon').addEventListener('click', () => setBtype('ionic'));
+$('#typeMix').addEventListener('click', () => setBtype('mix'));
+
+/* ---------------- guided practice ---------------- */
+// Every compound here can be built with Free Draw rules (tested).
+const BANK_COV = 'H2 Cl2 F2 Br2 I2 O2 N2 HF HCl HBr HI H2O H2S NH3 PH3 CH4 CCl4 CF4 PCl3 NCl3 OF2 SCl2 CO2 CS2 HCN C2H2 C2H4 C2H6 CH2O H2O2 N2H4'.split(' ');
+const BANK_ION = 'NaCl KBr LiF KCl NaF KI MgO CaO BaO MgCl2 CaF2 CaCl2 BaCl2 SrBr2 Na2O K2O Li2O Na2S K2S Li3N Na3N Mg3N2 Ca3N2 AlCl3 AlF3 Al2O3 Al2S3 AlN ZnO ZnCl2 AgCl AgBr Ca3P2'.split(' ');
+const countsOf = f => { const c = {}; f.replace(/([A-Z][a-z]?)(\d*)/g, (_, e, n) => { c[e] = (c[e]||0) + (+n || 1); }); return c; };
+const pretty = f => f.replace(/\d/g, d => SUB[d]);
+const G = {cur:null, streak:0, best:0, solved:false, recent:[]};
+try { G.best = +localStorage.getItem('lewisBest') || 0; } catch (e) {}
+
+function newQuestion(){
+  const pool = btype === 'covalent' ? BANK_COV : btype === 'ionic' ? BANK_ION : BANK_COV.concat(BANK_ION);
+  const choices = pool.filter(f => !G.recent.includes(f));
+  const f = choices[Math.floor(Math.random() * choices.length)];
+  G.recent.push(f); if (G.recent.length > Math.min(8, pool.length - 1)) G.recent.shift();
+  G.cur = f; G.solved = false;
+  S = {atoms:[], bonds:[], xfers:[], nid:S.nid}; undoStack.length = 0; $('#undoBtn').disabled = true;
+  setChecking(false);
+  $('#gFormula').textContent = pretty(f);
+  const gn = nameOfCounts(countsOf(f), 0);
+  $('#gName').textContent = gn === 'Too complicated' ? '' : gn;
+  $('#nextBtn').hidden = true; $('#skipBtn').hidden = false;
+  say(`Build ${pretty(f)}. Follow the steps in the green panel.`);
+  render();
+}
+function gradeState(){
+  const want = countsOf(G.cur), have = {};
+  S.atoms.forEach(a => have[a.el] = (have[a.el]||0) + 1);
+  const countsOk = Object.keys(want).every(e => have[e] === want[e]) && Object.keys(have).every(e => want[e]);
+  const pieces = groupsOfAtoms().length;
+  const needy = S.atoms.filter(a => !fullShell(a));
+  const q = S.atoms.reduce((s,a) => s + charge(a), 0);
+  return {want, have, countsOk, pieces, needy, q};
+}
+const isMetal = a => catOf(a) === 'm';
+const needShort = a => isMetal(a) ? `${a.el} give ${a.n}` : `${a.el} ${own(a)}/${capOf(a)}`;
+const needLong = a => isMetal(a) ? `${a.el} still has ${a.n} electron${a.n > 1 ? 's' : ''} to give away` : `${a.el} has ${own(a)} of ${capOf(a)}`;
+function updateGuided(){
+  if (!G.cur) return;
+  const g = gradeState();
+  const chips = Object.keys(g.want).map(e => {
+    const h = g.have[e] || 0, w = g.want[e];
+    return `<span class="${h===w ? 'ok' : h > w ? 'over' : ''}">${e} ${h}/${w}</span>`;
+  });
+  Object.keys(g.have).filter(e => !g.want[e]).forEach(e => chips.push(`<span class="over">Remove ${e}</span>`));
+  $('#gChips').innerHTML = chips.join('');
+  const s1 = g.countsOk, s2 = s1 && g.pieces === 1, s3 = s2 && g.needy.length === 0;
+  const n2 = $('#gNote2'), n3 = $('#gNote3'), n4 = $('#gNote4');
+  n2.className = 'g-note'; n3.className = 'g-note';
+  const how = btype === 'ionic' ? "Drag each metal's dot onto a nonmetal." : btype === 'covalent' ? 'Drag dots between atoms to share them.' : 'Drag dots between atoms to bond them.';
+  n2.textContent = !S.atoms.length ? '' : g.pieces === 1 ? 'All joined.' : `${g.pieces} separate pieces. ${how}`;
+  n3.textContent = !S.atoms.length ? '' : g.needy.length ? 'Not done: ' + g.needy.slice(0,4).map(needShort).join(', ') + (g.needy.length > 4 ? ', …' : '') : 'Every shell is full.';
+  n4.textContent = G.solved ? 'Correct! Press Next compound.' : s3 ? 'Ready to check.' : '';
+  const steps = [s1, s2, s3, G.solved];
+  const now = steps.indexOf(false);
+  steps.forEach((d,i) => { const li = $('#gs' + (i+1)); li.className = d ? 'done' : i === now ? 'now' : ''; li.querySelector('.mark').textContent = d ? '✓' : String(i+1); });
+  $('#gStreak').innerHTML = `Streak ${G.streak}<br><span>Best ${G.best}</span>`;
+  $('#guided').classList.toggle('solved', G.solved);
+}
+function checkAnswer(){
+  if (G.solved){ say('Already solved. Press Next compound.', 'good'); return; }
+  if (!S.atoms.length){ say(`Add atoms to build ${pretty(G.cur)} first.`); return; }
+  setChecking(true);
+  const g = gradeState(); let msg = '';
+  if (!g.countsOk){
+    const need = Object.keys(g.want).map(e => `${g.want[e]} ${e}`).join(' + ');
+    msg = `Not yet: ${pretty(G.cur)} needs ${need}, with nothing extra.`;
+  } else if (g.pieces > 1) msg = `Not yet: your atoms are in ${g.pieces} separate pieces. Bond them into one compound.`;
+  else if (g.needy.length) msg = `Not yet: ${g.needy.map(needLong).join(', ')}.`;
+  else if (g.q !== 0) msg = `Not yet: your structure has an overall charge of ${supCharge(g.q)}. ${pretty(G.cur)} is neutral.`;
+  if (msg){
+    G.streak = 0; say(msg, 'deny'); sfx('wrong');
+  } else {
+    G.solved = true; G.streak++;
+    if (G.streak > G.best){ G.best = G.streak; try { localStorage.setItem('lewisBest', String(G.best)); } catch (e) {} }
+    say(`Correct! That is ${pretty(G.cur)}.`, 'good'); sfx('fanfare');
+    $('#nextBtn').hidden = false; $('#skipBtn').hidden = true; $('#nextBtn').focus();
+  }
+  render();
+}
+$('#skipBtn').addEventListener('click', () => { audioInit(); G.streak = 0; sfx('swish'); newQuestion(); });
+$('#nextBtn').addEventListener('click', () => { audioInit(); sfx('place'); newQuestion(); });
+
+/* ---------------- save image ---------------- */
+let lastCanvas = null, lastUrl = '';
+$('#saveBtn').addEventListener('click', () => {
+  if (!S.atoms.length){ say('Add some atoms first, then save.'); return; }
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const a of S.atoms){ const hw = halfW(a.el); x0 = Math.min(x0, a.x-hw-55); x1 = Math.max(x1, a.x+hw+70); y0 = Math.min(y0, a.y-85); y1 = Math.max(y1, a.y+65); }
+  const w = Math.ceil(x1-x0), h = Math.ceil(y1-y0);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${f1(x0)} ${f1(y0)} ${w} ${h}"><rect x="${f1(x0)}" y="${f1(y0)}" width="${w}" height="${h}" fill="#ffffff"/>${svgBody(true)}</svg>`;
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas'); c.width = w*2; c.height = h*2;
+    const g = c.getContext('2d'); g.scale(2,2); g.drawImage(img, 0, 0, w, h);
+    lastCanvas = c; lastUrl = c.toDataURL('image/png');
+    $('#saveImg').src = lastUrl; $('#saveModal').hidden = false; $('#dlBtn').focus();
+  };
+  img.onerror = () => say('The picture could not be made. Try again.', 'deny');
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+});
+$('#dlBtn').addEventListener('click', () => {
+  const a = document.createElement('a'); a.href = lastUrl; a.download = 'lewis-structure.png';
+  document.body.appendChild(a); a.click(); a.remove();
+});
+$('#copyBtn').addEventListener('click', () => {
+  try {
+    const blob = new Promise(res => lastCanvas.toBlob(res, 'image/png'));
+    navigator.clipboard.write([new ClipboardItem({'image/png': blob})])
+      .then(() => { $('#saveModal').hidden = true; $('#copyNote').hidden = true; say('Image copied. Paste it into your document.', 'good'); })
+      .catch(() => { $('#copyNote').hidden = false; });
+  } catch (_) { $('#copyNote').hidden = false; }
+});
+$('#closeBtn').addEventListener('click', () => { $('#saveModal').hidden = true; $('#copyNote').hidden = true; });
+$('#saveModal').addEventListener('pointerdown', e => { if (e.target.id === 'saveModal') $('#saveModal').hidden = true; });
+
+/* ---------------- sizing + example ---------------- */
+let seeded = false;
+function seed(){
+  const cx = W/2, y = Math.max(110, H*0.45);
+  const sp = Math.min(W/3.2, 300);
+  const O = addAtom('O', cx - sp, y), H1 = addAtom('H', cx - sp - 68, y + 48), H2 = addAtom('H', cx - sp + 68, y + 48);
+  doBondQuiet(H1, 0, O); doBondQuiet(H2, 0, O);
+  const Na = addAtom('Na', cx - 30, y), Cl = addAtom('Cl', cx + 110, y);
+  doBondQuiet(Na, 0, Cl);
+  addAtom('N', cx + sp, y);
+  undoStack.length = 0; $('#undoBtn').disabled = true;
+  say('Example: H₂O (covalent), NaCl (ionic), and a nitrogen atom. Press Clear to start fresh.');
+}
+function doBondQuiet(a, slot, b){ const j = judge(a,b); if (!j.ok) return;
+  if (j.kind === 'ionic'){ S.xfers.push({id:S.nid++, from:a.id, to:b.id, slot}); a.n--; b.n++; }
+  else { const bd = bondBetween(a.id,b.id); if (bd){ bd.order++; bd.units.push(null); } else S.bonds.push({id:S.nid++, a:a.id, b:b.id, order:1, units:[null]}); a.n--; b.n--; } }
+
+function resize(){
+  const oW = W, oH = H;
+  W = stage.clientWidth; H = stage.clientHeight;
+  if (seeded && !drag && oW > 0 && oH > 0){
+    if (S.atoms.some(a => a.x > W-28)) for (const a of S.atoms) a.x = 28 + (a.x-28) * (W-56) / Math.max(1, oW-56);
+    if (S.atoms.some(a => a.y > H-56)) for (const a of S.atoms) a.y = 34 + (a.y-34) * (H-90) / Math.max(1, oH-90);
+  }
+  ws.setAttribute('viewBox', `0 0 ${W} ${H}`); ws.setAttribute('width', W); ws.setAttribute('height', H);
+  if (!drag) for (const a of S.atoms){ a.x = clampX(a.x); a.y = clampY(a.y); }
+  if (!seeded && W > 0){ seeded = true; seed(); }
+  render();
+}
+buildTable();
+new ResizeObserver(resize).observe(stage);
+resize();
+document.body.dataset.mode = 'easy'; document.body.dataset.btype = 'mix';
+window.__lewis = {get S(){return S;}, nameOf, askCharge, newQuestion, get btype(){return btype;}, nameOfCounts, countsOf, setMode, setBtype, BANK_COV, BANK_ION, get G(){return G;}, checkAnswer, gradeState, judge, doBond, layout, A, charge, unpaired, own, formulaOf, removeElectron, addElectron, breakBond, reverseXfer, deleteAtom, addAtom, normalize};
+})();
+</script>
+<style>
+.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){ .shake{animation:none} }
+</style>
+
+</body>
+</html>

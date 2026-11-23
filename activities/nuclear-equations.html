@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nuclear Equation Builder</title>
+<style>
+:root{
+  --bg:#0a0f15; --panel:#111923; --panel2:#16212e; --border:#243447; --text:#e6edf3; --muted:#8aa0b5;
+  --accent:#3fe0c5; --accent2:#5ab0ff; --amber:#ffb020; --red:#ff6b6b; --green:#3ddc84; --violet:#b58cff;
+  --math:'STIX Two Math','Cambria Math',Cambria,'Times New Roman',serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.app{max-width:1400px;margin:0 auto;padding:6px 12px 10px;display:flex;flex-direction:column;gap:6px}
+header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:1.15rem;margin:0 6px 0 0;color:var(--accent);letter-spacing:.4px;white-space:nowrap;text-shadow:0 0 12px rgba(63,224,197,.35)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--panel)}
+.seg button{background:none;border:0;padding:8px 14px;min-height:42px;font-weight:700;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button.on{background:var(--accent);color:#03201b}
+.progress{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:700}
+.badge{padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.badge.easy{background:#123d2a;color:#6ff0a8}.badge.medium{background:#3d3212;color:#ffd166}.badge.hard{background:#3d1520;color:#ff8fa3}
+.tries{display:flex;gap:4px;align-items:center}.tries i{width:11px;height:11px;border-radius:50%;background:var(--accent);display:inline-block}.tries i.used{background:#33404f}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px 10px}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:8px}
+.bottom{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:8px}
+.eqcard{display:flex;flex-direction:column;gap:8px}
+.prompt{font-size:1.05rem;line-height:1.35;min-height:1.4em}
+.prompt b{color:var(--accent)}
+.workspace{display:flex;align-items:center;gap:4px;min-height:108px;overflow-x:auto;padding:10px 8px;background:var(--panel2);border-radius:10px;border:1px solid var(--border)}
+.wsempty{color:var(--muted);padding:0 6px}
+.tok{display:inline-flex;align-items:center;flex:0 0 auto;user-select:none}
+.op{font-family:var(--math);font-size:2rem;padding:2px 6px;color:var(--muted);border-radius:8px;border:2px solid transparent}
+.op.arrow{font-size:2.3rem;color:var(--text);padding:2px 10px}
+.op.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(63,224,197,.2)}
+.build .op{cursor:pointer}
+.nuc{font-family:var(--math);padding:4px 7px;border-radius:9px;border:2px solid transparent}
+.nuc.edit{border-color:#2c3e52;background:#0e151e;cursor:pointer}
+.nuc.blank{border:2px dashed var(--amber);background:rgba(255,176,32,.07);cursor:pointer}
+.nuc.sel{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 3px rgba(63,224,197,.22)}
+.nuc.revealed{border:2px solid var(--amber);color:var(--amber);background:rgba(255,176,32,.08)}
+.nuc.done-ok{border-color:var(--green)}
+.coef{font-size:2.1rem;margin-right:5px;line-height:1}
+.nums{display:inline-flex;flex-direction:column;align-items:flex-end;justify-content:space-between;height:3.3rem;margin-right:2px;line-height:1}
+.nums .f{font-size:1.2rem}
+.sym{font-size:2.7rem;line-height:1}
+.f{border-radius:4px;padding:0 2px;min-width:.7em;text-align:right}
+.f.empty{color:#566b82}
+.f.active{background:rgba(63,224,197,.28);outline:1px solid var(--accent)}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.btn{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px 16px;min-height:44px;font-weight:700}
+.btn:hover:not(:disabled){border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#03201b;border-color:transparent}
+.btn.op-btn{font-family:var(--math);font-size:1.4rem;min-width:56px;padding:4px 12px}
+.btn:disabled{opacity:.4;cursor:default}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.fb{min-height:1.4em;font-weight:700;line-height:1.35}
+.fb.ok{color:var(--green)}.fb.bad{color:var(--red)}.fb.info{color:var(--muted)}.fb.rev{color:var(--amber)}
+.hintline{min-height:0;color:var(--accent2);font-weight:600;line-height:1.35}
+.hintline:not(:empty)::before{content:"💡 "}
+.hintline .hl:first-child{display:inline}
+.hs{display:block;margin:5px 0 3px;padding:6px 12px;background:rgba(90,176,255,.13);border-left:4px solid var(--accent2);border-radius:6px;font-weight:800;font-size:1.12em;color:var(--text)}
+.hs .hn{font-size:1.2em}
+.hn{font-family:var(--math);font-size:1.15em;color:var(--text);white-space:nowrap}
+.hn sup,.hn sub{font-size:.62em}
+.hq{display:inline-block;min-width:1.4em;text-align:center;border:1.5px dashed var(--amber);border-radius:5px;color:var(--amber);font-weight:800;padding:0 3px}
+.hl{display:block;margin-top:3px}
+.animcard{display:flex;flex-direction:column;gap:6px}
+.animwrap{position:relative;height:200px;background:radial-gradient(ellipse at center,#14202d 0%,#0b1118 75%);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+#cv{width:100%;height:100%;display:block}
+.replay{margin-left:auto;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-weight:700;font-size:.85rem;min-height:30px}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;min-height:30px;font-size:.78rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.bal{display:grid;grid-template-columns:62px 1fr 26px 1fr;gap:4px 6px;align-items:center;font-size:.85rem;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px}
+.bal .hd{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.bt{position:relative;height:22px;background:#0b1118;border-radius:6px;overflow:hidden}
+.bf{position:absolute;left:0;top:0;bottom:0;background:var(--amber);opacity:.8;transition:width .25s}
+.bf.eq{background:var(--green)}
+.bv{position:absolute;left:6px;top:0;line-height:22px;font-weight:800;color:#fff;text-shadow:0 1px 2px #000}
+.bs{text-align:center;font-weight:900}
+.bs.eq{color:var(--green)}.bs.ne{color:var(--amber)}
+.ptwrap{overflow-x:auto}
+.ptable{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:2px;min-width:540px}
+.el{height:36px;border:1px solid transparent;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;overflow:hidden;color:var(--text)}
+.el .z{font-size:.55rem;line-height:1;color:#9fb3c6;font-weight:600}
+.el .s{font-weight:800;font-size:.88rem;line-height:1.05}
+.el .n{font-size:.5rem;color:#a9bccd;line-height:1.1;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:clip;padding:0 1px}
+.el.blk-s{background:#1d2b45}.el.blk-p{background:#1c3833}.el.blk-d{background:#28283f}.el.blk-f{background:#3a2836}
+.el:hover,.el:focus-visible{border-color:var(--accent);outline:none}
+.el:active{transform:scale(.94)}
+.el.flash{border-color:var(--accent);box-shadow:0 0 8px var(--accent)}
+.ph{height:36px;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--muted);border:1px dashed #2c3e52;border-radius:4px}
+.spacer{grid-column:1/-1;height:6px}
+.selinfo{font-size:.8rem;color:var(--muted);min-height:1.2em;margin-top:4px}
+.species{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.sp{background:#1b2a3a;border:1px solid var(--border);border-radius:10px;padding:4px 10px;min-height:44px;display:flex;align-items:center;gap:7px}
+.sp:hover{border-color:var(--accent)}
+.sp .note{font-family:var(--math);font-size:1.25rem;line-height:1}
+.sp .note sup,.sp .note sub{font-size:.62em}
+.sp .lbl{font-size:.82rem;color:#c3d2df;font-weight:600}
+.padcol{display:flex;flex-direction:column;gap:8px}
+.padcol .seg{display:flex}.padcol .seg button{flex:1;padding:8px 4px;font-size:.85rem}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.numpad button{min-height:46px;font-size:1.35rem;font-weight:800;background:var(--panel2);border:1px solid var(--border);border-radius:10px}
+.numpad button:hover{border-color:var(--accent)}
+.numpad button:active{transform:scale(.95)}
+.numpad .wide{grid-column:span 3;font-size:.95rem}
+.tip{font-size:.78rem;color:var(--muted);line-height:1.35}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:50;padding:12px}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;max-width:520px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.modal h2{margin:0 0 6px;color:var(--accent)}
+.modal .big{font-size:3.4rem;font-weight:900;margin:4px 0}
+.modal .muted{color:var(--muted);font-size:.85rem}
+.mrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.rgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:12px}
+.rc{border-radius:8px;padding:5px 2px;font-size:.78rem;font-weight:700;background:var(--panel2);border:1px solid var(--border)}
+.rc.r0{border-color:var(--green);color:var(--green)}.rc.r1{border-color:#b6e36b;color:#b6e36b}.rc.r2{border-color:var(--amber);color:var(--amber)}.rc.rx{border-color:var(--red);color:var(--red)}
+@media (max-width:1250px){.el .n{display:none}}
+@media (max-width:1100px){
+  .top{grid-template-columns:minmax(0,1fr)}
+  .bottom{grid-template-columns:minmax(0,1fr)}
+  .padcol{order:-1}
+  .numpad,.padcol .seg{width:100%;max-width:440px;margin:0 auto}
+}
+@media (max-width:640px){
+  .app{padding:6px}
+  h1{font-size:1rem;width:100%}
+  .progress{margin-left:0}
+  .sym{font-size:2.1rem}.coef{font-size:1.7rem}.nums{height:2.7rem}.nums .f{font-size:1rem}
+  .op{font-size:1.6rem}.op.arrow{font-size:1.8rem}
+  .workspace{min-height:96px}
+  .el{height:34px}.el .s{font-size:.78rem}.el .z{font-size:.5rem}.ph{height:34px}
+  .animwrap{height:210px}
+  .seg button{padding:8px 10px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <h1>☢ Nuclear Equation Builder</h1>
+    <div class="seg" id="modeSeg"><button data-mode="guided">Guided</button><button data-mode="free">Free Form</button></div>
+    <div class="seg" id="levelSeg"><button data-level="1">Level 1</button><button data-level="2">Level 2</button><button data-level="3">Level 3</button></div>
+    <div class="progress" id="progress"><span id="qnum"></span><span class="badge" id="tier"></span><span class="tries" id="tries" title="Tries left"></span></div>
+  </header>
+
+  <div class="top">
+    <section class="card eqcard">
+      <div class="prompt" id="prompt"></div>
+      <div class="workspace" id="ws"></div>
+      <div class="tools" id="tools">
+        <button class="btn op-btn" data-tool="plus" title="Insert a plus sign">+</button>
+        <button class="btn op-btn" data-tool="arrow" title="Insert the reaction arrow">→</button>
+        <button class="btn" data-tool="del">⌫ Delete</button>
+        <span class="tip" style="align-self:center">Tap a species to edit it. Tap its symbol to change the element.</span>
+      </div>
+      <div class="fb" id="fb"></div>
+      <div class="hintline" id="hintline"></div>
+      <div class="actions">
+        <button class="btn primary" id="checkBtn">Check</button>
+        <button class="btn primary" id="nextBtn" hidden>Next →</button>
+        <button class="btn" id="hintBtn">Hint</button>
+        <button class="btn" id="clearBtn">Clear</button>
+      </div>
+    </section>
+    <section class="card animcard">
+      <div class="animwrap"><canvas id="cv"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#ff5d5d"></i>proton</span>
+        <span><i class="dot" style="background:#9aa7b4"></i>neutron</span>
+        <span><i class="dot" style="background:#5ab0ff"></i>beta (e)</span>
+        <span><i class="dot" style="background:#ffd84a"></i>positron (e)</span>
+        <span style="color:#b58cff">〰 gamma</span>
+        <button class="replay" id="replayBtn" hidden>↻ Replay</button>
+      </div>
+      <div class="bal" id="bal" hidden>
+        <span></span><span class="hd">Left side</span><span></span><span class="hd">Right side</span>
+        <span class="hd">Top (A)</span><div class="bt"><div class="bf" id="bAL"></div><span class="bv" id="vAL"></span></div><span class="bs" id="sA"></span><div class="bt"><div class="bf" id="bAR"></div><span class="bv" id="vAR"></span></div>
+        <span class="hd">Bottom (Z)</span><div class="bt"><div class="bf" id="bZL"></div><span class="bv" id="vZL"></span></div><span class="bs" id="sZ"></span><div class="bt"><div class="bf" id="bZR"></div><span class="bv" id="vZR"></span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom">
+    <section class="card ptcol">
+      <div class="species" id="species"></div>
+      <div class="ptwrap"><div class="ptable" id="pt"></div></div>
+      <div class="selinfo" id="selinfo"></div>
+    </section>
+    <section class="card padcol">
+      <div class="seg" id="targetSeg"><button data-field="coef">Coef</button><button data-field="A">Top (A)</button><button data-field="Z">Bottom (Z)</button></div>
+      <div class="numpad" id="numpad"></div>
+      <div class="tip" id="padtip"></div>
+    </section>
+  </div>
+</div>
+<div class="overlay" id="overlay" hidden><div class="modal" id="modal"></div></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= ELEMENT DATA ================= */
+const SYMS = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og'.split(' ');
+const NAMES = 'Hydrogen Helium Lithium Beryllium Boron Carbon Nitrogen Oxygen Fluorine Neon Sodium Magnesium Aluminum Silicon Phosphorus Sulfur Chlorine Argon Potassium Calcium Scandium Titanium Vanadium Chromium Manganese Iron Cobalt Nickel Copper Zinc Gallium Germanium Arsenic Selenium Bromine Krypton Rubidium Strontium Yttrium Zirconium Niobium Molybdenum Technetium Ruthenium Rhodium Palladium Silver Cadmium Indium Tin Antimony Tellurium Iodine Xenon Cesium Barium Lanthanum Cerium Praseodymium Neodymium Promethium Samarium Europium Gadolinium Terbium Dysprosium Holmium Erbium Thulium Ytterbium Lutetium Hafnium Tantalum Tungsten Rhenium Osmium Iridium Platinum Gold Mercury Thallium Lead Bismuth Polonium Astatine Radon Francium Radium Actinium Thorium Protactinium Uranium Neptunium Plutonium Americium Curium Berkelium Californium Einsteinium Fermium Mendelevium Nobelium Lawrencium Rutherfordium Dubnium Seaborgium Bohrium Hassium Meitnerium Darmstadtium Roentgenium Copernicium Nihonium Flerovium Moscovium Livermorium Tennessine Oganesson'.split(' ');
+const ZOF = {}; SYMS.forEach((s, i) => ZOF[s] = i + 1);
+
+function ptPos(z) { // [row, col]; rows 9-10 = f-block
+  if (z === 1) return [1, 1]; if (z === 2) return [1, 18];
+  if (z <= 4) return [2, z - 2]; if (z <= 10) return [2, z + 8];
+  if (z <= 12) return [3, z - 10]; if (z <= 18) return [3, z];
+  if (z <= 36) return [4, z - 18]; if (z <= 54) return [5, z - 36];
+  if (z <= 56) return [6, z - 54]; if (z <= 71) return [9, z - 54];
+  if (z <= 86) return [6, z - 68]; if (z <= 88) return [7, z - 86];
+  if (z <= 103) return [10, z - 86]; return [7, z - 100];
+}
+
+/* ================= REACTION BANK ================= */
+const TYPE_NAME = {
+  alpha: 'alpha decay', beta: 'beta decay', positron: 'positron emission', ec: 'electron capture',
+  alphag: 'alpha decay with gamma emission', betag: 'beta decay with gamma emission',
+  fission: 'fission', fusion: 'fusion', trans: 'transmutation (bombardment)'
+};
+const BANK = [
+  // ---------- EASY: alpha / beta-minus ----------
+  {tier:'easy', t:'alpha', e:'U238/92 -> Th234/90 + He4/2', p:'Uranium-238 undergoes alpha decay.'},
+  {tier:'easy', t:'alpha', e:'Ra226/88 -> Rn222/86 + He4/2', p:'Radium-226 undergoes alpha decay.'},
+  {tier:'easy', t:'alpha', e:'Rn222/86 -> Po218/84 + He4/2', p:'Radon-222 undergoes alpha decay.'},
+  {tier:'easy', t:'alpha', e:'Po210/84 -> Pb206/82 + He4/2', p:'Polonium-210 undergoes alpha decay.'},
+  {tier:'easy', t:'alpha', e:'Am241/95 -> Np237/93 + He4/2', p:'Americium-241 (used in smoke detectors) undergoes alpha decay.'},
+  {tier:'easy', t:'alpha', e:'Pu239/94 -> U235/92 + He4/2', p:'Plutonium-239 undergoes alpha decay.'},
+  {tier:'easy', t:'alpha', e:'Th232/90 -> Ra228/88 + He4/2', p:'Thorium-232 undergoes alpha decay.'},
+  {tier:'easy', t:'beta', e:'C14/6 -> N14/7 + e0/-1', p:'Carbon-14 undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'I131/53 -> Xe131/54 + e0/-1', p:'Iodine-131 undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'Sr90/38 -> Y90/39 + e0/-1', p:'Strontium-90 undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'H3/1 -> He3/2 + e0/-1', p:'Hydrogen-3 (tritium) undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'Th234/90 -> Pa234/91 + e0/-1', p:'Thorium-234 undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'P32/15 -> S32/16 + e0/-1', p:'Phosphorus-32 undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'K40/19 -> Ca40/20 + e0/-1', p:'Potassium-40 undergoes beta decay.'},
+  {tier:'easy', t:'beta', e:'U239/92 -> Np239/93 + e0/-1', p:'Uranium-239 undergoes beta decay.'},
+  // ---------- MEDIUM: positron / electron capture / gamma ----------
+  {tier:'medium', t:'positron', e:'C11/6 -> B11/5 + e0/+1', p:'Carbon-11 undergoes positron emission.'},
+  {tier:'medium', t:'positron', e:'F18/9 -> O18/8 + e0/+1', p:'Fluorine-18 (used in PET scans) undergoes positron emission.'},
+  {tier:'medium', t:'positron', e:'O15/8 -> N15/7 + e0/+1', p:'Oxygen-15 undergoes positron emission.'},
+  {tier:'medium', t:'positron', e:'N13/7 -> C13/6 + e0/+1', p:'Nitrogen-13 undergoes positron emission.'},
+  {tier:'medium', t:'positron', e:'Na22/11 -> Ne22/10 + e0/+1', p:'Sodium-22 undergoes positron emission.'},
+  {tier:'medium', t:'ec', e:'Be7/4 + e0/-1 -> Li7/3', p:'Beryllium-7 undergoes electron capture.'},
+  {tier:'medium', t:'ec', e:'K40/19 + e0/-1 -> Ar40/18', p:'Potassium-40 undergoes electron capture.'},
+  {tier:'medium', t:'ec', e:'Fe55/26 + e0/-1 -> Mn55/25', p:'Iron-55 undergoes electron capture.'},
+  {tier:'medium', t:'ec', e:'I125/53 + e0/-1 -> Te125/52', p:'Iodine-125 undergoes electron capture.'},
+  {tier:'medium', t:'ec', e:'Cr51/24 + e0/-1 -> V51/23', p:'Chromium-51 undergoes electron capture.'},
+  {tier:'medium', t:'alphag', e:'U238/92 -> Th234/90 + He4/2 + γ0/0', p:'Uranium-238 undergoes alpha decay and gives off a gamma ray.'},
+  {tier:'medium', t:'alphag', e:'Ra226/88 -> Rn222/86 + He4/2 + γ0/0', p:'Radium-226 undergoes alpha decay and gives off a gamma ray.'},
+  {tier:'medium', t:'betag', e:'Co60/27 -> Ni60/28 + e0/-1 + γ0/0', p:'Cobalt-60 undergoes beta decay and gives off a gamma ray.'},
+  {tier:'medium', t:'betag', e:'Cs137/55 -> Ba137/56 + e0/-1 + γ0/0', p:'Cesium-137 undergoes beta decay and gives off a gamma ray.'},
+  {tier:'medium', t:'betag', e:'I131/53 -> Xe131/54 + e0/-1 + γ0/0', p:'Iodine-131 undergoes beta decay and gives off a gamma ray.'},
+  // ---------- HARD: fission / fusion / transmutation ----------
+  {tier:'hard', t:'fission', e:'U235/92 + n1/0 -> Ba141/56 + Kr92/36 + 3 n1/0', p:'Uranium-235 absorbs a neutron and splits into barium-141, krypton-92, and neutrons.'},
+  {tier:'hard', t:'fission', e:'U235/92 + n1/0 -> Xe140/54 + Sr94/38 + 2 n1/0', p:'Uranium-235 absorbs a neutron and splits into xenon-140, strontium-94, and neutrons.'},
+  {tier:'hard', t:'fission', e:'U235/92 + n1/0 -> Cs144/55 + Rb90/37 + 2 n1/0', p:'Uranium-235 absorbs a neutron and splits into cesium-144, rubidium-90, and neutrons.'},
+  {tier:'hard', t:'fission', e:'Pu239/94 + n1/0 -> Xe134/54 + Zr103/40 + 3 n1/0', p:'Plutonium-239 absorbs a neutron and splits into xenon-134, zirconium-103, and neutrons.'},
+  {tier:'hard', t:'fusion', e:'H2/1 + H3/1 -> He4/2 + n1/0', p:'Hydrogen-2 (deuterium) and hydrogen-3 (tritium) fuse, releasing a neutron.'},
+  {tier:'hard', t:'fusion', e:'H2/1 + H2/1 -> He3/2 + n1/0', p:'Two hydrogen-2 nuclei fuse, releasing a neutron.'},
+  {tier:'hard', t:'fusion', e:'H2/1 + H2/1 -> H3/1 + H1/1', p:'Two hydrogen-2 nuclei fuse, forming hydrogen-3 and a proton.'},
+  {tier:'hard', t:'fusion', e:'He3/2 + He3/2 -> He4/2 + 2 H1/1', p:'Two helium-3 nuclei fuse, forming helium-4 and protons.'},
+  {tier:'hard', t:'fusion', e:'H1/1 + H2/1 -> He3/2 + γ0/0', p:'A proton (hydrogen-1) fuses with hydrogen-2 and gives off a gamma ray.'},
+  {tier:'hard', t:'trans', e:'N14/7 + He4/2 -> O17/8 + H1/1', p:'Nitrogen-14 is struck by an alpha particle and releases a proton.'},
+  {tier:'hard', t:'trans', e:'Be9/4 + He4/2 -> C12/6 + n1/0', p:'Beryllium-9 is struck by an alpha particle and releases a neutron.'},
+  {tier:'hard', t:'trans', e:'Al27/13 + He4/2 -> P30/15 + n1/0', p:'Aluminum-27 is struck by an alpha particle and releases a neutron.'},
+  {tier:'hard', t:'trans', e:'U238/92 + n1/0 -> U239/92', p:'Uranium-238 absorbs a neutron.'},
+  {tier:'hard', t:'trans', e:'Co59/27 + n1/0 -> Co60/27', p:'Cobalt-59 absorbs a neutron.'},
+  {tier:'hard', t:'trans', e:'N14/7 + n1/0 -> C14/6 + H1/1', p:'Nitrogen-14 absorbs a neutron and releases a proton.'},
+  {tier:'hard', t:'trans', e:'Li6/3 + n1/0 -> H3/1 + He4/2', p:'Lithium-6 absorbs a neutron and releases an alpha particle.'},
+  {tier:'hard', t:'trans', e:'U238/92 + C12/6 -> Cf246/98 + 4 n1/0', p:'Uranium-238 is struck by a carbon-12 nucleus, producing californium-246 and neutrons.'},
+  {tier:'hard', t:'trans', e:'Bi209/83 + Fe58/26 -> Mt266/109 + n1/0', p:'Bismuth-209 is struck by an iron-58 nucleus and releases one neutron.'}
+];
+function parseSp(tok) {
+  const m = tok.trim().match(/^(?:(\d+)\s+)?([A-Za-zγ]+)(\d+)\/([+-]?\d+)$/);
+  if (!m) throw new Error('Bad species: ' + tok);
+  return { coef: m[1] ? +m[1] : 1, sym: m[2], A: +m[3], Z: parseInt(m[4], 10) };
+}
+BANK.forEach(b => {
+  const [l, r] = b.e.split('->');
+  b.eq = { left: l.split(' + ').map(parseSp), right: r.split(' + ').map(parseSp) };
+});
+
+/* ================= SPECIES BUTTONS ================= */
+const SPECIES = [
+  {k:'n',   name:'neutron',  sym:'n',  A:1, Z:0},
+  {k:'p',   name:'proton',   sym:'p',  A:1, Z:1},
+  {k:'a',   name:'alpha',    sym:'He', A:4, Z:2},
+  {k:'b',   name:'beta',     sym:'e',  A:0, Z:-1},
+  {k:'pos', name:'positron', sym:'e',  A:0, Z:1},
+  {k:'g',   name:'gamma',    sym:'γ',  A:0, Z:0},
+  {k:'d',   name:'deuteron', sym:'H',  A:2, Z:1},
+  {k:'t',   name:'triton',   sym:'H',  A:3, Z:1}
+];
+
+/* ================= CHEMISTRY HELPERS ================= */
+function sums(side) { let A = 0, Z = 0; side.forEach(s => { A += s.coef * s.A; Z += s.coef * s.Z; }); return {A, Z}; }
+function normSym(s) { return (s.sym === 'p') ? 'H' : s.sym; }
+function keyOf(s) { return normSym(s) + '|' + s.A + '|' + s.Z; }
+function expandKeys(side) { const out = []; side.forEach(s => { for (let i = 0; i < s.coef; i++) out.push(keyOf(s)); }); return out.sort(); }
+function sameSide(a, b) { const x = expandKeys(a), y = expandKeys(b); return x.length === y.length && x.every((v, i) => v === y[i]); }
+function fmtZ(sym, z) {
+  if (z === '' || z === null || z === undefined) return '';
+  const s = String(z);
+  if (s === '-') return '−';
+  if (s.startsWith('-')) return '−' + s.slice(1);
+  if (sym === 'e' && +s > 0) return '+' + s;
+  return s;
+}
+function speciesErr(s) {
+  const nm = s.sym;
+  if (nm === 'n') return (s.A === 1 && s.Z === 0) ? null : 'A neutron (n) has top number 1 and bottom number 0.';
+  if (nm === 'p') return (s.A === 1 && s.Z === 1) ? null : 'A proton (p) has top number 1 and bottom number 1.';
+  if (nm === 'e') return (s.A === 0 && (s.Z === -1 || s.Z === 1)) ? null : 'An electron or positron (e) has top number 0 and bottom number −1 (beta) or +1 (positron).';
+  if (nm === 'γ') return (s.A === 0 && s.Z === 0) ? null : 'A gamma ray (γ) has top number 0 and bottom number 0.';
+  if (ZOF[nm] === undefined) return `"${nm}" is not a symbol I recognize.`;
+  if (ZOF[nm] !== s.Z) return `The symbol ${nm} doesn't match its bottom number. The bottom number of an element is its atomic number.`;
+  return null;
+}
+
+/* ================= RANDOM ================= */
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function pickVaried(list, n) { // prefer different reaction types
+  const pool = shuffle(list.slice()), out = [], used = new Set();
+  for (const it of pool) { if (out.length < n && !used.has(it.t)) { out.push(it); used.add(it.t); } }
+  for (const it of pool) { if (out.length < n && !out.includes(it)) out.push(it); }
+  return shuffle(out);
+}
+
+/* ================= STATE ================= */
+const SET_SIZE = 12, PTS = [100, 50, 25];
+const S = {
+  mode: 'guided', level: 1,
+  guided: { set: [], qi: 0, results: [], q: null },
+  free: { tokens: [], sel: -1, field: 'A', fresh: true, fb: null, solved: false, done: false }
+};
+const cur = () => S.mode === 'free' ? S.free : S.guided.q;
+const isBuild = () => S.mode === 'free' || S.level === 3;
+
+function newSet() {
+  const by = t => BANK.filter(b => b.tier === t);
+  S.guided.set = [...pickVaried(by('easy'), 4), ...pickVaried(by('medium'), 4), ...pickVaried(by('hard'), 4)];
+  S.guided.qi = 0; S.guided.results = [];
+  loadQuestion();
+}
+function spTok(s, extra) { return Object.assign({ t:'sp', sym:s.sym, A:String(s.A), Z:String(s.Z), coef: s.coef > 1 ? String(s.coef) : '' }, extra || {}); }
+function keyTokens(eq, extra) {
+  const out = [];
+  eq.left.forEach((s, i) => { if (i) out.push({t:'plus'}); out.push(spTok(s, extra)); });
+  out.push({t:'arrow'});
+  eq.right.forEach((s, i) => { if (i) out.push({t:'plus'}); out.push(spTok(s, extra)); });
+  return out;
+}
+function loadQuestion() {
+  const item = S.guided.set[S.guided.qi];
+  const q = { item, tokens: [], sel: -1, field: 'A', fresh: true, misses: 0, hints: 0, done: false, correct: false, fb: null, hint: '' };
+  if (S.level < 3) {
+    q.tokens = keyTokens(item.eq, { given: true });
+    const spIdx = q.tokens.map((t, i) => t.t === 'sp' ? i : -1).filter(i => i >= 0);
+    const blanks = shuffle(spIdx.slice()).slice(0, S.level === 1 ? 1 : 2).sort((a, b) => a - b);
+    blanks.forEach((i, n) => {
+      const t = q.tokens[i];
+      q.tokens[i] = { t:'sp', sym:'', A:'', Z:'', coef:t.coef, blank:true, bn:n + 1, ans:{ sym:t.sym, A:t.A, Z:t.Z } };
+    });
+    q.sel = blanks[0];
+  }
+  S.guided.q = q;
+  render();
+}
+
+/* ================= DOM ================= */
+const $ = id => document.getElementById(id);
+const ws = $('ws');
+
+function buildPeriodicTable() {
+  const pt = $('pt'); const cells = [];
+  for (let z = 1; z <= 118; z++) {
+    const [r, c] = ptPos(z);
+    const blk = r >= 9 ? 'f' : (c <= 2 && z !== 2) ? 's' : c >= 13 ? 'p' : 'd';
+    cells.push(`<button class="el blk-${blk}" data-sym="${SYMS[z-1]}" style="grid-row:${r};grid-column:${c}" title="${NAMES[z-1]}"><span class="z">${z}</span><span class="s">${SYMS[z-1]}</span><span class="n">${NAMES[z-1]}</span></button>`);
+  }
+  cells.push('<div class="ph" style="grid-row:6;grid-column:3">57–71</div>');
+  cells.push('<div class="ph" style="grid-row:7;grid-column:3">89–103</div>');
+  cells.push('<div class="spacer" style="grid-row:8"></div>');
+  pt.innerHTML = cells.join('');
+  pt.addEventListener('click', e => {
+    const b = e.target.closest('.el'); if (!b) return;
+    b.classList.add('flash'); setTimeout(() => b.classList.remove('flash'), 250);
+    onElement(b.dataset.sym);
+  });
+}
+function noteHTML(s) { return `<sup>${s.A}</sup><sub>${fmtZ(s.sym, s.Z)}</sub>${s.sym}`; }
+function renderSpecies() {
+  const full = !isBuild();
+  $('species').innerHTML = SPECIES.map(s =>
+    `<button class="sp" data-k="${s.k}">${full ? `<span class="note">${noteHTML(s)}</span>` : `<span class="note">${s.sym}</span>`}<span class="lbl">${s.name}</span></button>`).join('');
+}
+function buildNumpad() {
+  const keys = ['7','8','9','4','5','6','1','2','3','±','0','⌫'];
+  $('numpad').innerHTML = keys.map(k => `<button data-k="${k}">${k}</button>`).join('') + '<button class="wide" data-k="C">Clear this number</button>';
+  $('numpad').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const k = b.dataset.k;
+    if (k === '±') onSign(); else if (k === '⌫') onBack(); else if (k === 'C') onClearField(); else onDigit(k);
+  });
+}
+
+/* ================= RENDER ================= */
+function setFb(c, cls, msg) { c.fb = msg ? { cls, msg } : null; }
+function isEditable(tk) {
+  const c = cur(); if (!c || c.done) return false;
+  if (tk.t !== 'sp') return isBuild();
+  return isBuild() ? !tk.revealed : !!tk.blank;
+}
+function render() {
+  const c = cur(), guided = S.mode === 'guided', build = isBuild();
+  // header
+  $('modeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.mode === S.mode));
+  $('levelSeg').hidden = !guided;
+  $('levelSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.level === S.level));
+  $('progress').hidden = !guided;
+  if (guided) {
+    const q = c;
+    $('qnum').textContent = `Question ${S.guided.qi + 1} / ${SET_SIZE}`;
+    const tb = $('tier'); tb.className = 'badge ' + q.item.tier; tb.textContent = q.item.tier;
+    $('tries').innerHTML = [0,1,2].map(i => `<i class="${i < q.misses ? 'used' : ''}"></i>`).join('');
+  }
+  // prompt
+  let p;
+  if (!guided) p = 'Build any nuclear equation. Tap an element or particle to add it, use <b>+</b> and <b>→</b> to connect species, then press <b>Check</b>.';
+  else if (S.level === 1) p = 'Fill in the blank so the top numbers and the bottom numbers balance.';
+  else if (S.level === 2) p = `<b>${c.item.p}</b><br>Fill in both blanks.`;
+  else p = `<b>${c.item.p}</b><br>Write the complete nuclear equation.`;
+  $('prompt').innerHTML = p;
+  // workspace
+  ws.classList.toggle('build', build);
+  renderWS();
+  // tools & buttons
+  $('tools').hidden = !build || c.done;
+  $('hintBtn').hidden = !guided;
+  $('hintBtn').disabled = c.done || c.hints >= 3;
+  $('hintBtn').textContent = guided ? `Hint (${3 - c.hints} left)` : 'Hint';
+  $('clearBtn').textContent = build ? 'Clear All' : 'Clear';
+  $('clearBtn').disabled = !!c.done;
+  $('checkBtn').hidden = !!c.done && guided;
+  $('nextBtn').hidden = !(guided && c.done);
+  if (guided) $('nextBtn').textContent = S.guided.qi === SET_SIZE - 1 ? 'See Results →' : 'Next →';
+  // feedback
+  const fb = $('fb'); fb.className = 'fb' + (c.fb ? ' ' + c.fb.cls : ''); fb.textContent = c.fb ? c.fb.msg : '';
+  $('hintline').innerHTML = guided ? (c.hint || '') : '';
+  // numpad target
+  $('targetSeg').querySelector('[data-field="coef"]').hidden = !build;
+  $('targetSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.field === c.field));
+  $('padtip').innerHTML = build
+    ? 'Pick <b>Top</b>, <b>Bottom</b> or <b>Coef</b>, then tap numbers. Tapping a number lets you retype it. Typing a bottom number fills in the element. Use <b>±</b> for a negative bottom number. A blank coefficient means 1.'
+    : 'Tap a blank, then choose an element or particle, or just type the bottom number and the element fills in. Tap a number to retype it.';
+  renderSpecies();
+  renderBalance();
+  updateAnimIdle();
+}
+function renderWS() {
+  const c = cur();
+  if (!c.tokens.length) {
+    ws.innerHTML = `<span class="wsempty">Tap an element or a particle below to start building.</span>`;
+    return;
+  }
+  ws.innerHTML = c.tokens.map((tk, i) => {
+    if (tk.t !== 'sp') {
+      const sel = isBuild() && c.sel === i && !c.done ? ' sel' : '';
+      return `<span class="tok op${tk.t === 'arrow' ? ' arrow' : ''}${sel}" data-i="${i}">${tk.t === 'plus' ? '+' : '→'}</span>`;
+    }
+    const ed = isEditable(tk), sel = ed && c.sel === i;
+    const act = f => (sel && c.field === f) ? ' active' : '';
+    const cls = ['tok', 'nuc'];
+    if (tk.blank && !tk.revealed) cls.push('blank');
+    if (isBuild() && !tk.revealed && !c.done) cls.push('edit');
+    if (sel) cls.push('sel');
+    if (tk.revealed) cls.push('revealed');
+    if (c.done && c.correct && (tk.blank || isBuild())) cls.push('done-ok');
+    let coef = '';
+    if (isBuild() && !tk.revealed) {
+      if (tk.coef !== '') coef = `<span class="coef f${act('coef')}" data-f="coef">${tk.coef}</span>`;
+      else if (sel) coef = `<span class="coef f empty${act('coef')}" data-f="coef">□</span>`;
+    } else if (tk.coef !== '') coef = `<span class="coef">${tk.coef}</span>`;
+    const A = tk.A === '' ? '□' : tk.A, Z = tk.Z === '' ? '□' : fmtZ(tk.sym, tk.Z);
+    return `<span class="${cls.join(' ')}" data-i="${i}">${coef}<span class="nums"><span class="f${tk.A === '' ? ' empty' : ''}${act('A')}" data-f="A">${A}</span><span class="f${tk.Z === '' ? ' empty' : ''}${act('Z')}" data-f="Z">${Z}</span></span><span class="sym f${tk.sym === '' ? ' empty' : ''}${act('sym')}" data-f="sym">${tk.sym || '?'}</span></span>`;
+  }).join('');
+  const s = ws.querySelector('.sel'); if (s && s.scrollIntoView) s.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+function liveSums(tokens) {
+  const L = {A:0, Z:0}, R = {A:0, Z:0}; let side = L, complete = true, hasArrow = false;
+  tokens.forEach(t => {
+    if (t.t === 'arrow') { side = R; hasArrow = true; return; }
+    if (t.t !== 'sp') return;
+    const k = t.coef === '' ? 1 : (parseInt(t.coef, 10) || 0);
+    const A = parseInt(t.A, 10), Z = parseInt(t.Z, 10);
+    if (isNaN(A) || isNaN(Z) || !t.sym) complete = false;
+    side.A += k * (A || 0); side.Z += k * (Z || 0);
+  });
+  return { L, R, complete: complete && hasArrow };
+}
+function renderBalance() {
+  const c = cur(); const show = S.mode === 'free' || c.hints >= 3 || c.done;
+  $('bal').hidden = !show; if (!show) return;
+  const { L, R, complete } = liveSums(c.tokens);
+  const bar = (fill, val, max, eq) => { const el = $(fill); el.style.width = (max > 0 ? Math.max(0, val) / max * 100 : 0) + '%'; el.classList.toggle('eq', eq); };
+  const mA = Math.max(L.A, R.A, 1), mZ = Math.max(Math.abs(L.Z), Math.abs(R.Z), 1);
+  const eqA = complete && L.A === R.A, eqZ = complete && L.Z === R.Z;
+  bar('bAL', L.A, mA, eqA); bar('bAR', R.A, mA, eqA); bar('bZL', Math.abs(L.Z), mZ, eqZ); bar('bZR', Math.abs(R.Z), mZ, eqZ);
+  $('vAL').textContent = L.A; $('vAR').textContent = R.A; $('vZL').textContent = fmtZ('', L.Z); $('vZR').textContent = fmtZ('', R.Z);
+  $('sA').textContent = eqA ? '=' : '≠'; $('sA').className = 'bs ' + (eqA ? 'eq' : 'ne');
+  $('sZ').textContent = eqZ ? '=' : '≠'; $('sZ').className = 'bs ' + (eqZ ? 'eq' : 'ne');
+}
+
+/* ================= EDITING ================= */
+function edited() { const c = cur(); if (S.mode === 'free') { S.free.solved = false; } setFb(c, null, null); }
+function flash(msg) { const c = cur(); setFb(c, 'info', msg); render(); }
+function nextEmptyBlank(c, from) {
+  const n = c.tokens.length;
+  for (let k = 1; k <= n; k++) { const i = (from + k) % n, t = c.tokens[i]; if (t.blank && (!t.sym || t.A === '' || t.Z === '')) return i; }
+  return from;
+}
+function placeSymbol(sym, Z, full) { // full = {A,Z} to fill completely
+  const c = cur(); if (c.done) return;
+  if (!isBuild()) {
+    const tk = c.tokens[c.sel];
+    if (!tk || !tk.blank) { flash('Tap a blank first.'); return; }
+    tk.sym = sym; tk.Z = Z; if (full) { tk.A = String(full.A); tk.Z = String(full.Z); }
+    c.field = 'A'; c.fresh = true;
+    if (full) c.sel = nextEmptyBlank(c, c.sel);
+  } else {
+    const tk = c.tokens[c.sel];
+    if (tk && tk.t === 'sp' && (tk.sym === '' || c.field === 'sym')) { tk.sym = sym; tk.Z = Z; }
+    else {
+      const at = c.sel >= 0 ? c.sel + 1 : c.tokens.length;
+      c.tokens.splice(at, 0, { t:'sp', sym, A:'', Z, coef:'' });
+      c.sel = at;
+    }
+    c.field = 'A'; c.fresh = true;
+  }
+  edited(); render();
+}
+function onElement(sym) {
+  $('selinfo').textContent = `${sym} — ${NAMES[ZOF[sym]-1]}`;
+  placeSymbol(sym, String(ZOF[sym]));
+}
+function onSpecies(k) {
+  const s = SPECIES.find(x => x.k === k); if (!s) return;
+  $('selinfo').textContent = `${s.name} (${s.sym})`;
+  if (isBuild()) placeSymbol(s.sym, '');
+  else placeSymbol(s.sym, String(s.Z), s);
+}
+function editTarget() {
+  const c = cur(); if (c.done) return null;
+  const tk = c.tokens[c.sel];
+  if (!tk || tk.t !== 'sp' || !isEditable(tk)) { flash(isBuild() ? 'Tap a species first (or tap an element to add one).' : 'Tap a blank first.'); return null; }
+  if (c.field === 'sym') c.field = 'A';
+  if (c.field === 'coef' && !isBuild()) c.field = 'A';
+  return tk;
+}
+function autoSym(tk) { // typing a bottom number fills in the element
+  if (tk.sym !== '' && ZOF[tk.sym] === undefined) return; // keep particles (n, p, e, γ)
+  const z = /^\d+$/.test(tk.Z) ? parseInt(tk.Z, 10) : NaN;
+  tk.sym = (z >= 1 && z <= 118) ? SYMS[z - 1] : '';
+  if (tk.sym) $('selinfo').textContent = `Bottom number ${z} → ${tk.sym} — ${NAMES[z - 1]}`;
+}
+function onDigit(d) {
+  const tk = editTarget(); if (!tk) return; const c = cur(), f = c.field;
+  const max = f === 'coef' ? 2 : 3;
+  // A freshly selected number is replaced by the first digit typed; a full number starts over.
+  let v = c.fresh ? '' : tk[f];
+  if (v.replace('-', '').length >= max) v = v.startsWith('-') ? '-' : '';
+  if (f === 'coef' && v === '' && d === '0') { flash('A coefficient can’t be 0.'); return; }
+  if (v === '0') v = ''; else if (v === '-0') v = '-';
+  tk[f] = v + d; c.fresh = false;
+  if (f === 'Z') autoSym(tk);
+  edited(); render();
+}
+function onSign() {
+  const tk = editTarget(); if (!tk) return; const c = cur();
+  c.field = 'Z'; c.fresh = false;
+  tk.Z = tk.Z.startsWith('-') ? tk.Z.slice(1) : '-' + tk.Z;
+  autoSym(tk); edited(); render();
+}
+function onBack() { const tk = editTarget(); if (!tk) return; const c = cur(); tk[c.field] = tk[c.field].slice(0, -1); c.fresh = false; if (c.field === 'Z') autoSym(tk); edited(); render(); }
+function onClearField() { const tk = editTarget(); if (!tk) return; const c = cur(); tk[c.field] = ''; c.fresh = false; if (c.field === 'Z') autoSym(tk); edited(); render(); }
+function insertOp(type) {
+  const c = cur(); if (c.done || !isBuild()) return;
+  const at = c.sel >= 0 ? c.sel + 1 : c.tokens.length;
+  c.tokens.splice(at, 0, { t: type }); c.sel = at; edited(); render();
+}
+function deleteSel() {
+  const c = cur(); if (c.done || !isBuild()) return;
+  if (c.sel < 0 || c.sel >= c.tokens.length) { flash('Tap something in the equation to delete it.'); return; }
+  c.tokens.splice(c.sel, 1); c.sel = Math.min(c.sel - 1 < 0 && c.tokens.length ? 0 : c.sel - 1, c.tokens.length - 1);
+  edited(); render();
+}
+function clearAll() {
+  const c = cur(); if (c.done) return;
+  if (isBuild()) { c.tokens = []; c.sel = -1; }
+  else { let first = -1; c.tokens.forEach((t, i) => { if (t.blank) { t.sym = ''; t.A = ''; t.Z = ''; if (first < 0) first = i; } }); c.sel = first; }
+  c.field = 'A'; edited(); render();
+}
+ws.addEventListener('click', e => {
+  const el = e.target.closest('.tok'); if (!el) return;
+  const c = cur(); const i = +el.dataset.i, tk = c.tokens[i];
+  if (!tk || !isEditable(tk)) return;
+  c.sel = i;
+  const f = e.target.closest('[data-f]');
+  if (f && (f.dataset.f !== 'coef' || isBuild())) c.field = f.dataset.f;
+  else if (tk.t === 'sp' && c.field === 'sym') c.field = 'A';
+  c.fresh = true;
+  render();
+});
+
+/* ================= CHECKING ================= */
+function readEquation(tokens) {
+  // returns {left,right} or {err, idx}
+  const spIdx = tokens.map((t, i) => t.t === 'sp' ? i : -1).filter(i => i >= 0);
+  if (!spIdx.length) return { err: 'Add some species first.' };
+  for (const i of spIdx) {
+    const t = tokens[i];
+    if (!t.sym || t.A === '' || t.Z === '' || t.Z === '-' || isNaN(parseInt(t.A, 10)) || isNaN(parseInt(t.Z, 10)))
+      return { err: 'Finish every species first: each one needs a symbol, a top number and a bottom number.', idx: i };
+    if (t.coef !== '' && !(parseInt(t.coef, 10) >= 1)) return { err: 'A coefficient must be 1 or more.', idx: i };
+  }
+  const arrows = tokens.filter(t => t.t === 'arrow').length;
+  if (arrows === 0) return { err: 'Add a reaction arrow (→).' };
+  if (arrows > 1) return { err: 'Use only one reaction arrow.' };
+  const ai = tokens.findIndex(t => t.t === 'arrow');
+  const sides = [tokens.slice(0, ai), tokens.slice(ai + 1)], out = [];
+  for (let k = 0; k < 2; k++) {
+    const side = sides[k], name = k ? 'right' : 'left';
+    if (!side.length) return { err: `The ${name} side of the arrow is empty.` };
+    for (let i = 0; i < side.length; i++) {
+      const want = i % 2 === 0 ? 'sp' : 'plus';
+      if (side[i].t !== want) return { err: `Check the ${name} side: put one + between each pair of species, and no + at the ends.` };
+    }
+    if (side[side.length - 1].t === 'plus') return { err: `Check the ${name} side: there is an extra + at the end.` };
+    out.push(side.filter(t => t.t === 'sp').map(t => ({ sym: t.sym, A: parseInt(t.A, 10), Z: parseInt(t.Z, 10), coef: t.coef === '' ? 1 : parseInt(t.coef, 10) })));
+  }
+  return { left: out[0], right: out[1] };
+}
+function onCheck() {
+  const c = cur(); if (c.done) return;
+  const r = readEquation(c.tokens);
+  c.fresh = true;
+  if (r.err) { if (r.idx !== undefined) { c.sel = r.idx; } setFb(c, 'info', r.err); render(); return; }
+  if (S.mode === 'free') return checkFree(r);
+  checkGuided(r);
+}
+function checkFree(r) {
+  const c = S.free;
+  for (const s of [...r.left, ...r.right]) { const e = speciesErr(s); if (e) { setFb(c, 'bad', e); render(); return; } }
+  const L = sums(r.left), R = sums(r.right), msgs = [];
+  if (L.A !== R.A) msgs.push(`Top numbers don't balance (left ${L.A}, right ${R.A}).`);
+  if (L.Z !== R.Z) msgs.push(`Bottom numbers don't balance (left ${fmtZ('', L.Z)}, right ${fmtZ('', R.Z)}).`);
+  if (msgs.length) { setFb(c, 'bad', msgs.join(' ')); render(); return; }
+  setFb(c, 'ok', `✔ Balanced! Top: ${L.A} = ${R.A}. Bottom: ${fmtZ('', L.Z)} = ${fmtZ('', R.Z)}.`);
+  c.solved = true; render();
+  play(r.left, r.right, 'Your reaction');
+}
+function checkGuided(r) {
+  const q = S.guided.q, key = q.item.eq, lvl = S.level;
+  if (sameSide(r.left, key.left) && sameSide(r.right, key.right)) {
+    q.done = true; q.correct = true; q.pts = PTS[q.misses];
+    S.guided.results[S.guided.qi] = { tier: q.item.tier, misses: q.misses, correct: true, pts: q.pts };
+    const praise = ['Correct on the first try!', 'Correct!', 'Correct — got it!'][q.misses];
+    setFb(q, 'ok', `✔ ${praise} +${q.pts}%`); q.hint = '';
+    render(); play(key.left, key.right, cap(TYPE_NAME[q.item.t]));
+    return;
+  }
+  // wrong
+  let msg = null;
+  const all = [...r.left, ...r.right];
+  for (const s of all) { const e = speciesErr(s); if (e) { msg = e; break; } }
+  if (!msg) {
+    const L = sums(r.left), R = sums(r.right), parts = [];
+    if (lvl === 1) {
+      if (L.A !== R.A) parts.push('The top number (mass number) in the blank isn’t right.');
+      if (L.Z !== R.Z) parts.push('The bottom number (atomic number) in the blank isn’t right.');
+    } else {
+      if (L.A !== R.A) parts.push('The top numbers don’t balance.');
+      if (L.Z !== R.Z) parts.push('The bottom numbers don’t balance.');
+    }
+    if (parts.length) msg = parts.join(' ');
+    else if (lvl === 2) msg = 'It balances, but it doesn’t match the description. Reread it.';
+    else msg = `Balanced, but that isn’t the ${TYPE_NAME[q.item.t]} described.`;
+  }
+  q.misses++;
+  if (q.misses >= 3) { reveal(q, msg); return; }
+  clearWrong(q);
+  const left = 3 - q.misses;
+  setFb(q, 'bad', `✘ ${msg} (${left} ${left === 1 ? 'try' : 'tries'} left)`);
+  render();
+}
+function clearWrong(q) {
+  // Empties the numbers that are wrong so the student can type the right ones.
+  let first = -1, firstField = 'A';
+  const mark = (i, f) => { if (first < 0) { first = i; firstField = f; } };
+  const ai = q.tokens.findIndex(t => t.t === 'arrow');
+  const same = (t, a) => normSym(t) === normSym(a) && String(t.A) === String(a.A) && String(t.Z) === String(a.Z);
+  if (S.level < 3) {
+    const blanks = q.tokens.map((t, i) => t.blank ? i : -1).filter(i => i >= 0);
+    blanks.forEach(i => {
+      const t = q.tokens[i];
+      if (same(t, t.ans)) return;
+      // a correct answer typed in the other blank on the same side (order doesn't matter)
+      if (blanks.some(j => j !== i && (j < ai) === (i < ai) && same(t, q.tokens[j].ans) && !same(q.tokens[j], q.tokens[j].ans))) return;
+      if (String(t.A) !== String(t.ans.A)) { t.A = ''; mark(i, 'A'); }
+      if (String(t.Z) !== String(t.ans.Z) || normSym(t) !== normSym(t.ans)) { t.Z = ''; t.sym = ''; mark(i, 'Z'); }
+    });
+  } else if (ai >= 0) {
+    const key = q.item.eq;
+    [[key.left, 0, ai], [key.right, ai + 1, q.tokens.length]].forEach(([side, from, to]) => {
+      const pool = side.map(s => ({ sym: s.sym, A: String(s.A), Z: String(s.Z) }));
+      const idx = [];
+      for (let i = from; i < to; i++) if (q.tokens[i].t === 'sp') idx.push(i);
+      const rest = idx.filter(i => { const k = pool.findIndex(a => same(q.tokens[i], a)); if (k >= 0) { pool.splice(k, 1); return false; } return true; });
+      rest.forEach(i => {
+        const t = q.tokens[i], k = pool.findIndex(a => normSym(a) === normSym(t)); if (k < 0) return;
+        const a = pool.splice(k, 1)[0];
+        if (String(t.A) !== a.A) { t.A = ''; mark(i, 'A'); }
+        if (String(t.Z) !== a.Z) { t.Z = ''; mark(i, 'Z'); }
+      });
+    });
+  }
+  if (first >= 0) { q.sel = first; q.field = firstField; q.fresh = true; }
+}
+function reveal(q, lastMsg) {
+  q.done = true; q.correct = false; q.pts = 0;
+  S.guided.results[S.guided.qi] = { tier: q.item.tier, misses: 3, correct: false, pts: 0 };
+  if (S.level === 3) q.tokens = keyTokens(q.item.eq, { revealed: true });
+  else q.tokens.forEach(t => { if (t.blank) { t.sym = t.ans.sym; t.A = t.ans.A; t.Z = t.ans.Z; t.revealed = true; } });
+  setFb(q, 'rev', `✘ ${lastMsg} Out of tries — the correct answer is shown in orange. Study it, then go on.`);
+  q.hint = '';
+  render(); play(q.item.eq.left, q.item.eq.right, cap(TYPE_NAME[q.item.t]));
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function onHint() {
+  const q = S.guided.q; if (S.mode !== 'guided' || q.done || q.hints >= 3) return;
+  q.hints++;
+  const lvl = S.level, b = lvl === 1 ? 'the blank' : 'the blanks';
+  if (lvl === 3) { q.hint = [1, 2, 3].slice(0, q.hints).map(n => `<span class="hl"><b>Hint ${n}:</b> ${l3Hint(q.item, n)}</span>`).join(''); render(); return; }
+  const H = [
+    `Add the top numbers on each side. Both sides must have the same total. What should the top number in ${b} be?`,
+    `Now add the bottom numbers on each side. What should the bottom number in ${b} be? When you type the bottom number, the element fills in automatically.`,
+    'Here are the running totals for each side (under the animation). Make both sides match.'
+  ];
+  q.hint = H[q.hints - 1];
+  render();
+}
+function nh(s, showCoef) { // nuclide as HTML
+  const c = showCoef && s.coef > 1 ? s.coef + ' ' : '';
+  return `<span class="hn">${c}<sup>${s.A}</sup><sub>${fmtZ(s.sym, s.Z)}</sub>${s.sym}</span>`;
+}
+const P = { a: {sym:'He',A:4,Z:2}, b: {sym:'e',A:0,Z:-1}, pos: {sym:'e',A:0,Z:1}, g: {sym:'γ',A:0,Z:0}, n: {sym:'n',A:1,Z:0} };
+const SETUP = html => `<span class="hs">${html}</span>`;
+const TYPE_HINT = {
+  alpha:    () => `<b>Alpha decay:</b> the nucleus gives off an alpha particle, ${nh(P.a)}. Set it up as:` + SETUP(`starting nucleus → new nucleus + ${nh(P.a)}`),
+  beta:     () => `<b>Beta decay:</b> the nucleus gives off a beta particle (an electron), ${nh(P.b)}. Set it up as:` + SETUP(`starting nucleus → new nucleus + ${nh(P.b)}`),
+  positron: () => `<b>Positron emission:</b> the nucleus gives off a positron, ${nh(P.pos)}. Set it up as:` + SETUP(`starting nucleus → new nucleus + ${nh(P.pos)}`),
+  ec:       () => `<b>Electron capture:</b> the nucleus pulls in an electron, ${nh(P.b)}, so the electron goes on the <b>left</b>. Set it up as:` + SETUP(`starting nucleus + ${nh(P.b)} → new nucleus`),
+  alphag:   () => `<b>Alpha decay with a gamma ray:</b> the nucleus gives off an alpha particle, ${nh(P.a)}, and a gamma ray, ${nh(P.g)}. Set it up as:` + SETUP(`starting nucleus → new nucleus + ${nh(P.a)} + ${nh(P.g)}`),
+  betag:    () => `<b>Beta decay with a gamma ray:</b> the nucleus gives off a beta particle, ${nh(P.b)}, and a gamma ray, ${nh(P.g)}. Set it up as:` + SETUP(`starting nucleus → new nucleus + ${nh(P.b)} + ${nh(P.g)}`),
+  fission:  () => `<b>Fission:</b> a big nucleus absorbs a neutron, ${nh(P.n)}, and splits into two smaller nuclei plus some neutrons. Set it up as:` + SETUP(`big nucleus + ${nh(P.n)} → smaller nucleus + smaller nucleus + neutrons`),
+  fusion:   () => `<b>Fusion:</b> small nuclei join together. Set it up as:` + SETUP(`nucleus + nucleus → everything that is made`),
+  trans:    () => `<b>Bombardment:</b> a particle or nucleus hits a target nucleus. Set it up as:` + SETUP(`target nucleus + what hits it → what is made + what is released`)
+};
+function l3Unknown(item) {
+  const p = item.p.toLowerCase(), eq = item.eq;
+  const named = s => {
+    if (['n', 'e', 'γ', 'p'].includes(s.sym) || (s.sym === 'H' && s.A === 1)) return true;
+    if (s.sym === 'He' && s.A === 4 && p.includes('alpha')) return true;
+    return p.includes(NAMES[ZOF[s.sym] - 1].toLowerCase() + '-' + s.A);
+  };
+  for (const side of ['left', 'right']) for (let i = 0; i < eq[side].length; i++) if (!named(eq[side][i])) return { side, i, kind: 'sp' };
+  for (const side of ['right', 'left']) for (let i = 0; i < eq[side].length; i++) if (eq[side][i].coef > 1) return { side, i, kind: 'coef' };
+  return null;
+}
+const partName = s => s.sym === 'n' ? 'neutron' : (s.sym === 'p' || (s.sym === 'H' && s.A === 1)) ? 'proton' : 'one';
+const term = v => v < 0 ? `(−${-v})` : String(v);
+function l3Hint(item, n) {
+  const eq = item.eq, u = l3Unknown(item);
+  if (n === 1) return TYPE_HINT[item.t]();
+  const show = (side, sideName) => side.map((s, i) => {
+    if (u && u.side === sideName && u.i === i) return u.kind === 'sp' ? '<span class="hq">?</span>' : `<span class="hq">?</span> ${nh(s)}`;
+    return nh(s, true);
+  }).join(' + ');
+  const setup = `${show(eq.left, 'left')} → ${show(eq.right, 'right')}`;
+  if (n === 2) return u
+    ? `Here is the setup. Work out the <span class="hq">?</span> and write it in:<span class="hl">${setup}</span>`
+    : `Write every species from the description in nuclide notation:<span class="hl">${setup}</span>`;
+  // n === 3: the arithmetic, without the final answer
+  if (!u) return 'Check each species: the top number is the mass number and the bottom number is the atomic number. The totals for each side are shown under the animation.';
+  const us = eq[u.side][u.i], other = u.side === 'left' ? eq.right : eq.left, mine = eq[u.side];
+  const T = (arr, f) => arr.reduce((a, s) => a + s.coef * s[f], 0);
+  if (u.kind === 'coef') {
+    const known = mine.filter((_, i) => i !== u.i), need = T(other, 'A'), have = T(known, 'A');
+    return `The ${u.side === 'left' ? 'right' : 'left'} side's top numbers add up to <b>${need}</b>. The ${u.side} side without the ${partName(us)}s adds up to ${known.length > 1 ? known.map(s => term(s.coef * s.A)).join(' + ') + ' = ' : ''}<b>${have}</b>.<span class="hl">Each ${partName(us)} adds ${us.A} to the top. How many ${partName(us)}s does it take to get from ${have} to ${need}?</span>(The totals for each side are also shown under the animation.)`;
+  }
+  const known = mine.filter((_, i) => i !== u.i);
+  const line = f => {
+    const tot = T(other, f), parts = known.filter(s => s[f] !== 0).map(s => term(s.coef * s[f]));
+    const lhs = other.filter(s => s[f] !== 0).map(s => term(s.coef * s[f]));
+    const lhsTxt = lhs.length ? lhs.join(' + ') : '0';
+    if (!parts.length) return `<span class="hq">?</span> = ${lhsTxt}`;
+    return `${lhsTxt} = <span class="hq">?</span> + ${parts.join(' + ')}, so <span class="hq">?</span> = ${tot} − ${parts.join(' − ')}`;
+  };
+  return `<b>Top numbers:</b> ${line('A')}<span class="hl"><b>Bottom numbers:</b> ${line('Z')}</span><span class="hl">Type the bottom number and the element fills in automatically. (The totals for each side are also shown under the animation.)</span>`;
+}
+function onNext() {
+  if (S.mode !== 'guided' || !S.guided.q.done) return;
+  if (S.guided.qi >= SET_SIZE - 1) { showResults(); return; }
+  S.guided.qi++; loadQuestion();
+}
+
+/* ================= MODALS ================= */
+function openModal(html) { $('modal').innerHTML = html; $('overlay').hidden = false; }
+function closeModal() { $('overlay').hidden = true; }
+function showResults() {
+  const r = S.guided.results;
+  const pct = Math.round(r.reduce((a, x) => a + x.pts, 0) / SET_SIZE);
+  const first = r.filter(x => x.correct && x.misses === 0).length;
+  const cells = r.map((x, i) => {
+    const cls = !x.correct ? 'rx' : ['r0', 'r1', 'r2'][x.misses];
+    const mark = !x.correct ? '✘' : '✔';
+    return `<div class="rc ${cls}">Q${i + 1} ${mark}<br>${x.pts}%</div>`;
+  }).join('');
+  openModal(`<h2>Level ${S.level} — Set Complete</h2>
+    <div class="big">${pct}%</div>
+    <div>Correct on the first try: <b>${first} / ${SET_SIZE}</b></div>
+    <div class="muted">${new Date().toLocaleString()}</div>
+    <div class="rgrid">${cells}</div>
+    <div class="muted" style="margin-top:8px">Q1–4 Easy · Q5–8 Medium · Q9–12 Hard</div>
+    <div class="mrow"><button class="btn primary" data-act="newset">New Set (Level ${S.level})</button></div>
+    <div class="muted" style="margin-top:10px">Or change level:</div>
+    <div class="mrow">${[1,2,3].map(l => `<button class="btn" data-act="lvl" data-l="${l}">Level ${l}</button>`).join('')}</div>`);
+}
+function inProgress() { const g = S.guided; return g.qi > 0 || (g.q && (g.q.misses > 0 || g.q.done)); }
+function requestLevel(l) {
+  if (l === S.level) return;
+  if (inProgress()) {
+    openModal(`<h2>Switch to Level ${l}?</h2><p>Your current set will restart.</p>
+      <div class="mrow"><button class="btn primary" data-act="lvl" data-l="${l}">Yes, switch</button><button class="btn" data-act="cancel">Cancel</button></div>`);
+  } else setLevel(l);
+}
+function setLevel(l) { S.level = l; closeModal(); newSet(); }
+$('overlay').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'newset') { closeModal(); newSet(); }
+  else if (a === 'lvl') setLevel(+b.dataset.l);
+  else if (a === 'cancel') closeModal();
+});
+
+/* ================= ANIMATION ================= */
+const cv = $('cv'), g = cv.getContext('2d');
+const AN = { W: 0, H: 0, dpr: 1, scene: null, playing: false, t: 0, start: 0, raf: 0, idle: null, spriteS: 0, spr: null };
+const LAY = {};
+function layout(A, Z) {
+  A = Math.max(0, Math.min(A | 0, 300)); Z = Math.max(0, Math.min(Z | 0, A));
+  const k = A + '|' + Z; if (LAY[k]) return LAY[k];
+  const pts = [];
+  for (let i = 0; i < A; i++) { const r = 0.95 * Math.sqrt(i + 0.5), th = i * 2.399963; pts.push({ x: r * Math.cos(th), y: r * Math.sin(th), r, p: false }); }
+  const rnd = mulberry(A * 1009 + Z * 7 + 1), idx = pts.map((_, i) => i);
+  for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  for (let i = 0; i < Z; i++) pts[idx[i]].p = true;
+  pts.sort((a, b) => b.r - a.r);
+  return LAY[k] = pts;
+}
+function makeBall(s, c1, c2) {
+  const d = AN.dpr, n = Math.ceil(2 * s * d) + 2, c = document.createElement('canvas'); c.width = c.height = n;
+  const x = c.getContext('2d'), r = n / 2 - 1;
+  const gr = x.createRadialGradient(n / 2 - r * .35, n / 2 - r * .35, r * .1, n / 2, n / 2, r);
+  gr.addColorStop(0, c1); gr.addColorStop(1, c2);
+  x.fillStyle = gr; x.beginPath(); x.arc(n / 2, n / 2, r, 0, Math.PI * 2); x.fill();
+  return c;
+}
+function sprites(s) {
+  if (AN.spriteS === s && AN.spr) return AN.spr;
+  AN.spriteS = s;
+  return AN.spr = { p: makeBall(s, '#ffb0a8', '#b3202a'), n: makeBall(s, '#eef3f7', '#5c6874') };
+}
+function ballAt(img, x, y, s) { g.drawImage(img, x - s, y - s, 2 * s, 2 * s); }
+function scaleFor(maxA) { return Math.max(2, Math.min(9, (AN.H * 0.27) / (0.95 * Math.sqrt(Math.max(1, maxA)) + 1))); }
+function kindOf(sp) {
+  if (sp.sym === 'n') return 'n';
+  if (sp.sym === 'p' || (sp.sym === 'H' && sp.A === 1)) return 'p';
+  if (sp.sym === 'e') return 'e';
+  if (sp.sym === 'γ') return 'g';
+  return 'nuc';
+}
+function bodies(side) { const out = []; side.forEach(sp => { const n = Math.min(sp.coef || 1, 6); for (let i = 0; i < n; i++) out.push({ kind: kindOf(sp), sym: sp.sym, A: sp.A, Z: sp.Z }); }); return out; }
+function radiusOf(b, s) {
+  if (b.kind === 'nuc') return s * (0.95 * Math.sqrt(Math.max(1, Math.min(b.A, 300))) + 1);
+  if (b.kind === 'n' || b.kind === 'p') return s * 1.2;
+  return 7;
+}
+function drawNucleus(x, y, A, Z, s, glow) {
+  const sp = sprites(s);
+  if (glow > 0) {
+    const R = s * (0.95 * Math.sqrt(Math.max(1, A)) + 1) * 1.9;
+    const gr = g.createRadialGradient(x, y, 0, x, y, R);
+    gr.addColorStop(0, `rgba(255,230,140,${0.55 * glow})`); gr.addColorStop(1, 'rgba(255,230,140,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, R, 0, Math.PI * 2); g.fill();
+  }
+  const pts = layout(A, Z);
+  for (const p of pts) ballAt(p.p ? sp.p : sp.n, x + p.x * s, y + p.y * s, s);
+}
+function drawBody(b, x, y, s, dir) {
+  if (b.kind === 'nuc') { drawNucleus(x, y, b.A, b.Z, s, 0); return; }
+  if (b.kind === 'n' || b.kind === 'p') { const sp = sprites(s); ballAt(b.kind === 'p' ? sp.p : sp.n, x, y, s * 1.2); return; }
+  if (b.kind === 'e') {
+    g.save(); g.shadowColor = b.Z > 0 ? '#ffd84a' : '#5ab0ff'; g.shadowBlur = 12;
+    g.fillStyle = b.Z > 0 ? '#ffd84a' : '#5ab0ff'; g.beginPath(); g.arc(x, y, 5, 0, Math.PI * 2); g.fill(); g.restore(); return;
+  }
+}
+function drawGamma(x0, y0, ang, head, len) {
+  const tail = Math.max(0, head - len); if (head <= 0) return;
+  const ca = Math.cos(ang), sa = Math.sin(ang);
+  g.save(); g.strokeStyle = '#b58cff'; g.lineWidth = 2.5; g.shadowColor = '#b58cff'; g.shadowBlur = 8; g.beginPath();
+  for (let d = tail; d <= head; d += 2) {
+    const off = Math.sin(d / 4) * 5, px = x0 + ca * d - sa * off, py = y0 + sa * d + ca * off;
+    if (d === tail) g.moveTo(px, py); else g.lineTo(px, py);
+  }
+  g.stroke(); g.restore();
+}
+function drawNuclide(x, y, sym, A, Z, size, alpha) {
+  if (alpha <= 0) return;
+  g.save(); g.globalAlpha = Math.min(1, alpha); g.fillStyle = '#e6edf3'; g.textBaseline = 'alphabetic';
+  const small = Math.round(size * 0.55);
+  g.font = `${small}px 'Cambria Math',Cambria,'Times New Roman',serif`;
+  const aT = String(A), zT = fmtZ(sym, Z);
+  const nw = Math.max(g.measureText(aT).width, g.measureText(zT).width);
+  g.font = `${size}px 'Cambria Math',Cambria,'Times New Roman',serif`;
+  const sw = g.measureText(sym).width, total = nw + 2 + sw, x0 = x - total / 2;
+  g.fillText(sym, x0 + nw + 2, y + size * 0.35);
+  g.font = `${small}px 'Cambria Math',Cambria,'Times New Roman',serif`; g.textAlign = 'right';
+  g.fillText(aT, x0 + nw, y - size * 0.3);
+  g.fillText(zT, x0 + nw, y + size * 0.42);
+  g.restore();
+}
+function labelBody(b, x, y, s, alpha) {
+  const r = radiusOf(b, s), size = b.kind === 'nuc' ? 18 : 15;
+  let ly = y + r + size * 0.9;
+  if (ly > AN.H - 10) ly = y - r - size * 0.6;
+  drawNuclide(x, ly, b.sym, b.A, b.Z, size, alpha);
+}
+function title(text) { g.save(); g.fillStyle = '#8aa0b5'; g.font = '600 13px system-ui,sans-serif'; g.fillText(text, 10, 20); g.restore(); }
+const easeIn = u => u * u, easeOut = u => 1 - (1 - u) * (1 - u), clamp01 = u => Math.max(0, Math.min(1, u));
+
+function buildScene(left, right, ttl) {
+  const L = bodies(left), R = bodies(right);
+  const cA = left.reduce((a, s) => a + s.coef * Math.max(0, s.A), 0), cZ = left.reduce((a, s) => a + s.coef * s.Z, 0);
+  let ti = 0; L.forEach((b, i) => { if (b.A > L[ti].A) ti = i; });
+  const order = R.map((_, i) => i).sort((a, b) => R[b].A - R[a].A);
+  const heavy = order.filter(i => R[i].kind === 'nuc' && R[i].A >= 20);
+  const anchors = heavy.length >= 2 ? heavy : [order[0]];
+  const emitted = order.filter(i => !anchors.includes(i));
+  const maxA = Math.min(300, Math.max(4, cA, ...L.map(b => b.A), ...R.map(b => b.A)));
+  return { L, R, ti, anchors, emitted, cA, cZ, maxA, title: ttl, finished: false };
+}
+function drawScene(sc, t) {
+  const W = AN.W, H = AN.H; g.setTransform(AN.dpr, 0, 0, AN.dpr, 0, 0); g.clearRect(0, 0, W, H);
+  const s = scaleFor(sc.maxA), cx = W / 2, cy = H * 0.44;
+  title(sc.title);
+  const tgt = sc.L[sc.ti];
+  if (t < 0.42) {
+    const u = t / 0.42;
+    const wob = sc.L.length === 1 ? Math.sin(t * 95) * u * s * 0.9 : 0;
+    drawBody(tgt, cx + wob, cy, s);
+    labelBody(tgt, cx, cy, s, 1 - clamp01((u - 0.55) / 0.35));
+    const proj = sc.L.filter((_, i) => i !== sc.ti), m = proj.length;
+    proj.forEach((b, j) => {
+      const sx = Math.max(radiusOf(b, s) + 10, W * 0.08), sy = cy + (j - (m - 1) / 2) * Math.min(70, H * 0.3);
+      const ex = cx - radiusOf(tgt, s) * 0.5, e = easeIn(u);
+      const x = sx + (ex - sx) * e, y = sy + (cy - sy) * e;
+      drawBody(b, x, y, s);
+      labelBody(b, x, y, s, 1 - clamp01((u - 0.55) / 0.35));
+    });
+  } else if (t < 0.55) {
+    const u = (t - 0.42) / 0.13, wob = Math.sin(t * 140) * s * 0.7;
+    drawNucleus(cx + wob, cy, sc.cA, sc.cZ, s, 0.4 + 0.6 * Math.sin(u * Math.PI));
+  } else {
+    const u = easeOut(clamp01((t - 0.55) / 0.45)), raw = clamp01((t - 0.55) / 0.45);
+    if (raw < 0.5) { // flash ring
+      g.save(); g.strokeStyle = `rgba(255,230,140,${0.8 * (1 - raw * 2)})`; g.lineWidth = 3;
+      g.beginPath(); g.arc(cx, cy, 10 + raw * Math.min(W, H) * 0.8, 0, Math.PI * 2); g.stroke(); g.restore();
+    }
+    const la = clamp01((raw - 0.45) / 0.4);
+    const k = sc.anchors.length;
+    sc.anchors.forEach((i, j) => {
+      const b = sc.R[i];
+      const fx = k === 1 ? cx : cx + (j - (k - 1) / 2) * (W * 0.44 / Math.max(1, k - 1));
+      const x = cx + (fx - cx) * u;
+      drawBody(b, x, cy, s); labelBody(b, x, cy, s, la);
+    });
+    const m = sc.emitted.length, center = -0.5, step = Math.min(1.15, 3.6 / Math.max(1, m));
+    const MULTI = [-Math.PI / 2, Math.PI / 2, -Math.PI / 2 + 0.55, Math.PI / 2 - 0.55, -Math.PI / 2 - 0.55, Math.PI / 2 + 0.55];
+    const aR = k === 1 ? radiusOf(sc.R[sc.anchors[0]], s) : 0;
+    sc.emitted.forEach((i, j) => {
+      const b = sc.R[i], ang = k > 1 ? MULTI[j % 6] : center + (j - (m - 1) / 2) * step, ca = Math.cos(ang), sa = Math.sin(ang);
+      const D0 = aR * 0.6;
+      let D = Math.min(W, H) * 0.42 + aR * 0.5;
+      // keep inside canvas
+      const lim = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+      const exT = lim(cx + ca * D, 26, W - 26), eyT = lim(cy + sa * D, 34, H - 44);
+      if (b.kind === 'g') {
+        const len = Math.hypot(exT - cx, eyT - cy);
+        drawGamma(cx + ca * D0, cy + sa * D0, ang, u * (len - D0) + 0.0001, 60);
+        const hx = cx + ca * (D0 + u * (len - D0)), hy = cy + sa * (D0 + u * (len - D0));
+        drawNuclide(hx, hy + 22, 'γ', 0, 0, 15, la);
+        return;
+      }
+      const sx = cx + ca * D0, sy = cy + sa * D0, x = sx + (exT - sx) * u, y = sy + (eyT - sy) * u;
+      drawBody(b, x, y, s); labelBody(b, x, y, s, la);
+    });
+  }
+}
+function drawIdle() {
+  const W = AN.W, H = AN.H; g.setTransform(AN.dpr, 0, 0, AN.dpr, 0, 0); g.clearRect(0, 0, W, H);
+  const id = AN.idle; if (!id) return;
+  const cy = H * 0.44;
+  const question = (x, y, r) => {
+    g.save(); g.setLineDash([6, 5]); g.strokeStyle = '#ffb020'; g.lineWidth = 2; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = '#ffb020'; g.font = `700 ${Math.round(r)}px system-ui,sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('?', x, y); g.restore();
+  };
+  if (id.title) title(id.title);
+  if (!id.items.length) {
+    question(W / 2, cy, 34);
+    g.save(); g.fillStyle = '#8aa0b5'; g.font = '14px system-ui,sans-serif'; g.textAlign = 'center';
+    g.fillText(id.text || '', W / 2, cy + 64); g.restore(); return;
+  }
+  const items = id.items.map(it => it.unknown ? it : Object.assign({ kind: kindOf(it) }, it));
+  const maxA = Math.min(300, Math.max(4, ...items.map(it => it.unknown ? 4 : it.A)));
+  let s = scaleFor(maxA) * 0.85;
+  const gap = 34, arrowW = id.arrowQ ? 90 : 0;
+  const widthAt = sc => items.reduce((a, it) => a + 2 * (it.unknown ? 26 : radiusOf(it, sc)), 0) + gap * (items.length - 1) + arrowW;
+  let tw = widthAt(s); if (tw > W * 0.92) { s *= (W * 0.92) / tw; tw = widthAt(s); }
+  let x = (W - tw) / 2;
+  items.forEach((it, i) => {
+    const r = it.unknown ? 26 : radiusOf(it, s);
+    x += r;
+    if (it.unknown) question(x, cy, r);
+    else if (it.kind === 'g') { drawGamma(x - 20, cy, 0, 40, 40); drawNuclide(x, cy + 30, 'γ', 0, 0, 15, 1); }
+    else { drawBody(it, x, cy, s); labelBody(it, x, cy, s, 1); }
+    x += r;
+    if (i < items.length - 1) { g.save(); g.fillStyle = '#8aa0b5'; g.font = '24px serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('+', x + gap / 2, cy); g.restore(); x += gap; }
+  });
+  if (id.arrowQ) {
+    g.save(); g.fillStyle = '#e6edf3'; g.font = '28px serif'; g.textBaseline = 'middle'; g.textAlign = 'center'; g.fillText('→', x + 30, cy);
+    g.fillStyle = '#ffb020'; g.font = '700 26px system-ui,sans-serif'; g.fillText('?', x + 70, cy); g.restore();
+  }
+  if (id.text) { g.save(); g.fillStyle = '#8aa0b5'; g.font = '13px system-ui,sans-serif'; g.textAlign = 'center'; g.fillText(id.text, W / 2, H - 12); g.restore(); }
+}
+function play(left, right, ttl) {
+  cancelAnimationFrame(AN.raf);
+  AN.scene = buildScene(left, right, ttl); AN.playing = true; AN.start = performance.now(); AN.t = 0;
+  $('replayBtn').hidden = false;
+  AN.raf = requestAnimationFrame(tick);
+}
+function tick(now) {
+  if (!AN.scene) return;
+  const t = Math.min(1, (now - AN.start) / 3600); AN.t = t;
+  drawScene(AN.scene, t);
+  if (t < 1) AN.raf = requestAnimationFrame(tick); else { AN.playing = false; AN.scene.finished = true; }
+}
+function setIdle(spec) {
+  cancelAnimationFrame(AN.raf); AN.playing = false; AN.scene = null; AN.idle = spec;
+  $('replayBtn').hidden = true; drawIdle();
+}
+function updateAnimIdle() {
+  if (S.mode === 'free') {
+    if (S.free.solved && AN.scene) return;
+    const items = [];
+    for (const t of S.free.tokens) {
+      if (t.t === 'arrow') break;
+      if (t.t !== 'sp') continue;
+      const A = parseInt(t.A, 10), Z = parseInt(t.Z, 10);
+      if (!t.sym || isNaN(A) || isNaN(Z)) continue;
+      const n = Math.min(t.coef === '' ? 1 : (parseInt(t.coef, 10) || 1), 4);
+      for (let i = 0; i < n; i++) items.push({ sym: t.sym, A, Z });
+    }
+    setIdle({ items, title: 'Your reactants', text: items.length ? 'Press Check to watch your reaction.' : 'Your reactants will appear here.' });
+    return;
+  }
+  const q = S.guided.q;
+  if (q.done && AN.scene) return;
+  if (S.level === 3) { setIdle({ items: [], text: 'Build the equation, then press Check to watch it happen.' }); return; }
+  const items = [];
+  for (const t of q.tokens) {
+    if (t.t === 'arrow') break;
+    if (t.t !== 'sp') continue;
+    if (t.blank) items.push({ unknown: true });
+    else { const n = t.coef === '' ? 1 : +t.coef; for (let i = 0; i < n; i++) items.push({ sym: t.sym, A: +t.A, Z: +t.Z }); }
+  }
+  setIdle({ items, arrowQ: true, text: 'Answer correctly to watch the reaction.' });
+}
+function resizeCanvas() {
+  const r = cv.getBoundingClientRect(); if (!r.width || !r.height) return;
+  AN.dpr = window.devicePixelRatio || 1; AN.W = r.width; AN.H = r.height;
+  cv.width = Math.round(r.width * AN.dpr); cv.height = Math.round(r.height * AN.dpr);
+  AN.spriteS = 0;
+  if (AN.scene) drawScene(AN.scene, AN.playing ? AN.t : 1); else drawIdle();
+}
+$('replayBtn').addEventListener('click', () => { if (AN.scene) { AN.scene.finished = false; AN.playing = true; AN.start = performance.now(); cancelAnimationFrame(AN.raf); AN.raf = requestAnimationFrame(tick); } });
+if (window.ResizeObserver) new ResizeObserver(resizeCanvas).observe(cv); else window.addEventListener('resize', resizeCanvas);
+
+/* ================= WIRING ================= */
+$('modeSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || b.dataset.mode === S.mode) return;
+  S.mode = b.dataset.mode; AN.scene = null; render();
+  if (S.mode === 'guided' && S.guided.q.done) play(S.guided.q.item.eq.left, S.guided.q.item.eq.right, cap(TYPE_NAME[S.guided.q.item.t]));
+});
+$('levelSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) requestLevel(+b.dataset.level); });
+$('targetSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const c = cur(); if (!c.done) { c.field = b.dataset.field; c.fresh = true; render(); } });
+$('species').addEventListener('click', e => { const b = e.target.closest('.sp'); if (b) onSpecies(b.dataset.k); });
+$('tools').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const t = b.dataset.tool; if (t === 'plus') insertOp('plus'); else if (t === 'arrow') insertOp('arrow'); else if (t === 'del') deleteSel();
+});
+$('checkBtn').addEventListener('click', onCheck);
+$('nextBtn').addEventListener('click', onNext);
+$('hintBtn').addEventListener('click', onHint);
+$('clearBtn').addEventListener('click', clearAll);
+document.addEventListener('keydown', e => { // optional physical keyboard support
+  if (!$('overlay').hidden) return;
+  if (/^[0-9]$/.test(e.key)) { onDigit(e.key); e.preventDefault(); }
+  else if (e.key === 'Backspace') { onBack(); e.preventDefault(); }
+  else if (e.key === '-') { onSign(); e.preventDefault(); }
+  else if (e.key === 'Enter') { const c = cur(); if (c.done && S.mode === 'guided') onNext(); else onCheck(); e.preventDefault(); }
+});
+
+/* ================= SELF-TEST ================= */
+function selfTest() {
+  let fails = 0;
+  if (SYMS.length !== 118 || NAMES.length !== 118) { console.error('Element table length', SYMS.length, NAMES.length); fails++; }
+  BANK.forEach((b, i) => {
+    const L = sums(b.eq.left), R = sums(b.eq.right);
+    if (L.A !== R.A || L.Z !== R.Z) { console.error(`Bank #${i} unbalanced: ${b.e}`, L, R); fails++; }
+    [...b.eq.left, ...b.eq.right].forEach(s => { const e = speciesErr(s); if (e) { console.error(`Bank #${i} (${b.e}): ${e}`); fails++; } });
+    if (!b.p || !TYPE_NAME[b.t]) { console.error(`Bank #${i} missing prompt/type`); fails++; }
+  });
+  const tiers = {}; BANK.forEach(b => tiers[b.tier] = (tiers[b.tier] || 0) + 1);
+  console.log(`[Nuclear Equation Builder] self-test: ${BANK.length} reactions checked, ${fails} failure(s).`, tiers);
+  return fails;
+}
+
+/* ================= INIT ================= */
+buildPeriodicTable(); buildNumpad(); selfTest(); newSet(); resizeCanvas();
+window.__NEB = { S, BANK, selfTest, play, l3Hint }; // for testing
+})();
+</script>
+</body>
+</html>

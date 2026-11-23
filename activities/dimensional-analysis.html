@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dimensional Analysis Lab</title>
+<style>
+:root{--navy:#1f2a44;--blue:#3b5bdb;--green:#2b8a3e;--orange:#d9480f;--red:#e03131;--bg:#eef1f7;--line:#ccd3e0;--purple:#7048e8}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:#1a1d24;display:flex;flex-direction:column;height:100vh;min-height:620px;overflow:hidden;user-select:none;-webkit-user-select:none}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit}
+sub,sup{font-size:.68em;line-height:0}
+
+/* ---------- Control bar ---------- */
+#top{background:var(--navy);color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:7px 10px;flex:0 0 auto}
+#top h1{font-size:17px;margin:0 4px 0 0;white-space:nowrap;letter-spacing:.2px}
+.toggle{display:flex;align-items:center;gap:6px;font-size:13px;background:rgba(255,255,255,.1);padding:4px 9px;border-radius:20px;cursor:pointer;white-space:nowrap}
+.toggle .opt{opacity:.5;font-weight:600}
+.toggle .opt.on{opacity:1}
+.sw{width:36px;height:20px;border-radius:10px;background:#6b7a99;position:relative;flex:0 0 auto}
+.sw .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .18s}
+.toggle.right .knob{left:18px}
+.tbtn{background:#fff;color:var(--navy);border:none;border-radius:6px;padding:6px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.tbtn:hover{background:#dbe4ff}
+.tbtn.alt{background:#4c6ef5;color:#fff}
+.tbtn.alt:hover{background:#3b5bdb}
+.tbtn.danger{background:#ffe3e3;color:#c92a2a}
+.spacer{flex:1}
+.seg{display:flex;background:rgba(255,255,255,.1);border-radius:20px;padding:3px;gap:2px}
+.seg button{border:none;background:none;color:#fff;opacity:.65;font-weight:700;font-size:12px;padding:4px 10px;border-radius:16px;white-space:nowrap}
+.seg button.on{background:#fff;color:var(--navy);opacity:1}
+
+/* ---------- Factor bar ---------- */
+#fbarWrap{flex:0 0 auto;min-height:74px;max-height:20vh;background:#fff;border-bottom:2px solid var(--line);display:flex;align-items:stretch}
+#fbarLabel{flex:0 0 120px;background:#e7ecf7;display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:700;font-size:13px;color:#33415c;text-align:center;padding:4px;gap:4px}
+#fbarLabel button{font-size:11px;border:1px solid #adb5bd;background:#fff;border-radius:4px;padding:1px 6px}
+#fbar{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:8px;overflow:auto}
+#fbar .empty{color:#868e96;font-style:italic;font-size:14px;align-self:center}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#edf2ff;border:2px solid #91a7ff;border-radius:20px;padding:5px 8px 5px 12px;font-size:16px;cursor:grab;touch-action:none;white-space:nowrap}
+.chip:hover{background:#dbe4ff}
+.chip .eq{font-weight:700;color:#495057}
+.chip .badge{font-size:13px;font-weight:700}
+.chip .badge.ok{color:var(--green)}
+.chip .badge.warn{color:var(--orange)}
+.chip .x{border:none;background:#adb5bd;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;line-height:18px;padding:0}
+
+/* ---------- Work area ---------- */
+#work{flex:1;display:flex;min-height:0}
+#workMain{flex:1;display:flex;flex-direction:column;min-width:0}
+#banner{background:#fff;border-bottom:1px solid var(--line);padding:8px 12px;font-size:15px;flex:0 0 auto}
+#banner .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#banner .q{font-size:17px;margin-top:6px;line-height:1.35}
+#banner .gf{margin-top:4px;color:#495057;font-size:14px}
+#banner .eqn{margin-top:4px;font-size:16px;background:#fff9db;border:1px solid #ffe066;display:inline-block;padding:2px 10px;border-radius:6px}
+.nextBtn{border:none;border-radius:8px;padding:8px 18px;font-weight:800;font-size:16px;background:#dee2e6;color:#868e96;cursor:not-allowed}
+.nextBtn.ready{background:var(--green);color:#fff;cursor:pointer;box-shadow:0 0 0 0 rgba(43,138,62,.6);animation:pulse 1.6s infinite}
+.nextBtn.ready:hover{background:#237032}
+.nextBtn.big{font-size:19px;padding:12px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(43,138,62,.55)}70%{box-shadow:0 0 0 12px rgba(43,138,62,0)}100%{box-shadow:0 0 0 0 rgba(43,138,62,0)}}
+.pdots{display:inline-flex;gap:3px;align-items:center;margin:0 6px}
+.pdot{width:9px;height:9px;border-radius:50%;background:#dee2e6}
+.pdot.done{background:var(--green)}
+.pdot.cur{outline:2px solid var(--blue);outline-offset:1px}
+#banner .spacer{flex:1}
+.bbtn{border:1px solid #adb5bd;background:#f8f9fa;border-radius:6px;padding:3px 9px;font-size:14px}
+.bbtn:hover{background:#e9ecef}
+#banner select{padding:2px 4px;font-size:14px}
+.pill{display:inline-block;background:#e7f5ff;border:1px solid #a5d8ff;border-radius:12px;padding:1px 9px;font-size:14px}
+
+#solRow{margin:8px 8px 0;padding:8px 10px;border:2px dashed var(--purple);border-radius:12px;background:#f3f0ff;display:flex;align-items:center;flex-wrap:wrap;gap:4px;flex:0 0 auto}
+#solRow .lbl{font-weight:700;color:var(--purple);margin-right:8px}
+#solRow .eqsign{font-size:22px;margin:0 8px;color:#5c6b8a}
+#solRow .ans{font-size:20px;font-weight:700}
+
+#track{position:relative;margin:8px;min-height:140px;border:3px dashed #9fb0d0;border-radius:14px;background:#f8faff;display:flex;align-items:center;padding:16px 14px;overflow-x:auto;overflow-y:hidden;flex:0 0 auto}
+#track.hot{border-color:var(--blue);background:#edf2ff}
+#track .ph{color:#8a96ad;font-size:15px;font-style:italic;pointer-events:none}
+#trackLabel{position:absolute;top:2px;left:12px;font-size:11px;font-weight:700;color:#8a96ad;text-transform:uppercase;letter-spacing:.5px;pointer-events:none}
+.times{font-size:28px;color:#5c6b8a;margin:0 10px;flex:0 0 auto;pointer-events:none}
+#dropInd{position:absolute;top:10px;bottom:10px;width:4px;border-radius:2px;background:var(--blue);display:none;pointer-events:none}
+
+#parking{position:relative;flex:1;margin:0 8px 8px;border-radius:14px;background:repeating-linear-gradient(45deg,#f1f3f5,#f1f3f5 12px,#eceff3 12px,#eceff3 24px);min-height:90px;overflow:hidden}
+#parking .ph{position:absolute;left:12px;top:8px;font-size:12px;font-weight:700;color:#98a2b3;text-transform:uppercase;letter-spacing:.5px;pointer-events:none}
+
+/* ---------- Fraction boxes ---------- */
+.box{display:inline-flex;flex-direction:column;align-items:center;background:#fff;border:2px solid var(--blue);border-radius:10px;padding:6px 14px;min-width:96px;font-size:20px;position:relative;touch-action:none;cursor:grab;box-shadow:0 2px 5px rgba(0,0,0,.1);flex:0 0 auto}
+.box:hover{box-shadow:0 3px 10px rgba(59,91,219,.3)}
+.box .part{white-space:nowrap;padding:2px 4px;display:flex;gap:6px;align-items:baseline;justify-content:center}
+.box .fline{height:2px;background:#1a1d24;align-self:stretch;margin:3px 0}
+.box.start{border-color:var(--green);background:#f1fbf3;cursor:default}
+.box.loose{position:absolute;border-style:dashed;border-color:#868e96;opacity:.9}
+.box.sol{border-style:dashed;border-color:var(--purple);opacity:.75;cursor:default;box-shadow:none;font-size:17px;min-width:80px}
+.box.ghost{position:fixed;z-index:1000;pointer-events:none;opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.3);transform:rotate(-2deg)}
+.box.dragsrc{opacity:.25}
+.box .x{position:absolute;top:-10px;right:-10px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:#868e96;color:#fff;font-size:11px;line-height:18px;padding:0;opacity:.75}
+.box .x:hover{background:var(--red);opacity:1}
+.box .tag{position:absolute;top:-10px;left:8px;font-size:10px;font-weight:700;background:var(--green);color:#fff;border-radius:6px;padding:1px 6px;text-transform:uppercase}
+.val{font-weight:600}
+.unit{position:relative;display:inline-block;color:#1c3d99;font-weight:700}
+.unit.cancel{color:#a0a7b4}
+.unit.cancel::after{content:'';position:absolute;left:-5px;right:-5px;top:52%;height:3px;background:var(--red);border-radius:2px;transform:rotate(-14deg);transform-origin:left center}
+.unit.cancel.anim::after{animation:strike .45s ease-out}
+@keyframes strike{from{transform:rotate(-14deg) scaleX(0)}to{transform:rotate(-14deg) scaleX(1)}}
+.tx{margin:0 .15em}
+
+/* ---------- Answer box ---------- */
+#answer{flex:0 0 300px;background:#fff;border-left:2px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+#answer h2{margin:0;font-size:15px;text-transform:uppercase;letter-spacing:.6px;color:#5c6b8a}
+.ansBig{font-size:26px;font-weight:700;word-break:break-word;line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.ansSmall{font-size:13px;color:#5c6b8a}
+.afrac{display:inline-flex;flex-direction:column;align-items:center;font-size:.85em;vertical-align:middle}
+.afrac .afl{height:2px;background:currentColor;align-self:stretch;margin:2px 0}
+.status{border-radius:8px;padding:7px 9px;font-size:14px;line-height:1.35}
+.status.good{background:#ebfbee;color:#2b8a3e;border:1px solid #b2f2bb}
+.status.bad{background:#fff4e6;color:#d9480f;border:1px solid #ffd8a8}
+.status.neutral{background:#f1f3f5;color:#495057;border:1px solid #dee2e6}
+.ansIn{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ansIn input{width:140px;font-size:18px;padding:4px 6px;border:2px solid #adb5bd;border-radius:6px}
+.abtn{border:none;border-radius:8px;padding:9px 10px;font-weight:700;font-size:15px}
+.abtn.check{background:var(--green);color:#fff}
+.abtn.sol{background:#f3f0ff;color:var(--purple);border:2px solid #d0bfff}
+.fb{border-radius:8px;padding:8px 10px;font-size:14px;line-height:1.4}
+.fb.ok{background:#d3f9d8;color:#2b8a3e;font-weight:600}
+.fb.no{background:#ffe3e3;color:#c92a2a}
+.rule{font-size:12px;color:#5c6b8a;background:#f8f9fa;border-radius:6px;padding:5px 8px}
+
+/* ---------- Modals ---------- */
+.overlay{position:fixed;inset:0;background:rgba(15,20,35,.45);display:flex;align-items:center;justify-content:center;z-index:2000;user-select:text;-webkit-user-select:text}
+.modal{background:#fff;border-radius:14px;width:min(560px,94vw);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.modal.wide{width:min(980px,97vw)}
+.mHead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #e9ecef}
+.mHead h2{margin:0;font-size:18px}
+.mClose{border:none;background:none;font-size:18px;color:#868e96}
+.mBody{padding:14px 16px;overflow:auto;font-size:15px}
+.mErr{color:#c92a2a;padding:0 16px;font-size:14px;font-weight:600}
+.mErr:empty{display:none}
+.mFoot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid #e9ecef}
+.mbtn{border:none;border-radius:8px;padding:8px 16px;font-weight:700;background:#e9ecef}
+.mbtn.primary{background:var(--blue);color:#fff}
+.mbtn.danger{background:#ffe3e3;color:#c92a2a}
+.frow{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:8px 0}
+.frow label{display:flex;flex-direction:column;font-size:12px;font-weight:700;color:#495057;gap:3px}
+.frow input,.frow select{font-size:16px;padding:6px 8px;border:2px solid #ced4da;border-radius:6px}
+.frow input.num{width:150px}
+.frow input.sub{width:120px}
+.bigEq{font-size:26px;font-weight:700;padding-bottom:6px}
+.preview{font-size:20px;background:#edf2ff;border-radius:8px;padding:8px 12px;margin-top:6px;min-height:42px}
+.hint{font-size:13px;color:#6c757d;margin:6px 0}
+.libBtns{display:flex;flex-wrap:wrap;gap:6px}
+.libBtns button{border:1px solid #91a7ff;background:#edf2ff;border-radius:16px;padding:4px 10px;font-size:14px}
+.libBtns button:hover{background:#dbe4ff}
+.libBtns button.added{background:#d3f9d8;border-color:#8ce99a}
+.helpList li{margin:6px 0;line-height:1.4}
+.secTitle{font-weight:800;font-size:16px;color:#1f2a44;margin-bottom:4px}
+.libSec{margin:4px 0}
+.libSec summary{cursor:pointer;font-weight:700;font-size:14px;color:#33415c;padding:4px 0}
+.libSec .libBtns{margin:4px 0 8px}
+.modal.vis .mBody{overflow:visible}
+.combo{position:relative;display:flex}
+.combo input{width:150px;font-size:16px;padding:6px 8px;border:2px solid #ced4da;border-right:none;border-radius:6px 0 0 6px}
+.combo input:focus{outline:none;border-color:var(--blue)}
+.cbtn{border:2px solid #ced4da;background:#f1f3f5;border-radius:0 6px 6px 0;padding:0 9px;font-size:14px}
+.clist{display:none;position:absolute;top:100%;left:0;width:230px;max-height:260px;overflow:auto;background:#fff;border:1px solid #adb5bd;border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.18);z-index:50;margin-top:2px}
+.clist .cg{font-size:11px;font-weight:800;text-transform:uppercase;color:#868e96;padding:6px 10px 2px}
+.clist .ci{padding:6px 14px;cursor:pointer;font-size:16px;font-weight:400;color:#1a1d24}
+.clist .ci:hover,.clist .ci.hi{background:#dbe4ff}
+.note{font-size:14px;border-radius:8px;padding:7px 10px;margin-top:8px}
+.note:empty{display:none}
+.note.ok{background:#ebfbee;color:#2b8a3e}
+.note.info{background:#e7f5ff;color:#1864ab}
+.note.warn{background:#fff4e6;color:#d9480f}
+.typeRow{display:flex;gap:8px}
+#fText{flex:1;font-size:18px;padding:8px 10px;border:2px solid #ced4da;border-radius:8px}
+#fText:focus{border-color:var(--blue);outline:none}
+.sugg{border:1px solid #ced4da;border-radius:8px;margin-top:4px;overflow:hidden}
+.sugg:empty{display:none}
+.sugg div{padding:7px 12px;cursor:pointer;font-size:16px;border-bottom:1px solid #f1f3f5}
+.sugg div.hi,.sugg div:hover{background:#dbe4ff}
+.fmsg{margin-top:8px;border-radius:8px;padding:7px 10px;font-size:14px}
+.fmsg.ok{background:#d3f9d8;color:#2b8a3e}
+.fmsg.err{background:#ffe3e3;color:#c92a2a}
+
+/* periodic table */
+.ptInfo{font-size:16px;min-height:28px;margin-bottom:8px}
+.pt{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:2px}
+.pt .c{border-radius:4px;padding:2px 1px;text-align:center;font-size:10px;line-height:1.15;cursor:pointer;border:1px solid rgba(0,0,0,.08)}
+.pt .c b{display:block;font-size:14px}
+.pt .c:hover{outline:2px solid var(--blue)}
+.pt .s{background:#ffe8cc}.pt .p{background:#d0ebff}.pt .d{background:#fff3bf}.pt .f{background:#e5dbff}
+.pt .gap{grid-column:1/-1;height:8px}
+.pt .mk{font-size:10px;color:#868e96;display:flex;align-items:center;justify-content:center;background:#f1f3f5;border-radius:4px}
+
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#212529;color:#fff;padding:9px 16px;border-radius:8px;font-size:14px;z-index:3000;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <h1>⚗️ Dimensional Analysis Lab</h1>
+  <div class="toggle" id="tgMode"><span class="opt" data-v="unit">Unit Conversion</span><div class="sw"><div class="knob"></div></div><span class="opt" data-v="mole">Mole Conversion</span></div>
+  <div class="toggle" id="tgStyle"><span class="opt" data-v="guided">Guided</span><div class="sw"><div class="knob"></div></div><span class="opt" data-v="free">Free Form</span></div>
+  <div class="seg" id="segSet"><button data-set="mole2">2 Fraction</button><button data-set="mole3">3 Fraction</button><button data-set="mole4">Stoichiometry (4 Fraction)</button><button data-set="moleMix">Mix 2 &amp; 3</button></div>
+  <div class="spacer"></div>
+  <button class="tbtn alt" id="bStart">+ Starting Amount</button>
+  <button class="tbtn alt" id="bFactor">+ Conversion Factor</button>
+  <button class="tbtn" id="bPT">🧪 Periodic Table</button>
+  <button class="tbtn" id="bClear">Clear Work Area</button>
+  <button class="tbtn danger" id="bReset">Reset</button>
+  <button class="tbtn" id="bHelp" title="How to use">?</button>
+</div>
+
+<div id="fbarWrap">
+  <div id="fbarLabel">Conversion<br>Factors<button id="bClearF">Clear all</button></div>
+  <div id="fbar"></div>
+</div>
+
+<div id="work">
+  <div id="workMain">
+    <div id="banner"></div>
+    <div id="solRow" style="display:none"></div>
+    <div id="track"></div>
+    <div id="parking"></div>
+  </div>
+  <div id="answer"></div>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* =====================================================================
+   CONSTANTS & DATA
+   ===================================================================== */
+const NA = 6.022e23, VSTP = 22.4, TOL = 0.01;
+
+const EL_SYM = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og'.split(' ');
+const EL_MASS = [1.008,4.003,6.94,9.012,10.81,12.01,14.01,16.00,19.00,20.18,22.99,24.31,26.98,28.09,30.97,32.07,35.45,39.95,39.10,40.08,44.96,47.87,50.94,52.00,54.94,55.85,58.93,58.69,63.55,65.38,69.72,72.63,74.92,78.97,79.90,83.80,85.47,87.62,88.91,91.22,92.91,95.95,98,101.07,102.91,106.42,107.87,112.41,114.82,118.71,121.76,127.60,126.90,131.29,132.91,137.33,138.91,140.12,140.91,144.24,145,150.36,151.96,157.25,158.93,162.50,164.93,167.26,168.93,173.05,174.97,178.49,180.95,183.84,186.21,190.23,192.22,195.08,196.97,200.59,204.38,207.2,208.98,209,210,222,223,226,227,232.04,231.04,238.03,237,244,243,247,247,251,252,257,258,259,266,267,268,269,270,277,278,281,282,285,286,289,290,293,294,294];
+const EL_NAME = 'Hydrogen,Helium,Lithium,Beryllium,Boron,Carbon,Nitrogen,Oxygen,Fluorine,Neon,Sodium,Magnesium,Aluminum,Silicon,Phosphorus,Sulfur,Chlorine,Argon,Potassium,Calcium,Scandium,Titanium,Vanadium,Chromium,Manganese,Iron,Cobalt,Nickel,Copper,Zinc,Gallium,Germanium,Arsenic,Selenium,Bromine,Krypton,Rubidium,Strontium,Yttrium,Zirconium,Niobium,Molybdenum,Technetium,Ruthenium,Rhodium,Palladium,Silver,Cadmium,Indium,Tin,Antimony,Tellurium,Iodine,Xenon,Cesium,Barium,Lanthanum,Cerium,Praseodymium,Neodymium,Promethium,Samarium,Europium,Gadolinium,Terbium,Dysprosium,Holmium,Erbium,Thulium,Ytterbium,Lutetium,Hafnium,Tantalum,Tungsten,Rhenium,Osmium,Iridium,Platinum,Gold,Mercury,Thallium,Lead,Bismuth,Polonium,Astatine,Radon,Francium,Radium,Actinium,Thorium,Protactinium,Uranium,Neptunium,Plutonium,Americium,Curium,Berkelium,Californium,Einsteinium,Fermium,Mendelevium,Nobelium,Lawrencium,Rutherfordium,Dubnium,Seaborgium,Bohrium,Hassium,Meitnerium,Darmstadtium,Roentgenium,Copernicium,Nihonium,Flerovium,Moscovium,Livermorium,Tennessine,Oganesson'.split(',');
+const MASS = {}; EL_SYM.forEach((s,i)=>MASS[s]=EL_MASS[i]);
+const RADIO = new Set([43,61,84,85,86,87,88,89]);
+function massStr(z){ const m=EL_MASS[z-1]; if(RADIO.has(z)||z>=93) return String(m); const d=(String(m).split('.')[1]||'').length; return d>=2?String(m):m.toFixed(2); }
+
+/* ---------- Units ---------- */
+const U = {};
+function defU(u,dim,f){ U[u]={u,dim,f}; }
+const PREF = [['k',1e3,null],['h',1e2,null],['da',1e1,null],['',1,null],['d',1e-1,10],['c',1e-2,100],['m',1e-3,1000],['µ',1e-6,1e6],['n',1e-9,1e9]];
+const BASES = [['m','length'],['g','mass'],['L','volume'],['s','time']];
+BASES.forEach(([b,dim])=>PREF.forEach(([p,f])=>defU(p+b,dim,f)));
+defU('in','length',0.0254); defU('ft','length',0.3048); defU('yd','length',0.9144); defU('mi','length',1609.344);
+defU('oz','mass',28.349523125); defU('lb','mass',453.59237);
+defU('fl oz','volume',0.0295735295625); defU('cup','volume',0.2365882365); defU('pt','volume',0.473176473); defU('qt','volume',0.946352946); defU('gal','volume',3.785411784);
+defU('min','time',60); defU('hr','time',3600); defU('day','time',86400); defU('week','time',604800); defU('year','time',31536000);
+defU('mol','amount',1); defU('atoms','amount',1/NA); defU('molecules','amount',1/NA); defU('formula units','amount',1/NA);
+
+const UNIT_MENU = {
+  unit: [
+    ['Length',['km','hm','dam','m','dm','cm','mm','µm','nm','in','ft','yd','mi']],
+    ['Mass',['kg','hg','dag','g','dg','cg','mg','µg','ng','oz','lb']],
+    ['Volume',['kL','hL','daL','L','dL','cL','mL','µL','nL','fl oz','cup','pt','qt','gal']],
+    ['Time',['ks','hs','das','s','ds','cs','ms','µs','ns','min','hr','day','week','year']]
+  ],
+  mole: [
+    ['Mass',['g','kg','mg']],
+    ['Moles',['mol']],
+    ['Particles',['atoms','molecules','formula units']],
+    ['Gas volume (STP)',['L','mL']]
+  ]
+};
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+const $ = s=>document.querySelector(s);
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function approx(a,b,tol){ tol = tol==null?TOL:tol; if(a===b) return true; return Math.abs(a-b) <= tol*Math.max(Math.abs(a),Math.abs(b)); }
+function key(p){ return p && p.u ? p.u+'|'+(p.s||'') : ''; }
+function sciHTML(m,e){ return `${m}<span class="tx">×</span>10<sup>${e}</sup>`; }
+function fmtNum(v){
+  if(v===0) return '0';
+  const a=Math.abs(v);
+  if(a>=1e6 || a<1e-3){ const [m,e]=v.toExponential(5).split('e'); return sciHTML(String(parseFloat(m)), parseInt(e,10)); }
+  return String(parseFloat(v.toPrecision(10)));
+}
+function fmtCalc(v){
+  if(!isFinite(v)) return '—';
+  if(v===0) return '0';
+  const a=Math.abs(v);
+  if(a>=1e9 || a<1e-4){ const [m,e]=v.toExponential(9).split('e'); return sciHTML(String(parseFloat(m)), parseInt(e,10)); }
+  return String(parseFloat(v.toPrecision(10)));
+}
+function fmt4(v){
+  if(!isFinite(v)) return '—';
+  if(v===0) return '0';
+  const a=Math.abs(v);
+  if(a>=1e6 || a<1e-3){ const [m,e]=v.toExponential(3).split('e'); return sciHTML(String(parseFloat(m)), parseInt(e,10)); }
+  return String(parseFloat(v.toPrecision(4)));
+}
+function roundSig(v,n){ return Number(v.toPrecision(n)); }
+/* Exactly n sig figs, unambiguous. Returns {html, plain} */
+function fmtSig(v,n){
+  if(v===0) return {html:'0',plain:'0'};
+  const r = roundSig(v,n);
+  const e = Math.floor(Math.log10(Math.abs(r)) + 1e-12);
+  if(e>=6 || e<-3 || e+1>n){
+    const m=(r/Math.pow(10,e)).toFixed(n-1);
+    return {html:sciHTML(m,e), plain:m+'e'+e};
+  }
+  let s=r.toFixed(Math.max(0,n-1-e));
+  if(e+1===n && /0$/.test(s)) s+='.';
+  return {html:s, plain:s};
+}
+const SUPMAP={'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+'};
+const SUBMAP={'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+/* Parse a typed number; returns {v,sfMin,sfMax,html} or null */
+function parseNum(str){
+  let s=String(str==null?'':str).trim();
+  if(!s) return null;
+  s=s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g,c=>SUPMAP[c]).replace(/[−–]/g,'-').replace(/,/g,'').replace(/\s+/g,'');
+  s=s.replace(/[×xX*·]10\^?\(?([+-]?\d+)\)?$/,(m0,e)=>'e'+e);
+  const m=s.match(/^([+-]?)(\d+\.?\d*|\.\d+)(?:[eE]([+-]?\d+))?$/);
+  if(!m) return null;
+  const mant=m[2], ex=m[3]!==undefined?parseInt(m[3],10):null;
+  const v=parseFloat(m[1]+mant+(ex!==null?'e'+ex:''));
+  if(!isFinite(v)) return null;
+  let sfMin,sfMax;
+  if(mant.includes('.')){
+    const d=mant.replace('.','').replace(/^0+/,'');
+    sfMin=sfMax=Math.max(1,d.length);
+  } else {
+    const d=mant.replace(/^0+/,'');
+    if(!d){ sfMin=sfMax=1; }
+    else { const tz=d.length-d.replace(/0+$/,'').length; sfMax=d.length; sfMin=Math.max(1,d.length-tz); }
+  }
+  const md=m[1]+mant;
+  return {v,sfMin,sfMax,html: ex!==null?sciHTML(esc(md),ex):esc(md)};
+}
+
+/* ---------- Formulas ---------- */
+function normF(f){ return String(f||'').replace(/[₀-₉]/g,c=>SUBMAP[c]).replace(/\s+/g,''); }
+function parseFormula(f){
+  f=normF(f); if(!f) return null;
+  let i=0;
+  function num(){ let s=''; while(i<f.length && /\d/.test(f[i])) s+=f[i++]; return s?parseInt(s,10):1; }
+  function group(){
+    const c={};
+    while(i<f.length){
+      const ch=f[i];
+      if(ch==='('||ch==='['){ i++; const inner=group(); if(f[i]!==')'&&f[i]!==']') throw 0; i++; const n=num(); for(const k in inner) c[k]=(c[k]||0)+inner[k]*n; }
+      else if(ch===')'||ch===']') return c;
+      else if(/[A-Z]/.test(ch)){ let sym=ch; i++; while(i<f.length && /[a-z]/.test(f[i])) sym+=f[i++]; if(!(sym in MASS)) throw 0; const n=num(); c[sym]=(c[sym]||0)+n; }
+      else throw 0;
+    }
+    return c;
+  }
+  try{ const r=group(); if(i!==f.length || !Object.keys(r).length) return null; return r; }catch(e){ return null; }
+}
+function molarMass(f){ const c=parseFormula(f); if(!c) return null; let m=0; for(const k in c) m+=MASS[k]*c[k]; return m; }
+function mm(f){ return Math.round(molarMass(f)*100)/100; }
+function fmtF(f){ return esc(f).replace(/(\d+)/g,'<sub>$1</sub>'); }
+function unitHTML(u,s){ return `${esc(u)}${s?' '+fmtF(s):''}`; }
+
+/* ---------- Equations ---------- */
+function parseEquation(str){
+  const parts=String(str||'').split(/->|→|⟶|=/);
+  if(parts.length!==2) return {err:'Use an arrow between reactants and products, like: 2 H2 + O2 -> 2 H2O'};
+  const coef={}, sides=[], atoms=[{},{}];
+  for(let si=0;si<2;si++){
+    const terms=parts[si].split('+').map(t=>t.trim()).filter(Boolean);
+    if(!terms.length) return {err:'Each side of the arrow needs at least one substance.'};
+    const side=[];
+    for(const t of terms){
+      const m=t.match(/^(\d*)\s*(.+)$/);
+      const c=m[1]?parseInt(m[1],10):1; const f=normF(m[2]); const pf=parseFormula(f);
+      if(!pf || c<1) return {err:`I can't read "${esc(t)}". Check capital letters (e.g. H2O, NaCl).`};
+      side.push({c,f}); coef[f]=c;
+      for(const k in pf) atoms[si][k]=(atoms[si][k]||0)+pf[k]*c;
+    }
+    sides.push(side);
+  }
+  const ks=new Set([...Object.keys(atoms[0]),...Object.keys(atoms[1])]);
+  for(const k of ks) if((atoms[0][k]||0)!==(atoms[1][k]||0)) return {err:`That equation isn't balanced (${k}: ${atoms[0][k]||0} on the left, ${atoms[1][k]||0} on the right).`};
+  return {react:sides[0],prod:sides[1],coef};
+}
+function eqHTML(eq){ const t=s=>s.map(x=>(x.c>1?x.c+' ':'')+fmtF(x.f)).join(' + '); return t(eq.react)+' → '+t(eq.prod); }
+
+/* =====================================================================
+   GUIDED PROBLEMS
+   step: [topValue, topUnit, topSub, bottomValue, bottomUnit, bottomSub]
+   ===================================================================== */
+const PROBS = {
+unit: [
+ {q:'Convert {v} kilometers (km) to meters (m).', s:{u:'km'}, t:{u:'m'}, fixed:'2.50', steps:[[1000,'m','',1,'km','']]},
+ {q:'A water bottle holds {v} milliliters (mL). How many liters (L) is that?', s:{u:'mL'}, t:{u:'L'}, fixed:'455', steps:[[1,'L','',1000,'mL','']]},
+ {q:'A desk is {v} meters (m) long. How long is it in centimeters (cm)?', s:{u:'m'}, t:{u:'cm'}, fixed:'3.2', steps:[[100,'cm','',1,'m','']]},
+ {q:'Convert {v} milligrams (mg) to kilograms (kg).', s:{u:'mg'}, t:{u:'kg'}, rand:[1000,9999,4], steps:[[1,'g','',1000,'mg',''],[1,'kg','',1000,'g','']]},
+ {q:'A hallway is {v} centimeters (cm) long. How many kilometers (km) is that?', s:{u:'cm'}, t:{u:'km'}, rand:[1000,9999,4], steps:[[1,'m','',100,'cm',''],[1,'km','',1000,'m','']]},
+ {q:'A race is {v} miles (mi) long. How many inches (in) is that?', s:{u:'mi'}, t:{u:'in'}, rand:[0.1,5,3], steps:[[5280,'ft','',1,'mi',''],[12,'in','',1,'ft','']]},
+ {q:'A soup pot holds {v} gallons (gal). How many cups (cup) is that?', s:{u:'gal'}, t:{u:'cup'}, rand:[0.5,10,3], steps:[[4,'qt','',1,'gal',''],[2,'pt','',1,'qt',''],[2,'cup','',1,'pt','']]},
+ {q:'A football play gains {v} yards (yd). How many inches (in) is that?', s:{u:'yd'}, t:{u:'in'}, rand:[1,100,3], steps:[[3,'ft','',1,'yd',''],[12,'in','',1,'ft','']]},
+ {q:'A trip lasts {v} days (day). How many minutes (min) is that?', s:{u:'day'}, t:{u:'min'}, rand:[1,30,3], steps:[[24,'hr','',1,'day',''],[60,'min','',1,'hr','']]},
+ {q:'A TV screen is {v} inches (in) wide. How many meters (m) is that?', s:{u:'in'}, t:{u:'m'}, rand:[10,500,3], steps:[[2.54,'cm','',1,'in',''],[1,'m','',100,'cm','']]},
+ {q:'A bag of flour weighs {v} pounds (lb). What is its mass in grams (g)?', s:{u:'lb'}, t:{u:'g'}, rand:[0.5,20,3], steps:[[453.6,'g','',1,'lb','']]},
+ {q:'A fish tank holds {v} liters (L). How many gallons (gal) is that?', s:{u:'L'}, t:{u:'gal'}, rand:[1,100,3], steps:[[1,'gal','',3.785,'L','']]},
+ {q:'A board is {v} feet (ft) long. How long is it in centimeters (cm)?', s:{u:'ft'}, t:{u:'cm'}, rand:[1,50,3], steps:[[12,'in','',1,'ft',''],[2.54,'cm','',1,'in','']]},
+ {q:'How many seconds (s) are in {v} years (year)? Use 365 days in a year.', s:{u:'year'}, t:{u:'s'}, rand:[1,20,3], steps:[[365,'day','',1,'year',''],[24,'hr','',1,'day',''],[60,'min','',1,'hr',''],[60,'s','',1,'min','']]},
+ {q:'A road is {v} miles (mi) long. How many millimeters (mm) is that?', s:{u:'mi'}, t:{u:'mm'}, rand:[0.1,10,3], steps:[[1.609,'km','',1,'mi',''],[1000,'m','',1,'km',''],[1000,'mm','',1,'m','']]}
+],
+mole2: [
+ {q:'How many moles of water are in {v} g of H<sub>2</sub>O?', s:{u:'g',s:'H2O'}, t:{u:'mol',s:'H2O'}, fixed:'36.0', steps:[[1,'mol','H2O',mm('H2O'),'g','H2O']]},
+ {q:'What is the mass in grams of {v} mol of sodium chloride (NaCl)?', s:{u:'mol',s:'NaCl'}, t:{u:'g',s:'NaCl'}, fixed:'2.50', steps:[[mm('NaCl'),'g','NaCl',1,'mol','NaCl']]},
+ {q:'How many atoms are in {v} mol of copper (Cu)?', s:{u:'mol',s:'Cu'}, t:{u:'atoms',s:'Cu'}, fixed:'1.50', steps:[[NA,'atoms','Cu',1,'mol','Cu']]},
+ {q:'What is the mass in grams of {v} mol of methane (CH<sub>4</sub>)?', s:{u:'mol',s:'CH4'}, t:{u:'g',s:'CH4'}, rand:[0.5,10,3], steps:[[mm('CH4'),'g','CH4',1,'mol','CH4']]},
+ {q:'How many moles are in {v} molecules of CO<sub>2</sub>?', s:{u:'molecules',s:'CO2'}, t:{u:'mol',s:'CO2'}, rand:[1e22,9e24,3], steps:[[1,'mol','CO2',NA,'molecules','CO2']]},
+ {q:'How many molecules are in {v} mol of H<sub>2</sub>O?', s:{u:'mol',s:'H2O'}, t:{u:'molecules',s:'H2O'}, rand:[0.1,5,3], steps:[[NA,'molecules','H2O',1,'mol','H2O']]},
+ {q:'What volume (L) does {v} mol of O<sub>2</sub> gas take up at STP?', s:{u:'mol',s:'O2'}, t:{u:'L',s:'O2'}, rand:[0.5,10,3], steps:[[VSTP,'L','O2',1,'mol','O2']]},
+ {q:'How many moles are in {v} L of N<sub>2</sub> gas at STP?', s:{u:'L',s:'N2'}, t:{u:'mol',s:'N2'}, rand:[1,100,3], steps:[[1,'mol','N2',VSTP,'L','N2']]},
+ {q:'How many moles are in {v} g of carbon dioxide (CO<sub>2</sub>)?', s:{u:'g',s:'CO2'}, t:{u:'mol',s:'CO2'}, rand:[5,200,3], steps:[[1,'mol','CO2',mm('CO2'),'g','CO2']]},
+ {q:'What volume (L) does {v} mol of helium (He) gas take up at STP?', s:{u:'mol',s:'He'}, t:{u:'L',s:'He'}, rand:[0.1,5,3], steps:[[VSTP,'L','He',1,'mol','He']]}
+],
+mole3: [
+ {q:'How many molecules are in {v} g of H<sub>2</sub>O?', s:{u:'g',s:'H2O'}, t:{u:'molecules',s:'H2O'}, fixed:'36.0', steps:[[1,'mol','H2O',mm('H2O'),'g','H2O'],[NA,'molecules','H2O',1,'mol','H2O']]},
+ {q:'What is the mass in grams of {v} atoms of iron (Fe)?', s:{u:'atoms',s:'Fe'}, t:{u:'g',s:'Fe'}, fixed:'3.01e23', steps:[[1,'mol','Fe',NA,'atoms','Fe'],[mm('Fe'),'g','Fe',1,'mol','Fe']]},
+ {q:'What is the mass in grams of {v} L of O<sub>2</sub> gas at STP?', s:{u:'L',s:'O2'}, t:{u:'g',s:'O2'}, fixed:'11.2', steps:[[1,'mol','O2',VSTP,'L','O2'],[mm('O2'),'g','O2',1,'mol','O2']]},
+ {q:'How many atoms are in {v} g of iron (Fe)?', s:{u:'g',s:'Fe'}, t:{u:'atoms',s:'Fe'}, rand:[1,100,3], steps:[[1,'mol','Fe',mm('Fe'),'g','Fe'],[NA,'atoms','Fe',1,'mol','Fe']]},
+ {q:'What is the mass in grams of {v} L of CH<sub>4</sub> gas at STP?', s:{u:'L',s:'CH4'}, t:{u:'g',s:'CH4'}, rand:[1,50,3], steps:[[1,'mol','CH4',VSTP,'L','CH4'],[mm('CH4'),'g','CH4',1,'mol','CH4']]},
+ {q:'What is the mass in grams of {v} molecules of ammonia (NH<sub>3</sub>)?', s:{u:'molecules',s:'NH3'}, t:{u:'g',s:'NH3'}, rand:[1e22,9e24,3], steps:[[1,'mol','NH3',NA,'molecules','NH3'],[mm('NH3'),'g','NH3',1,'mol','NH3']]},
+ {q:'What volume (L) at STP does {v} g of CO<sub>2</sub> gas take up?', s:{u:'g',s:'CO2'}, t:{u:'L',s:'CO2'}, rand:[5,200,3], steps:[[1,'mol','CO2',mm('CO2'),'g','CO2'],[VSTP,'L','CO2',1,'mol','CO2']]},
+ {q:'How many molecules are in {v} L of N<sub>2</sub> gas at STP?', s:{u:'L',s:'N2'}, t:{u:'molecules',s:'N2'}, rand:[1,100,3], steps:[[1,'mol','N2',VSTP,'L','N2'],[NA,'molecules','N2',1,'mol','N2']]},
+ {q:'How many formula units are in {v} g of sodium chloride (NaCl)?', s:{u:'g',s:'NaCl'}, t:{u:'formula units',s:'NaCl'}, rand:[1,100,3], steps:[[1,'mol','NaCl',mm('NaCl'),'g','NaCl'],[NA,'formula units','NaCl',1,'mol','NaCl']]},
+ {q:'What volume (L) at STP do {v} atoms of helium (He) take up?', s:{u:'atoms',s:'He'}, t:{u:'L',s:'He'}, rand:[1e22,9e24,3], steps:[[1,'mol','He',NA,'atoms','He'],[VSTP,'L','He',1,'mol','He']]}
+],
+mole4: [
+ {q:'How many grams of H<sub>2</sub>O are made from {v} g of H<sub>2</sub>?', eq:'2 H2 + O2 -> 2 H2O', s:{u:'g',s:'H2'}, t:{u:'g',s:'H2O'}, fixed:'4.00', steps:[[1,'mol','H2',mm('H2'),'g','H2'],[2,'mol','H2O',2,'mol','H2'],[mm('H2O'),'g','H2O',1,'mol','H2O']]},
+ {q:'How many grams of NH<sub>3</sub> are made from {v} g of N<sub>2</sub>?', eq:'N2 + 3 H2 -> 2 NH3', s:{u:'g',s:'N2'}, t:{u:'g',s:'NH3'}, fixed:'28.0', steps:[[1,'mol','N2',mm('N2'),'g','N2'],[2,'mol','NH3',1,'mol','N2'],[mm('NH3'),'g','NH3',1,'mol','NH3']]},
+ {q:'How many grams of O<sub>2</sub> are produced from {v} g of KClO<sub>3</sub>?', eq:'2 KClO3 -> 2 KCl + 3 O2', s:{u:'g',s:'KClO3'}, t:{u:'g',s:'O2'}, fixed:'24.5', steps:[[1,'mol','KClO3',mm('KClO3'),'g','KClO3'],[3,'mol','O2',2,'mol','KClO3'],[mm('O2'),'g','O2',1,'mol','O2']]},
+ {q:'How many grams of CO<sub>2</sub> are made when {v} g of CH<sub>4</sub> burns?', eq:'CH4 + 2 O2 -> CO2 + 2 H2O', s:{u:'g',s:'CH4'}, t:{u:'g',s:'CO2'}, rand:[1,100,3], steps:[[1,'mol','CH4',mm('CH4'),'g','CH4'],[1,'mol','CO2',1,'mol','CH4'],[mm('CO2'),'g','CO2',1,'mol','CO2']]},
+ {q:'How many grams of Al<sub>2</sub>O<sub>3</sub> form from {v} g of Al?', eq:'4 Al + 3 O2 -> 2 Al2O3', s:{u:'g',s:'Al'}, t:{u:'g',s:'Al2O3'}, rand:[1,100,3], steps:[[1,'mol','Al',mm('Al'),'g','Al'],[2,'mol','Al2O3',4,'mol','Al'],[mm('Al2O3'),'g','Al2O3',1,'mol','Al2O3']]},
+ {q:'How many grams of H<sub>2</sub>O form when {v} L of O<sub>2</sub> (at STP) react?', eq:'C3H8 + 5 O2 -> 3 CO2 + 4 H2O', s:{u:'L',s:'O2'}, t:{u:'g',s:'H2O'}, rand:[1,100,3], steps:[[1,'mol','O2',VSTP,'L','O2'],[4,'mol','H2O',5,'mol','O2'],[mm('H2O'),'g','H2O',1,'mol','H2O']]},
+ {q:'How many grams of Fe are produced from {v} molecules of CO?', eq:'Fe2O3 + 3 CO -> 2 Fe + 3 CO2', s:{u:'molecules',s:'CO'}, t:{u:'g',s:'Fe'}, rand:[1e22,9e24,3], steps:[[1,'mol','CO',NA,'molecules','CO'],[2,'mol','Fe',3,'mol','CO'],[mm('Fe'),'g','Fe',1,'mol','Fe']]},
+ {q:'How many grams of MgO form when {v} g of Mg burns?', eq:'2 Mg + O2 -> 2 MgO', s:{u:'g',s:'Mg'}, t:{u:'g',s:'MgO'}, rand:[1,50,3], steps:[[1,'mol','Mg',mm('Mg'),'g','Mg'],[2,'mol','MgO',2,'mol','Mg'],[mm('MgO'),'g','MgO',1,'mol','MgO']]},
+ {q:'How many grams of NaCl form from {v} g of Na?', eq:'2 Na + Cl2 -> 2 NaCl', s:{u:'g',s:'Na'}, t:{u:'g',s:'NaCl'}, rand:[1,50,3], steps:[[1,'mol','Na',mm('Na'),'g','Na'],[2,'mol','NaCl',2,'mol','Na'],[mm('NaCl'),'g','NaCl',1,'mol','NaCl']]},
+ {q:'What volume (L) of CO<sub>2</sub> at STP is made from {v} g of glucose (C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>)?', eq:'C6H12O6 + 6 O2 -> 6 CO2 + 6 H2O', s:{u:'g',s:'C6H12O6'}, t:{u:'L',s:'CO2'}, rand:[5,200,3], steps:[[1,'mol','C6H12O6',mm('C6H12O6'),'g','C6H12O6'],[6,'mol','CO2',1,'mol','C6H12O6'],[VSTP,'L','CO2',1,'mol','CO2']]}
+],
+moleMix: [
+ {q:'How many moles of water are in {v} g of H<sub>2</sub>O?', s:{u:'g',s:'H2O'}, t:{u:'mol',s:'H2O'}, fixed:'54.0', steps:[[1,'mol','H2O',mm('H2O'),'g','H2O']]},
+ {q:'How many molecules are in {v} g of CO<sub>2</sub>?', s:{u:'g',s:'CO2'}, t:{u:'molecules',s:'CO2'}, fixed:'22.0', steps:[[1,'mol','CO2',mm('CO2'),'g','CO2'],[NA,'molecules','CO2',1,'mol','CO2']]},
+ {q:'What volume (L) does {v} mol of N<sub>2</sub> gas take up at STP?', s:{u:'mol',s:'N2'}, t:{u:'L',s:'N2'}, fixed:'1.25', steps:[[VSTP,'L','N2',1,'mol','N2']]},
+ {q:'How many molecules are in {v} L of O<sub>2</sub> gas at STP?', s:{u:'L',s:'O2'}, t:{u:'molecules',s:'O2'}, rand:[1,100,3], steps:[[1,'mol','O2',VSTP,'L','O2'],[NA,'molecules','O2',1,'mol','O2']]},
+ {q:'How many moles are in {v} g of sodium chloride (NaCl)?', s:{u:'g',s:'NaCl'}, t:{u:'mol',s:'NaCl'}, rand:[5,200,3], steps:[[1,'mol','NaCl',mm('NaCl'),'g','NaCl']]},
+ {q:'How many atoms are in {v} g of copper (Cu)?', s:{u:'g',s:'Cu'}, t:{u:'atoms',s:'Cu'}, rand:[1,100,3], steps:[[1,'mol','Cu',mm('Cu'),'g','Cu'],[NA,'atoms','Cu',1,'mol','Cu']]},
+ {q:'How many moles are in {v} atoms of iron (Fe)?', s:{u:'atoms',s:'Fe'}, t:{u:'mol',s:'Fe'}, rand:[1e22,9e24,3], steps:[[1,'mol','Fe',NA,'atoms','Fe']]},
+ {q:'What is the mass in grams of {v} L of NH<sub>3</sub> gas at STP?', s:{u:'L',s:'NH3'}, t:{u:'g',s:'NH3'}, rand:[1,50,3], steps:[[1,'mol','NH3',VSTP,'L','NH3'],[mm('NH3'),'g','NH3',1,'mol','NH3']]},
+ {q:'What is the mass in grams of {v} mol of glucose (C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>)?', s:{u:'mol',s:'C6H12O6'}, t:{u:'g',s:'C6H12O6'}, rand:[0.1,5,3], steps:[[mm('C6H12O6'),'g','C6H12O6',1,'mol','C6H12O6']]},
+ {q:'What volume (L) at STP do {v} molecules of CH<sub>4</sub> take up?', s:{u:'molecules',s:'CH4'}, t:{u:'L',s:'CH4'}, rand:[1e22,9e24,3], steps:[[1,'mol','CH4',NA,'molecules','CH4'],[VSTP,'L','CH4',1,'mol','CH4']]}
+]};
+const SET_NAMES={mole2:'2 Fraction',mole3:'3 Fraction',mole4:'Stoichiometry (4 Fraction)',moleMix:'Mix of 2 & 3 Fraction'};
+function setKey(){ return S.mode==='unit'?'unit':S.moleSet; }
+const NO_GUIDED_PREFIX=new Set(['dm','dg','dL','ds','dam','dag','daL','das']);
+function menu(){ const g=S.style==='guided'; return UNIT_MENU[S.mode].map(([n,us])=>[n,g?us.filter(u=>!NO_GUIDED_PREFIX.has(u)):us]); }
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const S = {
+  mode:'unit', style:'guided', sig:false,
+  factors:[], boxes:{}, chain:[], loose:[], nextId:1,
+  pi:{unit:0,mole2:0,mole3:0,mole4:0,moleMix:0}, prob:null, moleSet:'mole2',
+  solved:{unit:new Set(),mole2:new Set(),mole3:new Set(),mole4:new Set(),moleMix:new Set()},
+  showSol:false, feedback:null, studentAnswer:'',
+  target:null, equation:null, prevCanceled:new Set()
+};
+const nid=()=>S.nextId++;
+
+/* =====================================================================
+   FACTOR CHECKING
+   ===================================================================== */
+function currentEq(){ return S.style==='guided' ? (S.prob && S.prob.eq) : S.equation; }
+function toMol(p){
+  const u=U[p.u];
+  if(u.dim==='amount') return p.v*u.f;
+  if(u.dim==='mass'){ const M=molarMass(p.s); return M? p.v*u.f/M : null; }
+  if(u.dim==='volume') return p.v*u.f/VSTP;
+  return undefined;
+}
+/* returns {st:'ok'|'warn'|'bad', msg} */
+function checkFactor(a,b){
+  const ua=U[a.u], ub=U[b.u];
+  if(!ua||!ub) return {st:'warn',msg:`Can't verify — the sim doesn't know the unit "${esc(!ua?a.u:b.u)}". Added anyway — make sure it's right!`};
+  if(!(a.v>0) || !(b.v>0)) return {st:'bad',msg:'Both numbers must be greater than zero.'};
+  if((a.s||'')===(b.s||'')){
+    if(ua.dim===ub.dim){
+      return approx(a.v*ua.f,b.v*ub.f) ? {st:'ok'} : {st:'bad',msg:'Those two amounts are not equal. Check your numbers (or the prefixes).'};
+    }
+    if(S.mode==='unit') return {st:'bad',msg:`${esc(a.u)} measures ${ua.dim} but ${esc(b.u)} measures ${ub.dim}. They can't be equal.`};
+    const ma=toMol(a), mb=toMol(b);
+    if(ma==null||mb==null) return {st:'warn',msg:"Can't verify this factor."};
+    if(approx(ma,mb)) return {st:'ok'};
+    const dims=[ua.dim,ub.dim];
+    if(dims.includes('mass')) return {st:'bad',msg:`That doesn't match the molar mass of ${fmtF(a.s)}. Add up the atomic masses using the 🧪 Periodic Table.`};
+    if(dims.includes('volume')) return {st:'bad',msg:'That doesn\'t match the molar volume of a gas at STP. Check your numbers.'};
+    return {st:'bad',msg:"That doesn't match Avogadro's number. Check your numbers."};
+  }
+  // different substances -> must come from a balanced equation
+  const eq=currentEq();
+  if(!eq || !(a.s in eq.coef) || !(b.s in eq.coef)){
+    return {st:'warn',msg:`Can't verify: no balanced equation contains both ${fmtF(a.s)} and ${fmtF(b.s)}. Added anyway — make sure it's right!`};
+  }
+  const ma=toMol(a), mb=toMol(b);
+  if(ma==null||mb==null) return {st:'warn',msg:"Can't verify this factor."};
+  if(approx(ma/eq.coef[a.s], mb/eq.coef[b.s])) return {st:'ok'};
+  return {st:'bad',msg:"That ratio doesn't match the coefficients in the balanced equation."};
+}
+
+/* =====================================================================
+   CHAIN MATH
+   ===================================================================== */
+function compute(){
+  const bs=S.chain.map(id=>S.boxes[id]).filter(Boolean);
+  let v=1; const tops=[], bots=[];
+  bs.forEach(b=>{
+    v*=b.n.v/b.d.v;
+    if(b.n.u) tops.push({k:key(b.n),id:b.id+':n',p:b.n});
+    if(b.d.u) bots.push({k:key(b.d),id:b.id+':d',p:b.d});
+  });
+  const canceled=new Set();
+  tops.forEach(t=>{ const m=bots.find(x=>!x.used && x.k===t.k); if(m){ m.used=t.used=true; canceled.add(t.id); canceled.add(m.id); } });
+  const agg=arr=>{ const mp=new Map(); arr.filter(x=>!x.used).forEach(x=>{ if(!mp.has(x.k)) mp.set(x.k,{k:x.k,u:x.p.u,s:x.p.s,c:0}); mp.get(x.k).c++; }); return [...mp.values()]; };
+  return {v, empty:bs.length===0, canceled, num:agg(tops), den:agg(bots)};
+}
+function listHTML(list){ return list.map(x=>{ const h=unitHTML(x.u,x.s); return x.c>1 ? (x.s?`(${h})`:h)+`<sup>${x.c}</sup>` : h; }).join(' · '); }
+function resUnitsHTML(r){
+  if(!r.num.length && !r.den.length) return '<i style="font-weight:400;color:#868e96">no units</i>';
+  if(!r.den.length) return listHTML(r.num);
+  return `<span class="afrac"><span>${r.num.length?listHTML(r.num):'1'}</span><span class="afl"></span><span>${listHTML(r.den)}</span></span>`;
+}
+function unitsMatch(r,tk){ return tk && r.den.length===0 && r.num.length===1 && r.num[0].c===1 && r.num[0].k===tk; }
+function startBox(){ const b=S.boxes[S.chain[0]]; return b&&b.isStart?b:null; }
+
+/* =====================================================================
+   PROBLEMS
+   ===================================================================== */
+function genValue(p){
+  if(p.fixed) return p.fixed;
+  const [lo,hi,sf]=p.rand;
+  for(let t=0;t<300;t++){
+    const v=Math.exp(Math.log(lo)+Math.random()*(Math.log(hi)-Math.log(lo)));
+    const s=fmtSig(v,sf).plain; const mant=s.split('e')[0];
+    if(/0$/.test(mant) || /\.$/.test(mant)) continue;
+    return s;
+  }
+  return fmtSig(lo,sf).plain;
+}
+function loadProblem(i){
+  const list=PROBS[setKey()]; i=Math.max(0,Math.min(list.length-1,i));
+  S.pi[setKey()]=i;
+  const p=list[i], str=genValue(p), pn=parseNum(str);
+  S.prob={p,i,str,v:pn.v,sf:pn.sfMax,html:pn.html,eq:p.eq?parseEquation(p.eq):null};
+  clearWork(); S.feedback=null; S.showSol=false; S.studentAnswer='';
+  if(i<2) S.factors=p.steps.map(st=>({id:nid(),a:{v:st[3],u:st[4],s:st[5],html:fmtNum(st[3])},b:{v:st[0],u:st[1],s:st[2],html:fmtNum(st[0])},st:'ok'}));
+}
+function solSteps(){
+  return S.prob.p.steps.map((st,i)=>({id:'sol'+i,n:{v:st[0],u:st[1],s:st[2],html:fmtNum(st[0])},d:{v:st[3],u:st[4],s:st[5],html:fmtNum(st[3])}}));
+}
+function correctValue(){ let v=S.prob.v; S.prob.p.steps.forEach(st=>v*=st[0]/st[3]); return v; }
+
+/* =====================================================================
+   ACTIONS
+   ===================================================================== */
+function clearWork(){ S.boxes={}; S.chain=[]; S.loose=[]; S.prevCanceled=new Set(); }
+function hasWork(){ return S.chain.length||S.loose.length; }
+function boxFromFactor(f){ return {id:nid(), n:{...f.a}, d:{...f.b}, isStart:false}; }
+function removeBox(id){ S.chain=S.chain.filter(x=>x!==id); S.loose=S.loose.filter(x=>x!==id); delete S.boxes[id]; }
+function flipBox(id){ const b=S.boxes[id]; if(!b||b.isStart) return; const t=b.n; b.n=b.d; b.d=t; touch(); render(); }
+function touch(){ if(S.feedback && !S.feedback.ok) S.feedback=null; }
+function addFactor(a,b,st){
+  const dup=S.factors.find(f=>(key(f.a)===key(a)&&key(f.b)===key(b)&&approx(f.a.v,a.v,1e-9)&&approx(f.b.v,b.v,1e-9)));
+  if(dup){ toast('That conversion factor is already in your list.'); return false; }
+  S.factors.push({id:nid(),a,b,st}); render(); return true;
+}
+function setStart(p){
+  const sb=startBox();
+  if(sb){ sb.n=p; }
+  else { const b={id:nid(), n:p, d:{v:1,u:null,s:'',html:'1'}, isStart:true}; S.boxes[b.id]=b; S.chain.unshift(b.id); }
+  touch(); render();
+}
+function checkAnswer(){
+  const P=S.prob, r=compute(), sb=startBox();
+  const fb=(ok,msg)=>{ S.feedback={ok,msg}; if(ok) S.solved[setKey()].add(P.i); render(); };
+  if(!sb) return fb(false,'Add the starting amount first (use <b>+ Starting Amount</b>).');
+  if(!approx(sb.n.v,P.v,1e-6) || key(sb.n)!==key(P.p.s)) return fb(false,`Your starting amount should be <b>${P.html} ${unitHTML(P.p.s.u,P.p.s.s)}</b> (from the problem).`);
+  const tk=key(P.p.t);
+  if(!unitsMatch(r,tk)) return fb(false,`Units aren't right yet. You have <b>${resUnitsHTML(r)}</b> but need <b>${unitHTML(P.p.t.u,P.p.t.s)}</b>. Flip a box or add another conversion factor.`);
+  const cv=correctValue();
+  if(!approx(r.v,cv)) return fb(false,'Your units are right, but the number is off. Check the numbers in your conversion factors.');
+  if(S.sig){
+    const a=parseNum(S.studentAnswer);
+    if(!a) return fb(false,'Setup is right! Now type your <b>rounded</b> final answer in the box above.');
+    if(!approx(a.v,cv,0.02)) return fb(false,"Your setup is right, but the number you typed doesn't match the calculator value. Round the calculator value.");
+    if(P.sf<a.sfMin || P.sf>a.sfMax) return fb(false,`Right value, but it should have <b>${P.sf}</b> sig figs (yours has ${a.sfMin===a.sfMax?a.sfMin:a.sfMin+'–'+a.sfMax}). Match the sig figs of the starting amount.`);
+    if(!approx(a.v,roundSig(cv,P.sf),1e-9) && !approx(a.v,roundSig(r.v,P.sf),1e-9)) return fb(false,'Right number of sig figs, but check your rounding of the last digit.');
+    const tip = a.sfMin!==a.sfMax ? `<br><span style="font-weight:400">Tip: trailing zeros without a decimal point are ambiguous. Write <b>${fmtSig(cv,P.sf).html}</b> to clearly show ${P.sf} sig figs.</span>` : '';
+    return fb(true,`✓ Correct! ${fmtSig(cv,P.sf).html} ${unitHTML(P.p.t.u,P.p.t.s)}${tip}`);
+  }
+  fb(true,`✓ Correct! ${fmt4(r.v)} ${unitHTML(P.p.t.u,P.p.t.s)}`);
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+function partHTML(p,cls){ return `<span class="val">${p.html}</span>${p.u?` <span class="unit ${cls||''}">${unitHTML(p.u,p.s)}</span>`:''}`; }
+function boxHTML(b,canceled,prev,extra){
+  canceled=canceled||new Set(); prev=prev||new Set();
+  const cn=k=>canceled.has(k)?('cancel'+(prev.has(k)?'':' anim')):'';
+  const isSol=extra&&extra.includes('sol');
+  return `<div class="box ${b.isStart?'start':''} ${extra||''}" data-id="${b.id}" title="${b.isStart?'Starting amount':(isSol?'Solution':'Click to flip · drag to move')}">`+
+    (b.isStart?'<span class="tag">Start</span>':'')+
+    `<div class="part">${partHTML(b.n,cn(b.id+':n'))}</div><div class="fline"></div><div class="part">${partHTML(b.d,cn(b.id+':d'))}</div>`+
+    (isSol?'':'<button class="x" title="Remove">✕</button>')+`</div>`;
+}
+function setToggle(el,rightOn){ el.classList.toggle('right',rightOn); const o=el.querySelectorAll('.opt'); o[0].classList.toggle('on',!rightOn); o[1].classList.toggle('on',rightOn); }
+
+function renderTop(){
+  setToggle($('#tgMode'),S.mode==='mole');
+  setToggle($('#tgStyle'),S.style==='free');
+  $('#bPT').style.display=S.mode==='mole'?'':'none';
+  $('#segSet').style.display=(S.mode==='mole'&&S.style==='guided')?'':'none';
+  document.querySelectorAll('#segSet button').forEach(b=>b.classList.toggle('on',b.dataset.set===S.moleSet));
+}
+function factorText(f){ return `${f.a.html} ${unitHTML(f.a.u,f.a.s)} <span class="eq">=</span> ${f.b.html} ${unitHTML(f.b.u,f.b.s)}`; }
+function renderFactors(){
+  const el=$('#fbar');
+  if(!S.factors.length){ el.innerHTML='<span class="empty">No conversion factors yet — click <b>+ Conversion Factor</b> and pick the units (standard numbers fill in). Then drag one into the work area (or tap it).</span>'; return; }
+  el.innerHTML=S.factors.map(f=>`<div class="chip" data-id="${f.id}" title="Drag into the work area (or tap to add to the end of the chain)"><span>${factorText(f)}</span><span class="badge ${f.st==='ok'?'ok':'warn'}" title="${f.st==='ok'?'Verified':'Not verified'}">${f.st==='ok'?'✓':'⚠'}</span><button class="x" title="Delete factor">✕</button></div>`).join('');
+}
+function renderBanner(){
+  const el=$('#banner');
+  if(S.style==='guided'){
+    const P=S.prob, list=PROBS[setKey()], sv=S.solved[setKey()];
+    const done=sv.has(P.i), last=P.i===list.length-1;
+    const dots=list.map((_,i)=>`<span class="pdot ${i<P.i||sv.has(i)?'done':''} ${i===P.i?'cur':''}"></span>`).join('');
+    el.innerHTML=`<div class="row"><b style="font-size:17px">${S.mode==='unit'?'Unit Conversion':'Mole Conversion: '+SET_NAMES[S.moleSet]} — Problem ${P.i+1} of ${list.length}</b>
+      <span class="pdots" title="Progress">${dots}</span>
+      <button class="bbtn" id="pReset" title="${P.p.fixed?'Clear the work area':'Clear the work area and get a new number'}">↺ ${P.p.fixed?'Reset problem':'Reset / new number'}</button>
+      <span class="spacer"></span>
+      <button class="nextBtn ${done?'ready':''}" id="pNext" ${done?'':'disabled'} title="${done?'Go to the next problem':'Get the right answer first'}">${done?(last?'🎉 Finish':'Next Problem ▶'):'🔒 Next Problem'}</button></div>
+      <div class="q">${P.p.q.replace('{v}','<b>'+P.html+'</b>')}</div>
+      ${P.eq?`<div class="eqn">${eqHTML(P.eq)}</div>`:''}
+      <div class="gf">Given: <span class="pill">${P.html} ${unitHTML(P.p.s.u,P.p.s.s)}</span> &nbsp;→&nbsp; Find: <span class="pill">${unitHTML(P.p.t.u,P.p.t.s)}</span></div>`;
+  } else {
+    el.innerHTML=`<div class="row"><b>Free Form</b> — build any conversion you want.
+      <button class="bbtn" id="fTarget">🎯 Set Target Unit</button>${S.target?` <span class="pill">Target: ${unitHTML(S.target.u,S.target.s)}</span>`:''}
+      ${S.mode==='mole'?`<button class="bbtn" id="fEq">⚖️ Set Equation</button>`:''}</div>
+      ${S.mode==='mole'&&S.equation?`<div class="eqn">${eqHTML(S.equation)}</div>`:''}`;
+  }
+}
+function renderTrack(){
+  const tr=$('#track'), sl=tr.scrollLeft, r=compute();
+  let h='<div id="trackLabel">Chain — line up boxes here</div>';
+  if(!S.chain.length) h+='<span class="ph">Click <b>+ Starting Amount</b>, then drag conversion factors here. Click a box to flip it.</span>';
+  else h+=S.chain.map((id,i)=>(i?'<span class="times">×</span>':'')+boxHTML(S.boxes[id],r.canceled,S.prevCanceled)).join('');
+  h+='<div id="dropInd"></div>';
+  tr.innerHTML=h; tr.scrollLeft=sl;
+  const pk=$('#parking');
+  pk.innerHTML='<div class="ph">Parking area — boxes here are NOT part of the calculation</div>'+S.loose.map(id=>{ const b=S.boxes[id]; return boxHTML(b,null,null,'loose').replace('class="box','style="left:'+b.x+'px;top:'+b.y+'px" class="box'); }).join('');
+  S.prevCanceled=r.canceled;
+  // solution row
+  const sr=$('#solRow');
+  if(S.style==='guided' && S.showSol){
+    const P=S.prob, st=solSteps(), cv=correctValue();
+    const start={id:'solS',isStart:false,n:{v:P.v,u:P.p.s.u,s:P.p.s.s,html:P.html},d:{v:1,u:null,html:'1'}};
+    const ans=S.sig?fmtSig(cv,P.sf).html:fmt4(cv);
+    sr.innerHTML='<span class="lbl">Solution</span>'+[start,...st].map((b,i)=>(i?'<span class="times">×</span>':'')+boxHTML(b,null,null,'sol')).join('')+`<span class="eqsign">=</span><span class="ans">${ans} ${unitHTML(P.p.t.u,P.p.t.s)}</span>`;
+    sr.style.display='';
+  } else sr.style.display='none';
+}
+function renderAnswer(){
+  const el=$('#answer'), r=compute(), guided=S.style==='guided';
+  const tk=guided?key(S.prob.p.t):(S.target?key(S.target):null);
+  const tHTML=guided?unitHTML(S.prob.p.t.u,S.prob.p.t.s):(S.target?unitHTML(S.target.u,S.target.s):'');
+  let h='<h2>Answer</h2>';
+  if(r.empty){ h+='<div class="ansBig" style="color:#adb5bd">—</div><div class="status neutral">Add a starting amount to begin.</div>'; }
+  else {
+    const valHTML=S.sig?fmtCalc(r.v):fmt4(r.v);
+    h+=`${S.sig?'<div class="ansSmall">Calculator value</div>':''}<div class="ansBig"><span>${valHTML}</span><span>${resUnitsHTML(r)}</span></div>`;
+    if(tk){
+      h+= unitsMatch(r,tk) ? `<div class="status good">✓ Units match the target (${tHTML}).</div>`
+        : `<div class="status bad">Units don't match yet. Target: <b>${tHTML}</b></div>`;
+    } else {
+      const left=r.num.length+r.den.length;
+      h+=`<div class="status neutral">${left?'Units left over are shown above.':'All units canceled.'}</div>`;
+    }
+    if(S.sig && !guided){
+      const sb=startBox();
+      if(sb && sb.n.sfMin){ h+=`<div class="rule">Rounded to ${sb.n.sfMin} sig figs (same as starting amount): <b>${fmtSig(r.v,sb.n.sfMin).html}</b></div>`; }
+    }
+  }
+  if(guided){
+    if(S.sig){
+      h+=`<div class="rule">Sig fig rule: round your answer to the same number of sig figs as the starting amount (conversion factors count as exact).</div>
+        <div class="ansIn"><input id="ansInput" placeholder="Rounded answer" value="${esc(S.studentAnswer)}" autocomplete="off"><span>${tHTML}</span></div>`;
+    }
+    h+=`<button class="abtn check" id="bCheck">✔ Check Answer</button><button class="abtn sol" id="bSol">${S.showSol?'Hide Solution':'💡 Show Solution'}</button>`;
+    if(S.feedback) h+=`<div class="fb ${S.feedback.ok?'ok':'no'}">${S.feedback.msg}</div>`;
+    if(S.solved[setKey()].has(S.prob.i)) h+=`<button class="nextBtn ready big" id="aNext">${S.prob.i===PROBS[setKey()].length-1?'🎉 Finish':'Next Problem ▶'}</button>`;
+  }
+  el.innerHTML=h;
+}
+function render(){ renderTop(); renderFactors(); renderBanner(); renderTrack(); renderAnswer(); }
+
+/* =====================================================================
+   MODALS
+   ===================================================================== */
+function modal(title,body,buttons,opts){
+  opts=opts||{};
+  const ov=document.createElement('div'); ov.className='overlay';
+  ov.innerHTML=`<div class="modal ${opts.wide?'wide':''} ${opts.cls||''}"><div class="mHead"><h2>${title}</h2><button class="mClose" title="Close">✕</button></div><div class="mBody">${body}</div><div class="mErr"></div><div class="mFoot"></div></div>`;
+  const close=()=>ov.remove();
+  ov.querySelector('.mClose').onclick=close;
+  const foot=ov.querySelector('.mFoot');
+  (buttons||[{label:'Close'}]).forEach(b=>{ const bt=document.createElement('button'); bt.className='mbtn '+(b.cls||''); bt.textContent=b.label; bt.onclick=()=>{ const res=b.onClick?b.onClick(ov):undefined; if(res!==false) close(); }; foot.appendChild(bt); });
+  ov.addEventListener('keydown',e=>{ if(e.key==='Enter' && e.target.tagName==='INPUT'){ const p=foot.querySelector('.primary'); if(p){ e.preventDefault(); p.click(); } } if(e.key==='Escape') close(); });
+  document.body.appendChild(ov);
+  const first=ov.querySelector('input,select'); if(first) first.focus();
+  return ov;
+}
+function mErr(ov,msg){ ov.querySelector('.mErr').innerHTML=msg||''; }
+function confirmModal(msg,yes){ modal('Are you sure?',`<p>${msg}</p>`,[{label:'Cancel'},{label:'Yes, continue',cls:'primary',onClick:()=>{yes();}}]); }
+function unitSelect(id,sel){
+  return `<select id="${id}"><option value="">— unit —</option>`+menu().map(([g,us])=>`<optgroup label="${g}">`+us.map(u=>`<option value="${esc(u)}" ${u===sel?'selected':''}>${esc(u)}</option>`).join('')+'</optgroup>').join('')+'</select>';
+}
+function substanceList(){
+  return `<datalist id="subList">${knownSubstances().map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`;
+}
+/* read {v,u,s,html,sfMin,sfMax} from a modal row; returns {err} or part */
+function readPart(ov,nId,uId,sId,label){
+  const pn=parseNum(ov.querySelector('#'+nId).value);
+  if(!pn) return {err:`${label}: type a number (like 2.54 or 6.022e23).`};
+  if(!(pn.v>0)) return {err:`${label}: the number must be greater than zero.`};
+  const u=ov.querySelector('#'+uId).value;
+  if(!u) return {err:`${label}: pick a unit.`};
+  let s='';
+  if(S.mode==='mole'){
+    s=normF(ov.querySelector('#'+sId).value);
+    if(!s) return {err:`${label}: type the substance formula (like H2O).`};
+    if(!parseFormula(s)) return {err:`${label}: I can't read the formula "${esc(s)}". Use capital letters for elements (H2O, NaCl, CO2).`};
+  }
+  return {v:pn.v,u,s,html:pn.html,sfMin:pn.sfMin,sfMax:pn.sfMax};
+}
+function subInput(id,val){ return S.mode==='mole'?`<label>Substance<input class="sub" id="${id}" list="subList" placeholder="e.g. H2O" value="${esc(val||'')}" autocomplete="off"></label>`:''; }
+
+function openStart(){
+  const sb=startBox();
+  const body=`<p class="hint">Type the starting amount from the problem with its unit${S.mode==='mole'?' and substance':''}.</p>
+    <div class="frow"><label>Amount<input class="num" id="mAmt" placeholder="e.g. 2.50" autocomplete="off" value="${sb?esc(sb.n.raw||''):''}"></label>
+    <label>Unit${unitSelect('mUnit',sb?sb.n.u:'')}</label>${subInput('mSub',sb?sb.n.s:'')}</div>
+    <p class="hint">Scientific notation: type <b>6.02e23</b> or <b>6.02 x 10^23</b>.</p>${substanceList()}`;
+  modal(sb?'Change Starting Amount':'Starting Amount',body,[{label:'Cancel'},{label:sb?'Update':'Add to Work Area',cls:'primary',onClick:ov=>{
+    const p=readPart(ov,'mAmt','mUnit','mSub','Starting amount');
+    if(p.err){ mErr(ov,p.err); return false; }
+    p.raw=ov.querySelector('#mAmt').value.trim();
+    setStart(p);
+  }}]);
+}
+/* ---------- typed conversion factors: parsing + predictive text ---------- */
+const UNIT_ALIAS={inch:'in',inches:'in',foot:'ft',feet:'ft',yard:'yd',yards:'yd',mile:'mi',miles:'mi',pound:'lb',pounds:'lb',lbs:'lb',ounce:'oz',ounces:'oz',cups:'cup',pint:'pt',pints:'pt',quart:'qt',quarts:'qt',gallon:'gal',gallons:'gal',second:'s',seconds:'s',sec:'s',secs:'s',minute:'min',minutes:'min',mins:'min',hour:'hr',hours:'hr',hrs:'hr',days:'day',weeks:'week',years:'year',yr:'year',yrs:'year',mole:'mol',moles:'mol',mols:'mol',atom:'atoms',molecule:'molecules','formula unit':'formula units',gram:'g',grams:'g',liter:'L',liters:'L',litre:'L',litres:'L',l:'L',ml:'mL',ug:'µg',um:'µm',ul:'µL',us:'µs','fl. oz':'fl oz',floz:'fl oz'};
+function numPlain(v){ return v===NA?'6.022 x 10^23':String(v); }
+function knownSubstances(){
+  const set=new Set();
+  if(S.style==='guided' && S.mode==='mole'){ const p=S.prob.p; set.add(p.s.s); set.add(p.t.s); if(S.prob.eq) Object.keys(S.prob.eq.coef).forEach(f=>set.add(f)); }
+  if(S.equation) Object.keys(S.equation.coef).forEach(f=>set.add(f));
+  S.factors.forEach(f=>{ if(f.a.s) set.add(f.a.s); if(f.b.s) set.add(f.b.s); });
+  Object.values(S.boxes).forEach(b=>{ if(b.n.s) set.add(b.n.s); if(b.d.s) set.add(b.d.s); });
+  if(S.target&&S.target.s) set.add(S.target.s);
+  set.delete(undefined); set.delete('');
+  return [...set];
+}
+function libList(){
+  if(S.mode==='unit'){
+    const secs=[];
+    BASES.forEach(([b,dim])=>{
+      const items=[];
+      PREF.forEach(([p,f,inv])=>{ if(!p) return; if(S.style==='guided'&&(p==='d'||p==='da')) return; if(f>1) items.push([1,p+b,f,b]); else items.push([1,b,inv,p+b]); });
+      secs.push([`Metric — ${dim} (${b})`,items]);
+    });
+    secs.push(['English',[[1,'ft',12,'in'],[1,'yd',3,'ft'],[1,'mi',5280,'ft'],[1,'lb',16,'oz'],[1,'cup',8,'fl oz'],[1,'pt',2,'cup'],[1,'qt',2,'pt'],[1,'gal',4,'qt']]]);
+    secs.push(['Metric ↔ English',[[1,'in',2.54,'cm'],[1,'mi',1.609,'km'],[1,'lb',453.6,'g'],[1,'kg',2.205,'lb'],[1,'L',1.057,'qt'],[1,'gal',3.785,'L']]]);
+    secs.push(['Time',[[1,'min',60,'s'],[1,'hr',60,'min'],[1,'day',24,'hr'],[1,'week',7,'day'],[1,'year',365,'day']]]);
+    return secs;
+  }
+  return [['Avogadro\'s number',[[1,'mol',NA,'atoms'],[1,'mol',NA,'molecules'],[1,'mol',NA,'formula units']]],
+          ['Gas at STP',[[1,'mol',VSTP,'L']]],
+          ['Metric',[[1,'kg',1000,'g'],[1,'g',1000,'mg'],[1,'L',1000,'mL']]]];
+}
+function canonUnit(v){
+  v=String(v||'').trim(); if(!v) return {u:'',known:false};
+  if(U[v]) return {u:v,known:true};
+  const k=UNIT_ALIAS[v.toLowerCase()]; if(k) return {u:k,known:true};
+  return {u:v.slice(0,24),known:false};
+}
+const METRIC_OF={}; BASES.forEach(([b])=>PREF.forEach(([p])=>METRIC_OF[p+b]=b));
+/* Standard factor between two units: {av,bv,note,cls}. av/bv undefined = no auto-fill */
+function standardFactor(a,b,sa,sb){
+  const A=U[a],B=U[b];
+  if(!A||!B) return {note:`⚠ The sim doesn't know the unit "${esc(!A?a:b)}". Type both numbers yourself — this factor can't be checked.`,cls:'warn'};
+  const mole=S.mode==='mole';
+  if(mole && sa && sb && sa!==sb){
+    if(a!=='mol'||b!=='mol') return {note:`A mole ratio goes between <b>mol</b> of ${fmtF(sa)} and <b>mol</b> of ${fmtF(sb)}.`,cls:'info'};
+    const eq=currentEq();
+    if(!eq) return {av:'',bv:'',note:'No balanced equation — type the mole ratio yourself (or ⚖️ Set Equation).',cls:'info'};
+    if(!(sa in eq.coef)||!(sb in eq.coef)) return {av:'',bv:'',note:`${!(sa in eq.coef)?fmtF(sa):fmtF(sb)} isn't in the balanced equation.`,cls:'warn'};
+    return {av:String(eq.coef[sa]),bv:String(eq.coef[sb]),note:`✓ Mole ratio filled in from the balanced equation: ${eqHTML(eq)}`,cls:'ok'};
+  }
+  if(a===b) return mole&&a==='mol' ? {note:'For a mole ratio, type a different substance for Unit B.',cls:'info'} : {note:'Pick two different units.',cls:'warn'};
+  const lib=libList().flatMap(x=>x[1]);
+  for(const [x,u1,y,u2] of lib){
+    if(u1===a&&u2===b) return {av:numPlain(x),bv:numPlain(y),note:'✓ Standard numbers filled in. You can change them if you need to.',cls:'ok'};
+    if(u1===b&&u2===a) return {av:numPlain(y),bv:numPlain(x),note:'✓ Standard numbers filled in. You can change them if you need to.',cls:'ok'};
+  }
+  if(A.dim!==B.dim){
+    if(!mole) return {note:`${esc(a)} measures ${A.dim} but ${esc(b)} measures ${B.dim} — they can't be converted.`,cls:'warn'};
+    const d=[A.dim,B.dim], has=x=>d.includes(x), isP=u=>U[u].dim==='amount'&&u!=='mol';
+    if(has('mass')&&has('amount')&&(a==='g'||b==='g')&&(a==='mol'||b==='mol'))
+    { const sub=sa||sb; if(sub&&parseFormula(sub)){ const M=mm(sub).toFixed(2); return {av:a==='g'?M:'1',bv:b==='g'?M:'1',note:`✓ Molar mass of ${fmtF(sub)} filled in (${M} g/mol).`,cls:'ok'}; }
+      return {av:a==='mol'?'1':'',bv:b==='mol'?'1':'',note:'Type the substance to fill in its molar mass.',cls:'info'}; }
+    if(has('mass')&&has('amount')&&(a==='mol'||b==='mol')) return {note:'Convert to grams (g) first, then use the molar mass.',cls:'info'};
+    if(has('volume')&&has('amount')&&(a==='mol'||b==='mol')) return {note:'Convert to liters (L) first, then use 1 mol = 22.4 L.',cls:'info'};
+    if(isP(a)||isP(b)||(has('mass')&&has('volume'))) return {note:'No single standard factor for these — go through moles (mol).',cls:'info'};
+    return {note:'No single standard factor for these.',cls:'info'};
+  }
+  if(METRIC_OF[a] && METRIC_OF[a]===METRIC_OF[b]) return {note:`No standard one-step factor between ${esc(a)} and ${esc(b)}. Go through the base unit (${METRIC_OF[a]}).`,cls:'info'};
+  return {note:`No standard one-step factor between ${esc(a)} and ${esc(b)}. Try going through another unit first.`,cls:'info'};
+}
+function comboHTML(id,val){ return `<div class="combo"><input id="${id}" value="${esc(val||'')}" autocomplete="off" spellcheck="false" placeholder="— unit —"><button type="button" class="cbtn" tabindex="-1" title="Show units">▾</button><div class="clist"></div></div>`; }
+function possibleUnits(a){
+  if(!U[a]) return null;
+  const set=new Set();
+  libList().flatMap(x=>x[1]).forEach(([x,u1,y,u2])=>{ if(u1===a) set.add(u2); if(u2===a) set.add(u1); });
+  if(S.mode==='mole'){ if(a==='g') set.add('mol'); if(a==='mol'){ set.add('g'); if(currentEq()) set.add('mol'); } }
+  return set;
+}
+function initCombo(ov,id,allowFn){
+  const inp=ov.querySelector('#'+id), wrap=inp.parentElement, list=wrap.querySelector('.clist'), btn=wrap.querySelector('.cbtn');
+  let items=[], hi=-1, open=false, filt='';
+  const build=()=>{
+    const q=filt.toLowerCase().trim(); let h=''; items=[];
+    const al=allowFn?allowFn():null;
+    if(al) h+=`<div class="cg" style="text-transform:none;color:#2b8a3e">Units that convert from ${esc(al.from)}</div>`;
+    menu().forEach(([g,us])=>{
+      const m=us.filter(u=>(!al||al.set.has(u))).filter(u=>!q||u.toLowerCase().includes(q)||Object.keys(UNIT_ALIAS).some(k=>UNIT_ALIAS[k]===u&&k.startsWith(q)));
+      if(m.length){ h+=`<div class="cg">${g}</div>`; m.forEach(u=>{ h+=`<div class="ci ${items.length===hi?'hi':''}" data-i="${items.length}">${esc(u)}</div>`; items.push(u); }); }
+    });
+    if(!items.length) h=(al&&canonUnit(filt).known)?`<div class="cg" style="text-transform:none">"${esc(filt)}" doesn't convert directly from ${esc(al.from)}</div>`:`<div class="cg" style="text-transform:none">No match — "${esc(filt)}" will be a custom unit (can't be checked)</div>`;
+    list.innerHTML=h;
+    const hiEl=list.querySelector('.ci.hi'); if(hiEl) hiEl.scrollIntoView({block:'nearest'});
+  };
+  const show=f=>{ open=true; hi=-1; filt=f; build(); list.style.display='block'; };
+  const hide=()=>{ open=false; list.style.display='none'; };
+  const pick=u=>{ inp.value=u; hide(); inp.dispatchEvent(new Event('change',{bubbles:true})); };
+  btn.addEventListener('pointerdown',e=>{ e.preventDefault(); if(open) hide(); else { inp.focus(); show(''); } });
+  inp.addEventListener('focus',()=>show(''));
+  inp.addEventListener('input',()=>show(inp.value));
+  inp.addEventListener('blur',()=>setTimeout(hide,150));
+  list.addEventListener('pointerdown',e=>{ e.preventDefault(); const c=e.target.closest('.ci'); if(c) pick(items[+c.dataset.i]); });
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){ e.preventDefault(); if(!open) show(''); hi=Math.min(items.length-1,hi+1); build(); }
+    else if(e.key==='ArrowUp'&&open){ e.preventDefault(); hi=Math.max(0,hi-1); build(); }
+    else if(e.key==='Enter'&&open){ e.preventDefault(); e.stopPropagation(); if(hi>=0) pick(items[hi]); else { hide(); inp.dispatchEvent(new Event('change',{bubbles:true})); } }
+    else if(e.key==='Escape'&&open){ e.stopPropagation(); hide(); }
+    else if(e.key==='Tab') hide();
+  });
+}
+function readFSide(ov,pfx,label){
+  const pn=parseNum(ov.querySelector('#'+pfx+'N').value);
+  if(!pn) return {err:`${label}: type a number (like 2.54 or 6.022e23).`};
+  if(!(pn.v>0)) return {err:`${label}: the number must be greater than zero.`};
+  const cu=canonUnit(ov.querySelector('#'+pfx+'U').value);
+  if(!cu.u) return {err:`${label}: pick or type a unit.`};
+  let s='';
+  if(S.mode==='mole'){
+    const rs=ov.querySelector('#'+pfx+'S').value.trim();
+    if(cu.known){
+      s=normF(rs);
+      if(!s) return {err:`${label}: type the substance formula (like H2O).`};
+      if(!parseFormula(s)) return {err:`${label}: I can't read the formula "${esc(rs)}". Use capital letters for elements (H2O, NaCl).`};
+    } else s=parseFormula(normF(rs))?normF(rs):rs.slice(0,24);
+  }
+  return {v:pn.v,u:cu.u,s,html:pn.html,sfMin:pn.sfMin,sfMax:pn.sfMax};
+}
+function openFactor(){
+  const mole=S.mode==='mole';
+  const pre={u:'',s:''};
+  const row=(p,label,u,sub)=>`<div class="frow"><label>Number<input class="num" id="${p}N" autocomplete="off"></label><label>${label}${comboHTML(p+'U',u)}</label>${mole?`<label>Substance<input class="sub" id="${p}S" list="subList" value="${esc(sub)}" placeholder="e.g. H2O" autocomplete="off"></label>`:''}</div>`;
+  const body=`<p class="hint">Pick <b>Unit A</b> and <b>Unit B</b>. Standard numbers fill in automatically — or type your own. You can also type a unit that isn't in the list.</p>`+
+    row('fa','Unit A',pre.u,pre.s)+'<div class="bigEq">=</div>'+row('fb','Unit B','',pre.s)+
+    `<div id="fNote" class="note"></div><div class="preview" id="fPrev"></div>`+substanceList();
+  const ov=modal('+ Conversion Factor',body,[{label:'Cancel'},{label:'Add Factor',cls:'primary',onClick:ov=>{
+    const a=readFSide(ov,'fa','Unit A'); if(a.err){ mErr(ov,a.err); return false; }
+    const b=readFSide(ov,'fb','Unit B'); if(b.err){ mErr(ov,b.err); return false; }
+    const c=checkFactor(a,b);
+    if(c.st==='bad'){ mErr(ov,'✗ '+c.msg); return false; }
+    if(!addFactor(a,b,c.st)) return false;
+    toast(c.st==='ok'?'✓ Factor checked and added.':'⚠ '+c.msg.replace(/<[^>]+>/g,''));
+  }}],{cls:'vis'});
+  const g=id=>ov.querySelector('#'+id);
+  const allowB=()=>{ const A=canonUnit(g('faU').value); if(!A.known) return null; const set=possibleUnits(A.u); return set&&set.size?{set,from:A.u}:null; };
+  initCombo(ov,'faU'); initCombo(ov,'fbU',allowB);
+  let auto=false, subBTouched=false;
+  const prev=()=>{
+    const side=p=>{ const pn=parseNum(g(p+'N').value), cu=canonUnit(g(p+'U').value), ss=mole?g(p+'S').value.trim():''; return `${pn?pn.html:'?'} ${cu.u?unitHTML(cu.u,parseFormula(normF(ss))?normF(ss):ss):'?'}`; };
+    g('fPrev').innerHTML=side('fa')+' = '+side('fb');
+  };
+  const fill=force=>{
+    const A=canonUnit(g('faU').value), B=canonUnit(g('fbU').value);
+    if(!A.u||!B.u){ g('fNote').innerHTML=''; prev(); return; }
+    if(!force && (!A.known||!B.known)){ prev(); return; }
+    const sa=mole?normF(g('faS').value):'', sb=mole?normF(g('fbS').value):'';
+    const sf=standardFactor(A.u,B.u,sa,sb);
+    if(sf.av!==undefined||sf.bv!==undefined){ g('faN').value=sf.av||''; g('fbN').value=sf.bv||''; auto=true; }
+    else if(auto){ g('faN').value=''; g('fbN').value=''; auto=false; }
+    const n=g('fNote'); n.className='note '+sf.cls; n.innerHTML=sf.note;
+    mErr(ov,''); prev();
+  };
+  const checkB=()=>{ const al=allowB(), B=canonUnit(g('fbU').value); if(al && B.known && !al.set.has(B.u)){ g('fbU').value=''; if(auto){ g('faN').value=''; g('fbN').value=''; auto=false; } } };
+  g('faU').addEventListener('change',()=>{ checkB(); fill(true); }); g('faU').addEventListener('input',()=>{ checkB(); fill(false); });
+  g('fbU').addEventListener('change',()=>fill(true)); g('fbU').addEventListener('input',()=>fill(false));
+  ['faN','fbN'].forEach(id=>g(id).addEventListener('input',()=>{ auto=false; prev(); }));
+  if(mole){
+    g('faS').addEventListener('input',()=>{ if(!subBTouched) g('fbS').value=g('faS').value; fill(false); });
+    g('fbS').addEventListener('input',()=>{ subBTouched=true; fill(false); });
+  }
+  prev();
+}
+
+function nextProblem(){
+  const P=S.prob, list=PROBS[setKey()];
+  if(!S.solved[setKey()].has(P.i)){ toast('Get the right answer first — then you can go on.'); return; }
+  if(P.i===list.length-1){
+    modal('🎉 All done!',`<p style="font-size:17px">You finished all ${list.length} ${S.mode==='unit'?'Unit Conversion':SET_NAMES[S.moleSet]} problems!</p>`,
+      [{label:'Stay here'},{label:'Start over at Problem 1',cls:'primary',onClick:()=>{ S.solved[setKey()]=new Set(); S.factors=[]; loadProblem(0); render(); }}]);
+    return;
+  }
+  S.factors=[]; loadProblem(P.i+1); render();
+  toast('Problem '+(P.i+2)+' — conversion factors cleared.');
+}
+function addProblemStart(){
+  if(startBox()){ toast('The starting amount is already in the work area.'); return; }
+  const P=S.prob;
+  setStart({v:P.v,u:P.p.s.u,s:P.p.s.s||'',html:P.html,sfMin:P.sf,sfMax:P.sf,raw:P.str});
+  toast('Starting amount added to the work area.');
+}
+function openTarget(){
+  const body=`<p class="hint">Pick the unit you want to end up with. The Answer Box turns green when you reach it.</p><div class="frow"><label>Unit${unitSelect('tU',S.target?S.target.u:'')}</label>${subInput('tS',S.target?S.target.s:'')}</div>${substanceList()}`;
+  modal('🎯 Target Unit',body,[{label:'Remove target',cls:'danger',onClick:()=>{S.target=null;render();}},{label:'Cancel'},{label:'Set Target',cls:'primary',onClick:ov=>{
+    const u=ov.querySelector('#tU').value; if(!u){ mErr(ov,'Pick a unit.'); return false; }
+    let s=''; if(S.mode==='mole'){ s=normF(ov.querySelector('#tS').value); if(!parseFormula(s)){ mErr(ov,'Type a valid substance formula (like H2O).'); return false; } }
+    S.target={u,s}; render();
+  }}]);
+}
+function openEquation(){
+  const cur=S.equation?[S.equation.react,S.equation.prod].map(sd=>sd.map(x=>(x.c>1?x.c+' ':'')+x.f).join(' + ')).join(' -> '):'';
+  const body=`<p class="hint">Type a balanced equation. Use <b>-&gt;</b> for the arrow. Example: <b>2 H2 + O2 -&gt; 2 H2O</b></p><div class="frow" style="width:100%"><label style="flex:1">Equation<input id="eqIn" style="width:100%" value="${esc(cur)}" autocomplete="off"></label></div><div class="preview" id="eqPrev"></div>`;
+  const ov=modal('⚖️ Balanced Equation',body,[{label:'Remove equation',cls:'danger',onClick:()=>{S.equation=null;render();}},{label:'Cancel'},{label:'Set Equation',cls:'primary',onClick:ov=>{
+    const e=parseEquation(ov.querySelector('#eqIn').value); if(e.err){ mErr(ov,e.err); return false; }
+    S.equation=e; render(); toast('Equation set. Mole ratios from it can now be checked.');
+  }}]);
+  const upd=()=>{ const e=parseEquation(ov.querySelector('#eqIn').value); ov.querySelector('#eqPrev').innerHTML=e.err?'<span style="color:#868e96">'+(ov.querySelector('#eqIn').value?e.err:'')+'</span>':eqHTML(e)+' ✓'; };
+  ov.addEventListener('input',upd); upd();
+}
+function elPos(z){
+  if(z===1) return [1,1]; if(z===2) return [1,18];
+  if(z<=10) return [2, z<=4?z-2:z+8];
+  if(z<=18) return [3, z<=12?z-10:z];
+  if(z<=36) return [4,z-18];
+  if(z<=54) return [5,z-36];
+  if(z<=56) return [6,z-54];
+  if(z<=71) return [9,z-54];
+  if(z<=86) return [6,z-68];
+  if(z<=88) return [7,z-86];
+  if(z<=103) return [10,z-86];
+  return [7,z-100];
+}
+function openPT(){
+  let cells='';
+  for(let z=1;z<=118;z++){
+    const [r,c]=elPos(z); const blk=(r>=9)?'f':(c<=2||z===2)?'s':(c>=13)?'p':'d';
+    cells+=`<div class="c ${blk}" data-z="${z}" style="grid-row:${r};grid-column:${c}"><b>${EL_SYM[z-1]}</b>${massStr(z)}</div>`;
+  }
+  cells+=`<div class="mk" style="grid-row:6;grid-column:3">57–71</div><div class="mk" style="grid-row:7;grid-column:3">89–103</div><div style="grid-row:8;grid-column:1/-1;height:8px"></div>`;
+  const ov=modal('🧪 Periodic Table — atomic masses (g/mol)',`<div class="ptInfo" id="ptInfo">Click an element. Molar mass of a compound = sum of (atomic mass × number of atoms).</div><div class="pt">${cells}</div>`,[{label:'Close',cls:'primary'}],{wide:true});
+  ov.querySelectorAll('.pt .c').forEach(c=>c.onclick=()=>{ const z=+c.dataset.z; ov.querySelector('#ptInfo').innerHTML=`<b>${EL_SYM[z-1]}</b> — ${EL_NAME[z-1]} · atomic number ${z} · <b>${massStr(z)} g/mol</b>`; });
+}
+function openHelp(){
+  modal('How to use the Dimensional Analysis Lab',`<ol class="helpList">
+    <li>Pick <b>Unit Conversion</b> or <b>Mole Conversion</b>, and <b>Guided</b> (practice problems) or <b>Free Form</b>. In Guided Mole Conversion, pick a problem set: <b>2 Fraction</b>, <b>3 Fraction</b>, <b>Stoichiometry (4 Fraction)</b>, or <b>Mix 2 &amp; 3</b>. Problems 1–2 come with their conversion factors ready.</li>
+    <li>Click <b>+ Starting Amount</b>. In Guided mode the problem's amount drops right into the work area; in Free Form you type it. A green box appears: <i>amount / 1</i>.</li>
+    <li>Click <b>+ Conversion Factor</b> and pick <b>Unit A</b> and <b>Unit B</b>. Standard numbers fill in automatically, or type your own. The sim checks it: ✓ means checked, ⚠ means it couldn't be checked (like a custom unit).</li>
+    <li><b>Drag</b> a factor into the Chain (or tap it) — it becomes a fraction box.</li>
+    <li><b>Click</b> a box to flip it. <b>Drag</b> boxes to rearrange them, park them in the gray area (not counted), or drag them back up to the factor bar to delete.</li>
+    <li>When the same unit is on top and on bottom anywhere in the chain, it cancels with a <span style="color:#e03131;font-weight:700">red line</span>.</li>
+    <li>The <b>Answer Box</b> shows the live answer. If units look weird (like km²/m), a box is flipped wrong!</li>
+    <li>Guided: click <b>✔ Check Answer</b>. Stuck? <b>💡 Show Solution</b>.</li>
+    <li>Mole mode: molar masses and mole ratios don't fill in — use the <b>🧪 Periodic Table</b> and the balanced equation to type them (like 1 mol H2O = 18.02 g H2O).</li></ol>`,[{label:'Got it',cls:'primary'}]);
+}
+let toastT=null;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200); }
+
+/* =====================================================================
+   DRAG & DROP (Pointer Events: mouse + touch)
+   ===================================================================== */
+let D=null;
+function inRect(x,y,r,pad){ pad=pad||0; return x>=r.left-pad && x<=r.right+pad && y>=r.top-pad && y<=r.bottom+pad; }
+function trackHit(x,y){ return inRect(x,y,$('#track').getBoundingClientRect(),18); }
+function insertIndex(x,dragId){
+  const els=[...$('#track').querySelectorAll('.box')].filter(el=>+el.dataset.id!==dragId);
+  let idx=0; els.forEach(el=>{ const r=el.getBoundingClientRect(); if(x>r.left+r.width/2) idx++; });
+  const hasStart=S.chain.length && S.boxes[S.chain[0]].isStart && S.chain[0]!==dragId;
+  if(hasStart) idx=Math.max(idx,1);
+  return {idx,els};
+}
+function showIndicator(x){
+  const tr=$('#track'), ind=$('#dropInd'); if(!ind) return;
+  const {idx,els}=insertIndex(x,D.id); const tr0=tr.getBoundingClientRect();
+  let px;
+  if(!els.length) px=tr0.left+14;
+  else if(idx===0) px=els[0].getBoundingClientRect().left-8;
+  else { const r=els[idx-1].getBoundingClientRect(); const nx=els[idx]?els[idx].getBoundingClientRect().left:r.right+40; px=(r.right+nx)/2; }
+  ind.style.left=(px-tr0.left+tr.scrollLeft-2)+'px'; ind.style.display='block';
+}
+function hideIndicator(){ const ind=$('#dropInd'); if(ind) ind.style.display='none'; $('#track').classList.remove('hot'); }
+
+document.addEventListener('pointerdown',e=>{
+  if(e.button!==0 && e.pointerType==='mouse') return;
+  if(e.target.closest('button,input,select,.overlay')) return;
+  const chip=e.target.closest('#fbar .chip'), box=e.target.closest('#track .box,#parking .box');
+  if(chip) D={type:'chip',id:+chip.dataset.id,x0:e.clientX,y0:e.clientY,moved:false,src:chip};
+  else if(box){ const b=S.boxes[+box.dataset.id]; if(!b) return; D={type:'box',id:b.id,x0:e.clientX,y0:e.clientY,moved:false,src:box,isStart:b.isStart}; }
+  else return;
+  e.preventDefault();
+});
+document.addEventListener('pointermove',e=>{
+  if(!D) return;
+  if(!D.moved){
+    if(Math.hypot(e.clientX-D.x0,e.clientY-D.y0)<6) return;
+    if(D.type==='box' && D.isStart) return;
+    D.moved=true;
+    let g;
+    if(D.type==='box'){ const r=D.src.getBoundingClientRect(); g=D.src.cloneNode(true); D.offX=D.x0-r.left; D.offY=D.y0-r.top; g.style.width=r.width+'px'; g.style.left='';g.style.top=''; g.classList.remove('loose'); D.src.classList.add('dragsrc'); }
+    else { const f=S.factors.find(x=>x.id===D.id); const tmp=document.createElement('div'); tmp.innerHTML=boxHTML({id:-1,n:f.a,d:f.b}); g=tmp.firstChild; }
+    g.classList.add('ghost'); document.body.appendChild(g); D.g=g;
+    if(D.type==='chip'){ D.offX=g.offsetWidth/2; D.offY=g.offsetHeight/2; }
+  }
+  D.g.style.left=(e.clientX-D.offX)+'px'; D.g.style.top=(e.clientY-D.offY)+'px';
+  if(trackHit(e.clientX,e.clientY)){ $('#track').classList.add('hot'); showIndicator(e.clientX); } else hideIndicator();
+});
+function endDrag(e){
+  if(!D) return; const d=D; D=null;
+  if(!d.moved){
+    if(e.type==='pointercancel') return;
+    if(d.type==='chip'){ const f=S.factors.find(x=>x.id===d.id); if(f){ const b=boxFromFactor(f); S.boxes[b.id]=b; S.chain.push(b.id); touch(); render(); } }
+    else if(!d.isStart) flipBox(d.id);
+    return;
+  }
+  d.g.remove(); hideIndicator(); if(d.src) d.src.classList.remove('dragsrc');
+  if(e.type==='pointercancel'){ render(); return; }
+  const x=e.clientX, y=e.clientY;
+  if(d.type==='box' && inRect(x,y,$('#fbarWrap').getBoundingClientRect())){ removeBox(d.id); touch(); toast('Box removed.'); render(); return; }
+  let b;
+  if(trackHit(x,y)){
+    const {idx}=insertIndex(x,d.type==='box'?d.id:-1);
+    if(d.type==='box'){ b=S.boxes[d.id]; S.chain=S.chain.filter(i=>i!==d.id); S.loose=S.loose.filter(i=>i!==d.id); }
+    else { b=boxFromFactor(S.factors.find(f=>f.id===d.id)); S.boxes[b.id]=b; }
+    S.chain.splice(Math.min(idx,S.chain.length),0,b.id); touch(); render(); return;
+  }
+  const pk=$('#parking'), pr=pk.getBoundingClientRect();
+  if(inRect(x,y,pr)){
+    if(d.type==='box'){ b=S.boxes[d.id]; S.chain=S.chain.filter(i=>i!==d.id); S.loose=S.loose.filter(i=>i!==d.id); }
+    else { b=boxFromFactor(S.factors.find(f=>f.id===d.id)); S.boxes[b.id]=b; }
+    const w=d.g.offsetWidth||120, h=d.g.offsetHeight||90;
+    b.x=Math.max(4,Math.min(pr.width-w-4,x-d.offX-pr.left)); b.y=Math.max(22,Math.min(pr.height-h-4,y-d.offY-pr.top));
+    S.loose.push(b.id); touch(); render(); return;
+  }
+  render();
+}
+document.addEventListener('pointerup',endDrag);
+document.addEventListener('pointercancel',endDrag);
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+document.addEventListener('click',e=>{
+  const t=e.target;
+  const bx=t.closest('.box .x'); if(bx){ const id=+bx.closest('.box').dataset.id; removeBox(id); touch(); render(); return; }
+  const cx=t.closest('.chip .x'); if(cx){ const id=+cx.closest('.chip').dataset.id; S.factors=S.factors.filter(f=>f.id!==id); render(); return; }
+  switch(t.id){
+    case 'pNext': case 'aNext': nextProblem(); break;
+    case 'pReset': loadProblem(S.prob.i); render(); break;
+    case 'bCheck': checkAnswer(); break;
+    case 'bSol': S.showSol=!S.showSol; render(); break;
+    case 'fTarget': openTarget(); break;
+    case 'fEq': openEquation(); break;
+  }
+});
+document.addEventListener('input',e=>{ if(e.target.id==='ansInput'){ S.studentAnswer=e.target.value; } });
+document.addEventListener('keydown',e=>{ if(e.target.id==='ansInput' && e.key==='Enter') checkAnswer(); });
+
+function toggleClick(el,e){ const opt=e.target.closest('.opt'); const isRight=el.classList.contains('right'); if(opt) return opt===el.querySelectorAll('.opt')[1]; return !isRight; }
+$('#tgMode').onclick=e=>{
+  const right=toggleClick($('#tgMode'),e), m=right?'mole':'unit'; if(m===S.mode) return;
+  const go=()=>{ S.mode=m; S.factors=[]; S.target=null; S.equation=null; if(S.style==='guided') loadProblem(S.pi[setKey()]); else clearWork(); render(); };
+  (hasWork()||S.factors.length)?confirmModal('Switching modes clears the work area and your conversion factors.',go):go();
+};
+$('#tgStyle').onclick=e=>{
+  const right=toggleClick($('#tgStyle'),e), st=right?'free':'guided'; if(st===S.style) return;
+  const go=()=>{ S.style=st; S.feedback=null; S.showSol=false; if(st==='guided') loadProblem(S.pi[setKey()]); else clearWork(); render(); };
+  hasWork()?confirmModal('Switching between Guided and Free Form clears the work area.',go):go();
+};
+$('#segSet').onclick=e=>{ const bt=e.target.closest('button'); if(!bt||bt.dataset.set===S.moleSet) return; const go=()=>{ S.moleSet=bt.dataset.set; S.factors=[]; loadProblem(S.pi[S.moleSet]); render(); }; hasWork()?confirmModal('Switching problem sets clears the work area and conversion factors.',go):go(); };
+$('#bStart').onclick=()=>{ S.style==='guided'?addProblemStart():openStart(); };
+$('#bFactor').onclick=openFactor;
+$('#bPT').onclick=openPT;
+$('#bHelp').onclick=openHelp;
+$('#bClear').onclick=()=>{ if(!hasWork()) return; confirmModal('Clear all boxes from the work area? (Your conversion factors stay.)',()=>{ clearWork(); touch(); render(); }); };
+$('#bClearF').onclick=()=>{ if(!S.factors.length) return; confirmModal('Delete all conversion factors from the bar?',()=>{ S.factors=[]; render(); }); };
+$('#bReset').onclick=()=>confirmModal('Reset everything (work area, conversion factors, target, equation)?',()=>{ S.factors=[]; S.target=null; S.equation=null; if(S.style==='guided') loadProblem(S.pi[setKey()]); else clearWork(); S.feedback=null; render(); });
+
+/* init */
+loadProblem(0);
+render();
+
+/* expose for testing */
+window.__DA={S,parseNum,fmtSig,checkFactor,compute,molarMass,parseEquation,PROBS,correctValue,loadProblem,render,setStart,addFactor,boxFromFactor,U,checkAnswer,EL_SYM,EL_MASS,EL_NAME};
+})();
+</script>
+</body>
+</html>
