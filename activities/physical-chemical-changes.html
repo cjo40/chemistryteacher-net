@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physical vs Chemical Properties and Changes</title>
+<meta name="description" content="Interactive Learn, Lab and Quiz activity on physical and chemical properties and changes for high school chemistry.">
+<style>
+:root{--ink:#0f172a;--ink2:#334155;--bg:#eef2f7;--card:#fff;--line:#94a3b8;--soft:#e2e8f0;
+--phys:#1d4ed8;--physbg:#dbeafe;--chem:#c2410c;--chembg:#ffedd5;--none:#475569;--nonebg:#e5e7eb;
+--ok:#15803d;--okbg:#dcfce7;--bad:#b91c1c;--badbg:#fee2e2;--focus:#f59e0b;--accent:#0f766e;--accentbg:#ccfbf1}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:18px;line-height:1.45;color:var(--ink);background:var(--bg);-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+b,strong{font-weight:700}
+h2,h3{line-height:1.2}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* header + tabs */
+header.top{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:8px 16px;background:#0f172a;color:#fff}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.brand svg{flex:none}
+.brand h1{font-size:1.2rem;margin:0;line-height:1.15}
+.brand h1 span{display:block;font-size:.8rem;font-weight:400;color:#cbd5e1}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{display:flex;align-items:center;gap:8px;background:#1e293b;color:#fff;border:2px solid #475569;border-radius:10px;padding:5px 12px;min-height:46px;text-align:left;font-weight:700}
+.tab[aria-selected=true]{background:#fff;color:#0f172a;border-color:#fff}
+.tab .num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#334155;color:#fff;font-size:.85rem;flex:none}
+.tab[aria-selected=true] .num{background:#0f172a}
+.tab small{display:block;font-size:.7rem;color:#fcd34d;font-weight:400;max-width:230px;line-height:1.2}
+.tab[aria-selected=true] small{color:#92400e}
+.tab .lk{flex:none}
+.tab .lk[hidden]{display:none}
+main{max-width:1280px;margin:0 auto;padding:12px 14px 28px}
+.panel[hidden],[hidden]{display:none!important}
+.card{background:var(--card);border:1px solid #cbd5e1;border-radius:14px;padding:14px}
+.btn{border:2px solid #0f172a;background:#fff;color:#0f172a;border-radius:10px;padding:7px 16px;min-height:44px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation}
+.btn.pri{background:#0f172a;color:#fff}
+.btn.acc{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sm{padding:3px 10px;min-height:36px;font-size:.88rem}
+.btn:not(:disabled):hover{box-shadow:0 0 0 3px #cbd5e1}
+.muted{color:var(--ink2)}
+.small{font-size:.86rem}
+.lbl{display:inline-flex;align-items:center;gap:4px;font-weight:700;border-radius:8px;padding:1px 8px;border:2px solid}
+.lbl.P{color:var(--phys);background:var(--physbg);border-color:var(--phys)}
+.lbl.C{color:var(--chem);background:var(--chembg);border-color:var(--chem)}
+.lbl.N{color:var(--none);background:var(--nonebg);border-color:var(--none)}
+.okt{color:var(--ok);font-weight:700}
+.badt{color:var(--bad);font-weight:700}
+.fb{border-radius:10px;padding:8px 12px;margin-top:8px;border:2px solid}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.bad{background:var(--badbg);border-color:var(--bad)}
+.fb.info{background:#f1f5f9;border-color:#64748b}
+.fb p{margin:.25em 0}
+
+/* learn */
+.learn-top{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin-bottom:10px}
+.pbar{flex:1 1 180px;height:14px;background:#cbd5e1;border-radius:99px;overflow:hidden;border:1px solid #94a3b8}
+.pbar>i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{position:relative;width:40px;height:40px;border-radius:50%;border:2px solid #64748b;background:#fff;font-weight:700;padding:0}
+.dot.seen{background:var(--accentbg);border-color:var(--accent)}
+.dot.seen::after{content:"✓";position:absolute;right:-5px;top:-7px;font-size:.72rem;background:var(--accent);color:#fff;border-radius:50%;width:17px;height:17px;line-height:17px;text-align:center}
+.dot.cur{background:#0f172a;color:#fff;border-color:#0f172a}
+.stop{display:grid;grid-template-columns:minmax(270px,5fr) 7fr;gap:14px;align-items:start}
+@media (max-width:860px){.stop{grid-template-columns:1fr}}
+.stop-text h2{margin:.05em 0 .4em;font-size:1.4rem}
+.stop-text h2 .sn{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-size:1rem;margin-right:6px;vertical-align:2px}
+.stop-text ul{padding-left:1.15em;margin:0}
+.stop-text li{margin:.38em 0}
+.stop-vis{min-height:320px}
+.stop-vis svg{max-width:100%;height:auto;display:block}
+.learn-nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
+.vis-cap{margin:.5em 0 0;font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:2px solid #64748b;background:#fff;border-radius:99px;padding:4px 12px;min-height:40px;font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed=true]{background:#0f172a;color:#fff;border-color:#0f172a}
+.chip svg{width:28px;height:24px}
+.idcard{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+@media (max-width:520px){.idcard{grid-template-columns:1fr}}
+.idcard>div{border-radius:10px;padding:8px 10px;border:2px solid}
+.idcard h4{margin:0 0 4px;font-size:1rem}
+.idcard ul{margin:0;padding-left:1.1em;font-size:.92rem}
+.idcard .P{border-color:var(--phys);background:#f5f9ff}
+.idcard .C{border-color:var(--chem);background:#fff8f1}
+.mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:520px){.mini-grid{grid-template-columns:1fr}}
+.mini{border:2px solid #cbd5e1;border-radius:12px;padding:8px;background:#fff;display:flex;flex-direction:column;gap:6px}
+.mini h4{margin:0;font-size:.98rem}
+.mini p{margin:0;font-size:.88rem}
+.mini svg{width:100%;height:auto;max-height:104px}
+.mini.big{display:grid;grid-template-columns:1fr auto;align-items:start;gap:4px 8px}
+.mini.big>svg,.mini.big .v3s,.mini.big .v3r,.mini.big .v7r{grid-column:1/-1}
+.mini.big svg{max-height:200px;background:#f8fafc;border-radius:8px}
+.mini.big .btn{white-space:nowrap}
+.case-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media (max-width:520px){.case-grid{grid-template-columns:1fr}}
+.case{border:2px solid #cbd5e1;border-radius:12px;padding:6px 8px;background:#fff;display:grid;grid-template-columns:48px 1fr;gap:4px 8px;align-items:center}
+.case svg{width:48px;height:48px}
+.case .nm{font-weight:700;font-size:.95rem}
+.case .bt{grid-column:1/-1;display:flex;gap:6px}
+.case .bt .btn{flex:1;min-height:38px;padding:2px 6px;font-size:.88rem}
+.case .res{grid-column:1/-1;font-size:.86rem;margin:0}
+.case.ok{border-color:var(--ok);background:#f4fdf6}
+.case.bad{border-color:var(--bad);background:#fff6f6}
+
+/* lab */
+.lab-main{min-width:0}
+.lab{display:grid;grid-template-columns:1fr 290px;gap:14px;align-items:start}
+@media (max-width:1180px){.lab{grid-template-columns:minmax(0,1fr)}.lab .checklist{order:-1;padding:10px 12px}.checklist ul{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 12px}.checklist li{border-bottom:0;padding:2px 0}}
+@media (max-width:700px){.checklist ul{grid-template-columns:1fr 1fr}}
+.subtabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.subtab{border:2px solid #0f172a;background:#fff;border-radius:10px;padding:6px 14px;font-weight:700;min-height:44px}
+.subtab[aria-selected=true]{background:#0f172a;color:#fff}
+.checklist h3{margin:0 0 6px;font-size:1.1rem}
+.checklist ul{list-style:none;margin:0;padding:0}
+.checklist li{display:grid;grid-template-columns:30px 1fr;gap:6px;padding:6px 0;border-bottom:1px solid #e2e8f0;font-size:.92rem}
+.checklist li:last-child{border-bottom:0}
+.box{width:26px;height:26px;border-radius:6px;border:2px solid #64748b;display:grid;place-items:center;font-weight:700;background:#fff}
+.done .box{background:var(--ok);border-color:var(--ok);color:#fff}
+.checklist .cnt{display:block;font-weight:700;color:var(--ink2)}
+.done .cnt{color:var(--ok)}
+.checklist .meter{height:8px;background:#e2e8f0;border-radius:9px;overflow:hidden;margin-top:3px}
+.checklist .meter i{display:block;height:100%;background:var(--accent)}
+.step-h{font-size:1rem;margin:4px 0 4px}
+.shelf{display:flex;flex-wrap:wrap;gap:6px}
+.sbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:86px;padding:4px 3px;border:2px solid #94a3b8;border-radius:10px;background:#fff;font-size:.76rem;line-height:1.12;min-height:66px;font-weight:700;text-align:center}
+.sbtn svg{width:42px;height:30px}
+.sbtn[aria-pressed=true]{border-color:#0f172a;background:#fef3c7;box-shadow:inset 0 0 0 2px #0f172a}
+.sbtn .tick{font-size:.68rem;color:var(--ok)}
+.actions{display:flex;flex-wrap:wrap;gap:6px}
+.abtn{display:flex;align-items:center;gap:6px;border:2px solid #94a3b8;border-radius:10px;background:#fff;padding:4px 10px;min-height:44px;font-weight:700;font-size:.88rem}
+.abtn svg{width:24px;height:24px;flex:none}
+.abtn[aria-pressed=true]{border-color:#0f172a;background:#fef3c7;box-shadow:inset 0 0 0 2px #0f172a}
+.bench-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px;margin-top:10px;align-items:start}
+@media (max-width:760px){.bench-row{grid-template-columns:minmax(0,1fr)}}
+.scene{position:relative}
+.scene svg{width:100%;height:auto;display:block;background:linear-gradient(#f8fafc,#dfe6ee);border-radius:12px;border:1px solid #94a3b8}
+.scene-ctl{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.scene-ctl label{font-weight:700;font-size:.9rem}
+input[type=range]{width:100%;min-height:36px;accent-color:#0f766e}
+.tl{flex:1 1 160px}
+.obs h3{margin:0 0 4px;font-size:1.05rem}
+.obstext{background:#f8fafc;border:2px dashed #94a3b8;border-radius:10px;padding:8px 10px;margin:0 0 8px;font-size:.95rem;min-height:3em}
+.obstext.ready{border-style:solid;border-color:#0f172a;background:#fffbeb}
+fieldset{min-width:0;border:2px solid #cbd5e1;border-radius:10px;margin:0 0 8px;padding:4px 8px 8px}
+legend{font-weight:700;font-size:.9rem;padding:0 4px}
+.togs{display:flex;flex-wrap:wrap;gap:5px}
+.tog{position:relative}
+.tog input{position:absolute;opacity:0;width:1px;height:1px}
+.tog span{display:inline-flex;align-items:center;gap:5px;border:2px solid #94a3b8;border-radius:8px;padding:3px 8px;min-height:38px;font-size:.85rem;font-weight:700;background:#fff;cursor:pointer}
+.tog span::before{content:"";width:16px;height:16px;border:2px solid #475569;border-radius:4px;flex:none;background:#fff}
+.tog input[type=radio]+span::before{border-radius:50%}
+.tog input:checked+span{border-color:#0f172a;background:#fef3c7}
+.tog input:checked+span::before{background:#0f172a;box-shadow:inset 0 0 0 3px #fff}
+.tog input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+.tog.P input:checked+span{background:var(--physbg);border-color:var(--phys);color:var(--phys)}
+.tog.C input:checked+span{background:var(--chembg);border-color:var(--chem);color:var(--chem)}
+.note{width:100%;border:2px solid #94a3b8;border-radius:8px;padding:5px 8px;min-height:40px;font-size:.92rem}
+.logwrap{margin-top:12px;overflow-x:auto}
+table.log{border-collapse:collapse;width:100%;font-size:.84rem;background:#fff}
+table.log th,table.log td{border:1px solid #cbd5e1;padding:4px 6px;text-align:left;vertical-align:top}
+table.log th{background:#e2e8f0}
+table.log td.r{font-weight:700;text-align:center;white-space:nowrap}
+
+/* swipe */
+.deckpick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.swipe-area{display:grid;grid-template-columns:1fr minmax(240px,420px) 1fr;gap:10px;align-items:center;min-height:270px}
+@media (max-width:640px){.swipe-area{grid-template-columns:1fr 1fr}.swipe-area .stack{grid-column:1/-1;grid-row:1}}
+.zone{border:3px dashed;border-radius:14px;min-height:200px;display:grid;place-items:center;text-align:center;font-weight:700;font-size:1.15rem;padding:8px;transition:background .15s}
+.zone.P{border-color:var(--phys);color:var(--phys);background:#f5f9ff}
+.zone.C{border-color:var(--chem);color:var(--chem);background:#fff8f1}
+.zone.hot.P{background:var(--physbg)}
+.zone.hot.C{background:var(--chembg)}
+.zone .arr{font-size:2rem;display:block}
+.stack{position:relative;min-height:230px;display:grid;place-items:center}
+.scard{width:100%;min-height:210px;background:#fff;border:3px solid #0f172a;border-radius:16px;box-shadow:0 6px 0 #0f172a22;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:16px;font-size:1.3rem;font-weight:700;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab}
+.scard.anim{transition:transform .25s ease,opacity .25s}
+.scard .k{font-size:.8rem;font-weight:400;color:var(--ink2);margin-top:10px}
+.sstats{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:8px 0;font-weight:700}
+.sstats span{background:#fff;border:2px solid #cbd5e1;border-radius:8px;padding:2px 10px}
+.sbtns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.sbtns .btn{min-width:150px}
+.btnP{border-color:var(--phys)!important;color:var(--phys)!important;background:var(--physbg)!important}
+.btnC{border-color:var(--chem)!important;color:var(--chem)!important;background:var(--chembg)!important}
+
+/* quiz */
+.qwrap{max-width:900px;margin:0 auto}
+.qhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:700;margin-bottom:8px}
+.qtext{font-size:1.2rem;font-weight:700;margin:.2em 0 .6em}
+.qtype{display:inline-block;font-size:.75rem;font-weight:700;background:#e2e8f0;border-radius:6px;padding:1px 8px;margin-bottom:4px;color:var(--ink2)}
+.choices{display:grid;gap:8px}
+.choice{text-align:left;border:2px solid #94a3b8;border-radius:10px;background:#fff;padding:9px 12px;min-height:48px;font-size:1rem;display:flex;gap:10px;align-items:flex-start}
+.choice .let{flex:none;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#e2e8f0;font-weight:700}
+.choice.sel{border-color:#0f172a;background:#fef3c7}
+.choice.right{border-color:var(--ok);background:var(--okbg)}
+.choice.wrong{border-color:var(--bad);background:var(--badbg)}
+.choice:disabled{cursor:default;opacity:1}
+.sortq .pool{display:flex;flex-wrap:wrap;gap:6px;min-height:56px;border:2px dashed #94a3b8;border-radius:10px;padding:6px;margin-bottom:8px;background:#f8fafc}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border:3px solid;border-radius:12px;min-height:150px;padding:6px;display:flex;flex-direction:column;gap:6px}
+.bin h4{margin:0 0 2px;font-size:1rem;text-align:center}
+.bin.b0{border-color:var(--phys);background:#f5f9ff}
+.bin.b1{border-color:var(--chem);background:#fff8f1}
+.bin.hot{box-shadow:0 0 0 4px var(--focus)}
+.item{border:2px solid #475569;border-radius:9px;background:#fff;padding:6px 10px;font-size:.95rem;font-weight:700;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;min-height:40px;text-align:left}
+.item.sel{outline:3px solid var(--focus);background:#fef3c7}
+.item.right{border-color:var(--ok);background:var(--okbg)}
+.item.wrong{border-color:var(--bad);background:var(--badbg)}
+.drag-ghost{position:fixed;pointer-events:none;z-index:50;opacity:.9;box-shadow:0 8px 20px #0004}
+.clickq svg{width:100%;height:auto;max-height:340px;background:#fff;border:2px solid #cbd5e1;border-radius:12px}
+.hot-t{cursor:pointer}
+.hot-t .hl{fill:transparent;stroke:transparent;stroke-width:4}
+.hot-t:hover .hl,.hot-t:focus .hl{stroke:#f59e0b}
+.hot-t.sel .hl{stroke:#0f172a;stroke-dasharray:8 5}
+.hot-t.right .hl{stroke:#15803d;fill:#dcfce755}
+.hot-t.wrong .hl{stroke:#b91c1c;fill:#fee2e255}
+.qbtns{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+.locked{text-align:center;max-width:640px;margin:20px auto}
+.locked ul{text-align:left;display:inline-block;margin:10px 0}
+.locked li{margin:.4em 0}
+.scorewrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,1fr);gap:14px;align-items:start}
+@media (max-width:800px){.scorewrap{grid-template-columns:1fr}}
+.scorewrap img{width:100%;height:auto;border:2px solid #cbd5e1;border-radius:10px;background:#fff}
+.sbtncol{display:flex;flex-direction:column;gap:8px}
+.status{min-height:1.4em;font-weight:700}
+
+/* scene + visual animations */
+@keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:1}100%{transform:translateY(var(--rh,-90px));opacity:0}}
+.bub{animation:rise var(--d,1.4s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes steam{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:.8}100%{transform:translateY(-60px) scale(1.4);opacity:0}}
+.stm{animation:steam 2.2s ease-out infinite;animation-delay:var(--dl,0s);transform-box:fill-box;transform-origin:center}
+@keyframes flick{0%,100%{transform:scaleY(1) scaleX(1)}50%{transform:scaleY(1.12) scaleX(.92)}}
+.flk{animation:flick .35s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes flash{0%,100%{opacity:.75}50%{opacity:1}}
+.fls{animation:flash .18s linear infinite}
+@keyframes spark{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--sx),var(--sy))}}
+.spk{animation:spark .7s ease-out infinite;animation-delay:var(--dl,0s)}
+@keyframes glowp{0%,100%{opacity:.35}50%{opacity:.8}}
+.glw{animation:glowp 1.2s ease-in-out infinite}
+@keyframes fall{0%{transform:translateY(-10px);opacity:0}20%{opacity:1}100%{transform:translateY(60px);opacity:.9}}
+.ppt{animation:fall 2.4s ease-in infinite;animation-delay:var(--dl,0s)}
+@keyframes wav{0%{transform:translateY(0);opacity:0}30%{opacity:1}100%{transform:translateY(-40px);opacity:0}}
+.odr{animation:wav 2s ease-out infinite;animation-delay:var(--dl,0s)}
+@media (prefers-reduced-motion:reduce){.bub,.stm,.flk,.fls,.spk,.glw,.ppt,.odr{animation-duration:4s}}
+.tr{transition:all 1.4s ease}
+.trf{transition:fill 2.5s ease, opacity 2.5s ease}
+body:has(#ct-bar.pos-tl) header.top{padding-left:56px}
+footer{text-align:center;font-size:.8rem;color:var(--ink2);padding:6px 10px 18px}
+footer button{background:none;border:0;text-decoration:underline;color:var(--ink2);font-size:.8rem;min-height:30px}
+@media (max-width:560px){body{font-size:17px}.brand h1{font-size:1.05rem}.tab{padding:4px 8px}.tab small{max-width:150px}main{padding:8px}}
+@media (max-height:640px) and (min-width:900px){header.top{padding:4px 14px}.tab{min-height:40px;padding:3px 10px}.stop-vis{min-height:280px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path d="M15 4h10M17 4v11L7 33a3 3 0 0 0 3 4h20a3 3 0 0 0 3-4L23 15V4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M11 27h18l3 6a2 2 0 0 1-2 3H10a2 2 0 0 1-2-3z" fill="#5eead4"/><circle cx="18" cy="23" r="1.8" fill="#5eead4"/><circle cx="22" cy="19" r="1.3" fill="#5eead4"/></svg>
+    <h1>Physical vs Chemical<span>Properties &amp; Changes</span></h1>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Activity sections">
+    <button class="tab" role="tab" id="tab-learn" data-tab="learn" aria-controls="panel-learn" aria-selected="true"><span class="num">1</span><span>Learn<small id="tabsub-learn"></small></span></button>
+    <button class="tab" role="tab" id="tab-lab" data-tab="lab" aria-controls="panel-lab" aria-selected="false"><span class="num">2</span><span>Lab<small id="tabsub-lab"></small></span></button>
+    <button class="tab" role="tab" id="tab-quiz" data-tab="quiz" aria-controls="panel-quiz" aria-selected="false"><span class="num">3</span><svg class="lk" id="quizlock" width="18" height="20" viewBox="0 0 18 20" aria-label="Locked"><rect x="2" y="9" width="14" height="10" rx="2" fill="currentColor"/><path d="M5 9V6a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg><span>Quiz<small id="tabsub-quiz"></small></span></button>
+  </nav>
+</header>
+
+<main>
+<!-- ================= LEARN ================= -->
+<section class="panel" id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
+  <div class="learn-top">
+    <div class="dots" id="dots" aria-label="Learn stops"></div>
+    <div class="pbar" role="progressbar" aria-label="Stops viewed" aria-valuemin="0" aria-valuemax="8" id="pbar"><i></i></div>
+    <span class="small muted" id="pcount"></span>
+  </div>
+  <div class="card stop" id="stop">
+    <div class="stop-text" id="stopText"></div>
+    <div class="stop-vis" id="stopVis"></div>
+  </div>
+  <div class="learn-nav">
+    <button class="btn" id="backBtn">◀ Back</button>
+    <span class="muted small" id="stopOf"></span>
+    <button class="btn pri" id="nextBtn">Next ▶</button>
+  </div>
+</section>
+
+<!-- ================= LAB ================= -->
+<section class="panel" id="panel-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <div class="lab">
+    <div class="lab-main">
+      <div class="subtabs" role="tablist" aria-label="Lab sections">
+        <button class="subtab" role="tab" id="st-bench" aria-selected="true">A · Lab Bench</button>
+        <button class="subtab" role="tab" id="st-swipe" aria-selected="false">B · Swipe Sort</button>
+      </div>
+
+      <div id="bench" class="card">
+        <h3 class="step-h">1 · Pick a substance</h3>
+        <div class="shelf" id="shelf"></div>
+        <h3 class="step-h" style="margin-top:8px">2 · Pick a test</h3>
+        <div class="actions" id="actions"></div>
+        <div class="bench-row">
+          <div>
+            <div class="scene" id="scene" aria-live="polite"></div>
+            <div class="scene-ctl">
+              <button class="btn pri" id="runBtn" disabled>▶ Run test</button>
+              <div class="tl" id="tlWrap" hidden><label for="tl" id="tlLbl">Time: 0 days</label><input type="range" id="tl" min="0" max="30" step="1" value="0"></div>
+            </div>
+          </div>
+          <div class="obs">
+            <h3>3 · Observe &amp; classify</h3>
+            <p class="obstext" id="obsText">Pick a substance and a test, then press <b>Run test</b>.</p>
+            <fieldset id="evSet" disabled>
+              <legend>Evidence of a chemical change you saw (tick all)</legend>
+              <div class="togs" id="evTogs"></div>
+            </fieldset>
+            <fieldset id="clsSet" disabled>
+              <legend>What happened?</legend>
+              <div class="togs">
+                <label class="tog P"><input type="radio" name="cls" value="phys"><span>◀ Physical change</span></label>
+                <label class="tog C"><input type="radio" name="cls" value="chem"><span>Chemical change ▶</span></label>
+                <label class="tog N"><input type="radio" name="cls" value="none"><span>No change</span></label>
+              </div>
+            </fieldset>
+            <input class="note" id="note" placeholder="Your notes (optional)" aria-label="Your notes (optional)" disabled>
+            <div style="margin-top:8px"><button class="btn acc" id="checkBtn" disabled>✓ Check &amp; log</button></div>
+            <div id="labFb"></div>
+          </div>
+        </div>
+        <div class="logwrap">
+          <h3 class="step-h">Lab notebook <span class="small muted" id="logCount"></span></h3>
+          <table class="log"><thead><tr><th>#</th><th>Substance</th><th>Test</th><th>Observation</th><th>Evidence ticked</th><th>Your call</th><th>Result</th></tr></thead><tbody id="logBody"><tr><td colspan="7" class="muted">No tests logged yet.</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <div id="swipe" class="card" hidden>
+        <div class="deckpick" id="deckpick"></div>
+        <p class="small muted" style="margin:0 0 6px" id="swipeHelp">Drag or swipe the card <b>left for Physical</b> or <b>right for Chemical</b>. You can also use the buttons or the ← → arrow keys.</p>
+        <div class="swipe-area">
+          <div class="zone P" id="zoneP"><div><span class="arr">◀</span>PHYSICAL</div></div>
+          <div class="stack" id="stack"></div>
+          <div class="zone C" id="zoneC"><div><span class="arr">▶</span>CHEMICAL</div></div>
+        </div>
+        <div class="sstats" id="sstats"></div>
+        <div class="sbtns"><button class="btn btnP" id="sbP">◀ Physical</button><button class="btn btnC" id="sbC">Chemical ▶</button></div>
+        <div id="sfb" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <aside class="card checklist" aria-label="Lab checklist">
+      <h3>Lab Checklist</h3>
+      <ul id="checklist"></ul>
+      <p class="small muted" style="margin:8px 0 0" id="clNote"></p>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="panel" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+  <div class="qwrap" id="quizRoot"></div>
+</section>
+</main>
+<footer>chemistryteacher.net/physical-chemical-changes · <button id="resetBtn">Reset my progress</button></footer>
+<script>
+"use strict";
+/* =====================================================================
+   DATA — substances, tests, lab results, swipe decks, quiz bank
+   ===================================================================== */
+const URL_TXT = "chemistryteacher.net/physical-chemical-changes";
+const TITLE_TXT = "Physical vs Chemical Properties and Changes";
+
+const SUBS = {
+  mg:{n:"Magnesium ribbon",s:"Mg ribbon",c:"#cfd4da"},
+  ice:{n:"Ice cube",s:"Ice cube",c:"#d6f1ff"},
+  nail:{n:"Iron nail",s:"Iron nail",c:"#8f969e"},
+  sugar:{n:"Sugar (sucrose)",s:"Sugar",c:"#ffffff",powder:1},
+  soda:{n:"Baking soda (NaHCO₃)",s:"Baking soda",c:"#fbfbf8",powder:1},
+  splint:{n:"Wooden splint",s:"Wood splint",c:"#d9b47e"},
+  cu:{n:"Copper wire",s:"Copper wire",c:"#c8692b"},
+  salt:{n:"Table salt (NaCl)",s:"Table salt",c:"#f8fafc",powder:1},
+  wool:{n:"Steel wool",s:"Steel wool",c:"#a3aab1"},
+  candle:{n:"Candle (paraffin wax)",s:"Candle",c:"#fffaf0"},
+  chalk:{n:"Chalk (CaCO₃)",s:"Chalk CaCO₃",c:"#fafafa",powder:1}
+};
+const SUB_ORDER = ["mg","ice","nail","sugar","soda","splint","cu","salt","wool","candle","chalk"];
+
+const ACTS = {
+  heat:{n:"Heat (Bunsen burner)",d:"Heated in a test tube over a Bunsen burner."},
+  hcl:{n:"Add HCl",d:"Placed in dilute (1 M) hydrochloric acid."},
+  vin:{n:"Add vinegar",d:"Placed in vinegar (about 5% acetic acid)."},
+  water:{n:"Add water",d:"Placed in room-temperature water."},
+  crush:{n:"Crush / cut",d:"Crushed, ground, snipped or cut."},
+  mag:{n:"Magnet",d:"A strong magnet is brought close."},
+  burn:{n:"Burn (in flame)",d:"Held directly in the flame with tongs (or the wick is lit) to see if it burns."},
+  air:{n:"Moist air (time-lapse)",d:"Left on a watch glass in damp air. Drag the time-lapse slider."}
+};
+const ACT_ORDER = ["heat","hcl","vin","water","crush","mag","burn","air"];
+
+const EVS = [
+  {k:"color",n:"Color change"},
+  {k:"gas",n:"Gas produced (not boiling)"},
+  {k:"ppt",n:"Precipitate"},
+  {k:"temp",n:"Temperature change"},
+  {k:"light",n:"Light given off"},
+  {k:"odor",n:"New odor"}
+];
+const EVNAME = Object.fromEntries(EVS.map(e=>[e.k,e.n]));
+
+/* Lab results.
+   o: observation · c: correct class (chem/phys/none) · alt: also-accepted classes
+   ev: evidence that must be ticked · ok: evidence that may be ticked · trap: tempting evidence + why it doesn't count
+   w: one-sentence explanation · fx: animation settings */
+const NOCHANGE_ACID = "No observable change — the sample just sits in the liquid.";
+const RES = {
+ mg:{
+  heat:{o:"The shiny ribbon dulls to gray-white, then suddenly ignites with a blinding white light. A crumbly white powder is left.",c:"chem",ev:["light","color"],ok:["temp"],w:"Hot magnesium reacts with oxygen to form a new white solid, magnesium oxide (MgO).",fx:{flash:1,col:["#cfd4da","#e5e7eb","#ffffff"]}},
+  hcl:{o:"Rapid bubbling all over the ribbon; it shrinks and disappears. The test tube feels warm.",c:"chem",ev:["gas","temp"],w:"Mg + 2HCl → MgCl₂ + H₂: the bubbles are a new gas, hydrogen, and energy is released as heat.",fx:{bub:3,dis:1,temp:18}},
+  vin:{o:"Steady bubbling (slower than in HCl); the ribbon slowly gets thinner. Slight warming.",c:"chem",ev:["gas"],ok:["temp"],w:"Magnesium also reacts with acetic acid to make hydrogen gas — just more slowly, because vinegar is a weak acid.",fx:{bub:2,dis:.45,temp:4}},
+  water:{o:"No observable change during class. (Magnesium reacts with cold water so slowly that only a few tiny bubbles show up after hours.)",c:"none",w:"No evidence appeared in the time observed, so the honest record is “no change.”",fx:{}},
+  crush:{o:"Scissors snip the ribbon into short pieces. Every piece is still shiny, silvery magnesium.",c:"phys",w:"Only the size changed — it is still magnesium.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. You observed a physical property: magnesium is not magnetic.",fx:{}},
+  burn:{o:"It ignites with a blinding white light (never look straight at it!) and leaves a crumbly white ash.",c:"chem",ev:["light","color"],ok:["temp"],w:"2Mg + O₂ → 2MgO: the white ash is a new substance, magnesium oxide.",fx:{flash:1,col:["#cfd4da","#ffffff"]}},
+  air:{o:"Over the weeks the shiny surface slowly dulls under a gray film.",c:"chem",ev:["color"],w:"Magnesium slowly reacts with oxygen, water and carbon dioxide in air to form a thin tarnish layer — a new substance.",fx:{col:["#cfd4da","#9ca3af"]}}
+ },
+ ice:{
+  heat:{o:"The ice melts into liquid water. Then the water boils — big bubbles form and steam pours out of the tube.",c:"phys",trap:{gas:"Those bubbles are water vapor from boiling — still H₂O, not a new gas.",temp:"You heated it, so of course it got hotter — that isn't evidence of a new substance."},w:"Melting and boiling are changes of state; it is H₂O the whole time.",fx:{melt:1,boil:1,steam:1}},
+  hcl:{o:"The ice cube floats and melts, mixing into the acid. No bubbles.",c:"phys",w:"Melting is a change of state; the acid just gets diluted.",fx:{float:1,dis:1}},
+  vin:{o:"The ice cube floats and melts into the vinegar. No bubbles.",c:"phys",w:"Melting is a change of state — still H₂O.",fx:{float:1,dis:1}},
+  water:{o:"The ice cube floats and slowly melts.",c:"phys",w:"Ice floats because it is less dense than liquid water (a physical property); melting is a change of state.",fx:{float:1,dis:1}},
+  crush:{o:"The cube breaks into crushed ice — smaller pieces of the same ice.",c:"phys",w:"Only the size changed.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Ice is not magnetic (a physical property).",fx:{}},
+  burn:{o:"It does not catch fire. The ice melts and drips, sizzling into steam where it touches the flame.",c:"phys",trap:{gas:"The steam is water vapor — evaporation is a change of state, not a new gas.",light:"The light is the burner's flame, not the ice."},w:"Water can't burn; melting and boiling are only changes of state.",fx:{drip:1,steam:1}},
+  air:{o:"At room temperature the ice melts into a puddle; over the next days the puddle evaporates.",c:"phys",w:"Melting and evaporating are changes of state.",fx:{puddle:1}}
+ },
+ nail:{
+  heat:{o:"The nail gets very hot but does not melt (iron melts at 1538 °C). After it cools, the heated surface has a dull, dark blue-gray film.",c:"chem",ev:["color"],ok:["temp"],w:"The dark film is iron oxide, a thin layer of a new substance made when hot iron reacts with oxygen.",fx:{col:["#8f969e","#475569","#334155"]}},
+  hcl:{o:"Small bubbles slowly form on the nail. Over time the acid turns pale green.",c:"chem",ev:["gas"],ok:["color"],w:"Fe + 2HCl → FeCl₂ + H₂: hydrogen gas and green iron(II) chloride are new substances.",fx:{bub:1,tint:"#d9f5b5"}},
+  vin:{o:"No observable change during class. (Over several days tiny bubbles and a rusty color can appear.)",c:"none",w:"Iron reacts with weak acetic acid very slowly, so nothing shows up in class time.",fx:{}},
+  water:{o:"No observable change during class. (Left in water for days, it would start to rust.)",c:"none",w:"Nothing new appeared in the time observed.",fx:{}},
+  crush:{o:"Bolt cutters snip the nail into two pieces. Both pieces are still iron.",c:"phys",w:"Cutting changes size and shape only.",fx:{small:1}},
+  mag:{o:"Strongly attracted — the nail jumps to the magnet.",c:"none",w:"Nothing changed. You observed magnetism, a physical property of iron.",fx:{attract:1}},
+  burn:{o:"It glows red-hot in the flame but does not catch fire. After cooling, the heated end is covered with a flaky black coating.",c:"chem",ev:["color"],ok:["temp"],trap:{light:"The red glow happens because the iron is very hot — any hot object glows. The black coating is the real evidence."},w:"Hot iron reacts with oxygen to form black iron oxide scale — a new substance on the surface.",fx:{glow:"#ef4444",col:["#8f969e","#1f2937"]}},
+  air:{o:"Over the days, orange-brown flaky rust spreads across the nail.",c:"chem",ev:["color"],w:"Iron + oxygen + water → rust (hydrated iron(III) oxide), a new substance.",fx:{col:["#8f969e","#a0522d","#8b3a12"]}}
+ },
+ sugar:{
+  heat:{o:"The sugar melts into a clear liquid, then turns yellow → brown → black. It gives off smoke and smells like burnt caramel.",c:"chem",ev:["color","odor"],ok:["gas"],trap:{temp:"You heated it, so its getting hot isn't evidence by itself."},w:"Heat breaks sugar down into new substances (caramel compounds, carbon and water vapor) — it can't turn back into sugar.",fx:{melt:1,col:["#fffef5","#f59e0b","#7c2d12","#111111"],smoke:1,odor:1}},
+  hcl:{o:"The crystals dissolve, leaving a clear, colorless solution. No bubbles.",c:"phys",w:"Sugar dissolves in the water that is in the acid; no new substance is visible.",fx:{dis:1}},
+  vin:{o:"The crystals dissolve, leaving a clear solution. No bubbles.",c:"phys",w:"Dissolving is a physical change.",fx:{dis:1}},
+  water:{o:"The crystals dissolve into a clear, colorless solution.",c:"phys",w:"Dissolving: sugar molecules spread out among water molecules but are still sugar — evaporate the water and the sugar comes back.",fx:{dis:1}},
+  crush:{o:"The crystals are ground into a fine powder (like powdered sugar).",c:"phys",w:"Only the particle size changed.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Sugar is not magnetic.",fx:{}},
+  burn:{o:"The sugar bubbles, blackens and flickers with a small flame. A burnt-sugar smell fills the air.",c:"chem",ev:["color","odor"],ok:["light","gas","temp"],w:"Burning and charring turn sugar into carbon, CO₂ and water vapor — new substances.",fx:{flame:1,col:["#ffffff","#92400e","#111111"],smoke:1,odor:1}},
+  air:{o:"Over the days the crystals clump and stick together (they pick up a little moisture).",c:"phys",alt:["none"],w:"Clumping is a physical change — it is still sugar.",fx:{clump:1}}
+ },
+ soda:{
+  heat:{o:"Water droplets form on the cool upper part of the test tube and a colorless gas escapes. A white powder remains — it looks the same, but it isn't.",c:"chem",ev:["gas"],trap:{temp:"You heated it, so its getting hot isn't evidence by itself."},w:"2NaHCO₃ → Na₂CO₃ + H₂O + CO₂: heat breaks baking soda into new substances, and the gas is CO₂, not boiling.",fx:{drops:1,puff:1}},
+  hcl:{o:"Vigorous fizzing as the powder disappears. The mixture gets slightly colder.",c:"chem",ev:["gas"],ok:["temp"],w:"NaHCO₃ + HCl → NaCl + H₂O + CO₂: the fizz is carbon dioxide gas (and this reaction absorbs heat).",fx:{bub:3,dis:1,temp:-3}},
+  vin:{o:"Lots of fizzing and foam; the mixture gets slightly colder.",c:"chem",ev:["gas"],ok:["temp"],w:"Baking soda + acetic acid → sodium acetate + water + carbon dioxide gas.",fx:{bub:3,dis:1,temp:-3,foam:1}},
+  water:{o:"Most of the powder dissolves and the water gets a tiny bit cooler. No bubbles.",c:"phys",trap:{temp:"The slight cooling comes from dissolving — dissolving some substances absorbs heat. It isn't proof of a new substance."},w:"Dissolving is a physical change.",fx:{dis:.8,temp:-1}},
+  crush:{o:"It is already a fine powder; grinding just makes it a little finer.",c:"phys",alt:["none"],w:"Only particle size can change here — still baking soda.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Baking soda is not magnetic.",fx:{}},
+  burn:{o:"It does not catch fire. The powder crackles and puffs as gas escapes, and the flame flickers yellow-orange.",c:"chem",ev:["gas"],trap:{light:"The yellow-orange flame color comes from hot sodium atoms giving off light — the baking soda isn't burning."},w:"Strong heating decomposes baking soda into sodium carbonate, CO₂ and water vapor — new substances.",fx:{puff:1,ftint:"#facc15"}},
+  air:{o:"No observable change (it may clump a little).",c:"none",alt:["phys"],w:"Nothing new formed.",fx:{}}
+ },
+ splint:{
+  heat:{o:"Inside the test tube the wood darkens to brown, then black. Smoke and a sharp smell come off, and droplets collect near the top.",c:"chem",ev:["color","odor"],ok:["gas"],trap:{temp:"You heated it, so its getting hot isn't evidence by itself."},w:"Heating breaks wood down into charcoal, tar, smoke and water vapor — new substances.",fx:{col:["#d9b47e","#7c4a1e","#1c1917"],smoke:1,drops:1,odor:1}},
+  hcl:{o:NOCHANGE_ACID+" (The wood just gets wet.)",c:"none",w:"Dilute HCl doesn't visibly react with wood.",fx:{float:1}},
+  vin:{o:NOCHANGE_ACID+" (The wood just gets wet.)",c:"none",w:"Vinegar doesn't visibly react with wood.",fx:{float:1}},
+  water:{o:"The splint floats. It soaks up some water and looks darker where it is wet — it dries back to its normal color.",c:"phys",alt:["none"],trap:{color:"Wet wood looks darker, but it dries back — no new substance formed."},w:"Absorbing water is a physical change; floating shows wood is less dense than water.",fx:{float:1,col:["#d9b47e","#b08850"]}},
+  crush:{o:"The splint snaps into smaller pieces of wood.",c:"phys",w:"Breaking changes size only.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Wood is not magnetic.",fx:{}},
+  burn:{o:"It catches fire with a yellow flame, gives off heat and smoke with a smoky smell, and leaves black charcoal and gray ash.",c:"chem",ev:["light","color"],ok:["temp","gas","odor"],w:"Wood + oxygen → carbon dioxide, water vapor and ash — new substances.",fx:{flame:1,col:["#d9b47e","#3f3f46","#1c1917"],smoke:1}},
+  air:{o:"No observable change (it may swell very slightly).",c:"none",alt:["phys"],w:"Nothing new formed.",fx:{}}
+ },
+ cu:{
+  heat:{o:"As it heats, the shiny copper shows rainbow colors and then turns black. After cooling it stays black on the surface.",c:"chem",ev:["color"],ok:["temp"],w:"2Cu + O₂ → 2CuO: the black coating is copper(II) oxide, a new substance.",fx:{col:["#c8692b","#9d4edd","#1f2937"]}},
+  hcl:{o:"No observable change. Copper does not react with hydrochloric acid.",c:"none",w:"Copper is less reactive than hydrogen, so it can't push hydrogen out of the acid — “doesn't react with HCl” is a chemical property.",fx:{}},
+  vin:{o:"No observable change during class.",c:"none",w:"Copper doesn't react with vinegar on this time scale.",fx:{}},
+  water:{o:"No observable change.",c:"none",w:"Copper doesn't react with water.",fx:{}},
+  crush:{o:"Wire cutters snip it into shorter pieces; the wire bends easily without breaking.",c:"phys",w:"Cutting and bending change shape only — copper's ductility is a physical property.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Copper is not magnetic.",fx:{}},
+  burn:{o:"It does not catch fire. The flame flashes green-blue around the wire, and when pulled out the wire is coated in black.",c:"chem",ev:["color"],ok:["temp"],trap:{light:"The green-blue flame color comes from heated copper giving off light. The black coating is the real evidence."},w:"Copper reacts with oxygen in the flame to form black copper(II) oxide.",fx:{ftint:"#22c55e",col:["#c8692b","#1f2937"]}},
+  air:{o:"Over the weeks the bright copper slowly dulls to a darker brown. (The famous green patina takes years.)",c:"chem",ev:["color"],w:"Copper slowly reacts with oxygen in air to form a thin tarnish layer of copper oxide.",fx:{col:["#c8692b","#7c3f1d"]}}
+ },
+ salt:{
+  heat:{o:"The crystals crackle and pop as trapped water escapes, but the salt stays white and solid. (Salt melts at 801 °C — hotter than this setup gets.)",c:"none",alt:["phys"],trap:{gas:"The popping is a little trapped water turning to vapor — not a new gas.",temp:"You heated it, so its getting hot isn't evidence by itself."},w:"No new substance formed — it is still NaCl.",fx:{pop:1}},
+  hcl:{o:"The crystals dissolve, leaving a clear solution. No bubbles.",c:"phys",w:"Dissolving is a physical change.",fx:{dis:1}},
+  vin:{o:"The crystals dissolve, leaving a clear solution. No bubbles.",c:"phys",w:"Dissolving is a physical change.",fx:{dis:1}},
+  water:{o:"The crystals dissolve into a clear, colorless solution. No noticeable temperature change.",c:"phys",w:"Dissolving: Na⁺ and Cl⁻ ions spread through the water. Evaporate the water and the salt comes back.",fx:{dis:1}},
+  crush:{o:"The crystals break into smaller pieces and powder. Each tiny grain is still salt.",c:"phys",w:"Only the size changed.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Salt is not magnetic.",fx:{}},
+  burn:{o:"It does not catch fire. The crystals crackle and the flame turns bright yellow-orange.",c:"none",alt:["phys"],trap:{light:"The yellow-orange color comes from heated sodium (like a flame test). The salt isn't burning.",gas:"The crackling is trapped water escaping, not a new gas."},w:"Salt doesn't burn and is still NaCl afterward.",fx:{ftint:"#facc15",pop:1}},
+  air:{o:"Over the days, the salt clumps and cakes together in the damp air.",c:"phys",alt:["none"],w:"Salt absorbs moisture and sticks together — a physical change.",fx:{clump:1}}
+ },
+ wool:{
+  heat:{o:"The fibers glow orange, throw off sparks and burn. The wool turns dark blue-black and becomes brittle and crumbly.",c:"chem",ev:["light","color"],ok:["temp"],w:"Thin iron fibers react quickly with oxygen to form iron oxide, a new substance.",fx:{spark:1,col:["#a3aab1","#1e293b"],glow:"#f97316"}},
+  hcl:{o:"Bubbles form all over the fibers; the wool slowly dissolves and the acid turns pale green.",c:"chem",ev:["gas"],ok:["color"],w:"Iron reacts with HCl to make hydrogen gas and green iron(II) chloride.",fx:{bub:2,dis:.6,tint:"#d9f5b5"}},
+  vin:{o:"Tiny bubbles slowly form on the fibers, and the soaking wool begins to turn rusty orange-brown.",c:"chem",ev:["gas"],ok:["color","temp"],w:"Vinegar strips the protective coating, so the iron reacts — making hydrogen bubbles and then rust.",fx:{bub:1,col:["#a3aab1","#b45309"],tint:"#fde7c4"}},
+  water:{o:"The steel wool just gets wet — no change during class. (Left damp for a day or two, it would rust.)",c:"none",w:"Nothing new appeared in the time observed.",fx:{}},
+  crush:{o:"It pulls apart and cuts into smaller tufts of steel wool.",c:"phys",w:"Only the size and shape changed.",fx:{small:1}},
+  mag:{o:"Strongly attracted — the wool jumps to the magnet.",c:"none",w:"Nothing changed. You observed magnetism, a physical property of iron.",fx:{attract:1}},
+  burn:{o:"It catches fire with showers of orange sparks and a bright glow. Afterward it is dark, brittle and crumbly — and actually heavier.",c:"chem",ev:["light","color"],ok:["temp"],w:"Iron combines with oxygen to form iron oxide — the extra oxygen atoms add mass.",fx:{spark:1,glow:"#f97316",col:["#a3aab1","#1e293b"]}},
+  air:{o:"Within days the wool is covered in orange-brown rust — much faster than a nail.",c:"chem",ev:["color"],w:"Thin fibers have lots of surface area, so iron reacts with oxygen and water quickly to make rust.",fx:{col:["#a3aab1","#b45309","#7c2d12"]}}
+ },
+ candle:{
+  heat:{o:"The wax melts into a clear liquid. When it cools, it hardens back into white solid wax.",c:"phys",trap:{temp:"You heated it, so its getting hot isn't evidence by itself."},w:"Melting and freezing are changes of state — it is still wax.",fx:{melt:1,col:["#fffaf0","#fff3c4"]}},
+  hcl:{o:"No observable change — the wax floats and doesn't react.",c:"none",w:"Paraffin wax doesn't react with dilute acid.",fx:{float:1}},
+  vin:{o:"No observable change — the wax floats and doesn't react.",c:"none",w:"Paraffin wax doesn't react with vinegar.",fx:{float:1}},
+  water:{o:"The candle floats and does not dissolve.",c:"none",w:"Floating (lower density) and not dissolving (insoluble) are physical properties — nothing changed.",fx:{float:1}},
+  crush:{o:"A knife cuts the candle into smaller pieces of wax.",c:"phys",w:"Only the size and shape changed.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Wax is not magnetic.",fx:{}},
+  burn:{o:"The wick lights. Wax near the flame melts into a pool, the flame gives off light and heat, and a little black soot forms.",c:"chem",ev:["light"],ok:["temp","color","gas","odor"],w:"Two changes at once: melting wax is physical, but burning wax vapor (wax + O₂ → CO₂ + H₂O) is chemical — so the candle burning is a chemical change.",fx:{candle:1}},
+  air:{o:"No observable change.",c:"none",w:"Nothing new formed.",fx:{}}
+ },
+ chalk:{
+  heat:{o:"No visible change — the chalk just gets hot. (CaCO₃ only breaks down when heated far more strongly than this.)",c:"none",alt:["phys"],trap:{temp:"You heated it, so its getting hot isn't evidence by itself."},w:"No new substance appeared.",fx:{}},
+  hcl:{o:"Vigorous fizzing; the chalk dissolves away.",c:"chem",ev:["gas"],w:"CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂: the fizz is carbon dioxide, a new gas.",fx:{bub:3,dis:1}},
+  vin:{o:"Slow, steady fizzing; the chalk slowly gets smaller.",c:"chem",ev:["gas"],w:"Calcium carbonate reacts with acetic acid, giving off carbon dioxide gas (more slowly than with HCl).",fx:{bub:2,dis:.4}},
+  water:{o:"A few bubbles rise at first, then stop. The chalk does not dissolve.",c:"none",alt:["phys"],trap:{gas:"Those bubbles are air that was trapped in the chalk's tiny pores, pushed out by the water — not a new gas."},w:"No new substance; chalk (CaCO₃) is insoluble in water.",fx:{airbub:1}},
+  crush:{o:"Crushed into a fine white powder.",c:"phys",w:"Only the particle size changed.",fx:{small:1}},
+  mag:{o:"Not attracted to the magnet.",c:"none",w:"Nothing changed. Chalk is not magnetic.",fx:{}},
+  burn:{o:"It does not catch fire. The tip glows orange-hot in the flame and looks about the same after cooling.",c:"none",alt:["phys"],trap:{light:"Glowing because it's very hot is not burning — no new substance is visible."},w:"Chalk isn't flammable.",fx:{glow:"#fb923c"}},
+  air:{o:"No observable change.",c:"none",w:"Nothing new formed.",fx:{}}
+ }
+};
+
+/* ---------- Swipe decks (P = physical, C = chemical) ---------- */
+const DECKS = {
+ changes:{n:"Changes deck",cards:[
+  ["Ice melting into water","P","A change of state — still H₂O."],
+  ["Boiling water in a kettle","P","The bubbles are water vapor — still H₂O."],
+  ["Dissolving sugar in iced tea","P","The sugar is still there (the tea tastes sweet)."],
+  ["Crushing an aluminum can","P","Only the shape changes — still aluminum."],
+  ["Chopping wood into kindling","P","Smaller pieces of the same wood."],
+  ["Tearing a sheet of paper","P","Smaller pieces, still paper (not reversible, but still physical)."],
+  ["Dry ice turning into gas","P","Solid CO₂ → gaseous CO₂ (sublimation)."],
+  ["Frost forming on a windshield","P","Water vapor → ice (deposition) — still H₂O."],
+  ["Bending a copper wire","P","Only the shape changes."],
+  ["Mixing sand and iron filings","P","A mixture — a magnet can separate them again."],
+  ["Breaking a drinking glass","P","Smaller pieces of the same glass."],
+  ["Dew forming on grass","P","Water vapor condensing — still H₂O."],
+  ["Melting butter in a pan","P","Just melting (browning it would be chemical)."],
+  ["Rubbing alcohol evaporating off skin","P","You can smell it, but it's still alcohol — evaporation is a change of state."],
+  ["Stirring food coloring into water","P","The color spreads out but no new substance forms."],
+  ["Burning a log in a campfire","C","Wood + oxygen → CO₂, water vapor and ash."],
+  ["A bike chain rusting","C","Iron + oxygen + water → rust."],
+  ["Baking a cake","C","Batter ingredients react to form new substances (and CO₂ gas)."],
+  ["Frying an egg","C","Proteins change permanently; new substances form."],
+  ["Milk going sour","C","Bacteria produce lactic acid — new smell and taste."],
+  ["Fireworks exploding","C","Light, heat, gas and smoke from new substances."],
+  ["A sliced apple turning brown","C","Enzymes and oxygen form new brown compounds."],
+  ["Silver jewelry tarnishing black","C","Silver reacts with sulfur compounds → silver sulfide."],
+  ["Plants making sugar (photosynthesis)","C","CO₂ + H₂O → glucose + O₂."],
+  ["An antacid tablet fizzing in water","C","Its ingredients react to make CO₂ gas."],
+  ["Gasoline burning in a car engine","C","Fuel + oxygen → CO₂ + H₂O."],
+  ["Bread toasting brown","C","Heat makes new browned compounds."],
+  ["A glow stick glowing","C","Chemicals react and give off light."],
+  ["A copper roof turning green","C","Copper slowly reacts with air to form a green patina."],
+  ["Your stomach breaking down food with acid and enzymes","C","Chemical digestion makes new, smaller molecules."]
+ ]},
+ props:{n:"Properties deck",cards:[
+  ["Copper conducts electricity","P","Testing conductivity doesn't change the copper."],
+  ["Gold can be hammered into thin sheets","P","Malleability — still gold afterward."],
+  ["Copper can be drawn into wire","P","Ductility — still copper."],
+  ["Aluminum has a density of 2.70 g/cm³","P","Density is measured without changing the substance."],
+  ["Water boils at 100 °C at sea level","P","Boiling point is a physical property."],
+  ["Ice melts at 0 °C","P","Melting point is a physical property."],
+  ["Sugar dissolves in water","P","Solubility is a physical property."],
+  ["Diamond is the hardest natural substance","P","Hardness is a physical property."],
+  ["Iron is attracted to a magnet","P","Magnetism is a physical property."],
+  ["Mercury is a liquid at room temperature","P","State of matter is a physical property."],
+  ["Sulfur is a yellow solid","P","Color and state are physical properties."],
+  ["Oil does not dissolve in water","P","Insolubility is a physical property."],
+  ["Glass is brittle — it shatters","P","Brittleness is a physical property."],
+  ["Helium is less dense than air","P","Density is a physical property."],
+  ["Aluminum foil is shiny","P","Luster is a physical property."],
+  ["Gasoline is flammable","C","Flammability = ability to burn into new substances."],
+  ["Iron rusts in moist air","C","Tendency to rust is a chemical property."],
+  ["Magnesium reacts with acid to make hydrogen gas","C","Reactivity with acid is a chemical property."],
+  ["Silver tarnishes in air with sulfur compounds","C","Tendency to tarnish is a chemical property."],
+  ["Sodium reacts violently with water","C","Reactivity with water is a chemical property."],
+  ["Wood is combustible","C","Ability to burn is a chemical property."],
+  ["Hydrogen peroxide breaks down in light","C","Tendency to decompose is a chemical property."],
+  ["Baking soda reacts with vinegar","C","Reactivity with acid is a chemical property."],
+  ["Gold does not react with oxygen, so it doesn't tarnish","C","How a substance does (or doesn't) react is a chemical property."],
+  ["Helium does not react with other elements","C","Being unreactive is a chemical property."],
+  ["Chalk (CaCO₃) fizzes when acid is added","C","Reactivity with acid is a chemical property."],
+  ["Copper slowly forms a green coating outdoors","C","Tendency to corrode is a chemical property."],
+  ["Methane burns in oxygen","C","Flammability is a chemical property."],
+  ["Copper does not react with hydrochloric acid","C","Non-reactivity with acid is a chemical property."],
+  ["Aluminum reacts with oxygen to form a protective oxide layer","C","Reactivity with oxygen is a chemical property."]
+ ]}
+};
+
+/* ---------- Quiz bank ----------
+   mc: q, ch[], a (index of correct in ch), x (explanation), s (short)
+   sort: q, bins[2], items [[text, binIndex]], x, s
+   click: q, scene id, a [ids], x, s */
+const QBANK = [
+ {t:"mc",q:"Which of these is a chemical change?",ch:["Ice melting","Wood burning","A glass breaking","Sugar dissolving in water"],a:1,x:"Burning turns wood into new substances (CO₂, water vapor, ash); the others change only state, size or mixing.",s:"Pick the chemical change (wood burning)"},
+ {t:"mc",q:"Which of these is a physical change?",ch:["Iron rusting","Milk souring","Water boiling","Bread toasting"],a:2,x:"Boiling is a change of state — the steam is still H₂O.",s:"Pick the physical change (water boiling)"},
+ {t:"mc",q:"Which is a chemical property?",ch:["Density","Flammability","Melting point","Color"],a:1,x:"Flammability describes a substance's ability to burn and become new substances.",s:"Chemical property: flammability"},
+ {t:"mc",q:"Which is a physical property of copper?",ch:["It reacts with nitric acid","It turns green outdoors over time","It conducts electricity","It forms a black oxide when heated"],a:2,x:"Conductivity can be tested without changing the copper into something new.",s:"Physical property of copper: conductivity"},
+ {t:"mc",q:"Bubbles form when water boils. Is this evidence of a chemical change?",ch:["Yes — a gas is produced","No — the bubbles are water vapor, still H₂O","Yes — the temperature changed","No — because the color stayed the same"],a:1,x:"Boiling bubbles are water vapor, so no new substance forms.",s:"Boiling bubbles: not chemical evidence"},
+ {t:"mc",q:"A cold pack gets cold when ammonium nitrate dissolves in water. What does the temperature drop prove?",ch:["A chemical change happened, because temperature changed","Nothing by itself — dissolving salts can change temperature with no new substance","A gas was produced","The water froze"],a:1,x:"Dissolving some salts absorbs or releases heat; you need a new substance to prove a chemical change.",s:"Cold-pack temperature drop: misleading"},
+ {t:"mc",q:"When a candle burns, which part is a physical change?",ch:["Wax vapor reacting with oxygen","Soot forming","Solid wax melting into a pool","Carbon dioxide forming"],a:2,x:"Melting is a change of state; the wax is still wax.",s:"Candle: the physical part (melting wax)"},
+ {t:"mc",q:"Which observation is the BEST evidence that a new substance formed?",ch:["The sample got smaller","A solid formed when two clear solutions were mixed","The sample changed shape","The liquid got warmer while sitting on a hot plate"],a:1,x:"A precipitate is a new solid that wasn't in either solution.",s:"Best evidence: precipitate"},
+ {t:"mc",q:"Mixing blue and yellow food coloring makes green. What kind of change is this?",ch:["Chemical — the color changed","Physical — the dyes just mix; no new substance forms","Chemical — a precipitate forms","No change at all"],a:1,x:"The color change comes from mixing two dyes, not from making a new substance.",s:"Mixing food coloring: physical"},
+ {t:"mc",q:"What is the real test of a chemical change?",ch:["Bubbles appear","The color changes","A new substance with new properties forms","The temperature changes"],a:2,x:"The other clues are hints; only a new substance proves a chemical change.",s:"Real test: a new substance forms"},
+ {t:"mc",q:"Steel wool and an iron nail are both attracted to a magnet. Magnetism is a…",ch:["chemical property","physical property","chemical change","physical change"],a:1,x:"Testing with a magnet doesn't change the iron, so magnetism is a physical property.",s:"Magnetism is a physical property"},
+ {t:"mc",q:"Which property can only be observed by changing the substance into something new?",ch:["Hardness","Solubility","Reactivity with acid","Boiling point"],a:2,x:"To see how a substance reacts, it has to react — that makes it a chemical property.",s:"Needs a change to observe: reactivity"},
+ {t:"mc",q:"Cooking an egg is a chemical change because…",ch:["it gets hot","it turns from liquid to solid","its proteins change permanently into new structures with new properties","cooling it turns it back to raw egg"],a:2,x:"The proteins are permanently changed — cooling won't make the egg raw again.",s:"Cooking an egg: why it's chemical"},
+ {t:"mc",q:"Which is NOT evidence of a chemical change?",ch:["Light given off by burning magnesium","Gas from baking soda + vinegar","Steam rising from boiling water","A rotten-egg smell from spoiled food"],a:2,x:"Steam is just water changing state.",s:"Not evidence: steam from boiling"},
+ {t:"mc",q:"Magnesium is added to HCl. Bubbles form and the tube gets warm. Best conclusion?",ch:["Physical — the magnesium dissolved","Chemical — a new gas (hydrogen) formed and heat was released","Physical — the bubbles are trapped air","No change happened"],a:1,x:"Mg + 2HCl → MgCl₂ + H₂: two pieces of evidence and a new gas.",s:"Mg + HCl: chemical change"},
+ {t:"mc",q:"Gold does not react with acids. This is a…",ch:["physical property","chemical property","physical change","chemical change"],a:1,x:"How a substance does — or doesn't — react is a chemical property.",s:"Gold doesn't react: chemical property"},
+ {t:"mc",q:"Which is a physical change that you CANNOT easily reverse?",ch:["Melting ice","Tearing paper","Burning paper","Rusting iron"],a:1,x:"Torn paper is still paper (physical), even though you can't put it back together.",s:"Irreversible physical change: tearing paper"},
+ {t:"mc",q:"During a chemical change, atoms are…",ch:["destroyed","created","rearranged into new substances","turned into different elements"],a:2,x:"Bonds break and new bonds form; the same atoms are rearranged.",s:"Atoms in a chemical change: rearranged"},
+ {t:"mc",q:"A nail held in a burner flame glows red. What does the red glow alone tell you?",ch:["A chemical change happened","Nothing about a new substance — hot objects glow","The nail is melting","The iron is burning up"],a:1,x:"Glowing is caused by high temperature; you need other evidence (like the black coating) for a new substance.",s:"Red-hot glow: misleading evidence"},
+ {t:"mc",q:"Sugar dissolved in water can be recovered by evaporating the water. This shows dissolving sugar is…",ch:["a chemical change","a physical change","a chemical property","not a change"],a:1,x:"The sugar was never changed into anything new.",s:"Dissolving sugar is physical"},
+ {t:"mc",q:"Which pair is matched correctly?",ch:["Rusting — physical change","Density — chemical property","Flammability — chemical property","Boiling — chemical change"],a:2,x:"Flammability describes the ability to burn into new substances.",s:"Correct pair: flammability = chemical property"},
+ {t:"sort",q:"Sort each CHANGE into the correct bin.",bins:["◀ Physical change","Chemical change ▶"],items:[["Melting ice",0],["Burning paper",1],["Tearing paper",0],["Rusting nail",1],["Dissolving sugar",0],["Cooking an egg",1]],x:"Physical changes keep the same substance; chemical changes make new ones.",s:"Sort changes: physical vs chemical"},
+ {t:"sort",q:"Sort each PROPERTY into the correct bin.",bins:["◀ Physical property","Chemical property ▶"],items:[["Density",0],["Flammability",1],["Malleability",0],["Reacts with acid",1],["Boiling point",0],["Tarnishes in air",1]],x:"Physical properties are observed without changing identity; chemical properties describe how a substance reacts.",s:"Sort properties: physical vs chemical"},
+ {t:"sort",q:"Which clues are evidence of a chemical change, and which are NOT evidence by themselves?",bins:["Evidence of a chemical change","Not evidence by itself"],items:[["A solid forms when two solutions mix",0],["Bubbles in boiling water",1],["A new odor from spoiled food",0],["Food coloring changes water's color",1],["Fizzing when baking soda meets vinegar",0],["A cold pack cooling as a salt dissolves",1]],x:"Boiling, dissolving and mixing dyes can look like evidence without making a new substance.",s:"Sort evidence vs fake-outs"},
+ {t:"sort",q:"A candle is burning. Sort what is happening.",bins:["◀ Physical change","Chemical change ▶"],items:[["Wax melting into a pool",0],["Wax vapor burning",1],["Melted wax hardening on the side",0],["Black soot forming",1],["Cutting the candle in half",0],["Carbon dioxide and water forming",1]],x:"Melting and re-hardening wax are physical; burning wax vapor makes new substances.",s:"Candle: sort physical vs chemical"},
+ {t:"sort",q:"Sort these Lab Bench results.",bins:["◀ Physical change","Chemical change ▶"],items:[["Chalk fizzing in HCl",1],["Salt dissolving in water",0],["Copper turning black in a flame",1],["Crushing salt crystals",0],["Sugar blackening when heated",1],["Ice melting and then boiling",0]],x:"Fizzing, blackening and coatings mean new substances; dissolving, crushing and state changes do not.",s:"Sort lab results"},
+ {t:"click",q:"Click the beaker that shows evidence of a chemical change.",scene:"beakers",a:["ppt"],x:"A yellow solid appearing when two clear solutions mix is a precipitate — a new substance.",s:"Click: beaker with a precipitate"},
+ {t:"click",q:"Click the part of the burning candle where a CHEMICAL change is happening.",scene:"candle",a:["flame"],x:"In the flame, wax vapor reacts with oxygen to form CO₂ and water.",s:"Click: candle's chemical change (flame)"},
+ {t:"click",q:"Click a part of the candle where a PHYSICAL change is happening.",scene:"candle",a:["pool","drip"],x:"Melted wax (and wax re-hardening as it drips) is only changing state.",s:"Click: candle's physical change (melting wax)"},
+ {t:"click",q:"Click the test that is observing a CHEMICAL property.",scene:"tests",a:["flame"],x:"Holding a match to the splint tests flammability — the wood will change into new substances.",s:"Click: test of a chemical property"},
+ {t:"click",q:"Click the test tube whose bubbles do NOT come from a chemical change.",scene:"tubes",a:["boil"],x:"Boiling bubbles are water vapor; the other tubes make new gases (H₂ or CO₂).",s:"Click: bubbles that aren't evidence"},
+ {t:"click",q:"Click the nail that has gone through a chemical change.",scene:"nails",a:["rust"],x:"Rust is a new substance (iron oxide); bending, cutting and magnet tests leave the iron unchanged.",s:"Click: nail with a chemical change"}
+];
+/* =====================================================================
+   REALISTIC ART — shared gradients (defined once) + drawing components
+   ===================================================================== */
+const ST3=(id,dir,stops)=>`<linearGradient id="${id}" ${dir==="v"?'x1="0" y1="0" x2="0" y2="1"':dir==="d"?'x1="0" y1="0" x2="1" y2="1"':'x1="0" y1="0" x2="1" y2="0"'}>${stops.map(([o,c,a])=>`<stop offset="${o}" stop-color="${c}"${a!==undefined?` stop-opacity="${a}"`:""}/>`).join("")}</linearGradient>`;
+const RG=(id,attrs,stops)=>`<radialGradient id="${id}" ${attrs}>${stops.map(([o,c,a])=>`<stop offset="${o}" stop-color="${c}"${a!==undefined?` stop-opacity="${a}"`:""}/>`).join("")}</radialGradient>`;
+const CYL=[[0,"#000",.3],[.25,"#fff",.4],[.4,"#fff",.1],[.75,"#000",.1],[1,"#000",.4]];
+const MET=[[0,"#2b3340"],[.28,"#9ca3af"],[.42,"#f3f4f6"],[.62,"#6b7280"],[1,"#1f2937"]];
+const DEFS_SVG=`<svg id="artdefs" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs>
+${ST3("gGlassH","h",[[0,"#fff",.65],[.09,"#fff",.15],[.5,"#fff",0],[.86,"#fff",.08],[1,"#fff",.5]])}
+${ST3("gCyl","h",CYL)}${ST3("gCylV","v",CYL)}
+${ST3("gLiqV","v",[[0,"#fff",.3],[.12,"#fff",0],[1,"#0b2a4a",.18]])}
+${ST3("gLiqH","h",[[0,"#0b2a4a",.18],[.18,"#0b2a4a",0],[.82,"#0b2a4a",0],[1,"#0b2a4a",.22]])}
+${ST3("gMetal","h",MET)}${ST3("gMetalV","v",MET)}
+${ST3("gBench","v",[[0,"#4b5563"],[.12,"#334155"],[1,"#0f172a"]])}
+${ST3("gWall","v",[[0,"#f8fafc"],[1,"#d5dee8"]])}
+${ST3("gWood","v",[[0,"#e8c48d"],[.5,"#d2a265"],[1,"#a87743"]])}
+${ST3("gGold","d",[[0,"#fef3c7"],[.3,"#facc15"],[.62,"#a16207"],[1,"#fde68a"]])}
+${ST3("gRubber","v",[[0,"#fdba74"],[.5,"#ea580c"],[1,"#9a3412"]])}
+${ST3("gPouchR","d",[[0,"#fecaca"],[.5,"#f87171"],[1,"#b91c1c"]])}
+${ST3("gPouchB","d",[[0,"#e0f2fe"],[.5,"#93c5fd"],[1,"#2563eb"]])}
+${RG("gShadow","",[[0,"#000",.4],[1,"#000",0]])}
+${RG("gBub",'cx=".36" cy=".32" r=".72"',[[0,"#fff",.95],[.25,"#fff",.3],[.8,"#e0f2fe",.08],[1,"#fff",.8]])}
+${RG("gFlameO",'cx=".5" cy=".8" r=".78"',[[0,"#fffbe6"],[.28,"#fde047"],[.58,"#fb923c"],[.85,"#ef4444",.55],[1,"#dc2626",0]])}
+${RG("gFlameB",'cx=".5" cy=".88" r=".85"',[[0,"#e0f2fe"],[.35,"#60a5fa",.9],[.75,"#3b82f6",.45],[1,"#1d4ed8",0]])}
+${RG("gGlowW","",[[0,"#fff"],[.35,"#fffbe6",.85],[1,"#fff7c2",0]])}
+${RG("gGlowO","",[[0,"#fff1c2",.95],[.4,"#fb923c",.6],[1,"#f97316",0]])}
+${RG("gGlowR","",[[0,"#fee2e2",.95],[.4,"#ef4444",.6],[1,"#b91c1c",0]])}
+${RG("gGlowY","",[[0,"#fff",.95],[.4,"#fde047",.65],[1,"#facc15",0]])}
+${RG("gGlowG","",[[0,"#f0fdf4",.95],[.4,"#4ade80",.65],[1,"#22c55e",0]])}
+${RG("gSmoke","",[[0,"#3f3f46",.7],[.6,"#71717a",.32],[1,"#a1a1aa",0]])}
+${RG("gSteam","",[[0,"#fff",.95],[.6,"#f1f5f9",.5],[1,"#e2e8f0",0]])}
+${RG("gSphere",'cx=".34" cy=".3" r=".78"',[[0,"#fff",.9],[.22,"#fff",.25],[.65,"#000",0],[1,"#000",.42]])}
+${RG("gCeramic",'cx=".4" cy=".25" r=".9"',[[0,"#fff"],[.55,"#e7e5e4"],[1,"#a8a29e"]])}
+${RG("gMound",'cx=".4" cy=".25" r=".85"',[[0,"#fff",.9],[.55,"#fff",0],[1,"#475569",.38]])}
+${RG("gCloud",'cx=".45" cy=".3" r=".75"',[[0,"#fff"],[1,"#94a3b8"]])}
+${RG("gBread",'cx=".5" cy=".45" r=".6"',[[0,"#fff",.35],[1,"#000",.18]])}
+<pattern id="pTile" width="60" height="40" patternUnits="userSpaceOnUse"><path d="M0 .5H60M.5 0V40" stroke="#cbd5e1" stroke-width="1"/></pattern>
+<pattern id="pGrain" width="40" height="7" patternUnits="userSpaceOnUse"><path d="M0 2q10-2 20 0t20 0M0 5.5q12 1.5 24 0t16 0" fill="none" stroke="#6b4423" stroke-width=".7" opacity=".55"/></pattern>
+<pattern id="pRust" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#a0522d" opacity=".35"/><circle cx="2" cy="2" r="1.9" fill="#7c2d12"/><circle cx="6.5" cy="5" r="1.5" fill="#c2410c"/><circle cx="3" cy="7.5" r="1.2" fill="#9a3412"/></pattern>
+<pattern id="pCrumb" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="3" r="1.1" fill="#000" opacity=".12"/><circle cx="7" cy="7" r="1.4" fill="#000" opacity=".1"/><circle cx="6" cy="2" r=".8" fill="#fff" opacity=".3"/></pattern>
+</defs></svg>`;
+document.body.insertAdjacentHTML("afterbegin",DEFS_SVG);
+
+const lighten=(c,k)=>lerpC(c,"#ffffff",k),darken=(c,k)=>lerpC(c,"#000000",k);
+const shadowE=(cx,cy,rx,ry,op)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#gShadow)" opacity="${op===undefined?1:op}"/>`;
+function glowGrad(c){c=(c||"").toLowerCase();if(/ef4444|dc2626|b91c1c/.test(c))return"gGlowR";if(/22c55e|4ade80/.test(c))return"gGlowG";if(/facc15|fde047|fde68a/.test(c))return"gGlowY";if(/fff/.test(c))return"gGlowW";return"gGlowO"}
+
+/* ---------- substances (centered on 0,0) ---------- */
+function cube(x,y,s,c,rot){const a=s/2,d=s*.32,e=darken(c,.42);
+ return`<g transform="rotate(${rot||0} ${x.toFixed(1)} ${y.toFixed(1)})"><path d="M${x-a} ${y-a}l${d} ${-d}h${s}l${-d} ${d}z" fill="${lighten(c,.6)}" stroke="${e}" stroke-width=".6" stroke-opacity=".7"/><path d="M${x+a} ${y-a}l${d} ${-d}v${s}l${-d} ${d}z" fill="${darken(c,.24)}" stroke="${e}" stroke-width=".6" stroke-opacity=".7"/><rect x="${x-a}" y="${y-a}" width="${s}" height="${s}" fill="${darken(c,.06)}" stroke="${e}" stroke-width=".6" stroke-opacity=".7"/><path d="M${x-a+1.5} ${y-a+1.5}h${s*.45}" stroke="#fff" stroke-width=".9" opacity=".8"/></g>`}
+let WOOL=null;
+function woolGeom(){if(WOOL)return WOOL;const r=rng(77),P=[];for(let i=0;i<30;i++){const a=r()*6.28,b=r()*6.28,x1=Math.cos(a)*28*r(),y1=Math.sin(a)*13*r(),x2=Math.cos(b)*30*r(),y2=Math.sin(b)*14*r();P.push(`M${x1.toFixed(1)} ${y1.toFixed(1)}C${(x1+(r()-.5)*40).toFixed(1)} ${(y1-14+r()*6).toFixed(1)} ${(x2+(r()-.5)*40).toFixed(1)} ${(y2+14-r()*6).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`)}return WOOL=P}
+function drawSub(id,c,o){
+ o=o||{};c=c||SUBS[id].c;const k=1-0.45*(o.k||0);
+ switch(id){
+ case"mg":{const d="M-42 0q7-8 14 0t14 0t14 0t14 0t14 0t14 0";return`<path d="${d}" fill="none" stroke="${darken(c,.45)}" stroke-width="7.5" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${c}" stroke-width="5.5" stroke-linecap="round"/><path d="${d}" transform="translate(0 -1.7)" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>`}
+ case"ice":return`<path d="M-18-11l9-9h30l-9 9z" fill="${lighten(c,.55)}" stroke="#7cc4ea" stroke-width="1.1"/><path d="M12-11l9-9v30l-9 9z" fill="${darken(c,.14)}" stroke="#7cc4ea" stroke-width="1.1"/><rect x="-18" y="-11" width="30" height="30" rx="2" fill="${c}" stroke="#5fb0dd" stroke-width="1.3"/><rect x="-18" y="-11" width="30" height="30" rx="2" fill="url(#gGlassH)"/><path d="M-13-2l6 5 4-3 6 7" stroke="#fff" stroke-width=".9" fill="none" opacity=".85"/><circle cx="-6" cy="12" r="1.6" fill="#fff" opacity=".85"/><circle cx="4" cy="-3" r="1.1" fill="#fff" opacity=".85"/><path d="M-15-7v16" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
+ case"nail":{const sh='<rect x="-34" y="-3.5" width="64" height="7"/>',pt='<path d="M30-3.5L43 0 30 3.5z"/>',hd='<rect x="-41" y="-11" width="7" height="22" rx="1.5"/>';
+  return`<g fill="${c}" stroke="${darken(c,.5)}" stroke-width="1">${sh}${pt}${hd}</g><g fill="url(#gCylV)">${sh}${pt}</g><g fill="url(#gCyl)">${hd}</g><path d="M-31-3.5v7M-28-3.5v7M-25-3.5v7" stroke="${darken(c,.35)}" stroke-width=".7"/>${o.rust?`<g fill="url(#pRust)" opacity="${clamp(o.rust).toFixed(2)}">${sh}${pt}${hd}</g>`:""}`}
+ case"sugar":case"salt":{const P=[[-12,-3],[-1,-2],[11,-3],[-6,-13],[6,-13],[-19,8],[-7,9],[5,8],[17,9]];
+  return P.map(([x,y],i)=>cube(x*k,y*k,id==="sugar"?10:9.5,c,id==="sugar"?(i*37)%40-20:(i*11)%10-5)).join("")}
+ case"soda":{const m="M-36 17Q-30-4-14-13Q0-19 14-13Q30-4 36 17Z";return`<path d="${m}" fill="${c}" stroke="#94a3b8" stroke-width="1"/><path d="${m}" fill="url(#gMound)"/><g fill="#cbd5e1"><circle cx="-10" cy="2" r="1.3"/><circle cx="8" cy="-5" r="1.2"/><circle cx="14" cy="8" r="1.4"/><circle cx="-18" cy="10" r="1.2"/><circle cx="-38" cy="16" r="1"/><circle cx="39" cy="15" r="1.1"/></g>`}
+ case"splint":{const r='<rect x="-44" y="-5" width="88" height="10" rx="1.5"/>';return`<g fill="${c}" stroke="${darken(c,.42)}" stroke-width="1">${r}</g><g fill="url(#pGrain)">${r}</g><g fill="url(#gCylV)">${r}</g><ellipse cx="-44" cy="0" rx="1.6" ry="5" fill="${darken(c,.25)}"/>`}
+ case"cu":{let d="M-40 4";for(let i=0;i<9;i++)d+="c3-20 15-20 14 0c-1 14-9 14-6 0";return`<path d="${d}" fill="none" stroke="${darken(c,.45)}" stroke-width="5.2" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/><path d="${d}" transform="translate(0 -1)" fill="none" stroke="${lighten(c,.6)}" stroke-width="1.1" stroke-linecap="round" opacity=".85"/>`}
+ case"wool":{const G=woolGeom();return`<ellipse rx="31" ry="15" fill="${darken(c,.35)}" opacity=".35"/><g fill="none" stroke-linecap="round">${G.map((p,i)=>`<path d="${p}" stroke="${i%3===0?darken(c,.4):c}" stroke-width="${i%3===0?1.4:1.1}"/>`).join("")}${G.slice(0,10).map(p=>`<path d="${p}" transform="translate(0 -.8)" stroke="${lighten(c,.6)}" stroke-width=".6"/>`).join("")}</g>`}
+ case"candle":return`<rect x="-13" y="-30" width="26" height="62" rx="2" fill="${c}" stroke="${darken(c,.25)}" stroke-width="1"/><rect x="-13" y="-30" width="26" height="62" rx="2" fill="url(#gCyl)"/><ellipse cx="0" cy="-30" rx="13" ry="3.5" fill="${lighten(c,.35)}" stroke="${darken(c,.18)}" stroke-width=".8"/><path d="M-13-28q-3 8 0 14" stroke="${lighten(c,.2)}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M0-30c0-4 2-6 1-9" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+ case"chalk":return`<rect x="-34" y="-8" width="68" height="16" rx="7" fill="${c}" stroke="${darken(c,.28)}" stroke-width="1"/><rect x="-34" y="-8" width="68" height="16" rx="7" fill="url(#gCylV)"/><ellipse cx="29" cy="0" rx="4.5" ry="7.6" fill="${lighten(c,.2)}" stroke="${darken(c,.2)}" stroke-width=".7"/><g fill="#9ca3af" opacity=".5"><circle cx="-20" cy="-2" r=".8"/><circle cx="-6" cy="3" r=".7"/><circle cx="10" cy="-3" r=".8"/></g>`;
+ }return"";
+}
+
+/* ---------- glassware + equipment ---------- */
+function beakerC(x,y,w,h,label){
+ const r=Math.min(9,w*.12),L=x+3,R=x+w-3,B=y+h-3;
+ const lp=top=>`M${L} ${top}H${R}V${B-r}q0 ${r} ${-r} ${r}H${L+r}q${-r} 0 ${-r} ${-r}Z`;
+ const body=`M${x} ${y}V${y+h-r}q0 ${r} ${r} ${r}H${x+w-r}q${r} 0 ${r} ${-r}V${y}`;
+ let grad="";const n=4;for(let i=1;i<=n;i++){const yy=y+h-i*(h-22)/(n+.5);grad+=`<path d="M${x+w-15} ${yy.toFixed(1)}h10" stroke="#475569" stroke-width="1" opacity=".75"/>${w>90?`<text x="${x+w-18}" y="${(yy+3).toFixed(1)}" font-size="8" fill="#475569" text-anchor="end" opacity=".85">${i*50}</text>`:""}<path d="M${x+w-10} ${(yy+(h-22)/(n+.5)/2).toFixed(1)}h5" stroke="#475569" stroke-width=".8" opacity=".6"/>`}
+ return{lp,
+  back:`${shadowE(x+w/2,y+h+2,w*.62,6,.85)}<path d="${body}" fill="#e8f0f8" fill-opacity=".4"/>`,
+  liq:(top,c)=>`<path d="${lp(top)}" fill="${c}"/><path d="${lp(top)}" fill="url(#gLiqH)"/><path d="${lp(top)}" fill="url(#gLiqV)"/><ellipse cx="${x+w/2}" cy="${top}" rx="${(w-6)/2}" ry="${Math.min(3.5,w*.03)}" fill="${lighten(c,.5)}" stroke="${darken(c,.18)}" stroke-width=".8"/>`,
+  front:`<path d="${body}" fill="url(#gGlassH)"/>${grad}<path d="${body}" fill="none" stroke="#56677d" stroke-width="2.3" stroke-linejoin="round"/><path d="${body}" transform="translate(1.6 0)" fill="none" stroke="#fff" stroke-width=".8" opacity=".6"/><path d="M${x+7} ${y+12}V${y+h-16}" stroke="#fff" stroke-width="${Math.max(3,w*.035)}" stroke-linecap="round" opacity=".55"/><path d="M${x-7} ${y-4}q5 0 7 4" fill="none" stroke="#56677d" stroke-width="2.3" stroke-linecap="round"/><path d="M${x+w} ${y}q2-3 5-3" fill="none" stroke="#56677d" stroke-width="2.3" stroke-linecap="round"/>${label?`<g><rect x="${x+w/2-50}" y="${y+16}" width="100" height="24" rx="3" fill="#fff" stroke="#94a3b8"/><rect x="${x+w/2-50}" y="${y+16}" width="100" height="5" rx="2" fill="#0f766e"/><text x="${x+w/2}" y="${y+35}" font-size="13" font-weight="700" text-anchor="middle" fill="#0f172a">${label}</text></g>`:""}`};
+}
+function tubeC(L,r){ // local coords: mouth at (0,0), rounded bottom center at (0,L)
+ const body=`M${-r} 0V${L}a${r} ${r} 0 0 0 ${2*r} 0V0`;
+ const lp=top=>`M${-r+2} ${top}H${r-2}V${L}a${r-2} ${r-2} 0 0 1 ${-(2*r-4)} 0Z`;
+ return{lp,back:`<path d="${body}" fill="#e8f0f8" fill-opacity=".4"/>`,
+  liq:(top,c)=>`<path d="${lp(top)}" fill="${c}"/><path d="${lp(top)}" fill="url(#gLiqH)"/><ellipse cx="0" cy="${top}" rx="${r-2}" ry="2.2" fill="${lighten(c,.5)}" stroke="${darken(c,.18)}" stroke-width=".6"/>`,
+  front:`<path d="${body}" fill="url(#gGlassH)"/><path d="${body}" fill="none" stroke="#56677d" stroke-width="2.2"/><rect x="${-r-2.5}" y="-3" width="${2*r+5}" height="5" rx="2.5" fill="#e2e8f0" fill-opacity=".6" stroke="#56677d" stroke-width="1.6"/><path d="M${-r+5} 10V${L-6}" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6"/><path d="M${r-4} 14V${L-10}" stroke="#fff" stroke-width="1.2" opacity=".4"/>`};
+}
+function BURNER(x,y,big){const H=big?95:55,W=big?20:14;
+ return`${shadowE(x,y+62,42,6)}<path d="M${x+7} ${y+44}h14" stroke="url(#gMetalV)" stroke-width="5"/><path d="M${x+20} ${y+44}c22 0 18 22 52 22" stroke="#9a3412" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M${x+20} ${y+44}c22 0 18 22 52 22" stroke="#ea580c" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M${x+20} ${y+42.3}c22 0 18 22 52 22" stroke="#fdba74" stroke-width="1.6" fill="none" opacity=".8"/>
+ <path d="M${x-32} ${y+62}L${x-24} ${y+49}H${x+24}L${x+32} ${y+62}Z" fill="url(#gMetalV)" stroke="#111827" stroke-width="1"/><rect x="${x-7}" y="${y}" width="14" height="50" fill="url(#gMetal)" stroke="#111827" stroke-width=".8"/><rect x="${x-9}" y="${y+28}" width="18" height="9" rx="1.5" fill="url(#gMetal)" stroke="#111827" stroke-width=".8"/><rect x="${x-4}" y="${y+30.5}" width="3" height="4" fill="#0b0f14"/><rect x="${x+2}" y="${y+30.5}" width="3" height="4" fill="#0b0f14"/><rect x="${x-8}" y="${y-2}" width="16" height="4" rx="1" fill="url(#gMetal)" stroke="#111827" stroke-width=".6"/>
+ <ellipse cx="${x}" cy="${y-H*.3}" rx="${W*1.6}" ry="${H*.55}" fill="url(#gGlowW)" opacity=".18"/><g class="flk"><path d="M${x} ${y-H}C${x+W} ${y-H*.45} ${x+W*.7} ${y-2} ${x} ${y-2}C${x-W*.7} ${y-2} ${x-W} ${y-H*.45} ${x} ${y-H}z" fill="url(#gFlameB)"/><path d="M${x} ${y-H*.5}C${x+W*.42} ${y-H*.22} ${x+W*.34} ${y-2} ${x} ${y-2}C${x-W*.34} ${y-2} ${x-W*.42} ${y-H*.22} ${x} ${y-H*.5}z" fill="#93c5fd" opacity=".9"/><path d="M${x} ${y-H*.42}C${x+W*.2} ${y-H*.2} ${x+W*.15} ${y-3} ${x} ${y-3}C${x-W*.15} ${y-3} ${x-W*.2} ${y-H*.2} ${x} ${y-H*.42}z" fill="#eff6ff" opacity=".9"/></g>`}
+function flameShape(x,y,h,w){return`<ellipse cx="${x}" cy="${y-h*.45}" rx="${w*2.1}" ry="${h*.8}" fill="url(#gGlowO)" opacity=".55"/><g class="flk"><path d="M${x} ${y-h}C${x+w} ${y-h*.45} ${x+w*.75} ${y} ${x} ${y}C${x-w*.75} ${y} ${x-w} ${y-h*.45} ${x} ${y-h}z" fill="url(#gFlameO)"/><path d="M${x} ${y-h*.55}C${x+w*.42} ${y-h*.25} ${x+w*.34} ${y} ${x} ${y}C${x-w*.34} ${y} ${x-w*.42} ${y-h*.25} ${x} ${y-h*.55}z" fill="#fffbe6" opacity=".88"/></g>`}
+function bubbles(n,x0,x1,y,rise,seed,speed){const r=rng(seed);let s="";for(let i=0;i<n;i++){const x=x0+r()*(x1-x0),rr=1.8+r()*3.6;s+=`<circle class="bub" cx="${x.toFixed(1)}" cy="${y}" r="${rr.toFixed(1)}" fill="url(#gBub)" stroke="#8aa0b6" stroke-width=".8" style="--d:${((speed||1.4)*(0.7+r()*.6)).toFixed(2)}s;--dl:${(-r()*2).toFixed(2)}s;--rh:${-rise}px"/>`}return s}
+function puffs(n,x,y,color,cls,seed){const r=rng(seed);const dark=/^#([0-6])/.test(color)||color==="#6b7280";let s="";for(let i=0;i<n;i++)s+=`<circle class="${cls||"stm"}" cx="${(x+(r()*18-9)).toFixed(1)}" cy="${y}" r="${(9+r()*8).toFixed(1)}" fill="url(#${dark?"gSmoke":"gSteam"})" style="--dl:${(-r()*2.2).toFixed(2)}s"/>`;return s}
+function sparks(x,y,seed){const r=rng(seed);let s=`<circle cx="${x}" cy="${y}" r="30" fill="url(#gGlowO)" class="glw"/>`;for(let i=0;i<16;i++){const a=r()*Math.PI*2,d=30+r()*45;s+=`<line class="spk" x1="${x}" y1="${y}" x2="${(x+Math.cos(a)*7).toFixed(1)}" y2="${(y+Math.sin(a)*7).toFixed(1)}" stroke="${r()>.5?"#fb923c":"#fef08a"}" stroke-width="2.4" stroke-linecap="round" style="--sx:${(Math.cos(a)*d).toFixed(0)}px;--sy:${(Math.sin(a)*d).toFixed(0)}px;--dl:${(-r()*.7).toFixed(2)}s"/>`}return s}
+function odor(x,y,col){let s="";for(let i=0;i<3;i++)s+=`<path class="odr" d="M${x-14+i*14} ${y}q5-6 0-12t0-12" fill="none" stroke="${col||"#7c3aed"}" stroke-width="2.5" stroke-linecap="round" style="--dl:${-i*.6}s"/>`;return s}
+function thermo(x,top,bot,temp,lab){const y=bot-8-temp*((bot-top-20)/60),yy=clamp(y,top+3,bot);let ticks="";for(let t=0;t<=60;t+=10){const ty=bot-8-t*((bot-top-20)/60);ticks+=`<path d="M${x-5} ${ty.toFixed(1)}h${t%20?3:5}" stroke="#334155" stroke-width=".8"/>`}
+ return`<g><rect x="${x-5.5}" y="${top}" width="11" height="${bot-top}" rx="5.5" fill="#f8fafc" fill-opacity=".9" stroke="#475569" stroke-width="1.2"/><rect x="${x-2.2}" y="${yy.toFixed(1)}" width="4.4" height="${(bot-yy).toFixed(1)}" fill="#dc2626"/><rect x="${x-5.5}" y="${top}" width="11" height="${bot-top}" rx="5.5" fill="url(#gCyl)"/>${ticks}<circle cx="${x}" cy="${bot}" r="8.5" fill="#dc2626" stroke="#7f1d1d" stroke-width="1"/><circle cx="${x}" cy="${bot}" r="8.5" fill="url(#gSphere)"/>${lab?`<rect x="${x+10}" y="${top-4}" width="58" height="22" rx="4" fill="#fff" stroke="#334155"/><text x="${x+39}" y="${top+12}" font-size="14" font-weight="700" text-anchor="middle" fill="#0f172a">${temp.toFixed(0)} °C</text>`:""}</g>`}
+function magnetC(){ // local: top center 0,0; legs down to y=80
+ const p="M-32 80V32a32 32 0 0 1 64 0v48h-20V32a12 12 0 0 0-24 0v48z";
+ return`<path d="${p}" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.5"/><path d="${p}" fill="url(#gCyl)" opacity=".8"/><path d="M-26 60V32a26 26 0 0 1 14-23" fill="none" stroke="#fecaca" stroke-width="2.5" stroke-linecap="round" opacity=".75"/><rect x="-32" y="64" width="20" height="16" fill="url(#gMetal)" stroke="#374151"/><rect x="12" y="64" width="20" height="16" fill="url(#gMetal)" stroke="#374151"/><text x="-22" y="76.5" font-size="11" font-weight="700" text-anchor="middle" fill="#111827">N</text><text x="22" y="76.5" font-size="11" font-weight="700" text-anchor="middle" fill="#111827">S</text>`}
+const BENCH='<rect width="480" height="266" fill="url(#gWall)"/><rect width="480" height="262" fill="url(#pTile)" opacity=".55"/><rect y="262" width="480" height="38" fill="url(#gBench)"/><rect y="262" width="480" height="2.5" fill="#94a3b8"/><rect y="266" width="480" height="7" fill="#fff" opacity=".06"/>';
+function standC(x){return`${shadowE(x,268,40,5)}<rect x="${x-34}" y="260" width="68" height="9" rx="2" fill="url(#gMetalV)" stroke="#111827" stroke-width=".8"/><rect x="${x-3.5}" y="30" width="7" height="232" fill="url(#gMetal)" stroke="#111827" stroke-width=".6"/>`}
+function tongsC(x1,y1,x2,y2){const a=`M${x1} ${y1-5}L${x2} ${y2-6}M${x1} ${y1+5}L${x2} ${y2+6}`;return`<path d="${a}" stroke="#1f2937" stroke-width="5.5" stroke-linecap="round"/><path d="${a}" stroke="#9ca3af" stroke-width="2.4" stroke-linecap="round"/><path d="${a}" transform="translate(0 -1)" stroke="#f3f4f6" stroke-width=".8" stroke-linecap="round"/><circle cx="${x1}" cy="${y1}" r="6" fill="url(#gMetal)" stroke="#1f2937"/>`}
+
+/* =====================================================================
+   LAB BENCH SCENES — each returns {bg, dyn(t), fx(t)->[sig,svg], fg}
+   ===================================================================== */
+function buildScene(sub,act){
+ const r=RES[sub][act],fx=r.fx||{},S=SUBS[sub];
+ const colAt=t=>fx.col?stops(fx.col,t):S.c;
+ const seed=sub.length*31+act.length*7;
+ const title=`<rect x="8" y="8" width="${Math.max(150,(S.s.length+ACTS[act].n.length)*7.6+30)}" height="26" rx="6" fill="#0f172a" opacity=".92"/><text x="16" y="26" font-size="14" font-weight="700" fill="#fff">${esc(S.s)} + ${esc(ACTS[act].n)}</text>`;
+ const rustOf=t=>(sub==="nail"&&act==="air")?ease(t):0;
+ if(act==="hcl"||act==="vin"||act==="water"){
+  const liq={hcl:"#e6edfb",vin:"#f8f0cc",water:"#cfe5f8"}[act];
+  const lab={hcl:"1 M HCl",vin:"Vinegar",water:"Water"}[act];
+  const BK=beakerC(150,100,180,170,lab),floaty=fx.float,hasT=fx.temp!==undefined;
+  const sampleY=floaty?156:250-(sub==="ice"?16:sub==="soda"?10:6);
+  return{
+   bg:BENCH+title+BK.back,
+   dyn:t=>{const sc=1-(fx.dis||0)*ease(t),lc=fx.tint?lerpC(liq,fx.tint,ease(t)):liq;
+    let s=BK.liq(150,lc);
+    if(fx.foam&&t>.15){const f=ease((t-.15)*3);s+=`<g>${[0,1,2,3,4,5,6,7].map(i=>`<circle cx="${160+i*23}" cy="${150-f*7}" r="${9+f*5+(i%2)*2}" fill="#fffdf2" stroke="#e5e0c8"/><circle cx="${157+i*23}" cy="${146-f*7}" r="3" fill="#fff"/>`).join("")}</g>`}
+    if(sc>0.02){const rot=sub==="candle"?90:0;s+=`<g transform="translate(240 ${floaty?sampleY:(sampleY+(1-sc)*8).toFixed(1)}) rotate(${rot}) scale(${(0.75*sc).toFixed(3)})" opacity="${sc<.25?(sc*4).toFixed(2):1}">${drawSub(sub,colAt(t))}</g>`}
+    s+=`<path d="${BK.lp(floaty?158:150)}" fill="${lc}" opacity=".28"/>`;
+    if(hasT)s+=thermo(288,62,248,22+fx.temp*ease(t),true);
+    return s},
+   fx:t=>{const on=[];if(fx.bub&&t>.03&&!(fx.dis===1&&t>.96))on.push("b");if(fx.airbub&&t>.03&&t<.45)on.push("a");let s="";
+    if(on.includes("b")){const n=[0,5,11,20][fx.bub];s+=bubbles(n,205,275,sampleY,sampleY-152,seed,fx.bub===3?1:1.8)}
+    if(on.includes("a"))s+=bubbles(6,215,265,sampleY,sampleY-152,seed+3,1.6);return[on.join(),s]},
+   fg:BK.front
+  };
+ }
+ if(act==="heat"){
+  const T="translate(347.5 40.7) rotate(35)",gx=267,gy=155,TB=tubeC(150,21);
+  const liqCol=sub==="ice"?"#cfe5f8":sub==="candle"?"#fff3c4":null;
+  return{
+   bg:BENCH+title+standC(422)+BURNER(250,214,false),
+   dyn:t=>{let s=`<g transform="${T}">${TB.back}`;const c=colAt(t);
+    if(fx.melt){const m=ease(clamp(t/.55));let lvl=28*m;if(fx.boil&&t>.55)lvl=28*(1-ease((t-.55)/.45)*.6);const lc=sub==="sugar"?c:liqCol;
+     if(lvl>1)s+=TB.liq(171-3-lvl,lc);
+     if(m<1)s+=`<g transform="translate(0 140) scale(${(.5*(1-m)).toFixed(3)})">${drawSub(sub,sub==="sugar"?"#fffef5":S.c)}</g>`}
+    else s+=`<g transform="translate(0 140) rotate(-35) scale(.5)">${drawSub(sub,c,{rust:rustOf(t)})}</g>`;
+    if(fx.drops&&t>.3){for(let i=0;i<8;i++)s+=`<circle cx="${i%2?15:-15}" cy="${22+i*9}" r="${2+i%3*.7}" fill="url(#gBub)" stroke="#60a5fa" stroke-width=".6" opacity="${ease((t-.3)*2).toFixed(2)}"/>`}
+    s+=`${TB.front}</g>`;return s},
+   fx:t=>{const on=[];if(fx.flash&&t>.4&&t<.93)on.push("fl");if(fx.spark&&t>.25)on.push("sp");if(fx.glow&&t>.2)on.push("gl");if(fx.smoke&&t>.45)on.push("sm");if(fx.steam&&t>.6)on.push("st");if(fx.boil&&t>.55)on.push("bo");if(fx.puff&&t>.25)on.push("pu");if(fx.odor&&t>.5)on.push("od");if(fx.pop&&t>.2&&t<.8)on.push("po");
+    let s="";
+    if(on.includes("gl"))s+=`<circle class="glw" cx="${gx}" cy="${gy}" r="34" fill="url(#${glowGrad(fx.glow)})"/>`;
+    if(on.includes("bo"))s+=`<g transform="${T}">${bubbles(8,-14,14,160,24,seed,.8)}</g>`;
+    if(on.includes("fl"))s+=`<rect width="480" height="300" fill="#fffbe6" opacity=".5" class="fls"/><circle class="fls" cx="${gx}" cy="${gy}" r="95" fill="url(#gGlowW)"/><circle cx="${gx}" cy="${gy}" r="24" fill="#fff"/>`;
+    if(on.includes("sp"))s+=sparks(gx,gy,seed);
+    if(on.includes("po"))s+=sparks(gx,gy,seed+2).replace(/#fb923c|#fef08a/g,"#e2e8f0").replace(/url\(#gGlowO\)/,"none");
+    if(on.includes("sm"))s+=puffs(6,352,32,"#6b7280","stm",seed);
+    if(on.includes("st"))s+=puffs(6,352,32,"#e2e8f0","stm",seed+1);
+    if(on.includes("pu"))s+=puffs(5,352,32,"#e2e8f0","stm",seed+2)+`<text x="374" y="20" font-size="13" fill="#334155" font-weight="700">gas</text>`;
+    if(on.includes("od"))s+=odor(322,40);
+    return[on.join(),s]},
+   fg:`<rect x="364" y="38" width="58" height="7" fill="url(#gMetalV)" stroke="#111827" stroke-width=".6"/><rect x="414" y="33" width="16" height="17" rx="2" fill="url(#gMetal)" stroke="#111827" stroke-width=".6"/><path d="M360 32q-6 9 0 18M384 31q6 10 0 20" stroke="#374151" stroke-width="4" fill="none" stroke-linecap="round"/>`
+  };
+ }
+ if(act==="burn"){
+  if(fx.candle){
+   return{bg:BENCH+title+shadowE(240,270,34,5),
+    dyn:t=>{const m=ease(clamp((t-.25)/.75));let s=`<g transform="translate(240 222) scale(1.5)">${drawSub("candle")}</g><ellipse cx="240" cy="${177+m*2}" rx="${8+m*10}" ry="${2+m*2.5}" fill="#fff3c4" stroke="#e0c27a" stroke-width=".8"/><ellipse cx="236" cy="${176+m*2}" rx="${3+m*4}" ry="1" fill="#fff" opacity=".8"/>`;
+     if(t>.35)s+=`<path d="M221 185q-3 ${10+m*20} 2 ${18+m*25}" stroke="#fff3c4" stroke-width="5" fill="none" stroke-linecap="round" opacity="${m.toFixed(2)}"/>`;
+     if(t<.3){const mx=330-ease(t/.3)*80;s+=`<path d="M${mx} 140L${mx+70} 110" stroke="#c08a4a" stroke-width="5" stroke-linecap="round"/><ellipse cx="${mx}" cy="140" rx="5" ry="6" fill="#b91c1c"/>${t>.2?flameShape(mx,138,22,7):""}`}
+     return s},
+    fx:t=>{const on=t>.22;let s="";if(on)s+=`<circle class="glw" cx="240" cy="140" r="70" fill="url(#gGlowY)"/>`+flameShape(240,170,50,13)+puffs(3,240,108,"#374151","stm",seed);return[on?"f":"",s]},
+    fg:""};
+  }
+  const sx=200,sy=150;
+  return{
+   bg:BENCH+title+BURNER(200,212,true),
+   dyn:t=>{const c=colAt(t);let s="";let sc=.7;if(fx.drip)sc=.7*(1-.6*ease(t));
+    if(fx.ftint&&t>.15)s+=`<path class="flk" d="M200 112C222 160 214 212 200 212C186 212 178 160 200 112z" fill="${fx.ftint}" opacity="${(.6*ease((t-.15)*3)).toFixed(2)}"/>`;
+    s+=`<g transform="translate(${sx} ${sy}) scale(${sc.toFixed(3)})">${drawSub(sub,c)}</g>`+tongsC(440,98,sx+28,sy);
+    return s},
+   fx:t=>{const on=[];if(fx.flash&&t>.2&&t<.95)on.push("fl");if(fx.flame&&t>.18)on.push("fm");if(fx.spark&&t>.2)on.push("sp");if(fx.glow&&t>.15)on.push("gl");if(fx.smoke&&t>.4)on.push("sm");if(fx.drip&&t>.15)on.push("dr");if(fx.steam&&t>.25)on.push("st");if(fx.puff&&t>.2)on.push("pu");if(fx.odor&&t>.45)on.push("od");if(fx.pop&&t>.2)on.push("po");
+    let s="";
+    if(on.includes("gl"))s+=`<circle class="glw" cx="${sx}" cy="${sy}" r="${sub==="nail"||sub==="chalk"?28:36}" fill="url(#${glowGrad(fx.glow)})"/>`;
+    if(on.includes("fm"))s+=flameShape(sx-14,sy-4,56,17);
+    if(on.includes("fl"))s+=`<rect width="480" height="300" fill="#fffbe6" opacity=".5" class="fls"/><circle class="fls" cx="${sx}" cy="${sy}" r="100" fill="url(#gGlowW)"/><circle cx="${sx}" cy="${sy}" r="26" fill="#fff"/>`;
+    if(on.includes("sp"))s+=sparks(sx,sy,seed);
+    if(on.includes("po"))s+=sparks(sx,sy,seed+5).replace(/#fb923c|#fef08a/g,"#e2e8f0").replace(/url\(#gGlowO\)/,"none");
+    if(on.includes("sm"))s+=puffs(6,sx-10,sy-50,"#6b7280","stm",seed);
+    if(on.includes("st"))s+=puffs(5,sx,sy-30,"#e2e8f0","stm",seed+1);
+    if(on.includes("pu"))s+=puffs(4,sx,sy-30,"#e2e8f0","stm",seed+2);
+    if(on.includes("dr"))s+=[0,1,2].map(i=>`<ellipse class="ppt" cx="${sx-8+i*8}" cy="${sy+20}" rx="3" ry="4" fill="#60a5fa" stroke="#1d4ed8" stroke-width=".5" style="--dl:${-i*.7}s"/>`).join("");
+    if(on.includes("od"))s+=odor(sx+40,sy-50);
+    return[on.join(),s]},
+   fg:""
+  };
+ }
+ if(act==="crush"){
+  if(S.powder){
+   const bowl="M150 200h180q-6 72-90 72t-90-72z";
+   return{bg:BENCH+title+shadowE(240,272,95,6),
+    dyn:t=>{let s=`<path d="${bowl}" fill="url(#gCeramic)" stroke="#78716c" stroke-width="2"/><ellipse cx="240" cy="200" rx="90" ry="9" fill="#d6d3d1" stroke="#78716c" stroke-width="1.5"/><ellipse cx="240" cy="202" rx="80" ry="6" fill="#a8a29e" opacity=".5"/>`;
+     if(t<.5)s+=`<g transform="translate(240 222) scale(.7)">${drawSub(sub)}</g>`;
+     else{const r=rng(seed);let d="";for(let i=0;i<80;i++)d+=`<circle cx="${(200+r()*80).toFixed(1)}" cy="${(212+r()*18).toFixed(1)}" r="${(.9+r()*1.5).toFixed(1)}"/>`;s+=`<ellipse cx="240" cy="222" rx="44" ry="9" fill="#fff" opacity=".9"/><g fill="#fff" stroke="#94a3b8" stroke-width=".5">${d}</g>`}
+     const a=Math.sin(t*Math.PI*6)*14;s+=`<g transform="rotate(${a.toFixed(1)} 240 250)"><rect x="230" y="${120+(t<.5?ease(t*2)*28:28)}" width="20" height="112" rx="10" fill="url(#gCeramic)" stroke="#78716c" stroke-width="1.5"/><rect x="230" y="${120+(t<.5?ease(t*2)*28:28)}" width="20" height="112" rx="10" fill="url(#gCyl)" opacity=".5"/></g>`;return s},
+    fx:()=>["",""],fg:`<text x="240" y="292" font-size="13" text-anchor="middle" fill="#e2e8f0" font-weight="700">mortar &amp; pestle</text>`};
+  }
+  return{bg:BENCH+title+shadowE(240,268,130,5)+`<rect x="118" y="244" width="244" height="22" rx="5" fill="url(#gWood)" stroke="#7c5226" stroke-width="1.5"/><rect x="118" y="244" width="244" height="22" rx="5" fill="url(#pGrain)"/><rect x="118" y="244" width="244" height="4" rx="2" fill="#fff" opacity=".25"/>`,
+   dyn:t=>{let s="";if(t<.45)s+=shadowE(240,244,40,3,.7)+`<g transform="translate(240 222) scale(.9)">${drawSub(sub)}</g>`;
+    else{const sc=sub==="ice"?.45:.42;const pos=sub==="ice"?[[200,232],[235,236],[268,231],[218,214],[252,214]]:[[185,228],[235,224],[285,230]];
+     s+=pos.map(([x,y],i)=>`<g transform="translate(${x} ${y}) rotate(${i*17-15}) scale(${sc})">${drawSub(sub)}</g>`).join("")}
+    const by=t<.45?60+ease(t/.45)*130:190-ease((t-.45)/.55)*130;
+    s+=`<g transform="translate(240 ${by.toFixed(1)})"><rect x="-7" y="-78" width="14" height="40" rx="4" fill="#3f2a1a"/><rect x="-7" y="-78" width="14" height="40" rx="4" fill="url(#gCyl)" opacity=".7"/><circle cx="0" cy="-66" r="1.6" fill="#d1d5db"/><circle cx="0" cy="-50" r="1.6" fill="#d1d5db"/><path d="M-34-38h68v34q0 6-6 6h-56q-6 0-6-6z" fill="url(#gMetalV)" stroke="#374151" stroke-width="1"/><path d="M-34-4q0 6 6 6h56q6 0 6-6" fill="none" stroke="#f9fafb" stroke-width="1.5"/><circle cx="22" cy="-28" r="4" fill="#e5e7eb" stroke="#6b7280"/></g>`;return s},
+   fx:()=>["",""],fg:""};
+ }
+ if(act==="mag"){
+  const att=fx.attract;
+  return{bg:BENCH+title,
+   dyn:t=>{const my=att?40:40+Math.sin(Math.PI*t)*90,lift=att?ease(clamp((t-.15)/.45))*(250-138):0;
+    let s=shadowE(240,268,40,4,(1-lift/140)*.9)+`<g transform="translate(240 ${my.toFixed(1)})">${magnetC()}</g>`;
+    s+=`<g transform="translate(240 ${(250-lift).toFixed(1)}) scale(.85)">${drawSub(sub)}</g>`;
+    if(t>.7)s+=`<rect x="300" y="150" width="${att?120:130}" height="28" rx="6" fill="${att?"#dcfce7":"#f1f5f9"}" stroke="${att?"#15803d":"#64748b"}" stroke-width="2"/><text x="${att?360:365}" y="169" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">${att?"Attracted!":"No attraction"}</text>`;
+    return s},
+   fx:()=>["",""],fg:""};
+ }
+ // moist air time-lapse
+ return{bg:BENCH+title+`<g transform="translate(70 70)"><path d="M0 20a14 14 0 0 1 4-28 18 18 0 0 1 32 6 11 11 0 0 1 0 22z" fill="url(#gCloud)" stroke="#94a3b8"/>${[8,20,32].map((x,i)=>`<g class="ppt" style="--dl:${-i*.8}s"><path d="M${x} 28c3 4 3 7 0 7s-3-3 0-7z" fill="#60a5fa"/></g>`).join("")}</g><text x="70" y="140" font-size="13" font-weight="700" fill="#334155">damp air</text>`+shadowE(240,266,105,6),
+  dyn:t=>{let s=`<ellipse cx="240" cy="258" rx="100" ry="12" fill="#dbeafe" fill-opacity=".6" stroke="#64748b" stroke-width="1.5"/><path d="M160 254q80 10 160 0" stroke="#fff" stroke-width="2" fill="none" opacity=".7"/>`;
+   if(fx.puddle){const m=ease(clamp(t/.55)),ev=t>.55?ease((t-.55)/.45):0,pr=(60*m)*(1-ev);if(pr>1)s+=`<ellipse cx="240" cy="256" rx="${pr.toFixed(1)}" ry="${(pr/6).toFixed(1)}" fill="#93c5fd" opacity=".85"/><ellipse cx="232" cy="254" rx="${(pr*.4).toFixed(1)}" ry="${(pr/16).toFixed(1)}" fill="#fff" opacity=".6"/>`;if(m<1)s+=`<g transform="translate(240 ${238+m*10}) scale(${(.9*(1-m)).toFixed(3)})">${drawSub(sub)}</g>`}
+   else s+=`<g transform="translate(240 ${sub==="candle"?222:236}) scale(.9)">${drawSub(sub,colAt(t),{k:fx.clump?ease(t):0,rust:rustOf(t)})}</g>`;
+   s+=`<g transform="translate(370 60)">${shadowE(44,74,40,4)}<rect width="84" height="70" rx="8" fill="#fff" stroke="#334155" stroke-width="2"/><rect width="84" height="20" rx="6" fill="#b91c1c"/><rect y="14" width="84" height="6" fill="#b91c1c"/><circle cx="20" cy="2" r="3" fill="#334155"/><circle cx="64" cy="2" r="3" fill="#334155"/><text x="42" y="15" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">TIME-LAPSE</text><text x="42" y="50" font-size="24" font-weight="700" text-anchor="middle" fill="#0f172a">Day ${Math.round(t*30)}</text></g>`;
+   return s},
+  fx:()=>["",""],fg:""};
+}
+/* =====================================================================
+   HELPERS + STATE
+   ===================================================================== */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const ease=t=>{t=clamp(t);return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2};
+function hex2rgb(h){h=h.replace("#","");return[0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function lerpC(a,b,t){const A=hex2rgb(a),B=hex2rgb(b);return"#"+A.map((v,i)=>Math.round(v+(B[i]-v)*clamp(t)).toString(16).padStart(2,"0")).join("")}
+function stops(arr,t){if(!arr||!arr.length)return null;if(arr.length===1)return arr[0];t=clamp(t);const n=arr.length-1,i=Math.min(n-1,Math.floor(t*n));return lerpC(arr[i],arr[i+1],t*n-i)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function tween(ms,fn,done){let st=null,id=0,dead=false;const step=ts=>{if(dead)return;if(st===null)st=ts;const t=Math.min(1,(ts-st)/ms);fn(t);if(t<1)id=requestAnimationFrame(step);else if(done)done()};id=requestAnimationFrame(step);return()=>{dead=true;cancelAnimationFrame(id)}}
+function rng(seed){let s=seed>>>0||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+const VB_SUB='viewBox="-48 -38 96 76"';
+
+const ST={viewed:[],tests:{},deckBest:{changes:0,props:0},attempts:0,logN:0};
+function load(){try{const s=JSON.parse(localStorage.getItem("pcc_v1")||"null");if(s&&typeof s==="object"){Object.assign(ST,s);ST.deckBest=Object.assign({changes:0,props:0},s.deckBest||{})}}catch(e){}}
+function save(){try{localStorage.setItem("pcc_v1",JSON.stringify(ST))}catch(e){}}
+
+function subIcon(id){return`<svg ${VB_SUB} aria-hidden="true">${id==="candle"?'<g transform="scale(1.05)">'+drawSub(id)+"</g>":drawSub(id)}</svg>`}
+const ACT_ICON={
+ heat:'<rect x="9" y="15" width="6" height="7" fill="#475569"/><path d="M12 2c2.5 3 4 5 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 0-7z" fill="#2563eb"/>',
+ hcl:'<path d="M10 2h4v4l-1 1v9a1 1 0 0 1-2 0V7l-1-1z" fill="#64748b"/><circle cx="12" cy="20" r="2.4" fill="#60a5fa"/>',
+ vin:'<path d="M10 2h4v4l2 3v13H8V9l2-3z" fill="#fde68a" stroke="#92400e" stroke-width="1.2"/><rect x="9" y="12" width="6" height="5" fill="#fff" stroke="#92400e" stroke-width=".8"/>',
+ water:'<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z" fill="#3b82f6"/>',
+ crush:'<rect x="3" y="4" width="13" height="7" rx="1" fill="#475569"/><rect x="8.5" y="11" width="3" height="11" rx="1" fill="#a16207"/>',
+ mag:'<path d="M5 3v9a7 7 0 0 0 14 0V3h-5v9a2 2 0 0 1-4 0V3z" fill="#dc2626"/><rect x="5" y="3" width="5" height="3" fill="#9ca3af"/><rect x="14" y="3" width="5" height="3" fill="#9ca3af"/>',
+ burn:'<path d="M12 2c3 4 6 7 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1 4 3 4-1-3-1-6 0-9z" fill="#f97316"/><path d="M12 12c1.5 2 2.5 3 2.5 4.5a2.5 2.5 0 0 1-5 0c0-1.5 1-2.5 2.5-4.5z" fill="#fde047"/>',
+ air:'<path d="M7 13a4 4 0 0 1 1-8 5 5 0 0 1 9 2 3 3 0 0 1 0 6z" fill="#94a3b8"/><path d="M8 16v3M12 16v4M16 16v3" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>'
+};
+function actIcon(a){return`<svg viewBox="0 0 24 24" aria-hidden="true">${ACT_ICON[a]}</svg>`}
+
+/* =====================================================================
+   LEARN STOPS
+   ===================================================================== */
+const STOPS=[
+ {t:"All matter has properties",b:[
+  "<b>Matter</b> is anything that has <b>mass</b> and takes up <b>space</b>.",
+  "A <b>property</b> is a characteristic that describes a substance and helps identify it.",
+  "Each substance has its own set of properties — like a fingerprint.",
+  "Properties come in two kinds: <b>physical properties</b> and <b>chemical properties</b>.",
+  "<i>Try it:</i> tap each sample to see its property ID card."],v:v1},
+ {t:"Physical properties",b:[
+  "A <b>physical property</b> can be observed or measured <b>without changing what the substance is</b>.",
+  "<b>Color</b>, <b>state</b> (solid, liquid, gas), <b>density</b>, <b>melting point</b>, <b>boiling point</b>, <b>hardness</b>.",
+  "<b>Malleability</b> (hammers into sheets), <b>ductility</b> (draws into wire), <b>conductivity</b> (carries heat or electricity).",
+  "<b>Solubility</b> (dissolves in water or not) and <b>magnetism</b>.",
+  "After the test, copper is <b>still copper</b>.",
+  "<i>Try it:</i> pick a sample and a test."],v:v2},
+ {t:"Chemical properties",b:[
+  "A <b>chemical property</b> describes a substance's <b>ability to change into a new substance</b>.",
+  "<b>Flammability</b> — can it burn?",
+  "<b>Reactivity</b> with <b>acid</b>, <b>oxygen</b> or <b>water</b>.",
+  "Tendency to <b>rust</b> or <b>tarnish</b>.",
+  "You can only observe a chemical property by <b>changing the substance</b> — the sample gets used up.",
+  "“Does <b>not</b> react” is a chemical property too (gold doesn't react with acid)."],v:v3},
+ {t:"Physical changes",b:[
+  "In a <b>physical change</b>, the form or appearance changes but it is the <b>same substance</b>.",
+  "<b>Changes of state</b>: melting, freezing, boiling, evaporating, condensing.",
+  "Changes of <b>shape or size</b>: cutting, crushing, bending, tearing.",
+  "<b>Dissolving</b> and <b>mixing</b> — particles spread out but don't change.",
+  "Physical changes are <b>often reversible</b> (freeze water again) — but not always (torn paper is still paper).",
+  "<i>Try it:</i> change the temperature. The particles are H₂O the whole time."],v:v4},
+ {t:"Chemical changes",b:[
+  "In a <b>chemical change</b> (a chemical reaction), <b>new substances</b> form with <b>new properties</b>.",
+  "<b>Atoms are rearranged</b>: bonds break and new bonds form. No atoms are created or destroyed.",
+  "Examples: <b>burning</b>, <b>rusting</b>, <b>cooking</b>, <b>digestion</b> (the chemical part — acids and enzymes breaking food down).",
+  "Chemical changes are usually <b>hard to reverse</b>.",
+  "<i>Try it:</i> burn methane and watch the atoms rearrange."],v:v5},
+ {t:"Evidence of a chemical change",b:[
+  "<b>Color change</b> (not just from adding a dye)",
+  "<b>Gas produced</b> — bubbles or fizzing (<b>not from boiling</b>)",
+  "<b>Precipitate</b> — a solid forms when two solutions mix",
+  "<b>Temperature change</b> — gets hotter or colder on its own",
+  "<b>Light</b> given off",
+  "<b>Odor</b> — a new smell",
+  "Several clues together make a stronger case. <i>Tap each clue.</i>"],v:v6},
+ {t:"Evidence can fool you",b:[
+  "<b>Boiling</b> makes bubbles — but they are water vapor, still H₂O.",
+  "<b>Dissolving some salts changes temperature</b> — a cold pack gets cold, yet the salt is still there.",
+  "<b>Mixing food coloring</b> changes color — but no new substance forms.",
+  "A <b>hot object glowing</b> (light bulb, red-hot metal) gives off light without becoming something new.",
+  "The real test: <b>is there a new substance with new properties?</b>",
+  "<i>Tap “Is it chemical?” on each card.</i>"],v:v7},
+ {t:"Tricky cases",b:[
+  "<b>Candle</b>: melting wax = <b>physical</b>; burning wax vapor = <b>chemical</b>. Both happen at once!",
+  "<b>Dissolving sugar</b> = physical (evaporate the water — sugar's still there).",
+  "<b>Cooking an egg</b> = chemical (proteins change for good).",
+  "<b>Rusting</b> = chemical (iron + oxygen + water → rust).",
+  "<b>Tearing paper</b> = physical; <b>burning paper</b> = chemical.",
+  "<b>Melting ice</b> = physical (still H₂O).",
+  "<i>Decide each card: Physical or Chemical?</i>"],v:v8}
+];
+
+let stopIdx=0,visCleanup=null;
+function stopVis(){if(visCleanup){try{visCleanup()}catch(e){}visCleanup=null}}
+function renderStop(){
+ stopVis();
+ const s=STOPS[stopIdx];
+ if(!ST.viewed.includes(stopIdx)){ST.viewed.push(stopIdx);save()}
+ $("#stopText").innerHTML=`<h2><span class="sn">${stopIdx+1}</span>${s.t}</h2><ul>${s.b.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+ const old=$("#stopVis"),vis=old.cloneNode(false);old.replaceWith(vis);visCleanup=s.v(vis)||null;
+ $("#dots").innerHTML=STOPS.map((x,i)=>`<button class="dot${ST.viewed.includes(i)?" seen":""}${i===stopIdx?" cur":""}" data-i="${i}" aria-label="Stop ${i+1}: ${esc(x.t)}${ST.viewed.includes(i)?" (viewed)":""}"${i===stopIdx?' aria-current="step"':""}>${i+1}</button>`).join("");
+ const n=ST.viewed.length;$("#pbar i").style.width=(n/STOPS.length*100)+"%";$("#pbar").setAttribute("aria-valuenow",n);
+ $("#pcount").textContent=`${n} of ${STOPS.length} stops viewed`;
+ $("#stopOf").textContent=`Stop ${stopIdx+1} of ${STOPS.length}`;
+ $("#backBtn").disabled=stopIdx===0;
+ $("#nextBtn").innerHTML=stopIdx===STOPS.length-1?"Go to Lab ▶":"Next ▶";
+ updateAll();
+}
+
+/* ---------- Stop 1: property ID cards ---------- */
+function v1(box){
+ const D={
+  cu:{n:"Copper wire",p:["Reddish-brown and shiny (luster)","Solid at room temperature","Conducts electricity and heat","Ductile and malleable","Density 8.96 g/cm³","Melts at 1085 °C"],c:["Does not react with dilute hydrochloric acid","Turns black (CuO) when heated in air","Slowly forms a green coating outdoors"]},
+  ice:{n:"Ice (water)",p:["Colorless and clear","Solid below 0 °C; melts at 0 °C","Liquid water boils at 100 °C (sea level)","Density 0.92 g/cm³ — floats on water","Brittle — cracks when struck"],c:["Does not burn (not flammable)","Reacts violently with sodium metal","Can be split into H₂ and O₂ by electricity"]},
+  candle:{n:"Candle wax",p:["White, soft and waxy","Melts at about 50–70 °C","Less dense than water — floats","Insoluble in water","Does not conduct electricity"],c:["Flammable — burns to CO₂ and H₂O","Does not react with dilute acids"]},
+  nail:{n:"Iron nail",p:["Gray, shiny metal","Attracted to magnets","Density 7.87 g/cm³","Melts at 1538 °C","Conducts electricity"],c:["Rusts in moist air","Reacts with hydrochloric acid to make H₂ gas","Fine iron (steel wool) burns with sparks"]},
+  salt:{n:"Table salt",p:["White, cube-shaped crystals","Dissolves in water (soluble)","Melts at 801 °C","Brittle — shatters when struck","Solid salt doesn't conduct; dissolved salt does"],c:["Not flammable","Molten salt can be split into sodium and chlorine by electricity"]}
+ };
+ box.innerHTML=`<p class="vis-cap" style="margin-top:0"><b>Tap a sample</b> to see its property ID card.</p><div class="chips" id="v1c">${Object.keys(D).map(k=>`<button class="chip" data-k="${k}" aria-pressed="false">${subIcon(k==="salt"?"salt":k)}${D[k].n}</button>`).join("")}</div><div id="v1card" aria-live="polite"></div>`;
+ const show=k=>{$$("#v1c .chip",box).forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));const d=D[k];
+  $("#v1card",box).innerHTML=`<div class="idcard"><div class="P"><h4>◀ Physical properties</h4><ul>${d.p.map(x=>`<li>${x}</li>`).join("")}</ul></div><div class="C"><h4>Chemical properties ▶</h4><ul>${d.c.map(x=>`<li>${x}</li>`).join("")}</ul></div></div><p class="vis-cap muted">No other substance has exactly this set of properties — that's how chemists identify it.</p>`};
+ box.addEventListener("click",e=>{const b=e.target.closest(".chip");if(b)show(b.dataset.k)});
+ show("cu");
+}
+
+/* ---------- Stop 2: physical property tester ---------- */
+function v2(box){
+ const SAM={cu:"Copper",nail:"Iron",salt:"Salt crystal",candle:"Wax"};
+ const TST={mag:"Magnet",circ:"Conductivity",wat:"Water"};
+ const R={
+  cu:{mag:[0,"Not attracted to the magnet.","magnetism (not magnetic)"],circ:[1,"The bulb lights — copper conducts electricity.","conductivity"],wat:["sink","It sinks and doesn't dissolve.","density &amp; solubility"]},
+  nail:{mag:[1,"Pulled straight up to the magnet!","magnetism"],circ:[1,"The bulb lights — iron conducts electricity.","conductivity"],wat:["sink","It sinks and doesn't dissolve.","density &amp; solubility"]},
+  salt:{mag:[0,"Not attracted to the magnet.","magnetism (not magnetic)"],circ:[0,"The bulb stays dark — solid salt doesn't conduct.","conductivity"],wat:["dis","It dissolves and disappears into the water.","solubility"]},
+  candle:{mag:[0,"Not attracted to the magnet.","magnetism (not magnetic)"],circ:[0,"The bulb stays dark — wax doesn't conduct.","conductivity"],wat:["float","It floats — wax is less dense than water.","density"]}
+ };
+ let s="cu",tst="circ",cancel=null;
+ box.innerHTML=`<div class="chips" id="v2s" aria-label="Sample">${Object.keys(SAM).map(k=>`<button class="chip" data-s="${k}">${subIcon(k)}${SAM[k]}</button>`).join("")}</div><div class="chips" id="v2t" aria-label="Test">${Object.keys(TST).map(k=>`<button class="chip" data-t="${k}">${TST[k]}</button>`).join("")}</div><div id="v2svg"></div><p class="vis-cap" id="v2cap" aria-live="polite"></p>`;
+ const big=(id)=>id==="salt"?cube(-4,4,30,"#f8fafc",0):id==="candle"?cube(-4,4,30,"#fffaf0",0)+`<path d="M-17-7l9-9" stroke="#fff" stroke-width="2" opacity=".6"/>`:drawSub(id);
+ const MB=`<rect width="420" height="214" fill="url(#gWall)"/><rect width="420" height="212" fill="url(#pTile)" opacity=".5"/><rect y="212" width="420" height="18" fill="url(#gBench)"/><rect y="212" width="420" height="2" fill="#94a3b8"/>`;
+ const BKW=beakerC(120,70,180,140);
+ function draw(t){
+  const r=R[s][tst];let g=MB;
+  if(tst==="mag"){const lift=r[0]?ease(clamp(t*1.6))*92:0;
+   g+=shadowE(210,214,36,4,1-lift/120)+`<g transform="translate(210 16) scale(.95)">${magnetC()}</g><g transform="translate(210 ${(194-lift).toFixed(1)}) scale(.8)">${big(s)}</g>`}
+  else if(tst==="circ"){const lit=r[0]&&t>.3;
+   const wire=(d,c)=>`<path d="${d}" fill="none" stroke="${darken(c,.35)}" stroke-width="4.5" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${c}" stroke-width="3" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width=".8" opacity=".45" transform="translate(0 -.8)"/>`;
+   g+=wire("M103 115H150V192H180","#dc2626")+wire("M240 192H330V108","#1f2937")+wire("M344 104H380V24H20V115H36","#1f2937");
+   g+=`${shadowE(68,134,36,4)}<rect x="36" y="100" width="64" height="30" rx="4" fill="#111827"/><rect x="36" y="100" width="18" height="30" rx="4" fill="#b45309"/><rect x="36" y="100" width="64" height="30" rx="4" fill="url(#gCylV)"/><rect x="100" y="109" width="5" height="12" rx="1.5" fill="url(#gMetalV)"/><text x="76" y="120" fill="#fff" font-size="13" text-anchor="middle" font-weight="700">6 V</text><text x="44" y="120" fill="#fff" font-size="13" text-anchor="middle" font-weight="700">−</text>`;
+   if(lit)g+=`<circle cx="330" cy="66" r="62" fill="url(#gGlowY)"/>`;
+   g+=`<rect x="316" y="100" width="28" height="9" rx="2" fill="#1f2937"/><rect x="321" y="84" width="18" height="17" fill="url(#gMetal)" stroke="#374151" stroke-width=".7"/><path d="M321 88h18M321 92h18M321 96h18" stroke="#4b5563" stroke-width=".8"/><circle cx="330" cy="66" r="20" fill="${lit?"#fef9c3":"#eef2f7"}" fill-opacity=".85" stroke="#94a3b8" stroke-width="1.2"/><path d="M326 84V70M334 84V70" stroke="#64748b" stroke-width="1"/><path d="M326 70l2-7 2 7 2-7 2 7" fill="none" stroke="${lit?"#f59e0b":"#475569"}" stroke-width="${lit?2:1.3}"/><circle cx="330" cy="66" r="20" fill="url(#gSphere)" opacity=".7"/><text x="300" y="72" font-size="14" font-weight="700" fill="#0f172a" text-anchor="end">${t>.3?(lit?"ON":"OFF"):""}</text>`;
+   g+=shadowE(210,212,34,3,.8)+`<g transform="translate(210 192) scale(.72)">${big(s)}</g>`;
+   const clip=(x,c,f)=>`<g transform="translate(${x} 192) scale(${-f} 1)"><rect x="0" y="-5" width="16" height="10" rx="3" fill="${c}" stroke="${darken(c,.45)}" stroke-width=".8"/><rect x="0" y="-5" width="16" height="10" rx="3" fill="url(#gCylV)" opacity=".7"/><path d="M0-4l-12 3v-1M0 4l-12-3v1" fill="none" stroke="#6b7280" stroke-width="2.4" stroke-linejoin="round"/><path d="M-3-3l-1 2M-6-2.3l-1 2M-9-1.6l-1 1.6" stroke="#374151" stroke-width=".8"/></g>`;
+   g+=clip(180,"#dc2626",1)+clip(240,"#27272a",-1)}
+  else{let y=40+ease(clamp(t*1.4))*(r[0]==="float"?70:150),op=1;if(r[0]==="dis")op=1-ease(clamp((t-.5)*2));
+   g+=BKW.back+BKW.liq(110,"#cfe5f8");
+   if(r[0]==="dis"&&t>.5){const rr=rng(4);for(let i=0;i<30;i++)g+=`<circle cx="${(136+rr()*148).toFixed(0)}" cy="${(118+rr()*86).toFixed(0)}" r="1.4" fill="#fff" opacity="${(ease((t-.5)*2)*.9).toFixed(2)}"/>`}
+   g+=`<g transform="translate(210 ${y.toFixed(1)}) scale(.75)" opacity="${op.toFixed(2)}">${big(s)}</g><path d="${BKW.lp(r[0]==="float"?118:110)}" fill="#cfe5f8" opacity=".3"/>${BKW.front}`}
+  $("#v2svg",box).innerHTML=`<svg viewBox="0 0 420 230" role="img" aria-label="${SAM[s]} — ${TST[tst]} test">${g}</svg>`;
+ }
+ function go(){if(cancel)cancel();$$("#v2s .chip",box).forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===s));$$("#v2t .chip",box).forEach(b=>b.setAttribute("aria-pressed",b.dataset.t===tst));
+  $("#v2cap",box).innerHTML="&nbsp;";
+  cancel=tween(1700,draw,()=>{const r=R[s][tst];$("#v2cap",box).innerHTML=`<b>Result:</b> ${r[1]} <span class="lbl P">physical property: ${r[2]}</span> — it's still ${SAM[s].toLowerCase()} ✔`})}
+ box.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;if(b.dataset.s)s=b.dataset.s;if(b.dataset.t)tst=b.dataset.t;go()});
+ go();return()=>cancel&&cancel();
+}
+
+/* ---------- Stop 3: chemical property tests ---------- */
+function v3(box){
+ const C=[
+  {k:"mg",h:"Reactivity with acid",d:"Magnesium + hydrochloric acid",res:"Fizzes — hydrogen gas forms and the magnesium is used up."},
+  {k:"wood",h:"Flammability",d:"Wooden splint + flame",res:"It burns — the wood becomes ash, smoke, CO₂ and water vapor."},
+  {k:"rust",h:"Tendency to rust",d:"Iron nail + moist air (2 weeks)",res:"Orange-brown rust forms — iron reacted with oxygen and water."},
+  {k:"gold",h:"Reactivity with acid",d:"Gold ring + hydrochloric acid",res:"Nothing happens — “does not react with acid” is also a chemical property."}];
+ box.innerHTML=`<div class="mini-grid">${C.map((c,i)=>`<div class="mini big" id="v3m${i}"><div><h4>${c.h}</h4><p class="muted">${c.d}</p></div><button class="btn sm pri" data-i="${i}">▶ Test it</button><div class="v3s"></div><p class="v3r" aria-live="polite">&nbsp;</p></div>`).join("")}</div><p class="vis-cap">After each test, ask: <b>is it still the same substance?</b> For chemical properties, the answer is <b>no</b> — the sample changes.</p>`;
+ const cancels=[];
+ const BK3=beakerC(68,22,64,96);
+ const bg=k=>(k==="mg"||k==="gold")?BK3.back+BK3.liq(44,"#e6edfb"):k==="wood"?shadowE(105,98,50,3,.6):shadowE(100,100,55,4,.6);
+ const fg=k=>(k==="mg"||k==="gold")?`<path d="${BK3.lp(44)}" fill="#e6edfb" opacity=".25"/>`+BK3.front:"";
+ function dyn(k,t){
+  if(k==="mg"){const sc=1-ease(t)*.95;return sc>.06?`<g transform="translate(100 100) rotate(90) scale(${(.5*sc).toFixed(2)})">${drawSub("mg")}</g>`:""}
+  if(k==="gold")return`<ellipse cx="100" cy="108" rx="18" ry="6" fill="none" stroke="#854d0e" stroke-width="6.5"/><ellipse cx="100" cy="108" rx="18" ry="6" fill="none" stroke="url(#gGold)" stroke-width="5"/><path d="M84 106q4-4 10-5" stroke="#fff" stroke-width="1.4" fill="none" opacity=".85"/>`;
+  if(k==="wood")return`<g transform="translate(105 85) scale(1.1)">${drawSub("splint",stops(["#d9b47e","#3f3f46","#1c1917"],t))}</g>`;
+  return`<g transform="translate(100 78) scale(1.3)">${drawSub("nail",stops(["#8f969e","#8a5a40","#7c3a1a"],t),{rust:ease(t)})}</g><text x="166" y="30" font-size="13" font-weight="700" text-anchor="end" fill="#334155">Day ${Math.round(t*14)}</text>`}
+ const fxl=k=>k==="mg"?bubbles(9,80,120,104,62,7,1):k==="wood"?flameShape(57,84,44,14,"#fb923c","#fde047")+puffs(3,57,38,"#6b7280","stm",3):"";
+ const frame=(i,t)=>`<svg viewBox="30 12 140 110" aria-hidden="true">${bg(C[i].k)}<g class="dyn">${dyn(C[i].k,t)}</g><g class="fxl"></g>${fg(C[i].k)}</svg>`;
+ C.forEach((c,i)=>{$(`#v3m${i} .v3s`,box).innerHTML=frame(i,0)});
+ box.addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;const i=+b.dataset.i,m=$(`#v3m${i}`,box),k=C[i].k;
+  if(cancels[i])cancels[i]();m.querySelector(".v3r").innerHTML="&nbsp;";const h=m.querySelector(".v3s");h.innerHTML=frame(i,0);
+  const d=h.querySelector(".dyn"),f=h.querySelector(".fxl");f.innerHTML=fxl(k);
+  cancels[i]=tween(3200,t=>{d.innerHTML=dyn(k,t);if(k==="mg"&&t>.92)f.innerHTML=""},()=>{if(k==="mg")f.innerHTML="";m.querySelector(".v3r").innerHTML=`<b>${C[i].res}</b> <span class="lbl C">chemical property</span>`})});
+ return()=>cancels.forEach(c=>c&&c());
+}
+/* ---------- Stop 4: particle view of water ---------- */
+function v4(box){
+ box.innerHTML=`<canvas id="pc" width="520" height="300" style="width:100%;height:auto;background:#f8fafc;border:2px solid #cbd5e1;border-radius:12px;display:block" role="img" aria-label="Particle view of water molecules in a container"></canvas>
+ <div class="scene-ctl"><label for="tsl" style="min-width:170px">Temperature: <span id="tval"></span> °C</label><input type="range" id="tsl" min="-20" max="130" value="-10" step="1" style="flex:1"></div>
+ <div class="chips"><button class="chip" data-t="-10">Ice (−10 °C)</button><button class="chip" data-t="25">Water (25 °C)</button><button class="chip" data-t="120">Steam (120 °C)</button></div>
+ <p class="vis-cap" id="v4cap" aria-live="polite"></p>`;
+ const cv=$("#pc",box),cx=cv.getContext("2d"),W=520,H=300,sl=$("#tsl",box);
+ const N=30,M=[];
+ const sprite=(r,c1,c2,c3)=>{const c=document.createElement("canvas");c.width=c.height=r*2+4;const g=c.getContext("2d"),gr=g.createRadialGradient(r*.75,r*.7,r*.1,r+2,r+2,r);gr.addColorStop(0,c1);gr.addColorStop(.55,c2);gr.addColorStop(1,c3);g.beginPath();g.arc(r+2,r+2,r,0,6.29);g.fillStyle=gr;g.fill();g.strokeStyle="rgba(0,0,0,.35)";g.lineWidth=1;g.stroke();return c};
+ const SPO=sprite(9,"#fecaca","#dc2626","#7f1d1d"),SPH=sprite(5,"#ffffff","#e5e7eb","#94a3b8");
+ const BGC=document.createElement("canvas");BGC.width=W;BGC.height=H;{const g=BGC.getContext("2d"),lg=g.createLinearGradient(0,0,0,H);lg.addColorStop(0,"#f8fafc");lg.addColorStop(1,"#e2e8f0");g.fillStyle=lg;g.fillRect(0,0,W,H)}
+ const GLS=document.createElement("canvas");GLS.width=W;GLS.height=H;{const g=GLS.getContext("2d");g.strokeStyle="#56677d";g.lineWidth=3;g.strokeRect(11,8,W-22,H-16);const lg=g.createLinearGradient(11,0,W-11,0);lg.addColorStop(0,"rgba(255,255,255,.55)");lg.addColorStop(.08,"rgba(255,255,255,.1)");lg.addColorStop(.5,"rgba(255,255,255,0)");lg.addColorStop(.92,"rgba(255,255,255,.08)");lg.addColorStop(1,"rgba(255,255,255,.45)");g.fillStyle=lg;g.fillRect(12,9,W-24,H-18);g.fillStyle="rgba(255,255,255,.5)";g.fillRect(22,20,6,H-40)}
+ for(let i=0;i<N;i++){const col=i%6,row=Math.floor(i/6);const lx=160+col*40+(row%2)*20,ly=272-row*34;M.push({x:lx,y:ly,lx,ly,vx:(Math.random()-.5),vy:(Math.random()-.5),a:Math.random()*6.28,va:(Math.random()-.5)*.05})}
+ let T=-10,raf=0,last=0,stateName="";
+ const setT=v=>{T=+v;sl.value=T;$("#tval",box).textContent=T;const st=T<0?"Solid (ice)":T<100?"Liquid water":"Gas (steam)";
+  if(st!==stateName){stateName=st;$("#v4cap",box).innerHTML=`<b>${st}</b> — the molecules ${T<0?"vibrate in fixed positions":T<100?"slide past each other":"fly apart and fill the container"}. Every particle is still <b>H₂O</b> → <span class="lbl P">physical change</span>`}};
+ setT(-10);
+ sl.addEventListener("input",()=>setT(sl.value));
+ box.addEventListener("click",e=>{const b=e.target.closest(".chip");if(b)setT(b.dataset.t)});
+ function step(ts){raf=requestAnimationFrame(step);if(ts-last<30)return;last=ts;
+  const solid=T<0,gas=T>=100;const spd=gas?3.2+(T-100)*.03:1+(T)*.006;const top=gas?18:120;
+  for(const m of M){
+   if(solid){const j=1.2+(T+20)*.08;m.x+=(m.lx+(Math.random()-.5)*j-m.x)*.25;m.y+=(m.ly+(Math.random()-.5)*j-m.y)*.25;m.a+=(Math.random()-.5)*.06}
+   else{m.vx+=(Math.random()-.5)*.5;m.vy+=(Math.random()-.5)*.5+(gas?0:.05);const v=Math.hypot(m.vx,m.vy)||1;m.vx=m.vx/v*spd;m.vy=m.vy/v*spd;m.x+=m.vx;m.y+=m.vy;m.a+=m.va*(gas?3:1.5);
+    if(m.x<26){m.x=26;m.vx=Math.abs(m.vx)}if(m.x>W-26){m.x=W-26;m.vx=-Math.abs(m.vx)}if(m.y<top){m.y=top+1;m.vy=Math.abs(m.vy)}if(m.y>H-24){m.y=H-24;m.vy=-Math.abs(m.vy)}}
+  }
+  cx.drawImage(BGC,0,0);
+  if(!gas&&!solid){const lg=cx.createLinearGradient(0,112,0,H);lg.addColorStop(0,"#cfe5f8");lg.addColorStop(1,"#9cc8ec");cx.fillStyle=lg;cx.fillRect(13,112,W-26,H-123);cx.fillStyle="rgba(255,255,255,.7)";cx.fillRect(13,112,W-26,3)}
+  for(const m of M){for(const s of[-1,1]){const ang=m.a+s*.91;cx.drawImage(SPH,m.x+Math.cos(ang)*11-7,m.y+Math.sin(ang)*11-7)}cx.drawImage(SPO,m.x-11,m.y-11)}
+  cx.drawImage(GLS,0,0);
+  cx.font="700 15px system-ui,sans-serif";const lbl=stateName+"  ·  every particle = H₂O",lw=cx.measureText(lbl).width;cx.fillStyle="rgba(255,255,255,.85)";cx.fillRect(16,14,lw+14,24);cx.fillStyle="#0f172a";cx.fillText(lbl,23,31);
+ }
+ raf=requestAnimationFrame(step);
+ return()=>cancelAnimationFrame(raf);
+}
+
+/* ---------- Stop 5: methane combustion, atoms rearranged ---------- */
+function v5(box){
+ const A=[["C",[90,140],[360,90]],["H",[90,104],[316,196]],["H",[90,176],[364,196]],["H",[54,140],[396,196]],["H",[126,140],[444,196]],
+  ["O",[200,100],[322,90]],["O",[238,100],[398,90]],["O",[200,180],[340,178]],["O",[238,180],[420,178]]];
+ const RB=[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[5,6,2],[7,8,2]],PB=[[0,5,2],[0,6,2],[7,1,1],[7,2,1],[8,3,1],[8,4,1]];
+ const ST2={C:["#3f3f46","#fff",15],H:["#f1f5f9","#0f172a",10],O:["#dc2626","#fff",14]};
+ box.innerHTML=`<div id="v5svg"></div><div class="scene-ctl"><button class="btn pri" id="v5go">▶ Burn it</button><button class="btn" id="v5re">↺ Reset</button></div><p class="vis-cap" id="v5cap" aria-live="polite">Methane (natural gas) and oxygen are about to react.</p>`;
+ let cancel=null;
+ const stick=(x1,y1,x2,y2,w)=>`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#475569" stroke-width="${w}" stroke-linecap="round"/><line x1="${x1.toFixed(1)}" y1="${(y1-1.2).toFixed(1)}" x2="${x2.toFixed(1)}" y2="${(y2-1.2).toFixed(1)}" stroke="#cbd5e1" stroke-width="${w*.35}" stroke-linecap="round"/>`;
+ const bond=(P,a,b,n,op)=>{if(op<=0)return"";const[x1,y1]=P[a],[x2,y2]=P[b];if(n===1)return`<g opacity="${op.toFixed(2)}">${stick(x1,y1,x2,y2,6)}</g>`;const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy)||1,ox=-dy/L*4.5,oy=dx/L*4.5;return`<g opacity="${op.toFixed(2)}">${stick(x1+ox,y1+oy,x2+ox,y2+oy,4.5)}${stick(x1-ox,y1-oy,x2-ox,y2-oy,4.5)}</g>`};
+ function draw(t){const p=ease(clamp((t-.25)/.55)),j=t>.05&&t<.3?Math.sin(t*90)*2:0;
+  const P=A.map(([,r,q])=>[r[0]+(q[0]-r[0])*p+j,r[1]+(q[1]-r[1])*p]);
+  const rop=t<.25?1-t/.25:0,pop=t>.8?(t-.8)/.2:0;
+  let g=(t===0?1:rop)?RB.map(([a,b,n])=>bond(P,a,b,n,t===0?1:rop)).join(""):"";g+=PB.map(([a,b,n])=>bond(P,a,b,n,pop)).join("");
+  g+=A.map(([e],i)=>{const[f,tc,r]=ST2[e];return`${shadowE(P[i][0]+3,P[i][1]+r*.9,r*.9,r*.3,.35)}<circle cx="${P[i][0].toFixed(1)}" cy="${P[i][1].toFixed(1)}" r="${r}" fill="${f}" stroke="${darken(f,.45)}" stroke-width="1.2"/><circle cx="${P[i][0].toFixed(1)}" cy="${P[i][1].toFixed(1)}" r="${r}" fill="url(#gSphere)"/><text x="${P[i][0].toFixed(1)}" y="${(P[i][1]+5).toFixed(1)}" font-size="${r>12?15:12}" font-weight="700" fill="${tc}" text-anchor="middle">${e}</text>`}).join("");
+  const done=t>=1;
+  g+=`<text x="140" y="250" font-size="17" font-weight="700" text-anchor="middle" fill="#0f172a">CH₄ + 2 O₂</text><path d="M210 245h50m-10-7 10 7-10 7" stroke="#0f172a" stroke-width="3" fill="none"/>${t>.3&&t<.95?flameShape(235,236,32,10):""}<text x="380" y="250" font-size="17" font-weight="700" text-anchor="middle" fill="${done?"#0f172a":"#94a3b8"}">CO₂ + 2 H₂O</text>`;
+  g+=`<g transform="translate(14 14)"><rect width="150" height="70" rx="8" fill="#fff" stroke="#334155" stroke-width="1.5"/><text x="75" y="20" font-size="13" font-weight="700" text-anchor="middle">Atom count</text><text x="75" y="38" font-size="13" text-anchor="middle">C: 1 → 1 · H: 4 → 4</text><text x="75" y="56" font-size="13" text-anchor="middle">O: 4 → 4</text></g>`;
+  $("#v5svg",box).innerHTML=`<svg viewBox="0 0 480 270" role="img" aria-label="Methane and oxygen molecules rearranging into carbon dioxide and water">${g}</svg>`}
+ draw(0);
+ $("#v5go",box).onclick=()=>{if(cancel)cancel();$("#v5cap",box).innerHTML="Bonds break… atoms move… new bonds form…";cancel=tween(3000,draw,()=>{$("#v5cap",box).innerHTML=`<b>New substances:</b> carbon dioxide and water, with completely different properties. Same atoms, new arrangement → <span class="lbl C">chemical change</span>`})};
+ $("#v5re",box).onclick=()=>{if(cancel)cancel();draw(0);$("#v5cap",box).textContent="Methane (natural gas) and oxygen are about to react."};
+ return()=>cancel&&cancel();
+}
+
+/* ---------- Stop 6: evidence explorer ---------- */
+function waves(x,y,c){let s="";for(let i=0;i<3;i++)s+=`<path class="odr" d="M${x-16+i*16} ${y}q5-6 0-12t0-12" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round" style="--dl:${-i*.6}s"/>`;return s}
+function v6(box){
+ const E={
+  color:{n:"Color change",cap:"Copper wire in clear silver nitrate solution: the solution slowly turns <b>blue</b> and silvery crystals grow on the wire — new substances (copper nitrate and silver)."},
+  gas:{n:"Gas produced",cap:"Magnesium in hydrochloric acid: bubbles of a <b>new gas, hydrogen</b>, form on the metal."},
+  ppt:{n:"Precipitate",cap:"Two clear solutions (lead(II) nitrate + potassium iodide) mix and a <b>bright yellow solid</b> (lead(II) iodide) appears — a precipitate."},
+  temp:{n:"Temperature change",cap:"A hand warmer: iron powder reacts with oxygen (fast rusting) and <b>releases heat</b> on its own."},
+  light:{n:"Light",cap:"A glow stick: two chemicals mix and <b>give off light</b> — without getting hot."},
+  odor:{n:"Odor",cap:"Burning toast: heat makes new substances with a <b>new smell</b> (and a new color)."}};
+ const B6=beakerC(152,60,116,148),BK=(liq,top)=>B6.back+B6.liq(top||100,liq),BKO=B6.front;
+ const MB6=`<rect width="420" height="214" fill="url(#gWall)"/><rect width="420" height="212" fill="url(#pTile)" opacity=".5"/><rect y="212" width="420" height="18" fill="url(#gBench)"/><rect y="212" width="420" height="2" fill="#94a3b8"/>`;
+ let k="color",cancel=null;
+ box.innerHTML=`<div class="chips" id="v6c">${Object.keys(E).map(x=>`<button class="chip" data-k="${x}">${E[x].n}</button>`).join("")}</div><div id="v6svg"></div><p class="vis-cap" id="v6cap" aria-live="polite"></p><p class="vis-cap muted small">One clue is a hint; a new substance is the proof.</p>`;
+ function parts(k){
+  if(k==="color")return{bg:"",dyn:t=>{const lc=lerpC("#eef2f7","#3b82f6",ease(t)*.85);let s=BK(lc)+`<path d="M210 40v72" stroke="#7c2d12" stroke-width="3.5"/><path d="M210 40v72" stroke="#c8692b" stroke-width="2"/><g transform="translate(210 145) rotate(90) scale(.7)">${drawSub("cu")}</g>`;for(let i=0;i<10;i++){const x=197+(i%3)*12,y=118+Math.floor(i/3)*16;s+=`<path d="M${x} ${y}l4-7 4 7-4 7z" fill="#e5e7eb" stroke="#6b7280" stroke-width=".8" opacity="${ease(t).toFixed(2)}"/><path d="M${x+1} ${y}l3-5" stroke="#fff" stroke-width=".8" opacity="${ease(t).toFixed(2)}"/>`}return s+`<path d="${B6.lp(100)}" fill="${lc}" opacity=".22"/>`},fx:"",fg:BKO};
+  if(k==="gas")return{bg:BK("#e6edfb"),dyn:t=>{const sc=1-ease(t)*.6;return`<g transform="translate(210 192) scale(${(.75*sc).toFixed(2)})">${drawSub("mg")}</g>`},fx:bubbles(16,180,240,192,90,11,1),fg:`<path d="${B6.lp(100)}" fill="#e6edfb" opacity=".22"/>`+BKO};
+  if(k==="ppt"){const SB=beakerC(96,18,44,50);return{bg:"",dyn:t=>{let s=BK(lerpC("#eef2f7","#fde68a",ease(t)*.7));const h=ease(clamp((t-.2)/.8))*30;if(h>1)s+=`<path d="${B6.lp(205-h)}" fill="#facc15"/><path d="${B6.lp(205-h)}" fill="url(#gLiqV)"/>`;if(t<.7)s+=`<g transform="rotate(-38 118 44)">${SB.back}${SB.liq(40,"#eef2f7")}${SB.front}</g><path d="M146 46q22 8 26 54" stroke="#e0f2fe" stroke-width="6" fill="none" opacity="${(1-t/.7).toFixed(2)}"/>`;return s},fx:[0,1,2,3,4,5,6,7,8].map(i=>`<circle class="ppt" cx="${164+i*11}" cy="${118+(i%3)*10}" r="3.6" fill="#eab308" stroke="#a16207" stroke-width=".6" style="--dl:${(-i*.3).toFixed(1)}s"/>`).join(""),fg:BKO}}
+  if(k==="temp")return{bg:shadowE(175,212,70,5)+`<rect x="108" y="108" width="134" height="96" rx="14" fill="url(#gPouchR)" stroke="#7f1d1d" stroke-width="1.5"/><rect x="116" y="116" width="118" height="80" rx="9" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/><path d="M114 116q30-6 60 0" stroke="#fff" stroke-width="3" opacity=".45" fill="none"/><text x="175" y="152" font-size="15" font-weight="700" text-anchor="middle" fill="#450a0a">HAND</text><text x="175" y="171" font-size="15" font-weight="700" text-anchor="middle" fill="#450a0a">WARMER</text>`,dyn:t=>`<circle cx="175" cy="150" r="${(40+40*ease(t)).toFixed(0)}" fill="url(#gGlowO)" opacity="${(ease(t)*.45).toFixed(2)}"/>`+thermo(290,40,200,22+30*ease(t),true),fx:waves(175,100,"#ea580c"),fg:""};
+  if(k==="light")return{bg:shadowE(210,212,150,5),dyn:t=>{const c=lerpC("#d1fae5","#4ade80",ease(t));return`<ellipse cx="210" cy="115" rx="${(150+20*ease(t)).toFixed(0)}" ry="${(40+30*ease(t)).toFixed(0)}" fill="url(#gGlowG)" opacity="${(ease(t)*.85).toFixed(2)}"/><rect x="80" y="100" width="260" height="30" rx="15" fill="${c}" stroke="#14532d" stroke-width="1.5"/><rect x="80" y="100" width="260" height="30" rx="15" fill="url(#gCylV)" opacity=".7"/><rect x="74" y="98" width="14" height="34" rx="5" fill="#334155"/><rect x="332" y="98" width="14" height="34" rx="5" fill="#334155"/><path d="M92 106h236" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>`},fx:"",fg:""};
+  return{bg:shadowE(210,212,70,5),dyn:t=>{const c=stops(["#f5deb3","#b45309","#1c1917"],t),cr=stops(["#c68a4a","#7c2d12","#0c0a09"],t);const P="M150 200V108q0-26 26-28q10-14 34-14t34 14q26 2 26 28v92z";return`<g transform="translate(0 11)"><path d="${P}" fill="${cr}"/><path d="M158 194V112q0-20 22-22q9-14 30-14t30 14q22 2 22 22v82z" fill="${c}"/><path d="M158 194V112q0-20 22-22q9-14 30-14t30 14q22 2 22 22v82z" fill="url(#pCrumb)"/><path d="${P}" fill="url(#gBread)"/></g>`},fx:odor(210,60),fg:""};
+ }
+ function go(){if(cancel)cancel();$$("#v6c .chip",box).forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));const P=parts(k);
+  $("#v6svg",box).innerHTML=`<svg viewBox="0 0 420 230" role="img" aria-label="${E[k].n} example">${MB6}${P.bg}<g class="dyn">${P.dyn(0)}</g><g class="fxl"></g>${P.fg}</svg>`;
+  const d=$("#v6svg .dyn",box),f=$("#v6svg .fxl",box);$("#v6cap",box).innerHTML=E[k].cap;
+  cancel=tween(3200,t=>{d.innerHTML=P.dyn(t);if(t>.12&&!f.innerHTML)f.innerHTML=P.fx})}
+ box.addEventListener("click",e=>{const b=e.target.closest(".chip");if(b){k=b.dataset.k;go()}});
+ go();return()=>cancel&&cancel();
+}
+
+/* ---------- Stop 7: fake-outs ---------- */
+function v7(box){
+ const B7=beakerC(70,28,60,74),B7b=beakerC(70,24,60,80);
+ const F=[
+  {h:"Boiling water",look:"Gas produced?",svg:`<g transform="translate(100 110) scale(.3)">${BURNER(0,0,false)}</g>${B7.back}${B7.liq(50,"#cfe5f8")}${bubbles(9,76,124,98,46,21,.9)}${B7.front}${puffs(4,100,22,"#e2e8f0","stm",5)}`,a:"No! The bubbles are <b>water vapor</b> — still H₂O. Cool it and it condenses back to liquid water."},
+  {h:"Cold pack",look:"Temperature change?",svg:`${shadowE(76,108,44,4)}<rect x="34" y="34" width="84" height="72" rx="12" fill="url(#gPouchB)" stroke="#1e3a8a" stroke-width="1.3"/><rect x="40" y="40" width="72" height="60" rx="8" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="4 3" opacity=".75"/><path d="M40 40q20-5 40 0" stroke="#fff" stroke-width="3" fill="none" opacity=".5"/><text x="76" y="68" font-size="12" font-weight="700" text-anchor="middle" fill="#1e3a8a">COLD</text><text x="76" y="84" font-size="12" font-weight="700" text-anchor="middle" fill="#1e3a8a">PACK</text>${cube(56,94,6,"#f8fafc",10)}${cube(92,96,5,"#f8fafc",-8)}${thermo(134,14,108,6,false)}<text x="146" y="58" font-size="12" font-weight="700" fill="#1e3a8a">6 °C</text><path d="M156 66v20m-6-6 6 7 6-7" stroke="#1e3a8a" stroke-width="2.5" fill="none"/>`,a:"Not proof. <b>Dissolving</b> ammonium nitrate absorbs heat, but it's still ammonium nitrate — evaporate the water and you get it back."},
+  {h:"Food coloring",look:"Color change?",svg:`${B7b.back}${B7b.liq(42,"#dcecf9")}<circle cx="100" cy="60" r="12" fill="#a855f7" class="glw"/><circle cx="92" cy="78" r="16" fill="#c084fc" opacity=".5"/><circle cx="110" cy="88" r="12" fill="#c084fc" opacity=".4"/>${B7b.front}<rect x="94" y="0" width="12" height="12" rx="2" fill="#1f2937"/><path d="M95 12h10l-2 10h-6z" fill="#e9d5ff" stroke="#6b21a8" stroke-width="1"/><ellipse class="ppt" cx="100" cy="27" rx="2.6" ry="3.4" fill="#7e22ce"/>`,a:"No! The dye just <b>mixes</b> into the water. No new substance forms."},
+  {h:"Glowing light bulb",look:"Light given off?",svg:`<circle cx="100" cy="52" r="58" fill="url(#gGlowY)" class="glw"/><path d="M100 18a30 30 0 0 1 18 54q-4 4-4 10H86q0-6-4-10a30 30 0 0 1 18-54z" fill="#fef9c3" fill-opacity=".85" stroke="#94a3b8" stroke-width="1.5"/><path d="M94 82V60M106 82V60" stroke="#64748b" stroke-width="1.2"/><path d="M94 60l3-8 3 8 3-8 3 8" fill="none" stroke="#f59e0b" stroke-width="2.4"/><path d="M100 18a30 30 0 0 1 18 54q-4 4-4 10H86q0-6-4-10a30 30 0 0 1 18-54z" fill="url(#gSphere)" opacity=".55"/><rect x="86" y="82" width="28" height="20" rx="2" fill="url(#gMetal)" stroke="#374151" stroke-width=".8"/><path d="M86 87h28M86 92h28M86 97h28" stroke="#4b5563" stroke-width=".9"/><path d="M92 102h16l-4 6h-8z" fill="#1f2937"/>`,a:"Not chemical. The hot filament glows, but it's still tungsten when it cools. (A red-hot nail glows the same way.)"}];
+ box.innerHTML=`<div class="mini-grid">${F.map((f,i)=>`<div class="mini big" id="v7m${i}"><div><h4>${f.h}</h4><p class="muted"><b>Looks like:</b> ${f.look}</p></div><button class="btn sm pri" data-i="${i}">Is it chemical?</button><svg viewBox="30 0 140 130" aria-hidden="true">${f.svg}</svg><p class="v7r" aria-live="polite"></p></div>`).join("")}</div>`;
+ box.addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;const i=+b.dataset.i;$(`#v7m${i} .v7r`,box).innerHTML=`<span class="lbl P">◀ Physical</span> ${F[i].a}`;b.disabled=true});
+}
+
+/* ---------- Stop 8: tricky cases ---------- */
+const CASE_ICON={
+ candleMelt:`${shadowE(24,46,14,2)}<g transform="translate(24 30) scale(.5)">${drawSub("candle")}</g><ellipse cx="24" cy="15" rx="6" ry="1.8" fill="#fff3c4"/><path d="M17.6 17q-3 9 .5 15" stroke="#fff3c4" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="17.8" cy="33" r="2" fill="#fff3c4" stroke="#e0c27a" stroke-width=".5"/>`,
+ candleBurn:`${shadowE(24,46,14,2)}<g transform="translate(24 32) scale(.46)">${drawSub("candle")}</g>${flameShape(24,15,15,5)}`,
+ sugar:`${(()=>{const B=beakerC(11,14,26,30);return B.back+B.liq(22,"#dcecf9")+cube(20,38,5,"#ffffff",15)+cube(28,40,4,"#ffffff",-10)+`<path d="${B.lp(22)}" fill="#dcecf9" opacity=".3"/>`+B.front})()}`,
+ egg:`${shadowE(24,40,20,3)}<ellipse cx="24" cy="30" rx="20" ry="11" fill="#1f2937"/><ellipse cx="24" cy="29" rx="20" ry="11" fill="url(#gMetalV)" opacity=".45"/><rect x="40" y="27" width="8" height="4" rx="2" fill="#111827"/><path d="M12 28q2-8 12-8t14 6q-2 8-12 8t-14-6z" fill="#fff" stroke="#e5e7eb"/><circle cx="23" cy="27" r="5" fill="#f59e0b"/><circle cx="23" cy="27" r="5" fill="url(#gSphere)"/>`,
+ rust:`<g transform="translate(24 26) rotate(-30) scale(.52)">${drawSub("nail","#8a5a40",{rust:1})}</g>`,
+ tear:`${shadowE(24,44,18,2)}<path d="M8 8h16l-3 8 4 7-4 8 3 9H8z" fill="#fff" stroke="#94a3b8" stroke-width="1.2"/><path d="M11 14h9M11 20h8M11 26h9M11 32h8" stroke="#93c5fd" stroke-width=".8"/><path d="M28 8h12v32H28l3-9-4-8 4-7z" fill="#fff" stroke="#94a3b8" stroke-width="1.2" transform="rotate(6 34 24)"/>`,
+ burnpaper:`${shadowE(23,46,16,2)}<path d="M10 14h26v30H10z" fill="#fff" stroke="#94a3b8" stroke-width="1.2"/><path d="M10 14h26l-4 8-6-3-6 4-6-3z" fill="#292524"/><path d="M10 22l6 3 6-4 6 3 4-8" fill="none" stroke="#f97316" stroke-width="1.2"/>${flameShape(23,15,14,5)}`,
+ ice:`<ellipse cx="25" cy="40" rx="17" ry="4" fill="#93c5fd" opacity=".85"/><ellipse cx="21" cy="39" rx="6" ry="1.2" fill="#fff" opacity=".7"/><g transform="translate(24 24) scale(.62)">${drawSub("ice")}</g>`};
+function v8(box){
+ const K=[["candleMelt","Candle: wax melting","P","Melting is a change of state — still wax."],["candleBurn","Candle: wax burning","C","Wax vapor + oxygen → CO₂ + H₂O (new substances)."],["sugar","Dissolving sugar in water","P","Evaporate the water and the sugar is still there."],["egg","Cooking an egg","C","Proteins change permanently — you can't un-cook it."],["rust","Iron rusting","C","Iron + oxygen + water → rust, a new substance."],["tear","Tearing paper","P","Smaller pieces of the same paper."],["burnpaper","Burning paper","C","Paper → ash, smoke, CO₂ and water vapor."],["ice","Melting ice","P","A change of state — still H₂O."]];
+ let right=0;
+ const render=()=>{right=0;box.innerHTML=`<p class="vis-cap" style="margin-top:0" id="v8sc" aria-live="polite">Score: 0 / 8</p><div class="case-grid">${K.map((c,i)=>`<div class="case" id="v8c${i}"><svg viewBox="0 0 48 48" aria-hidden="true">${CASE_ICON[c[0]]}</svg><span class="nm">${c[1]}</span><div class="bt"><button class="btn btnP" data-i="${i}" data-a="P">◀ Physical</button><button class="btn btnC" data-i="${i}" data-a="C">Chemical ▶</button></div><p class="res" aria-live="polite"></p></div>`).join("")}</div><div style="margin-top:8px"><button class="btn sm" id="v8re">↺ Reset cards</button></div>`};
+ render();
+ box.addEventListener("click",e=>{if(e.target.closest("#v8re")){render();return}const b=e.target.closest("button[data-i]");if(!b)return;const i=+b.dataset.i,c=K[i],ok=b.dataset.a===c[2],el=$(`#v8c${i}`,box);
+  el.classList.add(ok?"ok":"bad");$$("button",el).forEach(x=>x.disabled=true);if(ok)right++;
+  el.querySelector(".res").innerHTML=`${ok?'<span class="okt">✓ Correct.</span>':'<span class="badt">✗ Not quite.</span>'} <b>${c[2]==="P"?"Physical":"Chemical"}:</b> ${c[3]}`;
+  $("#v8sc",box).textContent=`Score: ${right} / 8`});
+}
+
+/* =====================================================================
+   LAB BENCH
+   ===================================================================== */
+let selSub=null,selAct=null,runCancel=null,revealed=false,curScene=null,fxSig=null;
+function buildLabUI(){
+ $("#shelf").innerHTML=SUB_ORDER.map(id=>`<button class="sbtn" data-s="${id}" aria-pressed="false">${subIcon(id)}<span>${SUBS[id].s}</span><span class="tick" data-tick="${id}"></span></button>`).join("");
+ $("#actions").innerHTML=ACT_ORDER.map(a=>`<button class="abtn" data-a="${a}" aria-pressed="false">${actIcon(a)}${ACTS[a].n}</button>`).join("");
+ $("#evTogs").innerHTML=EVS.map(e=>`<label class="tog"><input type="checkbox" name="ev" value="${e.k}"><span>${e.n}</span></label>`).join("")+`<label class="tog"><input type="checkbox" name="ev" value="none" id="evNone"><span>None</span></label>`;
+ $("#shelf").addEventListener("click",e=>{const b=e.target.closest(".sbtn");if(!b)return;selSub=b.dataset.s;$$("#shelf .sbtn").forEach(x=>x.setAttribute("aria-pressed",x===b));prepare()});
+ $("#actions").addEventListener("click",e=>{const b=e.target.closest(".abtn");if(!b)return;selAct=b.dataset.a;$$("#actions .abtn").forEach(x=>x.setAttribute("aria-pressed",x===b));prepare()});
+ $("#evTogs").addEventListener("change",e=>{if(e.target.value==="none"&&e.target.checked)$$('#evTogs input').forEach(x=>{if(x.value!=="none")x.checked=false});else if(e.target.checked)$("#evNone").checked=false});
+ $("#runBtn").onclick=runTest;
+ $("#tl").addEventListener("input",()=>{if(selAct!=="air"||!curScene)return;if(runCancel){runCancel();runCancel=null}const t=$("#tl").value/30;drawFrame(t);$("#tlLbl").textContent=`Time: ${$("#tl").value} days`;if(+$("#tl").value===30&&!revealed)reveal()});
+ $("#checkBtn").onclick=checkTest;
+ $("#scene").innerHTML=`<svg viewBox="0 0 480 300" role="img" aria-label="Empty lab bench">${BENCH}<text x="240" y="140" text-anchor="middle" font-size="18" fill="#475569" font-weight="700">Pick a substance and a test</text></svg>`;
+}
+function resetObs(){revealed=false;$("#evSet").disabled=true;$("#clsSet").disabled=true;$("#note").disabled=true;$("#checkBtn").disabled=true;$$('#evTogs input,input[name=cls]').forEach(x=>x.checked=false);$("#note").value="";$("#labFb").innerHTML="";$("#obsText").classList.remove("ready")}
+function prepare(){
+ if(runCancel){runCancel();runCancel=null}resetObs();
+ if(!(selSub&&selAct)){$("#obsText").innerHTML=selSub?`<b>${SUBS[selSub].n}</b> selected. Now pick a test.`:`<b>${ACTS[selAct].n}</b> selected. Now pick a substance.`;$("#runBtn").disabled=true;$("#tlWrap").hidden=true;return}
+ curScene=buildScene(selSub,selAct);fxSig=null;
+ $("#scene").innerHTML=`<svg viewBox="0 0 480 300" role="img" aria-label="${esc(SUBS[selSub].n+" — "+ACTS[selAct].n)}">${curScene.bg}<g id="sdyn"></g><g id="sfx"></g>${curScene.fg}</svg>`;
+ drawFrame(0);
+ const air=selAct==="air";$("#tlWrap").hidden=!air;$("#tl").value=0;$("#tlLbl").textContent="Time: 0 days";
+ $("#runBtn").disabled=false;$("#runBtn").innerHTML=air?"▶ Play time-lapse":"▶ Run test";
+ const prev=ST.tests[selSub+"|"+selAct];
+ $("#obsText").innerHTML=`<b>Ready:</b> ${esc(SUBS[selSub].n)} + ${esc(ACTS[selAct].n)}. ${ACTS[selAct].d}${air?" Drag the slider to the end, or press Play.":" Press <b>Run test</b>."}${prev?` <br><span class="small muted">Already in your notebook (${prev.ok?"✓ correct":"✗ not yet correct"}).</span>`:""}`;
+}
+function drawFrame(t){if(!curScene)return;const d=$("#sdyn"),f=$("#sfx");if(!d)return;d.innerHTML=curScene.dyn(t);const[sig,svg]=curScene.fx(t);if(sig!==fxSig){fxSig=sig;f.innerHTML=svg}}
+function runTest(){
+ if(!(selSub&&selAct))return;if(runCancel)runCancel();resetObs();fxSig=null;
+ const air=selAct==="air";$("#runBtn").disabled=true;
+ runCancel=tween(air?4500:3400,t=>{drawFrame(t);if(air){$("#tl").value=Math.round(t*30);$("#tlLbl").textContent=`Time: ${Math.round(t*30)} days`}},()=>{runCancel=null;$("#runBtn").disabled=false;$("#runBtn").innerHTML=air?"↺ Replay time-lapse":"↺ Run again";reveal()});
+}
+function reveal(){
+ revealed=true;const r=RES[selSub][selAct];
+ $("#obsText").innerHTML=`<b>Observation:</b> ${r.o}`;$("#obsText").classList.add("ready");
+ $("#evSet").disabled=false;$("#clsSet").disabled=false;$("#note").disabled=false;$("#checkBtn").disabled=false;
+ const prev=ST.tests[selSub+"|"+selAct];if(prev&&prev.note)$("#note").value=prev.note;
+}
+const CLS_NAME={chem:"Chemical change",phys:"Physical change",none:"No change"};
+const HINT={chem:"Look again — does the observation describe a new substance forming?",phys:"Look again — is it still the same substance, just a different state, size, shape or mixture?",none:"Look again — did anything actually change, or did the test only reveal a property?"};
+function checkTest(){
+ if(!revealed)return;const r=RES[selSub][selAct];
+ const ev=$$('#evTogs input:checked').map(x=>x.value).filter(v=>v!=="none");
+ const clsEl=$('input[name=cls]:checked');
+ if(!clsEl){$("#labFb").innerHTML=`<div class="fb info"><p>Choose <b>Physical change</b>, <b>Chemical change</b> or <b>No change</b> first.</p></div>`;return}
+ if(!ev.length&&!$("#evNone").checked){$("#labFb").innerHTML=`<div class="fb info"><p>Tick the evidence you saw — or tick <b>None</b>.</p></div>`;return}
+ const cls=clsEl.value,need=r.ev||[],okE=r.ok||[],trap=r.trap||{};
+ const clsOK=cls===r.c||(r.alt||[]).includes(cls);
+ const missing=need.filter(k=>!ev.includes(k)),extra=ev.filter(k=>!need.includes(k)&&!okE.includes(k));
+ const evOK=!missing.length&&!extra.length,all=clsOK&&evOK;
+ let h="";
+ h+=clsOK?`<p><span class="okt">✓ Classification:</span> ${CLS_NAME[cls]}${r.alt&&r.alt.length?` <span class="small muted">(${[r.c,...r.alt].map(c=>CLS_NAME[c]).join(" or ")} accepted)</span>`:""}.</p>`:`<p><span class="badt">✗ Classification:</span> ${HINT[r.c]}</p>`;
+ if(evOK)h+=`<p><span class="okt">✓ Evidence</span> ${need.length?"— you spotted it.":"— correct, no real evidence of a new substance."}</p>`;
+ else{h+=`<p><span class="badt">✗ Evidence:</span></p><ul style="margin:.2em 0;padding-left:1.2em">`;
+  if(missing.length)h+=`<li>Look at the observation again — you missed a piece of evidence${missing.length>1?"s":""}: <b>${missing.map(k=>EVNAME[k]).join(", ")}</b>.</li>`;
+  extra.forEach(k=>{h+=`<li><b>${EVNAME[k]}:</b> ${trap[k]||"the observation doesn't describe this."}</li>`});h+="</ul>"}
+ if(all)h+=`<p><b>Why:</b> ${r.w}</p>`;else h+=`<p class="small">Fix your answer and press <b>Check &amp; log</b> again.</p>`;
+ $("#labFb").innerHTML=`<div class="fb ${all?"ok":"bad"}">${h}</div>`;
+ const key=selSub+"|"+selAct,prev=ST.tests[key];
+ ST.tests[key]={sub:selSub,act:selAct,ev,cls,ok:all||(prev&&prev.ok)||false,note:$("#note").value.slice(0,200),n:prev?prev.n:(++ST.logN),tries:(prev?prev.tries:0)+1};
+ save();renderLog();updateAll();
+}
+function renderLog(){
+ const rows=Object.values(ST.tests).sort((a,b)=>a.n-b.n);
+ $("#logCount").textContent=rows.length?`(${rows.length} test${rows.length>1?"s":""})`:"";
+ if(!rows.length){$("#logBody").innerHTML=`<tr><td colspan="7" class="muted">No tests logged yet.</td></tr>`;return}
+ $("#logBody").innerHTML=rows.map((t,i)=>{const r=RES[t.sub][t.act];return`<tr><td>${i+1}</td><td>${esc(SUBS[t.sub].s)}</td><td>${esc(ACTS[t.act].n)}</td><td>${r.o}${t.note?`<br><i>Note: ${esc(t.note)}</i>`:""}</td><td>${t.ev.length?t.ev.map(k=>EVNAME[k]).join(", "):"None"}</td><td>${CLS_NAME[t.cls]}</td><td class="r ${t.ok?"okt":"badt"}">${t.ok?"✓ Correct":"✗ Retry"}</td></tr>`}).join("");
+ SUB_ORDER.forEach(id=>{const n=Object.values(ST.tests).filter(t=>t.sub===id).length;const el=$(`[data-tick="${id}"]`);if(el)el.textContent=n?`${n}/8 tested`:""});
+}
+
+/* =====================================================================
+   SWIPE SORT
+   ===================================================================== */
+let deck=null;
+function renderDeckPick(){
+ $("#deckpick").innerHTML=Object.keys(DECKS).map(id=>`<button class="btn${deck&&deck.id===id?" pri":""}" data-d="${id}">${DECKS[id].n} <span class="small">(best: ${ST.deckBest[id]?ST.deckBest[id]+"%":"—"})</span></button>`).join("");
+}
+function startDeck(id){deck={id,cards:shuffle(DECKS[id].cards),i:0,right:0,streak:0,best:0,wait:false,done:false};$("#sfb").innerHTML="";renderDeckPick();renderCard()}
+function swipeStats(){if(!deck){$("#sstats").innerHTML="";return}$("#sstats").innerHTML=`<span>Card ${Math.min(deck.i+1,30)} / 30</span><span>Correct: ${deck.right}</span><span>Streak: ${deck.streak}</span><span>Best streak: ${deck.best}</span>`}
+function renderCard(){
+ const sb=[$("#sbP"),$("#sbC")];
+ if(!deck){$("#stack").innerHTML=`<div class="scard" style="cursor:default"><div>Choose a deck above to start.</div><div class="k">30 cards · get 80% or more to tick the checklist</div></div>`;sb.forEach(b=>b.disabled=true);swipeStats();return}
+ if(deck.i>=deck.cards.length){finishDeck();return}
+ sb.forEach(b=>b.disabled=false);
+ const c=deck.cards[deck.i];
+ $("#stack").innerHTML=`<div class="scard" id="scard" tabindex="0" role="group" aria-label="${esc(c[0])}. Physical or chemical?">${esc(c[0])}<div class="k">${DECKS[deck.id].n} · ◀ Physical | Chemical ▶</div></div>`;
+ swipeStats();attachSwipe($("#scard"));
+}
+function attachSwipe(el){
+ let x0=null,dx=0,id=null;
+ el.addEventListener("pointerdown",e=>{if(deck.wait)return;x0=e.clientX;dx=0;id=e.pointerId;try{el.setPointerCapture(id)}catch(_){}el.classList.remove("anim")});
+ el.addEventListener("pointermove",e=>{if(x0===null)return;dx=e.clientX-x0;el.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;$("#zoneP").classList.toggle("hot",dx<-60);$("#zoneC").classList.toggle("hot",dx>60)});
+ const end=()=>{if(x0===null)return;x0=null;$("#zoneP").classList.remove("hot");$("#zoneC").classList.remove("hot");if(dx<-90)answerSwipe("P");else if(dx>90)answerSwipe("C");else{el.classList.add("anim");el.style.transform=""}};
+ el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
+}
+function answerSwipe(side){
+ if(!deck||deck.wait||deck.i>=deck.cards.length)return;
+ const c=deck.cards[deck.i],el=$("#scard"),ok=side===c[1];
+ if(el){el.classList.add("anim");el.style.transform=`translateX(${side==="P"?-420:420}px) rotate(${side==="P"?-20:20}deg)`;el.style.opacity="0"}
+ const nm=c[1]==="P"?"Physical":"Chemical";
+ if(ok){deck.right++;deck.streak++;deck.best=Math.max(deck.best,deck.streak);$("#sfb").innerHTML=`<div class="fb ok"><p><span class="okt">✓ ${nm}.</span> ${c[2]}</p></div>`;deck.i++;deck.wait=true;setTimeout(()=>{deck.wait=false;renderCard()},380)}
+ else{deck.streak=0;deck.wait=true;$("#sfb").innerHTML=`<div class="fb bad"><p><span class="badt">✗ Missed.</span> “${esc(c[0])}” is <b>${nm}</b>. ${c[2]}</p><p><button class="btn sm pri" id="snext">Next card ▶</button></p></div>`;
+  [$("#sbP"),$("#sbC")].forEach(b=>b.disabled=true);$("#snext").onclick=()=>{deck.wait=false;deck.i++;$("#sfb").innerHTML="";renderCard()};$("#snext").focus()}
+ swipeStats();
+}
+function finishDeck(){
+ const pct=Math.round(deck.right/deck.cards.length*100),pass=pct>=80;
+ if(!deck.done){deck.done=true;if(pct>(ST.deckBest[deck.id]||0))ST.deckBest[deck.id]=pct;save();updateAll()}
+ [$("#sbP"),$("#sbC")].forEach(b=>b.disabled=true);
+ $("#stack").innerHTML=`<div class="scard" style="cursor:default"><div>${DECKS[deck.id].n} finished!</div><div style="font-size:2.2rem">${deck.right} / 30 · ${pct}%</div><div class="k">${pass?"✓ 80% or better — checklist item complete!":"Need 80% (24/30) for the checklist — try again!"} · Best streak: ${deck.best}</div></div>`;
+ $("#sfb").innerHTML=`<div class="fb ${pass?"ok":"bad"}"><p><button class="btn sm pri" data-d="${deck.id}">↺ Play this deck again</button> <button class="btn sm" data-d="${deck.id==="changes"?"props":"changes"}">Try the ${DECKS[deck.id==="changes"?"props":"changes"].n}</button></p></div>`;
+ renderDeckPick();swipeStats();
+}
+/* =====================================================================
+   QUIZ — click-on-diagram scenes
+   ===================================================================== */
+const BKQ=beakerC(-30,62,60,108),TQ=tubeC(116,17);
+const BEAK=(liq)=>BKQ.back+BKQ.liq(92,liq);
+const BEAKO=BKQ.front;
+const TUBE=(liq)=>`<g transform="translate(0 40)">${TQ.back}${TQ.liq(50,liq)}</g>`;
+const TUBEO=`<g transform="translate(0 40)">${TQ.front}</g>`;
+const miniBurner=y=>`<g transform="translate(0 ${y}) scale(.42)">${BURNER(0,0,false)}</g>`;
+const CLICK={
+ beakers:[
+  ["boil","Heating water",`<g transform="translate(0 -14)">${BEAK("#cfe5f8")}${bubbles(7,-24,24,166,70,3,.9)}${BEAKO}</g>${miniBurner(180)}${puffs(3,0,40,"#e2e8f0","stm",4)}`],
+  ["dye","Adding food coloring",`${BEAK("#dcecf9")}<circle cx="0" cy="116" r="14" fill="#a855f7" opacity=".7"/><circle cx="-8" cy="140" r="14" fill="#c084fc" opacity=".45"/>${BEAKO}<rect x="-6" y="20" width="12" height="12" rx="2" fill="#1f2937"/><path d="M-5 32h10l-2 12h-6z" fill="#e9d5ff" stroke="#6b21a8"/>`],
+  ["ppt","Mixing two clear solutions",`${BEAK("#f1f5f9")}<path d="${BKQ.lp(148)}" fill="#facc15"/><path d="${BKQ.lp(148)}" fill="url(#gLiqV)"/>${[0,1,2,3,4].map(i=>`<circle class="ppt" cx="${-22+i*11}" cy="${100+(i%2)*10}" r="3.4" fill="#eab308" stroke="#a16207" stroke-width=".6" style="--dl:${-i*.4}s"/>`).join("")}${BEAKO}`],
+  ["salt","Stirring in salt",`${BEAK("#dcecf9")}${cube(-10,160,7,"#f8fafc",8)}${cube(5,162,6,"#f8fafc",-5)}<path d="M20 40l-16 124" stroke="#475569" stroke-width="5" stroke-linecap="round"/><path d="M20 40l-16 124" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round"/>${BEAKO}`]],
+ tests:[
+  ["magnet","Magnet near a nail",`<g transform="translate(0 40) scale(.7)">${magnetC()}</g>${shadowE(0,160,30,3)}<g transform="translate(0 150) scale(.7)">${drawSub("nail")}</g>`],
+  ["hammer","Hammering gold",`<g transform="translate(6 70) rotate(-12)"><rect x="-5" y="-52" width="10" height="54" rx="3" fill="url(#gWood)" stroke="#7c5226"/><rect x="-28" y="0" width="56" height="20" rx="3" fill="url(#gMetalV)" stroke="#1f2937"/></g>${shadowE(0,162,32,3)}<path d="M-26 150l6-8h40l6 8z" fill="#fde68a"/><rect x="-26" y="150" width="52" height="10" rx="2" fill="url(#gGold)" stroke="#854d0e"/>`],
+  ["flame","Holding a match to wood",`${shadowE(0,164,34,3)}<g transform="translate(0 150) scale(.65)">${drawSub("splint")}</g><path d="M42 82L18 140" stroke="#c08a4a" stroke-width="4" stroke-linecap="round"/><ellipse cx="18" cy="141" rx="3.5" ry="4.5" fill="#b91c1c"/>${flameShape(-24,148,36,10)}`],
+  ["bp","Measuring boiling point",`<g transform="translate(0 -14)">${BEAK("#cfe5f8")}${bubbles(5,-24,24,166,70,5,.9)}${BEAKO}</g>${thermo(14,40,150,98,false)}${miniBurner(180)}`]],
+ tubes:[
+  ["mg","Mg + HCl",`${TUBE("#e6edfb")}<g transform="translate(0 150) rotate(90) scale(.35)">${drawSub("mg")}</g>${bubbles(7,-10,10,160,66,8,1)}${TUBEO}`],
+  ["soda","Baking soda + vinegar",`${TUBE("#f8f0cc")}<ellipse cx="0" cy="92" rx="14" ry="6" fill="#fffdf2" stroke="#d6d3c4"/>${bubbles(9,-10,10,165,70,9,.8)}${TUBEO}`],
+  ["boil","Water over a burner",`<g transform="translate(0 -18)">${TUBE("#cfe5f8")}${bubbles(6,-10,10,160,66,10,.8)}${TUBEO}</g>${miniBurner(180)}`],
+  ["chalk","Chalk + HCl",`${TUBE("#e6edfb")}<g transform="translate(0 152) rotate(90) scale(.36)">${drawSub("chalk")}</g>${bubbles(8,-10,10,150,56,12,1)}${TUBEO}`]],
+ nails:[
+  ["bent","Bent in half",`${shadowE(0,158,34,3)}<path d="M-30 152q0-70 30-70t30 70" fill="none" stroke="#374151" stroke-width="9" stroke-linecap="round"/><path d="M-30 152q0-70 30-70t30 70" fill="none" stroke="#8f969e" stroke-width="6" stroke-linecap="round"/><path d="M-31 150q0-68 31-66" fill="none" stroke="#f3f4f6" stroke-width="1.5" opacity=".8"/>`],
+  ["cut","Cut in two",`${shadowE(0,158,36,3)}<g transform="translate(-14 112) rotate(-20) scale(.55)">${drawSub("nail")}</g><g transform="translate(16 150) rotate(15) scale(.45)"><rect x="-30" y="-3.5" width="40" height="7" fill="#8f969e" stroke="#374151"/><rect x="-30" y="-3.5" width="40" height="7" fill="url(#gCylV)"/><path d="M10-3.5L23 0 10 3.5z" fill="#8f969e" stroke="#374151"/></g>`],
+  ["rust","Left outside for a month",`${shadowE(0,150,32,3)}<g transform="translate(0 122) rotate(-30) scale(.75)">${drawSub("nail","#8a5a40",{rust:1})}</g>`],
+  ["mag","Picked up by a magnet",`<g transform="translate(0 40) scale(.62)">${magnetC()}</g><g transform="translate(0 110) rotate(90) scale(.45)">${drawSub("nail")}</g>`]]
+};
+function twoLines(lab){const w=lab.split(" ");let best=[lab,""];if(lab.length>13){let m=Infinity;for(let i=1;i<w.length;i++){const a=w.slice(0,i).join(" "),b=w.slice(i).join(" "),d=Math.max(a.length,b.length);if(d<m){m=d;best=[a,b]}}}
+ return best[1]?`<text x="0" y="218" font-size="13" font-weight="700" text-anchor="middle" fill="#0f172a">${esc(best[0])}</text><text x="0" y="233" font-size="13" font-weight="700" text-anchor="middle" fill="#0f172a">${esc(best[1])}</text>`:`<text x="0" y="228" font-size="13" font-weight="700" text-anchor="middle" fill="#0f172a">${esc(lab)}</text>`}
+function clickSceneSVG(scene,order){
+ if(scene==="candle"){
+  const parts=[["flame",`<rect class="hl" x="196" y="14" width="48" height="76" rx="8"/>${flameShape(220,84,62,16)}`],
+   ["pool",`<rect class="hl" x="168" y="86" width="104" height="26" rx="8"/><ellipse cx="220" cy="98" rx="40" ry="7" fill="#fff3c4" stroke="#d4b86a" stroke-width="2"/>`],
+   ["drip",`<rect class="hl" x="160" y="104" width="30" height="66" rx="8"/><path d="M178 106q-8 24-2 52" stroke="#fde68a" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="176" cy="160" r="6" fill="#fde68a"/>`],
+   ["body",`<rect class="hl" x="196" y="140" width="72" height="80" rx="8"/>`]];
+  const L={flame:["A",262,50],pool:["B",292,102],drip:["C",142,140],body:["D",290,190]};
+  return`<svg viewBox="0 0 440 240" role="group" aria-label="A burning candle with four labeled parts">${shadowE(220,228,60,5)}<rect x="180" y="98" width="80" height="128" rx="3" fill="#fffaf0" stroke="#c9b98f" stroke-width="1.5"/><rect x="180" y="98" width="80" height="128" rx="3" fill="url(#gCyl)"/><path d="M220 98V80" stroke="#111" stroke-width="3"/>${parts.map(([id,g])=>`<g class="hot-t" data-id="${id}" tabindex="0" role="button" aria-label="Part ${L[id][0]}">${g}<circle cx="${L[id][1]}" cy="${L[id][2]}" r="15" fill="#0f172a"/><text x="${L[id][1]}" y="${L[id][2]+6}" font-size="17" font-weight="700" fill="#fff" text-anchor="middle">${L[id][0]}</text></g>`).join("")}</svg>`;
+ }
+ const items=order.map(i=>CLICK[scene][i]);
+ return`<svg viewBox="0 0 440 240" role="group" aria-label="Four pictures to choose from">${items.map(([id,lab,g],k)=>{const cx=56+k*109;return`<g class="hot-t" data-id="${id}" tabindex="0" role="button" aria-label="${esc(lab)}" transform="translate(${cx} 0)"><rect class="hl" x="-52" y="6" width="104" height="230" rx="10"/>${g}${twoLines(lab)}</g>`}).join("")}</svg>`;
+}
+
+/* =====================================================================
+   QUIZ ENGINE
+   ===================================================================== */
+let Q=null;
+const TYPE_NAME={mc:"Multiple choice",sort:"Drag to sort",click:"Click on the diagram"};
+function startQuiz(){
+ const mc=shuffle(QBANK.filter(q=>q.t==="mc")).slice(0,6),so=shuffle(QBANK.filter(q=>q.t==="sort")).slice(0,2),cl=shuffle(QBANK.filter(q=>q.t==="click")).slice(0,2);
+ const items=shuffle([...mc,...so,...cl]);
+ ST.attempts=(ST.attempts||0)+1;save();
+ Q={items,i:0,score:0,res:[],attempt:ST.attempts,done:false,
+  orders:items.map(q=>q.t==="mc"?shuffle(q.ch.map((_,i)=>i)):q.t==="sort"?shuffle(q.items.map((_,i)=>i)):shuffle([0,1,2,3]))};
+ renderQuiz();updateAll();
+}
+function renderQuiz(){
+ const root=$("#quizRoot");
+ if(Q&&!Q.done){if(Q.res.length>Q.i)Q.i++;if(Q.i>=Q.items.length){Q.done=true}else{renderQ();return}}
+ if(Q&&Q.done){renderResults();return}
+ if(!quizUnlocked()){
+  const s=labStats(),L=ST.viewed.length;
+  const row=(d,t)=>`<li>${d?'<span class="okt">✓</span>':'<span class="badt">✗</span>'} ${t}</li>`;
+  root.innerHTML=`<div class="card locked"><svg width="56" height="62" viewBox="0 0 18 20" aria-hidden="true"><rect x="2" y="9" width="14" height="10" rx="2" fill="#0f172a"/><path d="M5 9V6a4 4 0 0 1 8 0v3" fill="none" stroke="#0f172a" stroke-width="2.2"/></svg><h2>The Quiz is locked</h2><p>Finish these first:</p><ul>${row(L>=STOPS.length,`View all ${STOPS.length} Learn stops (${L}/${STOPS.length})`)}${row(s.n>=10,`Run 10 different Lab Bench tests (${Math.min(s.n,10)}/10)`)}${row(s.chem>=3,`Classify 3 chemical changes correctly (${Math.min(s.chem,3)}/3)`)}${row(s.phys>=3,`Classify 3 physical changes correctly (${Math.min(s.phys,3)}/3)`)}${row(s.best>=80,`Finish a Swipe Sort deck with 80%+ (best: ${s.best}%)`)}</ul><p><button class="btn" data-go="learn">Go to Learn</button> <button class="btn pri" data-go="lab">Go to Lab</button></p></div>`;
+  return}
+ root.innerHTML=`<div class="card locked"><h2>Quiz: Physical vs Chemical</h2><p>10 questions drawn at random from a bank of ${QBANK.length}: multiple choice, drag-to-sort and click-on-diagram. You get feedback after every answer and a score card at the end. Unlimited retakes.</p><p><b>Attempts so far:</b> ${ST.attempts||0}</p><button class="btn acc" id="qstart">▶ Start attempt #${(ST.attempts||0)+1}</button></div>`;
+ $("#qstart").onclick=startQuiz;
+}
+function renderQ(){
+ const it=Q.items[Q.i],ord=Q.orders[Q.i],root=$("#quizRoot");
+ root.innerHTML=`<div class="card"><div class="qhead"><span>Question ${Q.i+1} of ${Q.items.length}</span><span>Score: ${Q.score} / ${Q.res.length}</span><span>Attempt #${Q.attempt}</span></div><span class="qtype">${TYPE_NAME[it.t]}</span><p class="qtext">${it.q}</p><div id="qbody"></div><div id="qfb" aria-live="polite"></div><div class="qbtns"><button class="btn acc" id="qcheck" disabled>Check answer</button></div></div>`;
+ const body=$("#qbody"),chk=$("#qcheck");let sel=null;
+ if(it.t==="mc"){
+  body.innerHTML=`<div class="choices" role="radiogroup">${ord.map((oi,k)=>`<button class="choice" role="radio" aria-checked="false" data-o="${oi}"><span class="let">${"ABCD"[k]}</span><span>${it.ch[oi]}</span></button>`).join("")}</div>`;
+  body.addEventListener("click",e=>{const b=e.target.closest(".choice");if(!b||b.disabled)return;sel=+b.dataset.o;$$(".choice",body).forEach(x=>{x.classList.toggle("sel",x===b);x.setAttribute("aria-checked",x===b)});chk.disabled=false});
+  chk.onclick=()=>{const ok=sel===it.a;$$(".choice",body).forEach(x=>{x.disabled=true;const o=+x.dataset.o;if(o===it.a)x.classList.add("right");else if(o===sel)x.classList.add("wrong")});finishQ(ok,ok?"":`Correct answer: <b>${it.ch[it.a]}</b>.`)};
+ }
+ else if(it.t==="sort"){
+  const place=Array(it.items.length).fill(-1);let pick=null,locked=false,justDragged=false;
+  const itemBtn=i=>`<button class="item${pick===i?" sel":""}" data-i="${i}" aria-pressed="${pick===i}">${esc(it.items[i][0])}</button>`;
+  const draw=()=>{body.innerHTML=`<div class="sortq"><p class="small muted" style="margin:0 0 4px">Drag each card into a bin — or tap a card, then tap a bin.</p><div class="pool" data-bin="-1" tabindex="0" aria-label="Unsorted cards">${ord.filter(i=>place[i]===-1).map(itemBtn).join("")||'<span class="small muted">All cards placed. Tap a card to move it.</span>'}</div><div class="bins">${it.bins.map((b,bi)=>`<div class="bin b${bi}" data-bin="${bi}" tabindex="0" role="button" aria-label="${esc(b)} bin"><h4>${esc(b)}</h4>${ord.filter(i=>place[i]===bi).map(itemBtn).join("")}</div>`).join("")}</div></div>`;chk.disabled=locked||place.includes(-1)};
+  const drop=(i,bin)=>{place[i]=bin;pick=null;draw()};
+  draw();
+  body.addEventListener("click",e=>{if(locked)return;if(justDragged){justDragged=false;return}const b=e.target.closest(".item");if(b){const i=+b.dataset.i;pick=pick===i?null:i;draw();return}const z=e.target.closest("[data-bin]");if(z&&pick!==null)drop(pick,+z.dataset.bin)});
+  body.addEventListener("keydown",e=>{if(locked)return;const z=e.target.closest(".bin,.pool");if(z&&!e.target.closest(".item")&&(e.key==="Enter"||e.key===" ")&&pick!==null){e.preventDefault();drop(pick,+z.dataset.bin)}});
+  let drag=null;
+  body.addEventListener("pointerdown",e=>{if(locked)return;const b=e.target.closest(".item");if(!b)return;drag={i:+b.dataset.i,x:e.clientX,y:e.clientY,el:b,g:null,id:e.pointerId};try{b.setPointerCapture(e.pointerId)}catch(_){}});
+  body.addEventListener("pointermove",e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(!drag.g&&Math.hypot(dx,dy)>8){const r=drag.el.getBoundingClientRect();drag.g=drag.el.cloneNode(true);drag.g.classList.add("drag-ghost");drag.g.style.width=r.width+"px";drag.g.style.left=r.left+"px";drag.g.style.top=r.top+"px";document.body.appendChild(drag.g);drag.ox=e.clientX-r.left;drag.oy=e.clientY-r.top}
+   if(drag.g){drag.g.style.left=(e.clientX-drag.ox)+"px";drag.g.style.top=(e.clientY-drag.oy)+"px";const t=document.elementFromPoint(e.clientX,e.clientY),z=t&&t.closest(".bin");$$(".bin",body).forEach(x=>x.classList.toggle("hot",x===z))}});
+  const up=e=>{if(!drag)return;const d=drag;drag=null;if(d.g){d.g.remove();justDragged=true;$$(".bin",body).forEach(x=>x.classList.remove("hot"));const t=document.elementFromPoint(e.clientX,e.clientY),z=t&&t.closest("[data-bin]");if(z)drop(d.i,+z.dataset.bin);setTimeout(()=>justDragged=false,350)}};
+  body.addEventListener("pointerup",up);body.addEventListener("pointercancel",e=>{if(drag&&drag.g)drag.g.remove();drag=null});
+  chk.onclick=()=>{locked=true;let all=true;draw();$$(".item",body).forEach(x=>{const i=+x.dataset.i,ok=place[i]===it.items[i][1];if(!ok)all=false;x.classList.add(ok?"right":"wrong");x.disabled=true;x.insertAdjacentHTML("afterbegin",ok?"✓ ":"✗ ")});
+   const wrong=it.items.map((x,i)=>[x,i]).filter(([x,i])=>place[i]!==x[1]).map(([x])=>`<b>${esc(x[0])}</b> → ${esc(it.bins[x[1]])}`);
+   finishQ(all,all?"":`Fix: ${wrong.join("; ")}.`)};
+ }
+ else{
+  body.innerHTML=`<div class="clickq">${clickSceneSVG(it.scene,ord)}</div><p class="small muted" style="margin:4px 0 0">Click (or tap) your choice, then press Check answer.</p>`;
+  const pickH=g=>{if(!g||g.classList.contains("dis"))return;sel=g.dataset.id;$$(".hot-t",body).forEach(x=>x.classList.toggle("sel",x===g));chk.disabled=false};
+  body.addEventListener("click",e=>pickH(e.target.closest(".hot-t")));
+  body.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.closest(".hot-t")){e.preventDefault();pickH(e.target.closest(".hot-t"))}});
+  chk.onclick=()=>{const ok=it.a.includes(sel);$$(".hot-t",body).forEach(x=>{x.classList.add("dis");x.classList.remove("sel");if(it.a.includes(x.dataset.id))x.classList.add("right");else if(x.dataset.id===sel)x.classList.add("wrong")});finishQ(ok,ok?"":"The correct choice is outlined in green.")};
+ }
+}
+function finishQ(ok,extra){
+ const it=Q.items[Q.i];Q.res.push({ok,s:it.s});if(ok)Q.score++;
+ $("#qfb").innerHTML=`<div class="fb ${ok?"ok":"bad"}"><p>${ok?'<span class="okt">✓ Correct!</span>':'<span class="badt">✗ Not quite.</span>'} ${it.x}</p>${extra?`<p class="small">${extra}</p>`:""}</div>`;
+ const last=Q.i===Q.items.length-1,b=$("#qcheck");b.disabled=false;b.className="btn pri";b.textContent=last?"See my score card ▶":"Next question ▶";
+ b.onclick=()=>{Q.i++;if(Q.i>=Q.items.length){Q.done=true;Q.when=new Date();renderResults()}else renderQ();window.scrollTo({top:0})};
+ $(".qhead span:nth-child(2)").textContent=`Score: ${Q.score} / ${Q.res.length}`;
+ b.focus();
+}
+
+/* =====================================================================
+   SCORE CARD
+   ===================================================================== */
+const FONT='"Atkinson Hyperlegible", system-ui, sans-serif';
+function whenTxt(){const d=Q.when||new Date();Q.when=d;return d.toLocaleString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"})}
+function drawCard(){
+ const W=1000,row=44,H=270+Q.res.length*row+60,cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
+ c.fillStyle="#fff";c.fillRect(0,0,W,H);c.fillStyle="#0f172a";c.fillRect(0,0,W,112);
+ c.fillStyle="#fff";c.font=`700 34px ${FONT}`;c.fillText(TITLE_TXT,32,54);c.fillStyle="#5eead4";c.font=`400 22px ${FONT}`;c.fillText(URL_TXT,32,90);
+ c.fillStyle="#0f172a";c.font=`400 22px ${FONT}`;c.fillText(`Date: ${whenTxt()}`,32,152);c.fillText(`Attempt #${Q.attempt}`,32,186);
+ c.textAlign="right";c.font=`700 64px ${FONT}`;c.fillText(`${Q.score} / ${Q.res.length}`,W-32,180);c.font=`400 20px ${FONT}`;c.fillStyle="#334155";c.fillText("Score",W-32,124);c.textAlign="left";
+ c.strokeStyle="#cbd5e1";c.lineWidth=2;c.beginPath();c.moveTo(32,212);c.lineTo(W-32,212);c.stroke();
+ Q.res.forEach((r,i)=>{const y=250+i*row;c.fillStyle=r.ok?"#15803d":"#b91c1c";c.beginPath();c.arc(50,y-8,15,0,6.29);c.fill();c.fillStyle="#fff";c.font=`700 20px ${FONT}`;c.textAlign="center";c.fillText(r.ok?"✓":"✗",50,y-1);c.textAlign="left";
+  c.fillStyle="#0f172a";c.font=`400 21px ${FONT}`;let t=`${i+1}. ${r.s}`;while(c.measureText(t).width>W-170&&t.length>4)t=t.slice(0,-2);if(t!==`${i+1}. ${r.s}`)t+="…";c.fillText(t,80,y);
+  c.font=`700 18px ${FONT}`;c.fillStyle=r.ok?"#15803d":"#b91c1c";c.textAlign="right";c.fillText(r.ok?"Correct":"Incorrect",W-32,y);c.textAlign="left"});
+ c.strokeStyle="#0f172a";c.lineWidth=6;c.strokeRect(3,3,W-6,H-6);
+ c.fillStyle="#475569";c.font=`400 16px ${FONT}`;c.fillText("Physical vs Chemical – Score Card",32,H-22);
+ return cv;
+}
+function emailBody(){return`${TITLE_TXT} — Score Card\n${URL_TXT}\nDate: ${whenTxt()}\nAttempt #: ${Q.attempt}\nScore: ${Q.score}/${Q.res.length}\n\n${Q.res.map((r,i)=>`${r.ok?"✓":"✗"} ${i+1}. ${r.s}`).join("\n")}\n\n(Score card PNG attached.)`}
+function renderResults(){
+ const cv=drawCard(),pct=Math.round(Q.score/Q.res.length*100);
+ $("#quizRoot").innerHTML=`<div class="card"><h2 style="margin-top:0">Score: ${Q.score} / ${Q.res.length} (${pct}%)</h2><div class="scorewrap"><img id="scimg" alt="Score card: ${Q.score} out of ${Q.res.length}, attempt ${Q.attempt}"><div class="sbtncol"><button class="btn pri" id="dlBtn">⬇ Download PNG</button><button class="btn" id="cpBtn">⧉ Copy image to clipboard</button><button class="btn" id="gmBtn">✉ Email via Gmail</button><p class="small muted" style="margin:0">Gmail opens a new message with your score filled in. <b>Download the PNG first, then attach it</b> before sending.</p><p class="status" id="scStatus" aria-live="polite"></p><hr style="width:100%;border:0;border-top:1px solid #cbd5e1"><button class="btn acc" id="retake">↺ Retake quiz (new questions)</button></div></div></div>`;
+ $("#scimg").src=cv.toDataURL("image/png");
+ const st=m=>$("#scStatus").innerHTML=m;
+ $("#dlBtn").onclick=()=>{try{cv.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=`physical-chemical-score-card-attempt-${Q.attempt}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);st('<span class="okt">✓ Downloaded.</span>')},"image/png")}catch(e){st('<span class="badt">Download blocked — long-press or right-click the image to save it.</span>')}};
+ $("#cpBtn").onclick=async()=>{try{if(!navigator.clipboard||!window.ClipboardItem)throw 0;try{await navigator.clipboard.write([new ClipboardItem({"image/png":new Promise(r=>cv.toBlob(r,"image/png"))})])}catch(e1){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await navigator.clipboard.write([new ClipboardItem({"image/png":b})])}st('<span class="okt">✓ Copied — paste it into your assignment.</span>')}catch(e){st('<span class="badt">This browser blocked copying images. Use Download PNG instead.</span>')}};
+ $("#gmBtn").onclick=()=>{const u=`https://mail.google.com/mail/?view=cm&fs=1&to=&su=${encodeURIComponent("Physical vs Chemical – Score Card")}&body=${encodeURIComponent(emailBody())}`;const w=window.open(u,"_blank","noopener");if(!w)location.href=u};
+ $("#retake").onclick=startQuiz;
+}
+
+/* =====================================================================
+   PROGRESS, TABS, INIT
+   ===================================================================== */
+function labStats(){let chem=0,phys=0;const v=Object.values(ST.tests);v.forEach(t=>{if(t.ok&&RES[t.sub]&&RES[t.sub][t.act]){const c=RES[t.sub][t.act].c;if(c==="chem")chem++;else if(c==="phys")phys++}});return{n:v.length,chem,phys,best:Math.max(ST.deckBest.changes||0,ST.deckBest.props||0)}}
+function checklistDone(){const s=labStats();return s.n>=10&&s.chem>=3&&s.phys>=3&&s.best>=80}
+function quizUnlocked(){return ST.viewed.length>=STOPS.length&&checklistDone()}
+function updateAll(){
+ const s=labStats(),items=[[s.n>=10,"Run at least 10 different Lab Bench tests",`${Math.min(s.n,10)} / 10`,s.n/10],[s.chem>=3,"Classify 3 chemical changes correctly",`${Math.min(s.chem,3)} / 3`,s.chem/3],[s.phys>=3,"Classify 3 physical changes correctly",`${Math.min(s.phys,3)} / 3`,s.phys/3],[s.best>=80,"Finish a Swipe Sort deck with 80% or better",`best: ${s.best}%`,s.best/80]];
+ const done=items.filter(x=>x[0]).length;
+ $("#checklist").innerHTML=items.map(([d,t,c,p])=>`<li class="${d?"done":""}"><span class="box" aria-hidden="true">${d?"✓":""}</span><span>${t}<span class="cnt">${d?"Done · ":""}${c}</span><span class="meter"><i style="width:${Math.min(100,p*100).toFixed(0)}%"></i></span></span></li>`).join("");
+ const L=ST.viewed.length,unl=quizUnlocked();
+ $("#clNote").innerHTML=done===4?(unl?'<span class="okt">✓ Lab complete — the Quiz is unlocked!</span>':`<span class="okt">✓ Lab complete.</span> View all Learn stops (${L}/${STOPS.length}) to unlock the Quiz.`):`${done} of 4 done. Finish all 4${L<STOPS.length?" and all Learn stops":""} to unlock the Quiz.`;
+ $("#tabsub-learn").textContent=`${L}/${STOPS.length} stops viewed`;
+ $("#tabsub-lab").textContent=`Checklist ${done}/4`;
+ $("#quizlock").toggleAttribute("hidden",unl);
+ $("#tabsub-quiz").textContent=unl?(ST.attempts?`Attempts: ${ST.attempts}`:"Unlocked!"):`Needs: ${L<STOPS.length?`Learn ${L}/${STOPS.length}`:""}${L<STOPS.length&&done<4?" + ":""}${done<4?`Lab ${done}/4`:""}`;
+ $("#tab-quiz").setAttribute("aria-label",unl?"Quiz":"Quiz (locked)");
+}
+let curTab="learn";
+function showTab(id){
+ curTab=id;["learn","lab","quiz"].forEach(t=>{$("#tab-"+t).setAttribute("aria-selected",t===id);$("#panel-"+t).hidden=t!==id});
+ if(id==="learn")renderStop();else stopVis();
+ if(id==="quiz")renderQuiz();
+ updateAll();window.scrollTo({top:0});
+}
+function showSub(which){const b=which==="bench";$("#st-bench").setAttribute("aria-selected",b);$("#st-swipe").setAttribute("aria-selected",!b);$("#bench").hidden=!b;$("#swipe").hidden=b;if(!b){renderDeckPick();if(!deck)renderCard()}}
+function init(){
+ load();
+ $$(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+ $("#backBtn").onclick=()=>{if(stopIdx>0){stopIdx--;renderStop()}};
+ $("#nextBtn").onclick=()=>{if(stopIdx<STOPS.length-1){stopIdx++;renderStop()}else showTab("lab")};
+ $("#dots").addEventListener("click",e=>{const b=e.target.closest(".dot");if(b){stopIdx=+b.dataset.i;renderStop()}});
+ $("#st-bench").onclick=()=>showSub("bench");$("#st-swipe").onclick=()=>showSub("swipe");
+ $("#swipe").addEventListener("click",e=>{const b=e.target.closest("[data-d]");if(b)startDeck(b.dataset.d)});
+ $("#sbP").onclick=()=>answerSwipe("P");$("#sbC").onclick=()=>answerSwipe("C");
+ document.addEventListener("keydown",e=>{if(curTab!=="lab"||$("#swipe").hidden||!deck||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==="ArrowLeft"){e.preventDefault();answerSwipe("P")}else if(e.key==="ArrowRight"){e.preventDefault();answerSwipe("C")}});
+ $("#quizRoot").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)showTab(b.dataset.go)});
+ let resetArm=0;$("#resetBtn").onclick=()=>{const b=$("#resetBtn");if(Date.now()-resetArm<4000){try{localStorage.removeItem("pcc_v1")}catch(_){}location.reload()}else{resetArm=Date.now();b.textContent="Click again to erase all progress";setTimeout(()=>b.textContent="Reset my progress",4000)}};
+ buildLabUI();renderLog();renderCard();
+ showTab("learn");
+}
+init();
+</script>
+</body>
+</html>
