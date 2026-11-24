@@ -28,6 +28,24 @@ button{font:inherit;color:inherit;cursor:pointer}
 .seg button.on{background:var(--accent2);color:#04201c;font-weight:700}
 #levels{margin-left:auto}
 #levels.hidden{display:none}
+#scoresBtn{min-height:34px;padding:5px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);font-weight:700;font-size:14px}
+#levels.hidden + #scoresBtn{margin-left:auto}
+.scoreNow{font-weight:700;padding:2px 10px;border-radius:999px;background:rgba(45,212,191,.12);color:#99f6e4}
+.slot.repl{background:rgba(45,212,191,.22)}
+.modal.wide{max-width:760px;text-align:left}
+.modal.wide h2{text-align:center}
+.scTable{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 10px}
+.scTable th{font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+.scTable td{padding:6px;border-bottom:1px solid #1d2b38}
+.scTable td.num{text-align:right;font-weight:700}
+.scRow{cursor:pointer}
+.scRow:hover td{background:rgba(45,212,191,.06)}
+.scDetail td{padding:2px 6px 10px}
+.scDetail .endGrid{margin:4px 0}
+.pctTag{display:inline-block;min-width:48px;text-align:center;padding:1px 8px;border-radius:999px;font-weight:800}
+.p-hi{background:rgba(34,197,94,.2);color:#86efac} .p-mid{background:rgba(245,158,11,.2);color:#fcd34d} .p-lo{background:rgba(244,63,94,.2);color:#fda4af}
+.incTag{font-size:11.5px;color:#fcd34d;margin-left:6px}
+.scH3{margin:12px 0 2px;font-size:15px;color:var(--accent)}
 
 /* ---------- free-form switch ---------- */
 .switch{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;border-radius:999px;background:#0d151d;border:1px solid var(--line);padding:2px}
@@ -171,6 +189,24 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ptKey span{padding:1px 6px;border-radius:5px}
 
 #padWrap{padding:5px;display:flex;flex-direction:column;gap:3px}
+
+/* ---------- guided: full s/d/p reference table under the task + pad ---------- */
+#main.g{grid-template-rows:minmax(0,1fr) auto}
+#main.g #bins{grid-row:1 / span 2;grid-column:1}
+#main.g #atomCol{grid-row:1 / span 2;grid-column:2}
+#main.g #task{grid-row:1;grid-column:3}
+#main.g #side{grid-row:1;grid-column:4}
+#main.g #readout td{padding:2px 2px;font-size:13px}
+#refWrap{grid-row:2;grid-column:3 / span 2;padding:5px;container-type:inline-size;min-width:0}
+#refPt{display:grid;grid-template-columns:repeat(18,minmax(0,1fr));grid-template-rows:repeat(7,clamp(26px,4.3cqw,46px));gap:2px}
+#refPt .tile{border-radius:4px;padding:0 1px;line-height:1;position:relative}
+#refPt .tz{font-size:clamp(6.5px,.95cqw,10px);padding-left:1px}
+#refPt .ts{font-size:clamp(11px,1.85cqw,18px);margin-top:-2px}
+#refPt .tn{font-size:min(9px,max(5px,calc((100cqw - 34px) / 18 * .9 / (.64 * max(var(--L),7)))));color:#c7d5e2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px}
+#refPt .tile.fblk{border-style:dashed;cursor:default}
+#refPt .tile.fblk .ts{font-size:clamp(9px,1.3cqw,13px)}
+#refLegend{grid-row:1 / span 3;grid-column:3 / span 10;font-size:clamp(10px,1.2cqw,13px);color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6px}
+.c-lan{background:rgba(236,72,153,.13)} .c-act{background:rgba(217,70,239,.13)}
 #padTarget{font-size:12px;color:var(--muted);text-align:center;min-height:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #pad{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:41px;gap:4px}
 #pad button{border:1px solid var(--line);border-radius:8px;background:var(--panel2);font-size:19px;font-weight:700}
@@ -199,6 +235,35 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ec.s100{background:rgba(34,197,94,.3)} .ec.s50{background:rgba(163,230,53,.28)} .ec.s25{background:rgba(245,158,11,.3)} .ec.s0{background:rgba(244,63,94,.3)}
 .endKey{font-size:12px;color:var(--muted)}
 
+/* ---------- short screens (720p with browser bars, ~560–700px tall) ---------- */
+@media (max-height: 700px) and (min-width: 761px){
+  #app{gap:4px;padding:4px;min-height:540px}
+  #top{padding:3px 8px} .seg button,#scoresBtn{min-height:30px;padding-top:3px;padding-bottom:3px}
+  #progress{min-height:28px;padding:2px 10px}
+  #main{gap:4px}
+  #task{gap:4px;padding:6px 8px}
+  .card{padding:4px 8px}
+  .ptext{font-size:14px}
+  .species{font-size:34px;padding:0} .species.hy{font-size:26px}
+  .slot{min-height:36px;min-width:48px;font-size:19px;padding:2px 6px}
+  .slot.big{min-width:56px;min-height:56px;font-size:30px}
+  .slot.sm{min-height:34px}
+  .nucIn .nl{gap:3px}
+  .btn{min-height:38px;padding:6px 14px}
+  #pad{grid-auto-rows:35px;gap:3px}
+  #refPt{grid-template-rows:repeat(7,clamp(22px,min(4.3cqw,3.75vh),46px))}
+  #bins{gap:3px;padding:4px;overflow:auto}
+  .mult{gap:2px} .mult button{min-height:24px;font-size:12px}
+  .bin{padding:2px 2px;gap:0} .bin .ball{width:24px;height:24px;font-size:15px} .bin .bl{font-size:10px} .bin .cnt{font-size:15px}
+  #pt{grid-template-rows:repeat(4,36px)} .tile .ts{font-size:14px}
+  /* reference table: number + symbol on one line, name under it */
+  #refPt .tile{display:grid;grid-template-columns:auto auto;justify-content:center;align-content:center;column-gap:2px;row-gap:0}
+  #refPt .tz{align-self:start;padding:1px 0 0 0;font-size:7px}
+  #refPt .ts{margin:0;font-size:clamp(10px,1.6cqw,15px)}
+  #refPt .tn{grid-column:1 / span 2;justify-self:center}
+  #refPt .tile.fblk{grid-template-columns:auto}
+  #refPt .tile.fblk .tz{display:none}
+}
 /* ---------- phone ---------- */
 @media (max-width: 1100px) and (min-width: 761px){
   #top h1{font-size:15px}
@@ -209,7 +274,11 @@ button{font:inherit;color:inherit;cursor:pointer}
   #app{height:auto;min-height:0;display:flex;flex-direction:column}
   #main,#bottom,#side,#padSlot{display:contents}
   #top{order:1} #progress{order:2} #task{order:3;overflow:visible} #atomCol{order:4}
-  #bins{order:5} #padWrap{order:6} #ptWrap{order:7} #readout{order:8}
+  #bins{order:5} #padWrap{order:6} #ptWrap{order:7} #refWrap{order:7;overflow-x:auto} #readout{order:8}
+  #refPt{grid-template-columns:repeat(18,40px);grid-template-rows:repeat(7,40px)}
+  #refPt .tz{font-size:8px} #refPt .ts{font-size:14px}
+  #refPt .tn{font-size:min(7.5px,calc(56px / max(var(--L),7)))}
+  #refLegend{font-size:12px}
   #levels{margin-left:0}
   #top h1{font-size:15px;width:100%}
   .seg button{padding:6px 8px;font-size:13px}
@@ -242,6 +311,7 @@ button{font:inherit;color:inherit;cursor:pointer}
       <button data-level="4">4 Convert It</button>
       <button data-level="5">5 Mixed</button>
     </div>
+    <button id="scoresBtn">📊 Scores</button>
   </header>
   <div id="progress"></div>
   <div id="main">
@@ -260,6 +330,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     </div>
     <div id="task" class="panel"></div>
     <div id="side"><div id="padSlot"></div><div id="readout" class="panel"></div></div>
+    <div id="refWrap" class="panel hide"><div id="refPt"></div></div>
   </div>
   <div id="bottom">
     <div id="ptWrap" class="panel"><div id="pt"></div></div>
@@ -485,7 +556,8 @@ function newSet(){
     item.dir=Math.random()<0.5?'h2n':'n2h';
     qs.push(item);
   }
-  Object.assign(g,{qs,idx:0,results:[],finished:false});
+  if(g.qs&&g.qs.length&&!g.finished) recordSet(false);
+  Object.assign(g,{qs,idx:0,results:[],finished:false,saved:false,level:S.level});
   startQ();
 }
 function startQ(){
@@ -493,7 +565,7 @@ function startQ(){
   const g=S.g,q=curQ();
   Object.assign(g,{attempts:0,hints:0,hintCats:new Set(),lastWrongCats:[],done:false,reveal:false,wrong:new Set(),fb:null});
   g.answers={}; fieldsFor(q).forEach(f=>g.answers[f]=FIELD_INFO[f].k==='el'?null:'');
-  g.active=fieldsFor(q)[0]||null;
+  g.active=fieldsFor(q)[0]||null; lastEdited=null;
   const T=tgt(q);
   g.model=q.type===2?{p:0,n:0,e:0}:{p:T.p,n:T.n,e:T.e};
   lastP=-1; renderAll();
@@ -636,7 +708,7 @@ function revealAnswer(){
 }
 function nextQ(){
   const g=S.g; if(!g.done) return;
-  if(g.idx>=g.qs.length-1){ g.finished=true; renderAll(); showEnd(); return; }
+  if(g.idx>=g.qs.length-1){ g.finished=true; recordSet(true); renderAll(); showEnd(); return; }
   g.idx++; startQ();
 }
 function hintText(q,c){
@@ -680,6 +752,8 @@ function ctx(){
   const g=S.g,q=curQ(); if(!q) return null;
   return {ans:g.answers,get active(){return g.active},set active(v){g.active=v},fields:fieldsFor(q),locked:g.done||g.finished};
 }
+let lastEdited=null; // field that last received a keystroke; arriving at a filled box selects its value
+function isFresh(c,f){ return lastEdited!==f && c.ans[f]!=null && c.ans[f]!==''; }
 function padKey(k){
   const c=ctx(); if(!c||c.locked) return;
   if(!c.fields.length){ toast(S.mode==='free'?'Switch to “Enter notation” to type a notation.':'Build It uses the particle bins — drag particles onto the atom.'); return; }
@@ -692,13 +766,19 @@ function padKey(k){
     renderAll(); return;
   }
   let v=c.ans[f]||'';
+  const fresh=isFresh(c,f);
+  if(fresh&&(k==='del'||k==='clr')) v='';
+  else if(fresh&&/^\d$/.test(k)) v=kd==='num'?'':v.replace(/[^+-]/g,'');
+  if(k!=='+'&&k!=='-') lastEdited=f;
   if(kd==='num'){
-    if(/^\d$/.test(k)){ if(v==='0') v=''; if(v.length<2) v+=k; if(v.length>=targetLen(f)){ c.ans[f]=v; touched(f); advanceFrom(c,f); renderAll(); return; } }
+    if(fresh&&(k==='del'||k==='clr')){}
+    else if(/^\d$/.test(k)){ if(v==='0') v=''; if(v.length<2) v+=k; if(v.length>=targetLen(f)){ c.ans[f]=v; touched(f); advanceFrom(c,f); renderAll(); return; } }
     else if(k==='del') v=v.slice(0,-1);
     else if(k==='clr') v='';
     else { toast('+ and − are only for the charge box.'); return; }
   } else {
-    if(/^\d$/.test(k)){ if(v.replace(/[+-]/g,'').length<2) v+=k; }
+    if(fresh&&(k==='del'||k==='clr')){}
+    else if(/^\d$/.test(k)){ const sg=v.replace(/[^+-]/g,''), d=v.replace(/[+-]/g,''); if(d.length<2) v=d+k+sg; }
     else if(k==='+'||k==='-') v=v.replace(/[+-]/g,'')+k;
     else if(k==='del') v=v.slice(0,-1);
     else if(k==='clr') v='';
@@ -727,6 +807,7 @@ function pickElement(z){
     const a=S.free.answers; a.fSym=z; a.fZ=String(z);
     S.free.active=a.fA===''?'fA':'fCh'; renderAll(); return;
   }
+  if(z>36){ const e=refEl(z); toast(`${e.name} (${e.sym}) — atomic number ${z}`); return; }
   const g=S.g; if(g.done||g.finished){ toast(`${EL[z].name}: atomic number ${z}`); return; }
   const fl=fieldsFor(curQ());
   let target=(g.active&&FIELD_INFO[g.active].k==='el')?g.active:(fl.find(f=>FIELD_INFO[f].k==='el'&&g.answers[f]==null)||fl.find(f=>FIELD_INFO[f].k==='el'));
@@ -737,7 +818,7 @@ function pickElement(z){
 }
 let selTile=null;
 function flashTile(z){
-  const t=document.querySelector(`.tile[data-z="${z}"]`); if(!t) return;
+  const t=document.querySelector(`${S.mode==='guided'?'#refPt':'#pt'} .tile[data-z="${z}"]`); if(!t) return;
   if(selTile) selTile.classList.remove('sel'); selTile=t; t.classList.add('sel');
   t.classList.remove('flashT'); void t.offsetWidth; t.classList.add('flashT');
 }
@@ -938,7 +1019,7 @@ function slotHTML(f,extra){
   else if(info.k==='num'){ if(v===''||v==null){txt=info.ph;ph=true;} else txt=v; }
   else { const r=parseCharge(v); if(!v){txt=info.ph;ph=true;} else if(r.invalid) txt=v+'?'; else txt=r.v===0?'0':fmtCharge(r.v); }
   let cls='slot '+(extra||'');
-  if(c.active===f&&!c.locked) cls+=' active';
+  if(c.active===f&&!c.locked){ cls+=' active'; if(isFresh(c,f)) cls+=' repl'; }
   if(ph) cls+=' ph';
   if(S.mode==='guided'){ const g=S.g; if(g.reveal) cls+=' reveal'; else if(g.done) cls+=' right'; else if(g.wrong.has(f)) cls+=' wrong'; }
   return `<button class="${cls}" data-f="${f}" aria-label="${info.lbl}">${txt}</button>`;
@@ -1052,7 +1133,9 @@ function renderProgress(){
   const g=S.g,q=curQ(); if(!q) return;
   const dots=g.qs.map((_,i)=>{ const r=g.results[i]; let c='dot'; if(r) c+=' s'+Math.round(r.score*100); if(i===g.idx&&!g.finished) c+=' cur'; return `<span class="${c}"></span>`; }).join('');
   const rst=(q.type===2&&!g.done)?'<button class="resetBtn" data-act="greset" style="margin-left:0">↺ Reset model</button>':'';
-  box.innerHTML=`<b>Level ${S.level} · ${LEVEL_NAMES[S.level]}</b><span>Question ${g.idx+1} / ${g.qs.length}</span><span class="badge b-${q.diff}">${q.diff}</span>${rst}<span class="dots">${dots}</span>`;
+  const nd=g.results.filter(Boolean).length, pts=setPoints(g);
+  const sc=`<span class="scoreNow">Score ${nd?Math.round(pts/nd*100)+'%':'—'} <span style="font-weight:500;opacity:.8">(${+pts.toFixed(2)} / ${nd})</span></span>`;
+  box.innerHTML=`<b>Level ${S.level} · ${LEVEL_NAMES[S.level]}</b><span>Question ${g.idx+1} / ${g.qs.length}</span><span class="badge b-${q.diff}">${q.diff}</span>${sc}${rst}<span class="dots">${dots}</span>`;
 }
 function renderPad(){
   const c=ctx(); const pt=$('#padTarget');
@@ -1069,15 +1152,84 @@ function needs(){
   return {pt:true,pad:true};
 }
 function renderLayout(){
-  const nd=needs(), pw=$('#padWrap');
-  $('#ptWrap').classList.toggle('hide',!nd.pt);
+  const nd=needs(), pw=$('#padWrap'), g=S.mode==='guided';
+  $('#main').classList.toggle('g',g);
+  $('#refWrap').classList.toggle('hide',!g);
+  $('#ptWrap').classList.toggle('hide',g||!nd.pt);
   pw.classList.toggle('hide',!nd.pad);
-  const home=(nd.pad&&!nd.pt)?$('#padSlot'):$('#bottom');
+  const home=(nd.pad&&(g||!nd.pt))?$('#padSlot'):$('#bottom');
   if(pw.parentElement!==home) home.appendChild(pw);
-  $('#bottom').classList.toggle('hide',!nd.pt);
+  $('#bottom').classList.toggle('hide',g||!nd.pt);
+  $('#refLegend').textContent=nd.pt?'Tap an element to enter it · atomic number, symbol, name':'Reference table · atomic number, symbol, name';
 }
 function renderAll(){ renderLayout(); renderTop(); renderProgress(); renderTask(); renderReadout(); renderLabel(); renderBins(); renderPad(); }
 function renderLight(){ renderReadout(); renderLabel(); renderBins(); const t=$('#task'); if(S.mode==='free'&&t){ t.innerHTML=freeTaskHTML(); } }
+
+/* ---------- guided reference table: full s, d, p blocks (1–118, f-block as placeholders) ---------- */
+const REF_MORE='Rb Rubidium,Sr Strontium,Y Yttrium,Zr Zirconium,Nb Niobium,Mo Molybdenum,Tc Technetium,Ru Ruthenium,Rh Rhodium,Pd Palladium,Ag Silver,Cd Cadmium,In Indium,Sn Tin,Sb Antimony,Te Tellurium,I Iodine,Xe Xenon,Cs Cesium,Ba Barium,La Lanthanum,Ce Cerium,Pr Praseodymium,Nd Neodymium,Pm Promethium,Sm Samarium,Eu Europium,Gd Gadolinium,Tb Terbium,Dy Dysprosium,Ho Holmium,Er Erbium,Tm Thulium,Yb Ytterbium,Lu Lutetium,Hf Hafnium,Ta Tantalum,W Tungsten,Re Rhenium,Os Osmium,Ir Iridium,Pt Platinum,Au Gold,Hg Mercury,Tl Thallium,Pb Lead,Bi Bismuth,Po Polonium,At Astatine,Rn Radon,Fr Francium,Ra Radium,Ac Actinium,Th Thorium,Pa Protactinium,U Uranium,Np Neptunium,Pu Plutonium,Am Americium,Cm Curium,Bk Berkelium,Cf Californium,Es Einsteinium,Fm Fermium,Md Mendelevium,No Nobelium,Lr Lawrencium,Rf Rutherfordium,Db Dubnium,Sg Seaborgium,Bh Bohrium,Hs Hassium,Mt Meitnerium,Ds Darmstadtium,Rg Roentgenium,Cn Copernicium,Nh Nihonium,Fl Flerovium,Mc Moscovium,Lv Livermorium,Ts Tennessine,Og Oganesson'.split(',').map(x=>{const i=x.indexOf(' ');return {sym:x.slice(0,i),name:x.slice(i+1)};});
+function refEl(z){ return z<=36?EL[z]:REF_MORE[z-37]; }
+function refPos(z){
+  if(z<=36) return ptPos(z);
+  if(z<=54) return [5,z-36];
+  if((z>=57&&z<=71)||(z>=89&&z<=103)) return null;
+  if(z<=56) return [6,z-54]; if(z>=72&&z<=86) return [6,z-68];
+  if(z<=88) return [7,z-86]; if(z>=104) return [7,z-100];
+  return null; }
+function refCat(z){
+  if(z<=36) return cat(z);
+  if([37,55,87].includes(z)) return 'alk'; if([38,56,88].includes(z)) return 'ae';
+  if([54,86,118].includes(z)) return 'noble'; if([53,85,117].includes(z)) return 'hal';
+  if([51,52].includes(z)) return 'metalloid';
+  if([49,50,81,82,83,84,113,114,115,116].includes(z)) return 'post';
+  return 'tm'; }
+function buildRefPT(){
+  let h='';
+  for(let z=1;z<=118;z++){ const pos=refPos(z); if(!pos) continue; const [r,c]=pos,e=refEl(z);
+    h+=`<button class="tile c-${refCat(z)}" data-z="${z}" style="grid-row:${r};grid-column:${c}" aria-label="${e.name}, atomic number ${z}"><span class="tz">${z}</span><span class="ts">${e.sym}</span><span class="tn" style="--L:${e.name.length}">${e.name}</span></button>`; }
+  h+=`<button class="tile fblk c-lan" data-f="57–71 · Lanthanides" style="grid-row:6;grid-column:3"><span class="tz">57–71</span><span class="ts">La–Lu</span></button>`;
+  h+=`<button class="tile fblk c-act" data-f="89–103 · Actinides" style="grid-row:7;grid-column:3"><span class="tz">89–103</span><span class="ts">Ac–Lr</span></button>`;
+  h+=`<div id="refLegend"></div>`;
+  const pt=$('#refPt'); pt.innerHTML=h;
+  pt.addEventListener('click',ev=>{ const t=ev.target.closest('.tile'); if(!t) return;
+    if(t.dataset.f){ toast(t.dataset.f+' (f-block, not shown)'); return; }
+    pickElement(+t.dataset.z); });
+}
+
+/* ---------- saved scores (this browser) ---------- */
+const SCORE_KEY='atomBuilderScores.v1';
+let memScores=[], storageOK=true;
+function loadScores(){ try{ const r=localStorage.getItem(SCORE_KEY); return r?JSON.parse(r):[]; }catch(e){ storageOK=false; return memScores; } }
+function saveScores(list){ try{ localStorage.setItem(SCORE_KEY,JSON.stringify(list)); }catch(e){ storageOK=false; memScores=list; } }
+function setPoints(g){ return g.results.filter(Boolean).reduce((s,r)=>s+r.score,0); }
+function recordSet(complete){
+  const g=S.g; if(g.saved) return; const done=g.results.filter(Boolean); if(!done.length) return;
+  g.saved=true;
+  const list=loadScores();
+  list.push({t:Date.now(),level:g.level||S.level,n:g.qs.length,answered:done.length,complete,
+    pct:Math.round(setPoints(g)/done.length*100),first:done.filter(r=>r.score===1).length,
+    items:g.results.map(r=>r?[r.q.A,r.q.Z,r.q.ch,r.score]:null).filter(Boolean)});
+  saveScores(list);
+}
+function pctCls(p){ return p>=80?'p-hi':p>=60?'p-mid':'p-lo'; }
+function cellsHTML(items){ return items.map(([A,Z,ch,sc],i)=>`<div class="ec s${Math.round(sc*100)}"><div>Q${i+1}</div>${nucHTML(A,Z,EL[Z].sym,ch)}<div>${Math.round(sc*100)}%</div></div>`).join(''); }
+function fmtWhen(t){ const d=new Date(t); return d.toLocaleDateString()+' · '+d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}); }
+let scoresClearArmed=false;
+function showScores(){
+  const list=loadScores(); scoresClearArmed=false;
+  let sum='';
+  for(let l=1;l<=5;l++){ const L=list.filter(x=>x.level===l&&x.complete);
+    const best=L.length?Math.max(...L.map(x=>x.pct)):null, avg=L.length?Math.round(L.reduce((a,x)=>a+x.pct,0)/L.length):null, last=L.length?L[L.length-1].pct:null;
+    sum+=`<tr><td>Level ${l} · ${LEVEL_NAMES[l]}</td><td class="num">${L.length}</td><td class="num">${best==null?'—':`<span class="pctTag ${pctCls(best)}">${best}%</span>`}</td><td class="num">${avg==null?'—':avg+'%'}</td><td class="num">${last==null?'—':last+'%'}</td></tr>`; }
+  const rows=list.map((x,i)=>({x,i})).reverse().map(({x,i})=>`<tr class="scRow" data-sc="${i}"><td>${fmtWhen(x.t)}</td><td>Level ${x.level} · ${LEVEL_NAMES[x.level]}${x.complete?'':`<span class="incTag">incomplete ${x.answered}/${x.n}</span>`}</td><td class="num"><span class="pctTag ${pctCls(x.pct)}">${x.pct}%</span></td><td class="num">${x.first} / ${x.answered}</td></tr><tr class="scDetail hide" data-scd="${i}"><td colspan="4"><div class="endGrid">${cellsHTML(x.items)}</div></td></tr>`).join('');
+  openModal(`<h2>📊 Scores</h2>
+    <div class="muted" style="font-size:13px;text-align:center">${storageOK?'Saved in this browser on this device.':'This browser is blocking storage — scores last only until the page is closed.'}</div>
+    <div class="scH3">By level (finished sets)</div>
+    <table class="scTable"><tr><th>Level</th><th style="text-align:right">Sets</th><th style="text-align:right">Best</th><th style="text-align:right">Average</th><th style="text-align:right">Latest</th></tr>${sum}</table>
+    <div class="scH3">Every set <span class="muted" style="font-size:12px;font-weight:400">· newest first · tap a set to see each question</span></div>
+    ${list.length?`<table class="scTable"><tr><th>Date</th><th>Level</th><th style="text-align:right">Score</th><th style="text-align:right">1st try</th></tr>${rows}</table><div class="endKey">🟩 1st try 100% · 🟨 2nd 50% · 🟧 3rd 25% · 🟥 missed 0%</div>`:'<div class="muted" style="padding:10px 0">No scores yet — finish a Guided set and it will show up here.</div>'}
+    <div class="btns" style="margin-top:12px"><button class="btn primary" data-act="closeScores">Close</button>${list.length?'<button class="btn ghostBtn" data-act="clearScores">Clear all scores</button>':''}</div>`);
+  $('#modal').classList.add('wide');
+}
 
 /* ---------- periodic table ---------- */
 function buildPT(){
@@ -1095,8 +1247,8 @@ function buildPT(){
 /* ---------- overlay / toast ---------- */
 let toastTimer=null;
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
-function openModal(html){ $('#modal').innerHTML=html; $('#overlay').classList.add('show'); }
-function closeModal(){ $('#overlay').classList.remove('show'); }
+function openModal(html){ $('#modal').classList.remove('wide'); $('#modal').innerHTML=html; $('#overlay').classList.add('show'); }
+function closeModal(){ $('#overlay').classList.remove('show'); $('#modal').classList.remove('wide'); }
 let pendingConfirm=null;
 function confirmModal(msg,fn){
   pendingConfirm=fn;
@@ -1115,7 +1267,7 @@ function showEnd(){
     <div class="muted" style="font-size:13px">${now.toLocaleDateString()} · ${now.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</div>
     <div class="endGrid">${cells}</div>
     <div class="endKey">🟩 1st try 100% · 🟨 2nd 50% · 🟧 3rd 25% · 🟥 missed 0%</div>
-    <div class="btns" style="margin-top:12px"><button class="btn primary" data-act="newSet">New Set</button><button class="btn" data-act="chooseLevel">Choose Level</button></div>`);
+    <div class="btns" style="margin-top:12px"><button class="btn primary" data-act="newSet">New Set</button><button class="btn" data-act="chooseLevel">Choose Level</button><button class="btn" data-act="scores">📊 All scores</button></div>`);
 }
 
 /* =====================================================================
@@ -1145,11 +1297,12 @@ $('#progress').addEventListener('click',ev=>{
   const a=ev.target.closest('[data-act="reset"]');
   if(a){ resetFree(); toast('Free Form reset.'); }
 });
+$('#scoresBtn').addEventListener('click',()=>showScores());
 $('#mult').addEventListener('click',ev=>{ const b=ev.target.closest('button'); if(!b) return; S.mult=+b.dataset.m; renderBins(); });
 $('#pad').addEventListener('click',ev=>{ const b=ev.target.closest('button'); if(b) padKey(b.dataset.k); });
 $('#task').addEventListener('click',ev=>{
   const s=ev.target.closest('[data-f]');
-  if(s){ const c=ctx(); if(c&&!c.locked){ c.active=s.dataset.f; renderAll(); } return; }
+  if(s){ const c=ctx(); if(c&&!c.locked){ c.active=s.dataset.f; lastEdited=null; renderAll(); } return; }
   const a=ev.target.closest('[data-act]'); if(!a||a.disabled) return;
   const act=a.dataset.act;
   if(act==='check') check();
@@ -1159,11 +1312,17 @@ $('#task').addEventListener('click',ev=>{
   else if(act==='build') freeBuild();
 });
 $('#overlay').addEventListener('click',ev=>{
+  const r=ev.target.closest('[data-sc]'); if(r){ $(`[data-scd="${r.dataset.sc}"]`).classList.toggle('hide'); return; }
   const a=ev.target.closest('[data-act]'); if(!a) return;
   const act=a.dataset.act;
   if(act==='confirmYes'){ const f=pendingConfirm; pendingConfirm=null; closeModal(); if(f) f(); }
   else if(act==='confirmNo'){ pendingConfirm=null; closeModal(); }
   else if(act==='newSet'){ closeModal(); newSet(); }
+  else if(act==='scores'){ showScores(); }
+  else if(act==='closeScores'){ closeModal(); if(S.mode==='guided'&&S.g.finished) showEnd(); }
+  else if(act==='clearScores'){
+    if(!scoresClearArmed){ scoresClearArmed=true; a.textContent='Tap again to delete every saved score'; a.classList.add('primary'); return; }
+    saveScores([]); memScores=[]; showScores(); toast('All scores cleared.'); }
   else if(act==='chooseLevel'){ closeModal(); newSet(); const lv=$('#levels'); lv.style.outline='2px solid var(--accent)'; setTimeout(()=>lv.style.outline='',1600); toast('Pick a level at the top.'); }
 });
 document.addEventListener('keydown',ev=>{
@@ -1205,7 +1364,7 @@ function selfTest(){
 }
 
 /* ---------- init ---------- */
-buildPT(); sizeCanvas(); selfTest(); newSet(); requestAnimationFrame(frame);
+buildPT(); buildRefPT(); sizeCanvas(); selfTest(); newSet(); requestAnimationFrame(frame);
 window.AB={hits:()=>mainHits,S,curQ,tgt,fieldsFor,pickElement,padKey,check,nextQ,addParticles,removeParticles,giveHint,freeBuild,POOLS,EL,shellLayout,selfTest};
 </script>
 </body>
