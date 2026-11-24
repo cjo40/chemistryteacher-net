@@ -67,7 +67,16 @@
     "/molecular-polarity": "/intermolecular-forces",
     "/like-dissolves-like": "/intermolecular-forces",
     "/hydrogen-bonding": "/intermolecular-forces",
-    "/intermolecular-forces-lab": "/intermolecular-forces"
+    "/intermolecular-forces-lab": "/intermolecular-forces",
+    "/flame-tests": "/flame-test",
+    "/flame-test-lab": "/flame-test",
+    "/line-spectra": "/flame-test",
+    "/emission-spectra": "/flame-test",
+    "/emission-spectrum": "/flame-test",
+    "/atomic-spectra": "/flame-test",
+    "/spectroscope": "/flame-test",
+    "/bohr-model-spectra": "/flame-test",
+    "/spectrum-tubes": "/flame-test"
   },
   "activities": {
     "dimensional-analysis": {
@@ -569,6 +578,43 @@
           "file": "intermolecular-forces-worksheet.docx"
         }
       ]
+    },
+    "flame-test": {
+      "name": "Flame Test & Line Spectra Lab",
+      "title": "Flame Test & Line Spectra Lab: Emission Spectra, Bohr Model & Spectroscope Simulation",
+      "description": "Free interactive flame test and emission spectrum lab: test metal salts in a Bunsen flame, view gas discharge tubes in a spectroscope, watch electrons jump and fall in the Bohr model, and identify unknowns.",
+      "unit": "Atomic Structure",
+      "order": 7,
+      "card": "Put metal salts in a flame and power up gas tubes, then read their line spectra in a spectroscope and watch the electron jumps that make each color. Identify the unknowns.",
+      "topics": [
+        "flame test",
+        "emission spectrum",
+        "line spectra",
+        "atomic spectra",
+        "Bohr model",
+        "energy levels",
+        "electron transitions",
+        "photon energy",
+        "E = hf",
+        "c = λf",
+        "spectroscope",
+        "gas discharge tubes",
+        "hydrogen spectrum",
+        "sodium doublet",
+        "cobalt blue glass",
+        "fluorescent lamp",
+        "continuous spectrum"
+      ],
+      "about": "Two modes share one spectroscope. In Lamp mode students power hydrogen, helium, neon, mercury, nitrogen, argon, xenon and sodium spectrum tubes, plus a fluorescent lamp and an incandescent bulb. In Flame Test mode they put LiCl, NaCl, KCl, CaCl₂, SrCl₂, BaCl₂ and CuCl₂ in a Bunsen flame, with a cobalt blue glass filter. An Inside the Atom panel shows each element's real Bohr shells and energy levels, with the electron absorbing energy, jumping up and falling back to emit a photon of the matching color; the spectroscope shows sharp atomic lines and shaded molecular bands, with a draggable zoom that separates close lines like sodium's 589.0/589.6 nm pair. Wavelengths and relative intensities come from the NIST Atomic Spectra Database / Handbook of Basic Atomic Spectroscopic Data.",
+      "how": [
+        "Use the switch at the top to choose Lamp or Flame Test.",
+        "Pick a known lamp or salt and watch the light source, the Inside the Atom panel and the spectroscope.",
+        "Hover or tap a line to see its wavelength, frequency and photon energy; click it to watch that electron drop.",
+        "Drag the yellow zoom box (or the zoom strip) to see close lines and band structure up close; use Compare to line up a known spectrum.",
+        "Identify Unknowns A–C, Mixture M (use the cobalt blue glass) and Tubes 1–3. When all 7 are correct the lab is complete — download, copy or email the score card."
+      ],
+      "classroom": "Use it alongside a real flame test or spectrum tube demo, as a make-up lab, or as practice reading line spectra before a test on the Bohr model and electron transitions. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "tl"
     }
   }
 }
