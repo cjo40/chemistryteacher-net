@@ -59,7 +59,15 @@
     "/chemical-changes": "/physical-chemical-changes",
     "/physical-changes": "/physical-chemical-changes",
     "/evidence-of-chemical-change": "/physical-chemical-changes",
-    "/properties-and-changes": "/physical-chemical-changes"
+    "/properties-and-changes": "/physical-chemical-changes",
+    "/intermolecular": "/intermolecular-forces",
+    "/imf": "/intermolecular-forces",
+    "/imfs": "/intermolecular-forces",
+    "/polarity": "/intermolecular-forces",
+    "/molecular-polarity": "/intermolecular-forces",
+    "/like-dissolves-like": "/intermolecular-forces",
+    "/hydrogen-bonding": "/intermolecular-forces",
+    "/intermolecular-forces-lab": "/intermolecular-forces"
   },
   "activities": {
     "dimensional-analysis": {
@@ -492,6 +500,42 @@
         "When all Learn stops are viewed and the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
       ],
       "classroom": "Use it as notes and a virtual lab before a hands-on physical/chemical change lab, as a make-up lab for absent students (no chemicals needed), or as review before a matter quiz. The Lab Bench works well projected for a whole-class predict-observe-explain. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "tl"
+    },
+    "intermolecular-forces": {
+      "name": "Intermolecular Forces & Polarity",
+      "title": "Polarity, Intermolecular Forces & Like Dissolves Like: Interactive Chemistry Lesson",
+      "description": "Free interactive lesson on bond and molecular polarity, London dispersion, dipole–dipole, hydrogen bonding and ion–dipole forces, and like dissolves like, with 3D molecules, virtual labs and a quiz.",
+      "unit": "Bonding & Naming",
+      "order": 3,
+      "card": "Find polar bonds from electronegativity, rotate 3D molecules to decide polarity, watch intermolecular forces in a particle microscope and test like dissolves like at a mixing bench.",
+      "topics": [
+        "polarity",
+        "electronegativity difference",
+        "polar and nonpolar molecules",
+        "partial charges",
+        "dipole arrow",
+        "molecular shape",
+        "intermolecular forces",
+        "London dispersion forces",
+        "dipole–dipole forces",
+        "hydrogen bonding",
+        "ion–dipole forces",
+        "boiling point",
+        "like dissolves like",
+        "solubility",
+        "soap and micelles"
+      ],
+      "about": "Students learn to find bond polarity from electronegativity (ΔEN cutoffs 0.5 and 1.7, treated as a continuum), show polarity with partial charges, dipole arrows and electron-density maps, and decide molecular polarity from shape. Learn stops compare intramolecular bonds with intermolecular forces, show London dispersion, dipole–dipole, hydrogen bonding and ion–dipole forces with animated particle views and a relative-strength scale, graph the boiling points of the group 14–17 hydrides, and explain like dissolves like with soap micelles, vitamins and dry cleaning. The Lab has a 3D Polarity Explorer with an electric-field box, a charged balloon and liquid stream, an IMF Microscope with a temperature slider and Boiling Race, and a Mixing Bench with water, hexane and ethanol, a two-layer challenge and a soap demo.",
+      "how": [
+        "Work through the 10 Learn stops (Back/Next or tap a numbered stop). Drag the 3D molecules to rotate them.",
+        "In Lab A, pick molecules, use the toggles and the electric-field box, then classify 10 molecules as polar or nonpolar and list their IMFs.",
+        "In Lab B, choose a liquid, predict, then run the charged-balloon test for 3 liquids.",
+        "In Lab C, change the temperature in the IMF Microscope, then run 2 Boiling Races.",
+        "In Lab D, test at least 8 solute/solvent combinations and complete the two-layer challenge.",
+        "When the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
+      ],
+      "classroom": "Use it as interactive notes on polarity and intermolecular forces, as a virtual lab before or after a hands-on solubility or evaporation lab, or as review before a bonding test. The score card can be turned in through Google Classroom or Gmail.",
       "bar": "tl"
     }
   }
