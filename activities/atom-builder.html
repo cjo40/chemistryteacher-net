@@ -264,6 +264,9 @@ button{font:inherit;color:inherit;cursor:pointer}
   #refPt .tile.fblk{grid-template-columns:auto}
   #refPt .tile.fblk .tz{display:none}
 }
+/* site menu button (chemistryteacher.net) lives in its own header slot */
+#ctSlot{display:none;flex:none;height:34px}
+#ctSlot.has{display:flex;align-items:center}
 /* ---------- phone ---------- */
 @media (max-width: 1100px) and (min-width: 761px){
   #top h1{font-size:15px}
@@ -304,6 +307,7 @@ button{font:inherit;color:inherit;cursor:pointer}
       <button data-mode="free" class="on">Free Form</button>
       <button data-mode="guided">Guided</button>
     </div>
+    <span id="ctSlot"></span>
     <div class="seg" id="levels">
       <button data-level="1">1 Count It</button>
       <button data-level="2">2 Build It</button>
@@ -1364,6 +1368,11 @@ function selfTest(){
 }
 
 /* ---------- init ---------- */
+function dockSiteBar(){ const b=document.getElementById('ct-bar'), s=document.getElementById('ctSlot');
+  if(!b||!s||b.parentElement===s) return;
+  s.appendChild(b); s.classList.add('has');
+  b.style.cssText+=';position:relative;left:auto;top:auto;right:auto;bottom:auto;transform:none'; }
+document.addEventListener('DOMContentLoaded',dockSiteBar); window.addEventListener('load',dockSiteBar);
 buildPT(); buildRefPT(); sizeCanvas(); selfTest(); newSet(); requestAnimationFrame(frame);
 window.AB={hits:()=>mainHits,S,curQ,tgt,fieldsFor,pickElement,padKey,check,nextQ,addParticles,removeParticles,giveHint,freeBuild,POOLS,EL,shellLayout,selfTest};
 </script>
