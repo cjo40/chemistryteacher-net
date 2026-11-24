@@ -117,7 +117,13 @@
         "Finish the quiz to get a score card. No names or personal information are collected."
       ],
       "classroom": "Works well as a self-paced introduction to atomic structure, a station activity, or review before a unit test. The score card gives a quick completion check.",
-      "bar": "br"
+      "bar": "br",
+      "worksheets": [
+        {
+          "label": "Worksheet",
+          "file": "atomic-theory-worksheet.pdf"
+        }
+      ]
     },
     "atom-builder": {
       "name": "Atom Builder: Isotopes & Ions",
@@ -402,7 +408,17 @@
         "When the Lab Checklist is done, take the 10-question quiz and download or email your score card."
       ],
       "classroom": "Use it as interactive notes on classifying matter, as station work, or as review before a quiz on elements, compounds and mixtures. The score card can be turned in through Google Classroom or Gmail.",
-      "bar": "bl"
+      "bar": "bl",
+      "worksheets": [
+        {
+          "label": "Worksheet",
+          "file": "compounds-vs-molecules-worksheet.pdf"
+        },
+        {
+          "label": "Worksheet",
+          "file": "compounds-vs-molecules-worksheet.docx"
+        }
+      ]
     },
     "endothermic-exothermic": {
       "name": "Endothermic vs Exothermic",
@@ -500,7 +516,13 @@
         "When all Learn stops are viewed and the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
       ],
       "classroom": "Use it as notes and a virtual lab before a hands-on physical/chemical change lab, as a make-up lab for absent students (no chemicals needed), or as review before a matter quiz. The Lab Bench works well projected for a whole-class predict-observe-explain. The score card can be turned in through Google Classroom or Gmail.",
-      "bar": "tl"
+      "bar": "tl",
+      "worksheets": [
+        {
+          "label": "Worksheet",
+          "file": "physical-chemical-changes-worksheet.pdf"
+        }
+      ]
     },
     "intermolecular-forces": {
       "name": "Intermolecular Forces & Polarity",
@@ -536,7 +558,17 @@
         "When the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
       ],
       "classroom": "Use it as interactive notes on polarity and intermolecular forces, as a virtual lab before or after a hands-on solubility or evaporation lab, or as review before a bonding test. The score card can be turned in through Google Classroom or Gmail.",
-      "bar": "tl"
+      "bar": "tl",
+      "worksheets": [
+        {
+          "label": "Worksheet",
+          "file": "intermolecular-forces-worksheet.pdf"
+        },
+        {
+          "label": "Worksheet",
+          "file": "intermolecular-forces-worksheet.docx"
+        }
+      ]
     }
   }
 }
