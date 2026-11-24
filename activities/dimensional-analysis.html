@@ -14,7 +14,7 @@ input,select{font:inherit}
 sub,sup{font-size:.68em;line-height:0}
 
 /* ---------- Control bar ---------- */
-#top{background:var(--navy);color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:7px 10px;flex:0 0 auto}
+#top{background:var(--navy);color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:7px 10px;flex:0 0 auto}
 #top h1{font-size:17px;margin:0 4px 0 0;white-space:nowrap;letter-spacing:.2px}
 .toggle{display:flex;align-items:center;gap:6px;font-size:13px;background:rgba(255,255,255,.1);padding:4px 9px;border-radius:20px;cursor:pointer;white-space:nowrap}
 .toggle .opt{opacity:.5;font-weight:600}
@@ -22,7 +22,7 @@ sub,sup{font-size:.68em;line-height:0}
 .sw{width:36px;height:20px;border-radius:10px;background:#6b7a99;position:relative;flex:0 0 auto}
 .sw .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .18s}
 .toggle.right .knob{left:18px}
-.tbtn{background:#fff;color:var(--navy);border:none;border-radius:6px;padding:6px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.tbtn{background:#fff;color:var(--navy);border:none;border-radius:6px;padding:6px 8px;font-weight:700;font-size:13px;white-space:nowrap}
 .tbtn:hover{background:#dbe4ff}
 .tbtn.alt{background:#4c6ef5;color:#fff}
 .tbtn.alt:hover{background:#3b5bdb}
@@ -192,6 +192,65 @@ sub,sup{font-size:.68em;line-height:0}
 .pt .gap{grid-column:1/-1;height:8px}
 .pt .mk{font-size:10px;color:#868e96;display:flex;align-items:center;justify-content:center;background:#f1f3f5;border-radius:4px}
 
+/* step badges */
+.sn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#fcc419;color:#1f2a44;font-size:10.5px;font-weight:900;margin-right:4px;vertical-align:1px}
+.tbtn.dir{background:#fcc419;color:#1f2a44}
+.tbtn.dir:hover{background:#ffd43b}
+.mbtn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---------- Conversion factor modal ---------- */
+.fsteps{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.fsteps .fs{flex:1;min-width:110px;font-size:12.5px;font-weight:700;color:#868e96;background:#f1f3f5;border-radius:8px;padding:6px 8px;border:2px solid transparent;display:flex;align-items:center}
+.fsteps .fs .n{flex:0 0 20px;height:20px;border-radius:50%;background:#adb5bd;color:#fff;text-align:center;line-height:20px;margin-right:6px;font-size:12px}
+.fsteps .fs.cur{color:#1f2a44;background:#fff9db;border-color:#fcc419}
+.fsteps .fs.cur .n{background:#f08c00}
+.fsteps .fs.done{color:#2b8a3e;background:#ebfbee}
+.fsteps .fs.done .n{background:#2b8a3e}
+.fguide{font-size:15px;background:#e7f5ff;color:#1864ab;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.35;min-height:40px}
+.fguide.warn{background:#fff4e6;color:#d9480f}
+.fpair{display:flex;align-items:stretch;gap:6px}
+.fside{flex:1;border:2px solid #dee2e6;border-radius:12px;padding:9px 10px;display:flex;flex-direction:column;gap:7px;background:#fafbfc;min-width:0;transition:border-color .2s,background .2s,box-shadow .2s}
+.fside.active{border-color:#fcc419;background:#fffdf0;box-shadow:0 0 0 3px rgba(252,196,25,.25)}
+.fside h3{margin:0;font-size:12px;text-transform:uppercase;color:#5c6b8a;letter-spacing:.5px}
+.fside label{display:flex;flex-direction:column;font-size:12px;font-weight:700;color:#495057;gap:3px}
+.fside .combo input{width:auto;flex:1;min-width:0}
+.fside input.sub{width:100%;font-size:16px;padding:6px 8px;border:2px solid #ced4da;border-radius:6px}
+.fside .numRow{display:flex;align-items:center;gap:6px}
+.fside .numRow input{flex:1;min-width:0;font-size:17px;padding:6px 8px;border:2px solid #ced4da;border-radius:6px}
+.fside .numRow input:disabled{background:#f1f3f5;border-style:dashed;color:#adb5bd;cursor:not-allowed}
+.fside .numRow input[readonly]{background:#ebfbee;border-color:#8ce99a;color:#2b8a3e;font-weight:700}
+.fside .numRow .uLbl{font-weight:700;color:#1c3d99;white-space:nowrap;font-size:15px;max-width:45%;overflow:hidden;text-overflow:ellipsis}
+.fside.numsOn{border-color:#fcc419}
+.feqs{align-self:center;font-size:30px;font-weight:800;color:#5c6b8a;padding:0 2px}
+.editNums{border:none;background:none;color:#3b5bdb;font-size:13px;font-weight:700;text-decoration:underline;padding:4px 0 0;cursor:pointer}
+@media (max-width:540px){.fpair{flex-direction:column}.feqs{font-size:24px}}
+
+/* ---------- Directions demo ---------- */
+#demoBlock{position:fixed;inset:0;z-index:2500;background:transparent;cursor:not-allowed}
+#demoCursor{position:fixed;left:0;top:0;z-index:2800;pointer-events:none;width:64px;height:64px;transform:translate(-200px,-200px);filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+#demoCursor svg{width:64px;height:64px;display:block;transition:transform .12s}
+#demoCursor.press svg{transform:scale(.82)}
+.demoRipple{position:fixed;z-index:2790;pointer-events:none;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:4px solid #f08c00;animation:ripple .6s ease-out forwards}
+@keyframes ripple{from{transform:scale(.3);opacity:1}to{transform:scale(3);opacity:0}}
+#demoRing{position:fixed;z-index:2600;pointer-events:none;border:4px solid #fcc419;border-radius:12px;box-shadow:0 0 0 4px rgba(252,196,25,.35),0 0 24px rgba(252,196,25,.7);transition:all .35s ease;opacity:0}
+#demoCard{position:fixed;z-index:2700;width:300px;background:#1f2a44;color:#fff;border-radius:14px;padding:10px 12px 12px;box-shadow:0 14px 34px rgba(0,0,0,.4);transition:left .35s ease,top .35s ease,opacity .3s;user-select:none}
+#demoCard .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+#demoCard .dh b{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fcc419}
+#demoCard .skip{border:none;background:rgba(255,255,255,.15);color:#fff;border-radius:6px;padding:4px 10px;font-weight:700;font-size:13px;cursor:pointer}
+#demoCard .skip:hover{background:rgba(255,255,255,.3)}
+#demoCard .ds{display:flex;align-items:center;gap:9px;padding:5px 7px;border-radius:8px;font-size:15px;font-weight:700;opacity:.45;transition:all .25s}
+#demoCard .ds .n{flex:0 0 24px;height:24px;border-radius:50%;background:rgba(255,255,255,.2);text-align:center;line-height:24px;font-size:13px}
+#demoCard .ds.cur{opacity:1;background:#fcc419;color:#1f2a44;transform:scale(1.04);animation:dsPop .4s ease}
+#demoCard .ds.cur .n{background:#1f2a44;color:#fcc419}
+#demoCard .ds.done{opacity:.85}
+#demoCard .ds.done .n{background:#2b8a3e}
+#demoCard .dfoot{margin-top:7px;font-size:13px;color:#c5cee0;min-height:18px}
+#demoCard.compact{padding:8px 9px 9px}
+#demoCard.compact .ds{font-size:12.5px;padding:3px 5px;gap:6px}
+#demoCard.compact .ds .n{flex-basis:19px;height:19px;line-height:19px;font-size:11px}
+#demoCard.compact .dfoot{font-size:12px}
+@keyframes dsPop{0%{transform:scale(.9)}60%{transform:scale(1.1)}100%{transform:scale(1.04)}}
+
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#212529;color:#fff;padding:9px 16px;border-radius:8px;font-size:14px;z-index:3000;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
 #toast.show{opacity:1}
 </style>
@@ -204,12 +263,13 @@ sub,sup{font-size:.68em;line-height:0}
   <div class="toggle" id="tgStyle"><span class="opt" data-v="guided">Guided</span><div class="sw"><div class="knob"></div></div><span class="opt" data-v="free">Free Form</span></div>
   <div class="seg" id="segSet"><button data-set="mole2">2 Fraction</button><button data-set="mole3">3 Fraction</button><button data-set="mole4">Stoichiometry (4 Fraction)</button><button data-set="moleMix">Mix 2 &amp; 3</button></div>
   <div class="spacer"></div>
-  <button class="tbtn alt" id="bStart">+ Starting Amount</button>
-  <button class="tbtn alt" id="bFactor">+ Conversion Factor</button>
+  <button class="tbtn alt" id="bStart" title="Step 1: put the starting amount in the work area"><span class="sn">1</span>+ Starting Amount</button>
+  <button class="tbtn alt" id="bFactor" title="Step 2: make a conversion factor (like 1 km = 1000 m)"><span class="sn">2</span>+ Conversion Factor</button>
   <button class="tbtn" id="bPT">🧪 Periodic Table</button>
-  <button class="tbtn" id="bClear">Clear Work Area</button>
+  <button class="tbtn" id="bClear" title="Clear all boxes from the work area">Clear</button>
   <button class="tbtn danger" id="bReset">Reset</button>
-  <button class="tbtn" id="bHelp" title="How to use">?</button>
+  <button class="tbtn dir" id="bDemo" title="Watch the directions animation again">▶ Directions</button>
+  <button class="tbtn" id="bHelp" title="Written directions and tips">?</button>
 </div>
 
 <div id="fbarWrap">
@@ -633,7 +693,7 @@ function renderTop(){
 function factorText(f){ return `${f.a.html} ${unitHTML(f.a.u,f.a.s)} <span class="eq">=</span> ${f.b.html} ${unitHTML(f.b.u,f.b.s)}`; }
 function renderFactors(){
   const el=$('#fbar');
-  if(!S.factors.length){ el.innerHTML='<span class="empty">No conversion factors yet — click <b>+ Conversion Factor</b> and pick the units (standard numbers fill in). Then drag one into the work area (or tap it).</span>'; return; }
+  if(!S.factors.length){ el.innerHTML='<span class="empty"><span class="sn">2</span>No conversion factors yet — click <b>+ Conversion Factor</b> and pick two units (like km and m). <span class="sn">3</span>Then drag the factor down into the Chain.</span>'; return; }
   el.innerHTML=S.factors.map(f=>`<div class="chip" data-id="${f.id}" title="Drag into the work area (or tap to add to the end of the chain)"><span>${factorText(f)}</span><span class="badge ${f.st==='ok'?'ok':'warn'}" title="${f.st==='ok'?'Verified':'Not verified'}">${f.st==='ok'?'✓':'⚠'}</span><button class="x" title="Delete factor">✕</button></div>`).join('');
 }
 function renderBanner(){
@@ -659,8 +719,8 @@ function renderBanner(){
 }
 function renderTrack(){
   const tr=$('#track'), sl=tr.scrollLeft, r=compute();
-  let h='<div id="trackLabel">Chain — line up boxes here</div>';
-  if(!S.chain.length) h+='<span class="ph">Click <b>+ Starting Amount</b>, then drag conversion factors here. Click a box to flip it.</span>';
+  let h='<div id="trackLabel">Chain — drag conversion factors down here · click a box to flip it</div>';
+  if(!S.chain.length) h+='<span class="ph"><span class="sn">1</span>Click <b>+ Starting Amount</b> to begin. <span class="sn">3</span>Drag conversion factors down here. <span class="sn">4</span>Click a box to flip it. Stuck? Click <b>▶ Directions</b>.</span>';
   else h+=S.chain.map((id,i)=>(i?'<span class="times">×</span>':'')+boxHTML(S.boxes[id],r.canceled,S.prevCanceled)).join('');
   h+='<div id="dropInd"></div>';
   tr.innerHTML=h; tr.scrollLeft=sl;
@@ -859,7 +919,7 @@ function initCombo(ov,id,allowFn){
   };
   const show=f=>{ open=true; hi=-1; filt=f; build(); list.style.display='block'; };
   const hide=()=>{ open=false; list.style.display='none'; };
-  const pick=u=>{ inp.value=u; hide(); inp.dispatchEvent(new Event('change',{bubbles:true})); };
+  const pick=u=>{ inp.value=u; hide(); inp.dispatchEvent(new Event('change',{bubbles:true})); inp.dispatchEvent(new Event('picked')); };
   btn.addEventListener('pointerdown',e=>{ e.preventDefault(); if(open) hide(); else { inp.focus(); show(''); } });
   inp.addEventListener('focus',()=>show(''));
   inp.addEventListener('input',()=>show(inp.value));
@@ -868,7 +928,8 @@ function initCombo(ov,id,allowFn){
   inp.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'){ e.preventDefault(); if(!open) show(''); hi=Math.min(items.length-1,hi+1); build(); }
     else if(e.key==='ArrowUp'&&open){ e.preventDefault(); hi=Math.max(0,hi-1); build(); }
-    else if(e.key==='Enter'&&open){ e.preventDefault(); e.stopPropagation(); if(hi>=0) pick(items[hi]); else { hide(); inp.dispatchEvent(new Event('change',{bubbles:true})); } }
+    else if(e.key==='Enter'&&open){ e.preventDefault(); e.stopPropagation(); if(hi>=0) pick(items[hi]); else if(inp.value.trim()) pick(inp.value.trim()); else hide(); }
+    else if(e.key==='Enter'&&inp.value.trim()){ inp.dispatchEvent(new Event('change',{bubbles:true})); }
     else if(e.key==='Escape'&&open){ e.stopPropagation(); hide(); }
     else if(e.key==='Tab') hide();
   });
@@ -892,47 +953,113 @@ function readFSide(ov,pfx,label){
 }
 function openFactor(){
   const mole=S.mode==='mole';
-  const pre={u:'',s:''};
-  const row=(p,label,u,sub)=>`<div class="frow"><label>Number<input class="num" id="${p}N" autocomplete="off"></label><label>${label}${comboHTML(p+'U',u)}</label>${mole?`<label>Substance<input class="sub" id="${p}S" list="subList" value="${esc(sub)}" placeholder="e.g. H2O" autocomplete="off"></label>`:''}</div>`;
-  const body=`<p class="hint">Pick <b>Unit A</b> and <b>Unit B</b>. Standard numbers fill in automatically — or type your own. You can also type a unit that isn't in the list.</p>`+
-    row('fa','Unit A',pre.u,pre.s)+'<div class="bigEq">=</div>'+row('fb','Unit B','',pre.s)+
-    `<div id="fNote" class="note"></div><div class="preview" id="fPrev"></div>`+substanceList();
+  const side=(p,n)=>`<div class="fside" id="${p}Side"><h3>Unit ${n}</h3>
+      <label>Unit${comboHTML(p+'U','')}</label>
+      ${mole?`<label>Substance<input class="sub" id="${p}S" list="subList" placeholder="e.g. H2O" autocomplete="off" spellcheck="false"></label>`:''}
+      <label>Number<div class="numRow"><input id="${p}N" autocomplete="off" disabled placeholder="🔒 pick units first"><span class="uLbl" id="${p}L"></span></div></label>
+    </div>`;
+  const body=`<div class="fsteps">
+      <div class="fs" id="fs1"><span class="n">1</span>Pick Unit 1${mole?' + substance':''}</div>
+      <div class="fs" id="fs2"><span class="n">2</span>Pick Unit 2</div>
+      <div class="fs" id="fs3"><span class="n">3</span>Check numbers → Add</div></div>
+    <div class="fguide" id="fGuide"></div>
+    <div class="fpair">${side('fa',1)}<div class="feqs">=</div>${side('fb',2)}</div>
+    <button type="button" class="editNums" id="fEdit" style="display:none">✎ I need different numbers</button>
+    <div id="fNote" class="note"></div><div class="preview" id="fPrev"></div>`+substanceList();
   const ov=modal('+ Conversion Factor',body,[{label:'Cancel'},{label:'Add Factor',cls:'primary',onClick:ov=>{
-    const a=readFSide(ov,'fa','Unit A'); if(a.err){ mErr(ov,a.err); return false; }
-    const b=readFSide(ov,'fb','Unit B'); if(b.err){ mErr(ov,b.err); return false; }
+    const a=readFSide(ov,'fa','Unit 1'); if(a.err){ mErr(ov,a.err); return false; }
+    const b=readFSide(ov,'fb','Unit 2'); if(b.err){ mErr(ov,b.err); return false; }
     const c=checkFactor(a,b);
     if(c.st==='bad'){ mErr(ov,'✗ '+c.msg); return false; }
     if(!addFactor(a,b,c.st)) return false;
-    toast(c.st==='ok'?'✓ Factor checked and added.':'⚠ '+c.msg.replace(/<[^>]+>/g,''));
+    toast(c.st==='ok'?'✓ Factor checked and added. Now drag it down into the Chain.':'⚠ '+c.msg.replace(/<[^>]+>/g,''));
   }}],{cls:'vis'});
   const g=id=>ov.querySelector('#'+id);
+  const addBtn=ov.querySelector('.mbtn.primary');
   const allowB=()=>{ const A=canonUnit(g('faU').value); if(!A.known) return null; const set=possibleUnits(A.u); return set&&set.size?{set,from:A.u}:null; };
   initCombo(ov,'faU'); initCombo(ov,'fbU',allowB);
-  let auto=false, subBTouched=false;
-  const prev=()=>{
-    const side=p=>{ const pn=parseNum(g(p+'N').value), cu=canonUnit(g(p+'U').value), ss=mole?g(p+'S').value.trim():''; return `${pn?pn.html:'?'} ${cu.u?unitHTML(cu.u,parseFormula(normF(ss))?normF(ss):ss):'?'}`; };
-    g('fPrev').innerHTML=side('fa')+' = '+side('fb');
+  const committed={fa:false,fb:false};
+  let edited=false, lastMode='off', subBTouched=false;
+  /* a unit counts as "entered" when it's a known unit, or a custom unit the student confirmed (Enter / click away) */
+  const uState=p=>{ const raw=g(p+'U').value.trim(), cu=canonUnit(raw); return {raw,u:cu.u,known:cu.known,entered:!!raw&&(cu.known||committed[p])}; };
+  const setNums=(mode,av,bv)=>{
+    ['fa','fb'].forEach((p,i)=>{
+      const el=g(p+'N'), v=i?bv:av;
+      if(mode==='off'){ el.disabled=true; el.readOnly=false; el.value=''; el.placeholder='🔒 pick units first'; }
+      else if(mode==='auto'){ el.disabled=false; el.placeholder=''; if(edited) el.readOnly=false; else { el.readOnly=true; el.value=v; } }
+      else { el.disabled=false; el.readOnly=false; el.placeholder='type a number'; if(lastMode==='auto'&&!edited) el.value=''; }
+    });
+    lastMode=mode;
   };
-  const fill=force=>{
-    const A=canonUnit(g('faU').value), B=canonUnit(g('fbU').value);
-    if(!A.u||!B.u){ g('fNote').innerHTML=''; prev(); return; }
-    if(!force && (!A.known||!B.known)){ prev(); return; }
+  const sideTxt=p=>{ const pn=parseNum(g(p+'N').value), cu=canonUnit(g(p+'U').value), ss=mole?g(p+'S').value.trim():''; return `${pn?pn.html:'<span style="color:#adb5bd">?</span>'} ${cu.u?unitHTML(cu.u,parseFormula(normF(ss))?normF(ss):ss):'<span style="color:#adb5bd">?</span>'}`; };
+  const update=()=>{
+    const A=uState('fa'), B=uState('fb');
     const sa=mole?normF(g('faS').value):'', sb=mole?normF(g('fbS').value):'';
-    const sf=standardFactor(A.u,B.u,sa,sb);
-    if(sf.av!==undefined||sf.bv!==undefined){ g('faN').value=sf.av||''; g('fbN').value=sf.bv||''; auto=true; }
-    else if(auto){ g('faN').value=''; g('fbN').value=''; auto=false; }
-    const n=g('fNote'); n.className='note '+sf.cls; n.innerHTML=sf.note;
-    mErr(ov,''); prev();
+    const aDone=A.entered&&(!mole||!A.known||!!sa), bDone=B.entered&&(!mole||!B.known||!!sb);
+    let step, guide, gcls='', mode='off', av='', bv='', note='', ncls='';
+    const typingKnown=raw=>{ const q=raw.toLowerCase(); return menu().some(([,us])=>us.some(u=>u.toLowerCase().startsWith(q)))||Object.keys(UNIT_ALIAS).some(k=>k.startsWith(q)); };
+    const custom=raw=>typingKnown(raw)?`Keep typing — or pick <b>${esc(raw)}…</b> from the list.`:`<b>"${esc(raw)}"</b> isn't in the list. Pick a unit from the list — or press <b>Enter</b> to use it as your own unit (the sim won't be able to check it).`;
+    if(!aDone){
+      step=1;
+      if(A.raw&&!A.entered){ guide=custom(A.raw); gcls=typingKnown(A.raw)?'':'warn'; }
+      else if(A.entered&&mole&&!sa) guide=`<b>Step 1:</b> Now type the <b>substance</b> for Unit 1 (like <b>H2O</b> or <b>NaCl</b>).`;
+      else guide=`<b>Step 1:</b> Click the <b>Unit 1</b> box and pick a unit from the list — or start typing it (like <b>${mole?'g':'km'}</b>).${mole?' Then type the substance.':''}`;
+    } else if(!bDone){
+      step=2;
+      const al=allowB();
+      if(B.raw&&!B.entered){ guide=custom(B.raw); gcls=typingKnown(B.raw)?'':'warn'; }
+      else if(B.entered&&mole&&!sb) guide=`<b>Step 2:</b> Type the <b>substance</b> for Unit 2.`;
+      else guide=`<b>Step 2:</b> Pick <b>Unit 2</b> — the unit that <b>${esc(A.u)}</b> converts to.${al?` The list only shows units that work with ${esc(A.u)}.`:''}`;
+    } else {
+      step=3;
+      if(!A.known||!B.known){
+        mode='type'; ncls='warn';
+        note=`⚠ The sim doesn't know the unit "${esc(!A.known?A.u:B.u)}", so it can't fill in or check the numbers.`;
+        guide='<b>Step 3:</b> Type <b>both numbers</b> so the two sides are equal, then click <b>Add Factor</b>.';
+      } else {
+        const sf=standardFactor(A.u,B.u,sa,sb);
+        if(sf.av===undefined&&sf.bv===undefined){ mode='off'; guide='<b>Not yet:</b> '+sf.note; gcls='warn'; }
+        else if(sf.av===''&&sf.bv===''){ mode='type'; note=sf.note; ncls=sf.cls; guide='<b>Step 3:</b> Type <b>both numbers</b>, then click <b>Add Factor</b>.'; }
+        else {
+          mode='auto'; av=sf.av||''; bv=sf.bv||'';
+          if(!av||!bv){ guide='<b>Almost:</b> '+sf.note; }
+          else {
+            guide=edited?'<b>Step 3:</b> Type your numbers, then click <b>Add Factor</b>.':'<b>Step 3:</b> The numbers filled in for you ✓ Check that the two sides are equal, then click <b>Add Factor</b>.';
+            if(!/Standard numbers/.test(sf.note)){ note=sf.note; ncls=sf.cls; }
+          }
+        }
+      }
+    }
+    setNums(mode,av,bv);
+    // step tracker + highlights
+    [1,2,3].forEach(i=>{ const el=g('fs'+i); el.classList.toggle('cur',i===step); el.classList.toggle('done',i<step); });
+    g('faSide').classList.toggle('active',step===1); g('fbSide').classList.toggle('active',step===2);
+    ['faSide','fbSide'].forEach(id=>g(id).classList.toggle('numsOn',step===3&&mode==='type'));
+    const gd=g('fGuide'); gd.className='fguide '+gcls; gd.innerHTML=guide;
+    const nt=g('fNote'); nt.className='note '+ncls; nt.innerHTML=note;
+    ['fa','fb'].forEach(p=>{ const st=p==='fa'?A:B; g(p+'L').textContent=st.entered?st.u:''; });
+    g('fEdit').style.display=(mode==='auto'&&!edited&&av&&bv)?'':'none';
+    g('fPrev').innerHTML=sideTxt('fa')+' <b>=</b> '+sideTxt('fb');
+    const na=parseNum(g('faN').value), nb=parseNum(g('fbN').value);
+    addBtn.disabled=!(step===3&&mode!=='off'&&na&&nb&&na.v>0&&nb.v>0);
+    mErr(ov,'');
   };
-  const checkB=()=>{ const al=allowB(), B=canonUnit(g('fbU').value); if(al && B.known && !al.set.has(B.u)){ g('fbU').value=''; if(auto){ g('faN').value=''; g('fbN').value=''; auto=false; } } };
-  g('faU').addEventListener('change',()=>{ checkB(); fill(true); }); g('faU').addEventListener('input',()=>{ checkB(); fill(false); });
-  g('fbU').addEventListener('change',()=>fill(true)); g('fbU').addEventListener('input',()=>fill(false));
-  ['faN','fbN'].forEach(id=>g(id).addEventListener('input',()=>{ auto=false; prev(); }));
+  const checkB=()=>{ const al=allowB(), B=canonUnit(g('fbU').value); if(al && B.known && !al.set.has(B.u)){ g('fbU').value=''; committed.fb=false; } };
+  const canon=id=>{ const el=g(id), cu=canonUnit(el.value); if(cu.known&&el.value!==cu.u) el.value=cu.u; };
+  g('faU').addEventListener('input',()=>{ committed.fa=false; edited=false; checkB(); update(); });
+  g('faU').addEventListener('change',()=>{ canon('faU'); committed.fa=!!g('faU').value.trim(); edited=false; checkB(); update(); });
+  g('faU').addEventListener('picked',()=>{ setTimeout(()=>{ if(!ov.isConnected) return; if(mole&&!g('faS').value.trim()) g('faS').focus(); else if(!g('fbU').value.trim()) g('fbU').focus(); },0); });
+  g('fbU').addEventListener('input',()=>{ committed.fb=false; edited=false; update(); });
+  g('fbU').addEventListener('change',()=>{ canon('fbU'); committed.fb=!!g('fbU').value.trim(); edited=false; update(); });
+  g('fbU').addEventListener('picked',()=>{ setTimeout(()=>{ if(!ov.isConnected) return; if(mole&&!g('fbS').value.trim()) g('fbS').focus(); else if(!addBtn.disabled) addBtn.focus(); },0); });
+  ['faN','fbN'].forEach(id=>g(id).addEventListener('input',update));
   if(mole){
-    g('faS').addEventListener('input',()=>{ if(!subBTouched) g('fbS').value=g('faS').value; fill(false); });
-    g('fbS').addEventListener('input',()=>{ subBTouched=true; fill(false); });
+    g('faS').addEventListener('input',()=>{ if(!subBTouched) g('fbS').value=g('faS').value; edited=false; update(); });
+    g('fbS').addEventListener('input',()=>{ subBTouched=true; edited=false; update(); });
   }
-  prev();
+  g('fEdit').onclick=()=>{ edited=true; update(); const n=g('faN'); n.focus(); n.select(); };
+  update();
+  return ov;
 }
 
 function nextProblem(){
@@ -994,19 +1121,210 @@ function openPT(){
   ov.querySelectorAll('.pt .c').forEach(c=>c.onclick=()=>{ const z=+c.dataset.z; ov.querySelector('#ptInfo').innerHTML=`<b>${EL_SYM[z-1]}</b> — ${EL_NAME[z-1]} · atomic number ${z} · <b>${massStr(z)} g/mol</b>`; });
 }
 function openHelp(){
-  modal('How to use the Dimensional Analysis Lab',`<ol class="helpList">
-    <li>Pick <b>Unit Conversion</b> or <b>Mole Conversion</b>, and <b>Guided</b> (practice problems) or <b>Free Form</b>. In Guided Mole Conversion, pick a problem set: <b>2 Fraction</b>, <b>3 Fraction</b>, <b>Stoichiometry (4 Fraction)</b>, or <b>Mix 2 &amp; 3</b>. Problems 1–2 come with their conversion factors ready.</li>
-    <li>Click <b>+ Starting Amount</b>. In Guided mode the problem's amount drops right into the work area; in Free Form you type it. A green box appears: <i>amount / 1</i>.</li>
-    <li>Click <b>+ Conversion Factor</b> and pick <b>Unit A</b> and <b>Unit B</b>. Standard numbers fill in automatically, or type your own. The sim checks it: ✓ means checked, ⚠ means it couldn't be checked (like a custom unit).</li>
-    <li><b>Drag</b> a factor into the Chain (or tap it) — it becomes a fraction box.</li>
-    <li><b>Click</b> a box to flip it. <b>Drag</b> boxes to rearrange them, park them in the gray area (not counted), or drag them back up to the factor bar to delete.</li>
-    <li>When the same unit is on top and on bottom anywhere in the chain, it cancels with a <span style="color:#e03131;font-weight:700">red line</span>.</li>
-    <li>The <b>Answer Box</b> shows the live answer. If units look weird (like km²/m), a box is flipped wrong!</li>
-    <li>Guided: click <b>✔ Check Answer</b>. Stuck? <b>💡 Show Solution</b>.</li>
-    <li>Mole mode: molar masses and mole ratios don't fill in — use the <b>🧪 Periodic Table</b> and the balanced equation to type them (like 1 mol H2O = 18.02 g H2O).</li></ol>`,[{label:'Got it',cls:'primary'}]);
+  modal('Directions',`<p style="margin-top:0">Every problem uses the same <b>4 steps</b>:</p>
+    <ol class="helpList">
+    <li><span class="secTitle">Add Starting Amount</span><br>Click <b><span class="sn">1</span>+ Starting Amount</b>. A green <b>START</b> box appears in the Chain. (In Guided mode it uses the number from the problem. In Free Form you type it.)</li>
+    <li><span class="secTitle">Add Conversion Factors</span><br>Click <b><span class="sn">2</span>+ Conversion Factor</b>. Pick <b>Unit 1</b> (like km), then <b>Unit 2</b> (like m). The numbers fill in for you — just check them and click <b>Add Factor</b>. It shows up in the Conversion Factors bar.${S.mode==='mole'?' <i>Mole mode:</i> also type the substance (like H2O) — the molar mass or mole ratio fills in.':''}</li>
+    <li><span class="secTitle">Drag Down Conversion Factors</span><br>Drag a factor from the bar <b>down into the Chain</b>, next to the START box. It becomes a fraction.</li>
+    <li><span class="secTitle">Click to Flip</span><br>Click a fraction to flip it upside down. Put the unit you want to <b>get rid of on the bottom</b> so it cancels with the same unit on top. Canceled units get a <span style="color:#e03131;font-weight:700">red line</span>.</li></ol>
+    <p><b>Done when:</b> the only unit left in the <b>Answer</b> box is the unit you want (it turns green). In Guided mode click <b>✔ Check Answer</b>. Stuck? <b>💡 Show Solution</b>.</p>
+    <p class="hint" style="font-size:14px">More tips: Weird units like km²/m mean a box is flipped the wrong way. Drag boxes to reorder them, into the striped Parking area (not counted), or back up to the bar to delete them. You can type a unit that isn't in the list, but then you type the numbers and the sim can't check it.${S.mode==='mole'?' Use the 🧪 Periodic Table to check molar masses.':''}</p>`,
+    [{label:'▶ Watch Directions',onClick:()=>{ setTimeout(runDemo,50); }},{label:'Got it',cls:'primary'}]);
 }
 let toastT=null;
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200); }
+function toast(msg){ if(DEMO.on) return; const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200); }
+
+/* =====================================================================
+   DIRECTIONS DEMO — a giant cursor walks through the 4 steps on the
+   real controls, then everything is put back the way it was.
+   ===================================================================== */
+const DEMO={on:false,running:false,abort:false,els:null,snap:null,pend:new Set()};
+const DEMO_STEPS=['Add Starting Amount','Add Conversion Factors','Drag Down Conversion Factors','Click to Flip'];
+const CURSOR_SVG='<svg viewBox="0 0 32 32"><path d="M6 3 L6 25 L11.5 19.8 L15.3 28.5 L19.2 26.8 L15.5 18.3 L23 18.3 Z" fill="#fff" stroke="#111" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const ABORT=()=>new Error('demo-abort');
+let curX=0, curY=0;
+function dWait(ms){
+  return new Promise((res,rej)=>{
+    if(DEMO.abort) return rej(ABORT());
+    const t=setTimeout(()=>{ DEMO.pend.delete(k); DEMO.abort?rej(ABORT()):res(); },ms);
+    const k=()=>{ clearTimeout(t); rej(ABORT()); }; DEMO.pend.add(k);
+  });
+}
+function setCursor(x,y){ curX=x; curY=y; if(DEMO.els) DEMO.els.cur.style.transform=`translate(${x-12}px,${y-6}px)`; }
+function dMove(x,y,ms,onFrame){
+  const x0=curX,y0=curY,t0=performance.now(),lift=Math.min(60,Math.hypot(x-x0,y-y0)*.12);
+  return new Promise((res,rej)=>{
+    let id; const k=()=>{ cancelAnimationFrame(id); rej(ABORT()); }; DEMO.pend.add(k);
+    const f=now=>{
+      if(DEMO.abort){ DEMO.pend.delete(k); return rej(ABORT()); }
+      const t=Math.min(1,(now-t0)/ms), e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      const ax=x0+(x-x0)*e, ay=y0+(y-y0)*e-Math.sin(Math.PI*e)*lift;
+      setCursor(ax,ay); if(onFrame) onFrame(ax,ay);
+      if(t<1) id=requestAnimationFrame(f); else { DEMO.pend.delete(k); res(); }
+    };
+    id=requestAnimationFrame(f);
+  });
+}
+function rectOf(x){ return x&&x.getBoundingClientRect?x.getBoundingClientRect():x; }
+function unionRect(...els){ const rs=els.filter(Boolean).map(rectOf); if(!rs.length) return null; const l=Math.min(...rs.map(r=>r.left)),t=Math.min(...rs.map(r=>r.top)),r=Math.max(...rs.map(r=>r.right)),b=Math.max(...rs.map(r=>r.bottom)); return {left:l,top:t,right:r,bottom:b,width:r-l,height:b-t}; }
+function ctr(el,fx,fy){ const r=rectOf(el); return [r.left+r.width*(fx==null?.5:fx), r.top+r.height*(fy==null?.5:fy)]; }
+function dRing(x,pad){
+  const R=DEMO.els.ring; if(!x){ R.style.opacity=0; return; }
+  const r=rectOf(x); pad=pad==null?6:pad;
+  Object.assign(R.style,{left:(r.left-pad)+'px',top:(r.top-pad)+'px',width:(r.width+pad*2)+'px',height:(r.height+pad*2)+'px',opacity:1});
+}
+/* put the step card in whichever spot covers the least of what's being shown */
+function placeCard(avoid){
+  const c=DEMO.els.card, W=innerWidth, H=innerHeight, m=12;
+  const rs=(avoid||[]).filter(Boolean).map(rectOf);
+  const ov=(a,b)=>Math.max(0,Math.min(a.r,b.right)-Math.max(a.l,b.left))*Math.max(0,Math.min(a.b,b.bottom)-Math.max(a.t,b.top));
+  const tryPlace=()=>{
+    const w=c.offsetWidth, h=c.offsetHeight, L=Math.min(64,W-w-m), R=W-w-m, mid=Math.max(m,(H-h)/2);
+    const cands=[[L,H-h-m],[R,H-h-m],[L,mid],[R,mid],[R,m+50],[L,m+50]];
+    let best=cands[0],bs=Infinity;
+    cands.forEach(([l,t])=>{ const a={l,t,r:l+w,b:t+h}; const sc=rs.reduce((s,r)=>s+ov(a,r),0); if(sc<bs-1){ bs=sc; best=[l,t]; } });
+    return {best,bs};
+  };
+  c.classList.remove('compact'); c.style.width=Math.min(300,W-24)+'px';
+  let r=tryPlace();
+  if(r.bs>0){ c.classList.add('compact'); c.style.width=Math.min(210,W-24)+'px'; const r2=tryPlace(); if(r2.bs<r.bs) r=r2; else { c.classList.remove('compact'); c.style.width=Math.min(300,W-24)+'px'; } }
+  c.style.left=Math.max(m,r.best[0])+'px'; c.style.top=Math.max(m,r.best[1])+'px';
+}
+async function dPress(){
+  const c=DEMO.els.cur; c.classList.add('press');
+  const rp=document.createElement('div'); rp.className='demoRipple'; rp.style.left=curX+'px'; rp.style.top=curY+'px';
+  document.body.appendChild(rp); setTimeout(()=>rp.remove(),700);
+  await dWait(150); c.classList.remove('press');
+}
+async function dClick(el,ms){ const [x,y]=ctr(el); await dMove(x,y,ms||700); await dPress(); el.click(); }
+function pev(type,x,y,target){
+  (target||document).dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,clientX:x,clientY:y,button:0,buttons:type==='pointerup'?0:1,pointerType:'mouse',isPrimary:true,pointerId:1}));
+}
+async function dType(inp,text){ for(const ch of text){ inp.value+=ch; inp.dispatchEvent(new Event('input',{bubbles:true})); await dWait(170); } }
+async function dPickItem(inp,u){
+  const it=[...inp.parentElement.querySelectorAll('.clist .ci')].find(e=>e.textContent===u);
+  if(!it){ inp.value=u; inp.dispatchEvent(new Event('change',{bubbles:true})); inp.dispatchEvent(new Event('picked')); return; }
+  const [x,y]=ctr(it,.3,.5); await dMove(x,y,500); await dPress();
+  pev('pointerdown',x,y,it);
+}
+function dStep(i,foot){
+  const c=DEMO.els.card;
+  c.querySelectorAll('.ds').forEach((d,j)=>{ d.classList.toggle('cur',j===i); d.classList.toggle('done',j<i); });
+  c.querySelector('.dfoot').innerHTML=foot||'';
+}
+function dFoot(t){ DEMO.els.card.querySelector('.dfoot').innerHTML=t; }
+function demoKey(e){ if(e.key==='Escape') endDemo(); e.preventDefault(); e.stopPropagation(); }
+function snapState(){ return {mode:S.mode,style:S.style,moleSet:S.moleSet,prob:S.prob,factors:S.factors,boxes:S.boxes,chain:S.chain,loose:S.loose,feedback:S.feedback,showSol:S.showSol,studentAnswer:S.studentAnswer,target:S.target,equation:S.equation,pi:{...S.pi}}; }
+function endDemo(){
+  if(!DEMO.on) return;
+  DEMO.abort=true; DEMO.pend.forEach(k=>k()); DEMO.pend.clear();
+  document.removeEventListener('keydown',demoKey,true);
+  document.querySelectorAll('.overlay,.box.ghost,.demoRipple').forEach(e=>e.remove());
+  D=null;
+  if(DEMO.els) Object.values(DEMO.els).forEach(e=>e.remove());
+  DEMO.els=null;
+  Object.assign(S,DEMO.snap); S.pi={...DEMO.snap.pi}; S.prevCanceled=new Set();
+  DEMO.on=false; render();
+}
+async function runDemo(){
+  if(DEMO.on||DEMO.running) return;
+  document.querySelectorAll('.overlay').forEach(o=>o.remove());
+  DEMO.on=DEMO.running=true; DEMO.abort=false; DEMO.snap=snapState();
+  const mk=(id,html)=>{ const d=document.createElement('div'); d.id=id; if(html) d.innerHTML=html; return d; };
+  const blk=mk('demoBlock'), ring=mk('demoRing'), cur=mk('demoCursor',CURSOR_SVG);
+  const card=mk('demoCard',`<div class="dh"><b>Directions</b><button class="skip" id="demoSkip">Skip ✕</button></div>`+DEMO_STEPS.map((s,i)=>`<div class="ds"><span class="n">${i+1}</span>${s}</div>`).join('')+'<div class="dfoot"></div>');
+  card.style.width=Math.min(300,innerWidth-24)+'px';
+  blk.title='Directions are playing — click Skip to stop';
+  ['pointerdown','mousedown','touchstart'].forEach(t=>blk.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+  document.body.append(blk,ring,card,cur);
+  DEMO.els={blk,ring,card,cur};
+  card.querySelector('#demoSkip').onclick=endDemo;
+  document.addEventListener('keydown',demoKey,true);
+  /* demo problem: Problem 1 of Unit Conversion (2.50 km → m), empty factor bar */
+  S.mode='unit'; S.style='guided'; S.target=null; S.equation=null;
+  loadProblem(0); S.factors=[]; render();
+  try{
+    placeCard([]); setCursor(innerWidth*.45,innerHeight*.8);
+    dFoot('Watch the 4 steps…');
+    await dWait(700);
+
+    /* STEP 1 */
+    dStep(0,'Click <b>+ Starting Amount</b>.');
+    const bS=$('#bStart'); dRing(bS,4); placeCard([bS]);
+    await dClick(bS,900); dRing(null);
+    await dWait(250);
+    let sb=$('#track .box.start');
+    dRing(sb,8); placeCard([sb,$('#banner')]);
+    dFoot(`The amount from the problem appears as a green <b>START</b> box: ${S.prob.html} km.`);
+    await dWait(1400); dRing(null);
+
+    /* STEP 2 */
+    dStep(1,'Click <b>+ Conversion Factor</b>.');
+    const bF=$('#bFactor'); dRing(bF,4); placeCard([bF]);
+    let [x,y]=ctr(bF); await dMove(x,y,800); await dPress(); dRing(null);
+    const ov=openFactor();
+    await dWait(450);
+    placeCard([ov.querySelector('.modal')]);
+    const faU=ov.querySelector('#faU'), fbU=ov.querySelector('#fbU');
+    dFoot('Pick <b>Unit 1</b> — type it or choose from the list: <b>km</b>');
+    [x,y]=ctr(faU); await dMove(x,y,700); await dPress(); faU.focus();
+    await dType(faU,'km'); await dWait(350);
+    await dPickItem(faU,'km'); await dWait(550);
+    dFoot('Pick <b>Unit 2</b>: <b>m</b>');
+    [x,y]=ctr(fbU); await dMove(x,y,600); await dPress(); if(document.activeElement!==fbU) fbU.focus();
+    await dType(fbU,'m'); await dWait(350);
+    await dPickItem(fbU,'m'); await dWait(350);
+    dFoot('The numbers fill in for you: <b>1 km = 1000 m</b> ✓');
+    dRing(ov.querySelector('.fpair'),6);
+    await dWait(1500); dRing(null);
+    const add=ov.querySelector('.mbtn.primary'); dFoot('Click <b>Add Factor</b>.');
+    await dClick(add,700);
+    await dWait(450);
+    let chip=[...document.querySelectorAll('#fbar .chip')].pop();
+    dRing(chip,5); placeCard([chip]);
+    dFoot('It shows up in the Conversion Factors bar.');
+    await dWait(1100); dRing(null);
+
+    /* STEP 3 */
+    dStep(2,'Drag the factor <b>down into the Chain</b>, next to START.');
+    chip=[...document.querySelectorAll('#fbar .chip')].pop();
+    const tr=$('#track'); sb=$('#track .box.start');
+    const tR=tr.getBoundingClientRect(), sR=sb.getBoundingClientRect();
+    placeCard([chip,tr,$('#answer .ansBig'),$('#answer .status')]);
+    [x,y]=ctr(chip,.3,.5); await dMove(x,y,800);
+    DEMO.els.cur.classList.add('press'); pev('pointerdown',x,y,chip);
+    await dWait(200);
+    const tx=Math.min(sR.right+110,tR.right-60), ty=sR.top+sR.height/2;
+    await dMove(tx,ty,1200,(ax,ay)=>pev('pointermove',ax,ay));
+    await dWait(300);
+    pev('pointerup',tx,ty); DEMO.els.cur.classList.remove('press');
+    await dWait(400);
+    let box=[...document.querySelectorAll('#track .box')].find(b=>!b.classList.contains('start'));
+    if(!box) throw ABORT();
+    dRing(box,8); placeCard([box,$('#answer')]);
+    dFoot('Now it\'s a fraction — but <b>km</b> is on top twice, so nothing cancels (see the Answer: km²/m).');
+    await dWait(2200); dRing(null);
+
+    /* STEP 4 */
+    dStep(3,'Click the box to <b>flip</b> it so <b>km</b> is on the bottom.');
+    box=[...document.querySelectorAll('#track .box')].find(b=>!b.classList.contains('start'));
+    placeCard([box,$('#answer')]);
+    [x,y]=ctr(box); await dMove(x,y,800); await dWait(250); await dPress();
+    pev('pointerdown',x,y,box); pev('pointerup',x,y);
+    await dWait(700);
+    dRing(unionRect($('#answer .ansBig'),$('#answer .status')),6);
+    placeCard([$('#track'),$('#answer .ansBig'),$('#answer .status')]);
+    dFoot('<b>km</b> cancels (red line). Only <b>m</b> is left — the Answer turns green ✓');
+    await dWait(2300); dRing(null);
+
+    /* finish */
+    dStep(4,'<b style="color:#fcc419">Your turn!</b> Watch again any time with <b>▶ Directions</b>.');
+    const bD=$('#bDemo'); dRing(bD,4); placeCard([bD]);
+    [x,y]=ctr(bD); await dMove(x,y,800);
+    await dWait(1600);
+  }catch(e){ if(e.message!=='demo-abort') console.error(e); }
+  finally{ DEMO.running=false; endDemo(); }
+}
 
 /* =====================================================================
    DRAG & DROP (Pointer Events: mouse + touch)
@@ -1123,6 +1441,7 @@ $('#bStart').onclick=()=>{ S.style==='guided'?addProblemStart():openStart(); };
 $('#bFactor').onclick=openFactor;
 $('#bPT').onclick=openPT;
 $('#bHelp').onclick=openHelp;
+$('#bDemo').onclick=runDemo;
 $('#bClear').onclick=()=>{ if(!hasWork()) return; confirmModal('Clear all boxes from the work area? (Your conversion factors stay.)',()=>{ clearWork(); touch(); render(); }); };
 $('#bClearF').onclick=()=>{ if(!S.factors.length) return; confirmModal('Delete all conversion factors from the bar?',()=>{ S.factors=[]; render(); }); };
 $('#bReset').onclick=()=>confirmModal('Reset everything (work area, conversion factors, target, equation)?',()=>{ S.factors=[]; S.target=null; S.equation=null; if(S.style==='guided') loadProblem(S.pi[setKey()]); else clearWork(); S.feedback=null; render(); });
@@ -1130,6 +1449,7 @@ $('#bReset').onclick=()=>confirmModal('Reset everything (work area, conversion f
 /* init */
 loadProblem(0);
 render();
+setTimeout(runDemo,700);   /* play the Directions animation when the page opens */
 
 /* expose for testing */
 window.__DA={S,parseNum,fmtSig,checkFactor,compute,molarMass,parseEquation,PROBS,correctValue,loadProblem,render,setStart,addFactor,boxFromFactor,U,checkAnswer,EL_SYM,EL_MASS,EL_NAME};
