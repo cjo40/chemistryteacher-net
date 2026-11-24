@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Periodic Trends: Atomic Radius, Ionization Energy, Electron Affinity &amp; Electronegativity</title>
+<meta name="description" content="Interactive periodic trends activity for high school chemistry: learn, explore heat maps, compare atom sizes, rank elements and take a quiz.">
+<style>
+*{box-sizing:border-box}
+html{font-size:18px;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:#111;background:#fff;line-height:1.45}
+button,input,select{font:inherit}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem 1rem;padding:.55rem 1rem;border-bottom:3px solid #0b3d91;background:#f2f5fb}
+.brand h1{margin:0;font-size:1.55rem;color:#0b3d91;line-height:1.15}
+.brand .sub{display:block;font-size:.82rem;color:#333}
+.tabs{display:flex;gap:.45rem;flex-wrap:wrap}
+.tab{font-weight:700;font-size:1rem;padding:.4rem .9rem;border:2px solid #0b3d91;background:#fff;color:#0b3d91;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:7.2rem;line-height:1.15;min-height:48px;justify-content:center}
+.tab .tl{display:flex;align-items:center;gap:.35rem}
+.tab[aria-selected="true"]{background:#0b3d91;color:#fff}
+.tab .need{font-size:.68rem;font-weight:400}
+.tab.locked{border-style:dashed}
+.lock{width:16px;height:16px;flex:none}
+body:has(#ct-bar.pos-tl) .top{padding-left:54px}
+body:has(#ct-bar.pos-tl) .brand .sub{font-size:.74rem}
+main{max-width:1340px;margin:0 auto;padding:.7rem 1rem 1.2rem}
+.btn{font-weight:700;padding:.45rem .95rem;border-radius:10px;border:2px solid #0b3d91;background:#0b3d91;color:#fff;cursor:pointer;min-height:44px;touch-action:manipulation}
+.btn.secondary{background:#fff;color:#0b3d91}
+.btn.sm{min-height:40px;padding:.3rem .7rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.tab:focus-visible,.cell:focus-visible,.chip:focus-visible,.dot:focus-visible,.choice:focus-visible,.rk:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #d97706;outline-offset:2px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.chip{font-weight:700;padding:.32rem .75rem;border-radius:999px;border:2px solid #0b3d91;background:#fff;color:#0b3d91;cursor:pointer;min-height:40px;touch-action:manipulation}
+.chip[aria-pressed="true"]{background:#0b3d91;color:#fff}
+.chip .ck{margin-left:.3rem}
+.muted{color:#444}
+.small{font-size:.85rem}
+.note{font-size:.82rem;color:#333;margin:.3rem 0}
+h2{font-size:1.35rem;margin:.1rem 0 .4rem;color:#0b3d91}
+h3{font-size:1.1rem;margin:.2rem 0 .4rem}
+[hidden]{display:none!important}
+/* Learn */
+.learn-top{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;margin-bottom:.5rem}
+.dots{display:flex;gap:.35rem;flex-wrap:wrap}
+.dot{width:40px;height:40px;border-radius:50%;border:2px solid #0b3d91;background:#fff;color:#0b3d91;font-weight:700;cursor:pointer;position:relative;padding:0;touch-action:manipulation}
+.dot.viewed{background:#dbe7fb}
+.dot.viewed::after{content:"✓";position:absolute;right:-4px;top:-6px;font-size:.7rem;background:#1b7f3b;color:#fff;border-radius:50%;width:17px;height:17px;line-height:17px;text-align:center}
+.dot.cur{background:#0b3d91;color:#fff}
+.prog{flex:1;min-width:160px;display:flex;align-items:center;gap:.5rem}
+.bar{flex:1;height:14px;border:2px solid #0b3d91;border-radius:8px;overflow:hidden;background:#fff}
+.bar>div{height:100%;background:#0b3d91;width:0;transition:width .3s}
+.stop{display:grid;grid-template-columns:minmax(290px,.85fr) 1.15fr;gap:1rem 1.3rem;align-items:start}
+.stop-text ul{padding-left:1.15rem;margin:.2rem 0}
+.stop-text li{margin:.4rem 0}
+.stop-visual{background:#f6f8fc;border:2px solid #cfd8e5;border-radius:14px;padding:.55rem;min-width:0}
+.stop-visual svg{width:100%;height:auto;display:block;max-height:58vh}
+.vis-controls{display:flex;flex-wrap:wrap;gap:.35rem .5rem;align-items:center;margin-bottom:.35rem}
+.vis-controls input[type=range]{flex:1;min-width:120px;height:36px}
+.spinfo{min-height:4.6em;font-size:.95rem;background:#fff;border:2px solid #cfd8e5;border-radius:10px;padding:.35rem .6rem;margin:.35rem 0}
+.breakout svg{margin-top:.3rem}
+.spcell:hover .bg,.spcell:focus .bg{stroke:#1d4ed8;stroke-width:2.5}
+.spcell:focus{outline:none}
+.spbtn:hover rect:nth-child(2),.spbtn:focus rect:nth-child(2){fill:#1d5fd1}
+.spbtn.on rect:nth-child(2){fill:#b45309;stroke:#7c2d12;stroke-width:4}
+.spbtn:focus{outline:none}.spbtn:focus-visible rect:nth-child(2){stroke:#d97706;stroke-width:4}
+.pulse{animation:spPulse 1.6s ease-in-out infinite}
+@keyframes spPulse{0%,100%{opacity:1}50%{opacity:.72}}
+.readout{min-height:1.6em;font-weight:700;text-align:center;margin-top:.2rem}
+.eq{font-size:1.05rem;text-align:center;margin-top:.25rem}
+.learn-nav{display:flex;justify-content:space-between;align-items:center;margin-top:.7rem;gap:.5rem}
+.stop.wide{grid-template-columns:minmax(250px,.6fr) 1.4fr}
+@media (max-width:880px){.stop,.stop.wide{grid-template-columns:1fr}}
+/* Lab */
+.checklist{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;align-items:center;border:2px solid #0b3d91;border-radius:12px;padding:.4rem .8rem;margin-bottom:.55rem;background:#f2f5fb}
+.checklist strong{color:#0b3d91}
+.ci{display:flex;align-items:center;gap:.4rem;font-size:.92rem}
+.box{display:inline-flex;width:22px;height:22px;border:2px solid #0b3d91;border-radius:5px;align-items:center;justify-content:center;font-weight:700;background:#fff;color:#fff;flex:none}
+.ci.done .box{background:#1b7f3b;border-color:#1b7f3b}
+.ci.done{color:#145c2b}
+.subtabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:.45rem .9rem;align-items:center;margin-bottom:.45rem}
+.toggle{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;cursor:pointer;min-height:40px;padding:0 .25rem}
+.toggle input{width:22px;height:22px}
+.info{border:2px solid #cfd8e5;border-radius:10px;padding:.35rem .7rem;margin-bottom:.45rem;background:#fff;min-height:3.1rem;display:flex;flex-wrap:wrap;gap:.2rem 1.2rem;align-items:center;font-size:.95rem}
+.info .nm{font-weight:700;font-size:1.05rem}
+.info .pv b{color:#0b3d91}
+.info .pv.cur{background:#fff4d6;border-radius:6px;padding:0 .3rem}
+.heatwrap{position:relative;overflow-x:auto;padding:4px;-webkit-overflow-scrolling:touch}
+.heatwrap.arrows{padding:44px 6px 6px 60px}
+.heatgrid{display:grid;grid-template-columns:22px repeat(18,minmax(37px,1fr));grid-template-rows:20px repeat(6,minmax(42px,auto));gap:3px;min-width:760px}
+.glabel,.plabel{font-size:.62rem;color:#333;display:flex;align-items:center;justify-content:center;font-weight:700}
+.lanlabel{justify-content:flex-end;padding-right:4px;text-align:right;line-height:1.1}
+.cell{border:1px solid rgba(0,0,0,.45);border-radius:5px;padding:1px 1px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;line-height:1.05;background:#fff;color:#111;position:relative;min-height:42px;min-width:0;touch-action:manipulation}
+.cell .z{position:absolute;top:1px;left:3px;font-size:.48rem}
+.cell .sym{font-weight:700;font-size:.95rem;margin-top:5px}
+.cell .val{font-size:.6rem;white-space:nowrap}
+.cell.na{background:repeating-linear-gradient(45deg,#d9dde3 0 4px,#fff 4px 9px);color:#222}
+.cell.ph{cursor:default;background:#eef1f5;font-size:.6rem;border-style:dashed}
+.cell.sel{outline:3px solid #d97706;outline-offset:1px;z-index:2}
+.nonum .cell:not(.na) .val{visibility:hidden}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;margin:.4rem 0 .2rem;font-size:.85rem}
+.grad{width:220px;height:16px;border:1px solid #333;border-radius:4px}
+.swatch-na{width:22px;height:16px;border:1px solid #333;border-radius:3px;background:repeating-linear-gradient(45deg,#d9dde3 0 4px,#fff 4px 9px)}
+.overlay{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+canvas.bars3d{display:block;width:100%;touch-action:none;border:2px solid #cfd8e5;border-radius:10px;background:#fbfcfe}
+.showdown-ctl{display:flex;flex-wrap:wrap;gap:.45rem .8rem;align-items:center;margin-bottom:.4rem}
+select{padding:.35rem .5rem;border:2px solid #0b3d91;border-radius:8px;min-height:42px;background:#fff;color:#111;max-width:100%}
+.panelbox{background:#f6f8fc;border:2px solid #cfd8e5;border-radius:14px;padding:.6rem}
+.panelbox svg{width:100%;height:auto;display:block;max-height:60vh}
+.explain{font-size:1.05rem;border-left:5px solid #0b3d91;background:#fff;padding:.45rem .7rem;margin-top:.45rem;border-radius:6px}
+/* ranking */
+.ranklist{list-style:none;padding:0;margin:.4rem 0;max-width:560px}
+.rk{display:flex;align-items:center;gap:.6rem;border:2px solid #0b3d91;border-radius:10px;padding:.35rem .5rem .35rem .7rem;margin:.35rem 0;background:#fff;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;min-height:52px}
+.rk.dragging{box-shadow:0 6px 16px rgba(0,0,0,.25);background:#fff7e0;cursor:grabbing}
+.rk .grip{font-size:1.3rem;color:#0b3d91;line-height:1}
+.rk .lbl{flex:1;font-weight:700;font-size:1.1rem}
+.rk .lbl small{font-weight:400;font-size:.8rem;color:#333}
+.rk .val{font-size:.9rem;min-width:6.5rem;text-align:right}
+.rk .mv{display:flex;gap:.25rem}
+.rk .mv button{width:40px;height:40px;border-radius:8px;border:2px solid #0b3d91;background:#fff;color:#0b3d91;font-weight:700;cursor:pointer;padding:0}
+.rk.right{border-color:#1b7f3b;background:#eaf6ee}
+.rk.wrong{border-color:#b3261e;background:#fdecea}
+.rk .mark{font-weight:700;min-width:1.4rem;text-align:center}
+.rkwrap{max-width:720px}.rkwrap svg{width:100%;height:auto;display:block;max-height:62vh}
+.rkdir{border:3px solid #b91c1c;background:#fff4f2;border-radius:12px;padding:.45rem .8rem;margin:.2rem 0 .3rem;max-width:720px}
+.rkdir-t{font-size:1.35rem;font-weight:700;color:#8c1d18}
+.rkdir-row{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin-top:.25rem}
+.rkpill{background:#b91c1c;color:#fff;border-radius:8px;padding:.15rem .6rem;font-size:1.05rem}
+.rkarrow{font-size:1.3rem;color:#b91c1c}
+.slots{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0}
+.slot{border:2px solid #0b3d91;border-radius:10px;padding:.3rem .8rem;min-width:9rem;background:#fff;display:flex;flex-direction:column;font-size:1.1rem}
+.slot .sl{font-size:.85rem;color:#8c1d18;font-weight:700}
+.slot.right{border-color:#1b7f3b;background:#eaf6ee}.slot.wrong{border-color:#b3261e;background:#fdecea}
+.sdpick{overflow-x:auto;margin-bottom:.5rem}.sdpick svg{width:100%;min-width:620px;height:auto;display:block;max-height:56vh}
+.sdcell:hover rect:first-child,.sdcell:focus rect:first-child{stroke:#1d4ed8;stroke-width:3}.sdcell:focus{outline:none}
+.ord{display:inline-flex;padding:0 .35rem;height:22px;border-radius:4px;background:#b91c1c;color:#fff;align-items:center;justify-content:center;font-size:.8rem}
+.rankends{font-size:.8rem;font-weight:700;color:#0b3d91;max-width:560px;display:flex;justify-content:space-between}
+.fb{border-radius:10px;padding:.5rem .8rem;margin:.5rem 0;font-size:1.02rem;border:2px solid}
+.fb.ok{border-color:#1b7f3b;background:#eaf6ee}
+.fb.bad{border-color:#b3261e;background:#fdecea}
+.fb .head{font-weight:700}
+.stats{font-weight:700;color:#0b3d91}
+/* quiz */
+.quizbox{max-width:980px}
+.qhead{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;font-weight:700;color:#0b3d91}
+.qprompt{font-size:1.2rem;font-weight:700;margin:.4rem 0 .5rem}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media (max-width:700px){.choices{grid-template-columns:1fr}}
+.choice{text-align:left;padding:.6rem .8rem;border:2px solid #0b3d91;border-radius:10px;background:#fff;color:#111;cursor:pointer;font-size:1.02rem;min-height:52px;touch-action:manipulation}
+.choice[aria-pressed="true"]{background:#dbe7fb;box-shadow:inset 0 0 0 2px #0b3d91}
+.choice.right{border-color:#1b7f3b;background:#eaf6ee}
+.choice.wrong{border-color:#b3261e;background:#fdecea}
+.qactions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
+.clickgrid{display:grid;grid-template-columns:repeat(18,minmax(30px,1fr));grid-template-rows:repeat(6,minmax(36px,auto));gap:3px;min-width:600px}
+.clickwrap{overflow-x:auto;padding:3px}
+.ccell{border:1px solid #555;border-radius:5px;background:#fff;font-weight:700;font-size:.9rem;cursor:pointer;min-height:36px;padding:0;color:#111;touch-action:manipulation}
+.hlbox{border:4px solid #dc2626;border-radius:12px;margin:-5px;pointer-events:none;z-index:2;box-shadow:0 0 0 2px #fff}
+.ccell.ph{background:#eef1f5;font-size:.55rem;font-weight:400;cursor:default;border-style:dashed}
+.ccell[aria-pressed="true"]{background:#0b3d91;color:#fff}
+.ccell.right{background:#1b7f3b;color:#fff}
+.ccell.wrong{background:#b3261e;color:#fff}
+.cardwrap canvas{width:100%;max-width:640px;height:auto;border:2px solid #0b3d91;border-radius:10px;display:block}
+.cardbtns{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0}
+.lockpanel{border:2px dashed #0b3d91;border-radius:14px;padding:.8rem 1rem;max-width:760px;background:#f6f8fc}
+.reqlist{list-style:none;padding:0}
+.reqlist li{display:flex;align-items:center;gap:.5rem;margin:.35rem 0}
+footer{max-width:1340px;margin:0 auto;padding:.5rem 1rem 1.2rem;font-size:.8rem;color:#333;border-top:1px solid #cfd8e5}
+footer details summary{cursor:pointer;font-weight:700;color:#0b3d91}
+footer .linkbtn{background:none;border:none;color:#0b3d91;text-decoration:underline;cursor:pointer;padding:0;font-size:.8rem}
+/* animations */
+.pop{transform-box:fill-box;transform-origin:center;animation:pop .6s ease-out both}
+@keyframes pop{from{transform:scale(.05);opacity:0}to{transform:scale(1);opacity:1}}
+.rise{transform-box:fill-box;transform-origin:50% 100%;animation:rise .6s ease-out both}
+@keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.draw{stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.fadein{animation:fadein .5s ease-out both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.slide{transition:transform .8s ease}
+@media (prefers-reduced-motion:reduce){.pulse,.pop,.rise,.draw,.fadein{animation:none!important;stroke-dashoffset:0}.slide,.bar>div{transition:none!important}}
+@media (max-width:600px){html{font-size:16px}.brand h1{font-size:1.3rem}.tab{min-width:5.6rem;padding:.35rem .55rem}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>Periodic Trends</h1><span class="sub">Atomic radius · Ionization energy · Electron affinity · Electronegativity</span></div>
+  <nav class="tabs" role="tablist" aria-label="Activity sections">
+    <button class="tab" role="tab" id="tab-learn" data-tab="learn" aria-selected="true" aria-controls="panel-learn"><span class="tl">1 · Learn</span><span class="need" id="need-learn"></span></button>
+    <button class="tab" role="tab" id="tab-lab" data-tab="lab" aria-selected="false" aria-controls="panel-lab"><span class="tl">2 · Lab</span><span class="need" id="need-lab"></span></button>
+    <button class="tab" role="tab" id="tab-quiz" data-tab="quiz" aria-selected="false" aria-controls="panel-quiz"><span class="tl" id="quiz-tl">3 · Quiz</span><span class="need" id="need-quiz"></span></button>
+  </nav>
+</header>
+<main>
+  <section id="panel-learn" role="tabpanel" aria-labelledby="tab-learn">
+    <div class="learn-top">
+      <div class="dots" id="dots" aria-label="Learn stops"></div>
+      <div class="prog"><div class="bar" aria-hidden="true"><div id="learnBar"></div></div><span id="learnCount" class="small"></span></div>
+    </div>
+    <article class="stop">
+      <div class="stop-text"><h2 id="stopTitle"></h2><ul id="stopBullets"></ul></div>
+      <div class="stop-visual" id="stopVisual"></div>
+    </article>
+    <div class="learn-nav">
+      <button class="btn secondary" id="prevStop">← Back</button>
+      <span id="stopPos" class="small"></span>
+      <button class="btn" id="nextStop">Next →</button>
+    </div>
+  </section>
+
+  <section id="panel-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+    <div class="checklist" id="checklist" aria-live="polite"></div>
+    <div class="subtabs" role="group" aria-label="Lab stations">
+      <button class="chip" data-station="heat" aria-pressed="true">A · Heat-Map Table</button>
+      <button class="chip" data-station="size" aria-pressed="false">B · Size Showdown</button>
+      <button class="chip" data-station="rank" aria-pressed="false">C · Ranking Challenges</button>
+    </div>
+
+    <div id="st-heat">
+      <div class="toolbar">
+        <div class="seg" id="trendBtns" role="group" aria-label="Choose a trend"></div>
+        <label class="toggle"><input type="checkbox" id="tgNums" checked> Numbers</label>
+        <label class="toggle"><input type="checkbox" id="tgArrows"> Trend arrows</label>
+        <label class="toggle"><input type="checkbox" id="tg3d"> 3D bars</label>
+      </div>
+      <div class="info" id="heatInfo" aria-live="polite"><span class="muted">Hover over or tap an element to see all four values.</span></div>
+      <div class="heatwrap" id="heatWrap"><div class="heatgrid" id="heatGrid"></div><svg class="overlay" id="heatOverlay" aria-hidden="true"></svg></div>
+      <canvas class="bars3d" id="bars3d" hidden aria-label="3D bar periodic table"></canvas>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div id="st-size" hidden>
+      <div class="showdown-ctl">
+        <span id="sdStatus" aria-live="polite"></span>
+        <button class="btn secondary sm" id="sdClear">Clear</button>
+        <button class="btn secondary sm" id="sdRandom">Random pair</button>
+        <span class="stats" id="sdCount"></span>
+      </div>
+      <div class="note">Tap two elements on the heat map (color = atomic radius: dark = small, light = large). Tapping a third starts a new pair.</div>
+      <div class="sdpick" id="sdPick"></div>
+      <div class="panelbox"><svg id="sdSvg" viewBox="0 0 760 410" role="img" aria-label="Two atoms drawn to scale"></svg></div>
+      <div class="explain" id="sdExplain" aria-live="polite">Choose two elements to compare their sizes. Circles are drawn to the same scale.</div>
+    </div>
+
+    <div id="st-rank" hidden>
+      <div class="toolbar">
+        <span class="stats" id="rkStats"></span>
+        <div class="seg" id="rkProp" role="group" aria-label="Property to rank by"></div>
+      </div>
+      <div id="rkArea"></div>
+    </div>
+  </section>
+
+  <section id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div id="quizArea" class="quizbox"></div>
+  </section>
+</main>
+<footer>
+  <details>
+    <summary>Data sources &amp; notes</summary>
+    <ul>
+      <li><b>Atomic radius:</b> calculated atomic radii (pm), E. Clementi, D. L. Raimondi &amp; W. P. Reinhardt, <i>J. Chem. Phys.</i> 38, 2686 (1963) and 47, 1300 (1967), as tabulated by WebElements (M. Winter, University of Sheffield). One radius type is used everywhere so noble gases can be compared.</li>
+      <li><b>First ionization energy:</b> NIST Atomic Spectra Database / CRC Handbook of Chemistry and Physics values in kJ/mol (Tc: Mattolat et al., 2010).</li>
+      <li><b>Electron affinity:</b> experimental gas-phase values (kJ/mol) from laser photodetachment studies (J. Phys. Chem. Ref. Data compilations and later measurements), as compiled in Wikipedia’s “Electron affinity (data page)”, Nov 2026. Sign convention: positive = energy released. n/a = anion not stable. * = estimate (Tc, Po).</li>
+      <li><b>Electronegativity:</b> Pauling scale (revised values, Allred 1961) as compiled by WebElements. Noble gases are not given values in this activity.</li>
+      <li>Lanthanides (Z = 57–71) are kept in the embedded data but not shown in the Lab.</li>
+      <li><b>Ionic radii</b> (Learn stop 7 and quiz): R. D. Shannon, <i>Acta Cryst.</i> A32, 751 (1976), 6-coordinate.</li>
+    </ul>
+  </details>
+  <p>chemistryteacher.net/periodic-trends · Progress is saved in this browser when possible. <button class="linkbtn" id="resetBtn">Reset my progress</button></p>
+</footer>
+<script>
+'use strict';
+/* ================= DATA (Z = 1–86) =================
+   Z|Symbol|Name|Group (L = lanthanide)|Period|EN (Pauling)|First IE (kJ/mol)|EA (kJ/mol, + = released)|Atomic radius (pm, calculated)
+   Blank = no data. EA "x" = anion not stable (n/a). EN "r" = only a 1.1–1.2 range exists (n/a). "*" = estimate. */
+const DATA_TXT = `
+1|H|Hydrogen|1|1|2.20|1312.0|72.8|53
+2|He|Helium|18|1||2372.3|x|31
+3|Li|Lithium|1|2|0.98|520.2|59.6|167
+4|Be|Beryllium|2|2|1.57|899.5|x|112
+5|B|Boron|13|2|2.04|800.6|27.0|87
+6|C|Carbon|14|2|2.55|1086.5|121.8|67
+7|N|Nitrogen|15|2|3.04|1402.3|x|56
+8|O|Oxygen|16|2|3.44|1313.9|141.0|48
+9|F|Fluorine|17|2|3.98|1681.0|328.2|42
+10|Ne|Neon|18|2||2080.7|x|38
+11|Na|Sodium|1|3|0.93|495.8|52.9|190
+12|Mg|Magnesium|2|3|1.31|737.7|x|145
+13|Al|Aluminum|13|3|1.61|577.5|41.8|118
+14|Si|Silicon|14|3|1.90|786.5|134.1|111
+15|P|Phosphorus|15|3|2.19|1011.8|72.0|98
+16|S|Sulfur|16|3|2.58|999.6|200.4|88
+17|Cl|Chlorine|17|3|3.16|1251.2|348.6|79
+18|Ar|Argon|18|3||1520.6|x|71
+19|K|Potassium|1|4|0.82|418.8|48.4|243
+20|Ca|Calcium|2|4|1.00|589.8|2.4|194
+21|Sc|Scandium|3|4|1.36|633.1|17.3|184
+22|Ti|Titanium|4|4|1.54|658.8|7.3|176
+23|V|Vanadium|5|4|1.63|650.9|50.9|171
+24|Cr|Chromium|6|4|1.66|652.9|65.2|166
+25|Mn|Manganese|7|4|1.55|717.3|x|161
+26|Fe|Iron|8|4|1.83|762.5|14.8|156
+27|Co|Cobalt|9|4|1.88|760.4|63.9|152
+28|Ni|Nickel|10|4|1.91|737.1|111.7|149
+29|Cu|Copper|11|4|1.90|745.5|119.2|145
+30|Zn|Zinc|12|4|1.65|906.4|x|142
+31|Ga|Gallium|13|4|1.81|578.8|29.1|136
+32|Ge|Germanium|14|4|2.01|762|118.9|125
+33|As|Arsenic|15|4|2.18|947.0|77.6|114
+34|Se|Selenium|16|4|2.55|941.0|195.0|103
+35|Br|Bromine|17|4|2.96|1139.9|324.5|94
+36|Kr|Krypton|18|4|3.00|1350.8|x|88
+37|Rb|Rubidium|1|5|0.82|403.0|46.9|265
+38|Sr|Strontium|2|5|0.95|549.5|5.0|219
+39|Y|Yttrium|3|5|1.22|600|30.0|212
+40|Zr|Zirconium|4|5|1.33|640.1|41.8|206
+41|Nb|Niobium|5|5|1.6|652.1|88.5|198
+42|Mo|Molybdenum|6|5|2.16|684.3|72.1|190
+43|Tc|Technetium|7|5|1.9|686.9|53*|183
+44|Ru|Ruthenium|8|5|2.2|710.2|101.0|178
+45|Rh|Rhodium|9|5|2.28|719.7|110.3|173
+46|Pd|Palladium|10|5|2.20|804.4|54.2|169
+47|Ag|Silver|11|5|1.93|731.0|125.9|165
+48|Cd|Cadmium|12|5|1.69|867.8|x|161
+49|In|Indium|13|5|1.78|558.3|37.0|156
+50|Sn|Tin|14|5|1.96|708.6|107.3|145
+51|Sb|Antimony|15|5|2.05|834|101.1|133
+52|Te|Tellurium|16|5|2.1|869.3|190.2|123
+53|I|Iodine|17|5|2.66|1008.4|295.2|115
+54|Xe|Xenon|18|5|2.6|1170.4|x|108
+55|Cs|Cesium|1|6|0.79|375.7|45.5|298
+56|Ba|Barium|2|6|0.89|502.9|14.0|253
+57|La|Lanthanum|L|6|1.10|538.1|53.8|
+58|Ce|Cerium|L|6|1.12|534.4|57.9|
+59|Pr|Praseodymium|L|6|1.13|527|10.5|247
+60|Nd|Neodymium|L|6|1.14|533.1|9.4|206
+61|Pm|Promethium|L|6|r|540|12.5|205
+62|Sm|Samarium|L|6|1.17|544.5|15.6|238
+63|Eu|Europium|L|6|r|547.1|11.2|231
+64|Gd|Gadolinium|L|6|1.20|593.4|20.5|233
+65|Tb|Terbium|L|6|1.1|565.8|12.7|225
+66|Dy|Dysprosium|L|6|1.22|573.0|1.5|228
+67|Ho|Holmium|L|6|1.23|581.0|32.6|226
+68|Er|Erbium|L|6|1.24|589.3|30.1|226
+69|Tm|Thulium|L|6|1.25|596.7|99|222
+70|Yb|Ytterbium|L|6|r|603.4|x|222
+71|Lu|Lutetium|L|6|1.27|523.5|23.0|217
+72|Hf|Hafnium|4|6|1.3|658.5|17.2|208
+73|Ta|Tantalum|5|6|1.5|761|31.7|200
+74|W|Tungsten|6|6|2.36|770|78.8|193
+75|Re|Rhenium|7|6|1.9|760|5.8|188
+76|Os|Osmium|8|6|2.2|840|104.0|185
+77|Ir|Iridium|9|6|2.20|880|150.9|180
+78|Pt|Platinum|10|6|2.28|870|205.0|177
+79|Au|Gold|11|6|2.54|890.1|222.7|174
+80|Hg|Mercury|12|6|2.00|1007.1|x|171
+81|Tl|Thallium|13|6|1.62|589.4|30.9|156
+82|Pb|Lead|14|6|2.33|715.6|34.4|154
+83|Bi|Bismuth|15|6|2.02|703|90.9|143
+84|Po|Polonium|16|6|2.0|812.1|136*|135
+85|At|Astatine|17|6|2.2|899.0|233.1|127
+86|Rn|Radon|18|6||1037|x|120
+`;
+function numOf(s) { if (!s || s === 'x' || s === 'r') return null; return parseFloat(s); }
+const ELEMENTS = [], BY_SYM = {}, BY_Z = {};
+DATA_TXT.trim().split('\n').forEach(line => {
+  const [z, sym, name, g, p, en, ie, ea, r] = line.split('|');
+  const e = {
+    Z: +z, sym, name, lan: g === 'L', group: g === 'L' ? null : +g, period: +p,
+    raw: { EN: en, IE: ie, EA: ea, R: r },
+    EN: g === '18' ? null : numOf(en), IE: numOf(ie), EA: numOf(ea), R: numOf(r),
+    eaUnstable: ea === 'x', enRange: en === 'r', eaEst: ea.endsWith('*')
+  };
+  ELEMENTS.push(e); BY_SYM[sym] = e; BY_Z[e.Z] = e;
+});
+/* Shannon (1976) ionic radii, 6-coordinate, pm */
+const IONS = {
+  'Li+': { base: 'Li', q: 1, r: 76, label: 'Li⁺' }, 'Na+': { base: 'Na', q: 1, r: 102, label: 'Na⁺' }, 'K+': { base: 'K', q: 1, r: 138, label: 'K⁺' },
+  'Mg2+': { base: 'Mg', q: 2, r: 72, label: 'Mg²⁺' }, 'Ca2+': { base: 'Ca', q: 2, r: 100, label: 'Ca²⁺' }, 'Al3+': { base: 'Al', q: 3, r: 53.5, label: 'Al³⁺' },
+  'F-': { base: 'F', q: -1, r: 133, label: 'F⁻' }, 'Cl-': { base: 'Cl', q: -1, r: 181, label: 'Cl⁻' }, 'O2-': { base: 'O', q: -2, r: 140, label: 'O²⁻' }, 'S2-': { base: 'S', q: -2, r: 184, label: 'S²⁻' }
+};
+
+/* ================= HELPERS ================= */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const SVGNS = 'http://www.w3.org/2000/svg';
+function h(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'html') n.innerHTML = v;
+    else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : v);
+  }
+  kids.flat().forEach(c => { if (c == null || c === false) return; n.append(c.nodeType ? c : String(c)); });
+  return n;
+}
+function sv(tag, attrs, parent) {
+  const n = document.createElementNS(SVGNS, tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k];
+    if (v == null) continue;
+    if (k === 'text') n.textContent = v; else n.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function svgRoot(w, ht, label) { return sv('svg', { viewBox: `0 0 ${w} ${ht}`, role: 'img', 'aria-label': label }); }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function sample(a, k) { return shuffle(a).slice(0, k); }
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+const reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+let uid = 0; const nextId = p => p + (++uid);
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function hatchPattern(svg, color, id) {
+  let defs = svg.querySelector('defs') || sv('defs', null, svg);
+  const p = sv('pattern', { id, width: 7, height: 7, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+  sv('rect', { width: 7, height: 7, fill: '#fff' }, p);
+  sv('rect', { width: 3.5, height: 7, fill: color }, p);
+  return `url(#${id})`;
+}
+function arrowMarker(svg, color, id) {
+  let defs = svg.querySelector('defs') || sv('defs', null, svg);
+  const m = sv('marker', { id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto-start-reverse' }, defs);
+  sv('path', { d: 'M0,0 L10,5 L0,10 z', fill: color }, m);
+  return `url(#${id})`;
+}
+
+/* ================= ELECTRONS PER ENERGY LEVEL (for Bohr-style drawings) ================= */
+const MADELUNG = [[1, 0], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [3, 2], [4, 1], [5, 0], [4, 2], [5, 1], [6, 0], [4, 3], [5, 2], [6, 1]];
+const CAP = [2, 6, 10, 14];
+const CONFIG_EXC = { 24: [[4, 0, 3, 2, 1]], 29: [[4, 0, 3, 2, 1]], 41: [[5, 0, 4, 2, 1]], 42: [[5, 0, 4, 2, 1]], 44: [[5, 0, 4, 2, 1]], 45: [[5, 0, 4, 2, 1]], 46: [[5, 0, 4, 2, 2]], 47: [[5, 0, 4, 2, 1]], 57: [[4, 3, 5, 2, 1]], 58: [[4, 3, 5, 2, 1]], 64: [[4, 3, 5, 2, 1]], 78: [[6, 0, 5, 2, 1]], 79: [[6, 0, 5, 2, 1]] };
+function shells(Z) {
+  let left = Z; const occ = {};
+  for (const [n, l] of MADELUNG) { if (left <= 0) break; const k = Math.min(left, CAP[l]); occ[n + ',' + l] = k; left -= k; }
+  (CONFIG_EXC[Z] || []).forEach(([n1, l1, n2, l2, k]) => { occ[n1 + ',' + l1] -= k; occ[n2 + ',' + l2] = (occ[n2 + ',' + l2] || 0) + k; });
+  const s = [];
+  for (const key in occ) { const n = +key.split(',')[0]; s[n - 1] = (s[n - 1] || 0) + occ[key]; }
+  const out = Array.from(s, v => v || 0);
+  while (out.length && out[out.length - 1] === 0) out.pop();
+  return out;
+}
+const isMain = e => !e.lan && (e.group <= 2 || e.group >= 13);
+function valence(e) { if (e.Z === 2) return 2; if (!isMain(e)) return null; return e.group <= 2 ? e.group : e.group - 10; }
+function zeff(e) { const v = valence(e); return v == null ? null : v; } /* simple model: protons − core electrons = valence electrons */
+
+/* ================= PROPERTIES ================= */
+const PROPS = {
+  R: { key: 'R', name: 'Atomic radius', short: 'Radius', unit: 'pm', hi: 'LARGEST', lo: 'SMALLEST' },
+  IE: { key: 'IE', name: 'First ionization energy', short: 'Ionization energy', unit: 'kJ/mol', hi: 'HIGHEST', lo: 'LOWEST' },
+  EA: { key: 'EA', name: 'Electron affinity', short: 'Electron affinity', unit: 'kJ/mol released', hi: 'HIGHEST', lo: 'LOWEST' },
+  EN: { key: 'EN', name: 'Electronegativity', short: 'Electronegativity', unit: 'Pauling scale', hi: 'HIGHEST', lo: 'LOWEST' }
+};
+const PKEYS = ['R', 'IE', 'EA', 'EN'];
+const RANGE = {};
+PKEYS.forEach(k => { const v = ELEMENTS.filter(e => !e.lan).map(e => e[k]).filter(x => x != null); RANGE[k] = [Math.min(...v), Math.max(...v)]; });
+function cellVal(e, k) {
+  if (e[k] == null) return 'n/a';
+  if (k === 'EN') return e.raw.EN;
+  return String(Math.round(e[k])) + (k === 'EA' && e.eaEst ? '*' : '');
+}
+function fullVal(e, k) {
+  if (e[k] == null) return 'n/a';
+  const r = e.raw[k].replace('*', '');
+  if (k === 'R') return r + ' pm';
+  if (k === 'EN') return r;
+  return r + ' kJ/mol' + (e.raw[k].endsWith('*') ? ' (estimate)' : '');
+}
+function naReason(e, k) {
+  if (e[k] != null) return '';
+  if (k === 'EA') return e.eaUnstable ? 'anion not stable' : 'no data';
+  if (k === 'EN') return e.group === 18 ? 'noble gas: not used in this activity' : e.enRange ? 'only a rough 1.1–1.2 range' : 'no data';
+  if (k === 'R') return 'not in calculated data set';
+  return 'no data';
+}
+function placeText(e) { return e.lan ? 'Lanthanide (f-block), period 6' : `Group ${e.group}, period ${e.period}`; }
+
+/* ================= COLOR (viridis-style sequential scale; text color picked for contrast) ================= */
+const VIRIDIS = ['#440154', '#482878', '#3e4989', '#31688e', '#26828e', '#1f9e89', '#35b779', '#6ece58', '#b5de2b', '#fde725'];
+const VIR_RGB = VIRIDIS.map(x => [parseInt(x.slice(1, 3), 16), parseInt(x.slice(3, 5), 16), parseInt(x.slice(5, 7), 16)]);
+function scaleColor(t) {
+  t = Math.max(0, Math.min(1, t));
+  const x = t * (VIR_RGB.length - 1), i = Math.min(Math.floor(x), VIR_RGB.length - 2), f = x - i, a = VIR_RGB[i], b = VIR_RGB[i + 1];
+  return a.map((v, j) => Math.round(v + (b[j] - v) * f));
+}
+const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+function lum(c) { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); }
+function textOn(c) { const L = lum(c); return (1.05 / (L + 0.05)) >= ((L + 0.05) / 0.05) ? '#fff' : '#000'; }
+const shadeC = (c, k) => c.map(v => Math.round(v * k));
+function colorFor(k, v, lo, hi) { lo = lo == null ? RANGE[k][0] : lo; hi = hi == null ? RANGE[k][1] : hi; return scaleColor((v - lo) / (hi - lo || 1)); }
+
+/* ================= PROGRESS STATE ================= */
+const STORE_KEY = 'periodicTrends.v1';
+const NSTOPS = 8;
+const state = { viewed: [], heatViewed: [], sdPairs: [], rankDone: 0, rankCorrect: 0, attempts: 0, stop: 0 };
+function loadState() { try { const raw = localStorage.getItem(STORE_KEY); if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') Object.assign(state, o); } } catch (e) { /* storage unavailable */ } }
+function saveState() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ } }
+const uniq = a => Array.from(new Set(a));
+function learnCount() { return uniq(state.viewed).length; }
+function checks() { return { heat: uniq(state.heatViewed).length, size: uniq(state.sdPairs).length, done: state.rankDone, correct: state.rankCorrect }; }
+function labDone() { const c = checks(); return c.heat >= 4 && c.size >= 3 && c.done >= 8 && c.correct >= 6; }
+function quizUnlocked() { return learnCount() >= NSTOPS && labDone(); }
+const LOCK_SVG = '<svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="7" width="11" height="8" rx="1.5" fill="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+
+function updateTabs() {
+  const lc = learnCount();
+  $('#need-learn').textContent = lc >= NSTOPS ? '✓ all stops viewed' : `${lc}/${NSTOPS} stops viewed`;
+  const c = checks();
+  const labN = (c.heat >= 4) + (c.size >= 3) + (c.done >= 8 && c.correct >= 6);
+  $('#need-lab').textContent = labDone() ? '✓ checklist done' : `checklist ${labN}/3`;
+  const qt = $('#tab-quiz');
+  if (quizUnlocked()) {
+    qt.classList.remove('locked');
+    $('#quiz-tl').innerHTML = '3 · Quiz';
+    $('#need-quiz').textContent = state.attempts ? `attempts: ${state.attempts}` : 'unlocked!';
+    qt.setAttribute('aria-label', 'Quiz (unlocked)');
+  } else {
+    qt.classList.add('locked');
+    $('#quiz-tl').innerHTML = LOCK_SVG + ' 3 · Quiz';
+    const needs = [];
+    if (lc < NSTOPS) needs.push(`Learn ${lc}/${NSTOPS}`);
+    if (!labDone()) needs.push(`Lab ${labN}/3`);
+    $('#need-quiz').textContent = 'Needs: ' + needs.join(' · ');
+    qt.setAttribute('aria-label', 'Quiz (locked). Needs: ' + needs.join(', '));
+  }
+}
+
+/* ================= SHARED DRAWING ================= */
+function drawBohr(parent, cx, cy, Rout, counts, Z, o) {
+  o = o || {};
+  const g = sv('g', null, parent);
+  const n = counts.length;
+  const nucR = o.nucR || Math.max(4, Math.min(20, Rout * 0.2));
+  if (o.cloud !== false) sv('circle', { cx, cy, r: Rout, fill: o.fill || '#dbe7fb', stroke: o.stroke || '#0b3d91', 'stroke-width': o.sw || 2.5 }, g);
+  const inner = n === 1 ? Rout : nucR + (Rout - nucR) / (n + 0.4);
+  const radii = counts.map((_, i) => n === 1 ? Rout : inner + (Rout - inner) * i / (n - 1));
+  const dotR = o.dotR || Math.max(2, Math.min(5, Rout / 24));
+  radii.forEach((r, i) => {
+    sv('circle', { cx, cy, r, fill: 'none', stroke: i === n - 1 ? '#1d4ed8' : '#7b8aa3', 'stroke-width': i === n - 1 ? 1.8 : 1.2 }, g);
+    const c = counts[i], outer = i === n - 1;
+    const eg = sv('g', null, g);
+    if (2 * Math.PI * r / c >= dotR * 2.7) {
+      for (let k = 0; k < c; k++) {
+        const a = -Math.PI / 2 + 2 * Math.PI * k / c + i * 0.35;
+        const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+        sv('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: outer ? dotR * 1.25 : dotR, fill: outer ? '#1d4ed8' : '#475569', stroke: '#fff', 'stroke-width': 1 }, eg);
+      }
+    } else if (r > 9) {
+      sv('text', { x: cx, y: cy - r + 4, 'text-anchor': 'middle', 'font-size': Math.max(9, Math.min(13, r / 5)), 'font-weight': 700, fill: '#111', stroke: '#fff', 'stroke-width': 3, 'paint-order': 'stroke', text: c + 'e⁻' }, eg);
+    }
+    if (outer && o.spin && !reduceMotion) {
+      sv('animateTransform', { attributeName: 'transform', type: 'rotate', from: `0 ${cx} ${cy}`, to: `360 ${cx} ${cy}`, dur: '18s', repeatCount: 'indefinite' }, eg);
+    }
+  });
+  sv('circle', { cx, cy, r: nucR, fill: '#b91c1c' }, g);
+  if (nucR >= 10) sv('text', { x: cx, y: cy + nucR * 0.3, 'text-anchor': 'middle', 'font-size': Math.min(18, nucR * 0.8), 'font-weight': 700, fill: '#fff', text: '+' + Z }, g);
+  return { g, radii };
+}
+function chipRow(items, cur, onPick, labelFn) {
+  const seg = h('div', { class: 'seg', role: 'group' });
+  items.forEach(it => seg.append(h('button', { class: 'chip', 'aria-pressed': String(it === cur), onclick: () => { $$('.chip', seg).forEach(b => b.setAttribute('aria-pressed', 'false')); btnOf(it).setAttribute('aria-pressed', 'true'); onPick(it); } }, labelFn ? labelFn(it) : it)));
+  function btnOf(it) { return seg.children[items.indexOf(it)]; }
+  return seg;
+}
+
+/* ================= LEARN STOP VISUALS ================= */
+function visWhy(box) {
+  let Z = 11;
+  const range = h('input', { type: 'range', min: 1, max: 20, value: Z, 'aria-label': 'Atomic number' });
+  const minus = h('button', { class: 'btn secondary sm', 'aria-label': 'Previous element' }, '−');
+  const plus = h('button', { class: 'btn secondary sm', 'aria-label': 'Next element' }, '+');
+  const lbl = h('strong', { style: 'min-width:8.5rem' });
+  box.append(h('div', { class: 'vis-controls' }, h('span', null, 'Element:'), minus, range, plus, lbl));
+  const svg = svgRoot(520, 400, 'Bohr model showing protons, core electrons and valence electrons');
+  box.append(svg);
+  const eq = h('div', { class: 'eq', 'aria-live': 'polite' }); box.append(eq);
+  function draw() {
+    const e = BY_Z[Z], sh = shells(Z), n = sh.length, core = Z - sh[n - 1];
+    svg.innerHTML = '';
+    const cx = 260, cy = 186, radii = sh.map((_, i) => 58 + i * 39);
+    if (n >= 2) sv('circle', { cx, cy, r: radii[n - 2] + 15, fill: '#e2e6ec' }, svg);
+    radii.forEach((r, i) => sv('circle', { cx, cy, r, fill: 'none', stroke: i === n - 1 ? '#1d4ed8' : '#64748b', 'stroke-width': i === n - 1 ? 2.5 : 1.5, 'stroke-dasharray': i === n - 1 ? '6 4' : null }, svg));
+    radii.forEach((r, i) => {
+      const outer = i === n - 1, c = sh[i], g = sv('g', null, svg);
+      for (let k = 0; k < c; k++) {
+        const a = -Math.PI / 2 + 2 * Math.PI * k / c + i * 0.4;
+        const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
+        if (outer) { sv('circle', { cx: x, cy: y, r: 10, fill: '#1d4ed8', stroke: '#fff', 'stroke-width': 2 }, g); sv('circle', { cx: x, cy: y, r: 3.2, fill: '#fff' }, g); }
+        else sv('circle', { cx: x, cy: y, r: 6.5, fill: '#475569', stroke: '#fff', 'stroke-width': 1.5 }, g);
+      }
+      if (outer && !reduceMotion) sv('animateTransform', { attributeName: 'transform', type: 'rotate', from: `0 ${cx} ${cy}`, to: `360 ${cx} ${cy}`, dur: '20s', repeatCount: 'indefinite' }, g);
+    });
+    sv('circle', { cx, cy, r: 31, fill: '#b91c1c' }, svg);
+    sv('text', { x: cx, y: cy + 4, 'text-anchor': 'middle', 'font-size': 22, 'font-weight': 700, fill: '#fff', text: '+' + Z }, svg);
+    sv('text', { x: cx, y: cy + 19, 'text-anchor': 'middle', 'font-size': 13, fill: '#fff', text: Z === 1 ? 'proton' : 'protons' }, svg);
+    const ly = 388;
+    sv('circle', { cx: 20, cy: ly - 5, r: 6.5, fill: '#475569' }, svg); sv('text', { x: 32, y: ly, 'font-size': 14, text: 'core (inner) electron' }, svg);
+    sv('circle', { cx: 190, cy: ly - 5, r: 9, fill: '#1d4ed8' }, svg); sv('circle', { cx: 190, cy: ly - 5, r: 3, fill: '#fff' }, svg); sv('text', { x: 204, y: ly, 'font-size': 14, text: 'valence (outer) electron' }, svg);
+    sv('rect', { x: 382, y: ly - 13, width: 16, height: 16, fill: '#e2e6ec', stroke: '#888' }, svg); sv('text', { x: 404, y: ly, 'font-size': 14, text: 'shielding' }, svg);
+    eq.innerHTML = `<b>${e.name} (${e.sym})</b>: Z<sub>eff</sub> ≈ ${Z} proton${Z > 1 ? 's' : ''} − ${core} core e⁻ = <b>+${Z - core}</b> · outer energy level n = ${n}`;
+    lbl.textContent = `${e.sym} · ${e.name}`;
+    range.value = Z;
+  }
+  range.addEventListener('input', () => { Z = +range.value; draw(); });
+  minus.addEventListener('click', () => { Z = Math.max(1, Z - 1); draw(); });
+  plus.addEventListener('click', () => { Z = Math.min(20, Z + 1); draw(); });
+  draw();
+}
+
+/* ================= S/P-BLOCK TREND TABLE (Learn stops 2–5) ================= */
+const SP_GROUPS = [1, 2, 13, 14, 15, 16, 17, 18];
+const SP_ELS = ELEMENTS.filter(e => !e.lan && SP_GROUPS.includes(e.group));
+const SP_MAX = {}; PKEYS.forEach(k => { SP_MAX[k] = Math.max(...SP_ELS.map(e => e[k]).filter(v => v != null)); });
+const TREND = {
+  R: { row: 'decreases', col: 'increases', whyRow: 'more protons pull on the same energy level (higher Z<sub>eff</sub>), so the electron cloud is pulled in', whyCol: 'each step down adds an energy level, so the outer electrons are farther away and more shielded' },
+  IE: { row: 'increases', col: 'decreases', whyRow: 'a higher Z<sub>eff</sub> holds the outer electrons more tightly', whyCol: 'the outer electron is farther away and more shielded, so it is easier to remove' },
+  EA: { row: 'generally increases toward group 17', col: 'generally decreases', whyRow: 'a higher Z<sub>eff</sub> pulls harder on an incoming electron, and halogens need just one more electron', whyCol: 'an incoming electron lands farther from the nucleus, so less energy is released' },
+  EN: { row: 'increases', col: 'decreases', whyRow: 'a higher Z<sub>eff</sub> pulls harder on shared bonding electrons', whyCol: 'bonding electrons are farther from the nucleus and more shielded' }
+};
+const EXC_NOTES = {
+  'IE:Be:B': 'see stop 8', 'IE:N:O': 'see stop 8', 'IE:Mg:Al': 'same reason as Be → B (stop 8)', 'IE:P:S': 'same reason as N → O (stop 8)',
+  'EA:F:Cl': 'F is so small that its electrons crowd and repel the incoming electron', 'EA:O:S': 'O is very small, so the incoming electron is crowded (like F)'
+};
+function spDetail(e, k) {
+  const z = zeff(e), why = naReason(e, k);
+  const others = PKEYS.filter(x => x !== k).map(x => `${PROPS[x].short}: ${fullVal(e, x)}`).join(' · ');
+  return `<b>${e.name} (${e.sym})</b> · Z = ${e.Z} · group ${e.group}, period ${e.period} — <b>${PROPS[k].short}: ${fullVal(e, k)}</b>${why ? ' (' + why + ')' : ''}` +
+    `<br>${e.Z} proton${e.Z > 1 ? 's' : ''} · ${e.period} energy level${e.period > 1 ? 's' : ''} · simple Z<sub>eff</sub> ≈ +${z}` +
+    `<br><span class="small muted">${others}</span>`;
+}
+function shine(svg) {
+  if (svg._shine) return svg._shine;
+  const defs = svg.querySelector('defs') || sv('defs', null, svg), id = nextId('sh');
+  const rg = sv('radialGradient', { id: id + 'r', cx: '34%', cy: '30%', r: '75%' }, defs);
+  [['0%', '#fff', .9], ['30%', '#fff', .25], ['70%', '#000', 0], ['100%', '#000', .32]].forEach(([o, c, op]) => sv('stop', { offset: o, 'stop-color': c, 'stop-opacity': op }, rg));
+  const lg = sv('linearGradient', { id: id + 'l', x1: 0, y1: 0, x2: 1, y2: 0 }, defs);
+  [['0%', '#000', .18], ['30%', '#fff', .45], ['55%', '#fff', .08], ['100%', '#000', .28]].forEach(([o, c, op]) => sv('stop', { offset: o, 'stop-color': c, 'stop-opacity': op }, lg));
+  const sg = sv('radialGradient', { id: id + 's' }, defs);
+  [['0%', '#0b1a33', .35], ['100%', '#0b1a33', 0]].forEach(([o, c, op]) => sv('stop', { offset: o, 'stop-color': c, 'stop-opacity': op }, sg));
+  const cg = sv('linearGradient', { id: id + 'c', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  [['0%', '#ffffff'], ['100%', '#eef2f8']].forEach(([o, c]) => sv('stop', { offset: o, 'stop-color': c }, cg));
+  const f = sv('filter', { id: id + 'f', x: '-20%', y: '-20%', width: '140%', height: '150%' }, defs);
+  sv('feDropShadow', { dx: 0, dy: 1.5, stdDeviation: 1.6, 'flood-color': '#0b1a33', 'flood-opacity': .22 }, f);
+  svg._shine = { sphere: `url(#${id}r)`, bar: `url(#${id}l)`, ground: `url(#${id}s)`, cell: `url(#${id}c)`, drop: `url(#${id}f)` };
+  return svg._shine;
+}
+function sphere(parent, cx, cy, r, col, sh, o) {
+  o = o || {};
+  if (o.ground) sv('ellipse', { cx, cy: cy + r + 5, rx: r * 0.9, ry: Math.max(2, r * 0.16), fill: sh.ground }, parent);
+  sv('circle', { cx, cy, r, fill: col, stroke: 'rgba(0,0,0,.55)', 'stroke-width': r > 6 ? 1.2 : 0.8 }, parent);
+  if (o.rings) for (let k = 1; k < o.rings; k++) sv('circle', { cx, cy, r: r * k / o.rings, fill: 'none', stroke: 'rgba(255,255,255,.55)', 'stroke-width': 1, 'stroke-dasharray': '3 3' }, parent);
+  if (o.nucleus) sv('circle', { cx, cy, r: Math.max(2, r * 0.07), fill: '#b91c1c', stroke: '#fff', 'stroke-width': .8 }, parent);
+  sv('circle', { cx, cy, r, fill: sh.sphere, 'pointer-events': 'none' }, parent);
+}
+function column(parent, cx, base, w, hh, col, sh, trackH) {
+  if (trackH) sv('rect', { x: cx - w / 2, y: base - trackH, width: w, height: trackH, rx: Math.min(6, w / 4), fill: '#e8edf4', stroke: '#d3dae5' }, parent);
+  const rx = Math.min(6, w / 4, hh / 2);
+  sv('rect', { x: cx - w / 2, y: base - hh, width: w, height: hh, rx, fill: col, stroke: 'rgba(0,0,0,.5)', 'stroke-width': 1 }, parent);
+  sv('rect', { x: cx - w / 2, y: base - hh, width: w, height: hh, rx, fill: sh.bar, 'pointer-events': 'none' }, parent);
+}
+function spGraphic(parent, e, k, cx, base, maxH, maxW, sh) {
+  const v = e[k];
+  if (v == null) return;
+  const col = rgb(colorFor(k, v));
+  if (k === 'R') sphere(parent, cx, base - maxH / 2, Math.max(1.8, v / SP_MAX.R * (maxH / 2)), col, sh);
+  else column(parent, cx, base, maxW, Math.max(3, v / SP_MAX[k] * maxH), col, sh, maxH);
+}
+function visSP(box, k) {
+  const P = PROPS[k], x0 = 82, y0 = 58, cw = 79, chh = 66;
+  box.append(h('div', { class: 'note', style: 'margin-top:0' }, `Main-group elements (groups 1–2 and 13–18). ${k === 'R' ? 'Circle size' : 'Bar height'} shows ${P.name.toLowerCase()}. Tap a blue <b>Period</b> or <b>Group</b> button to break out the trend; hover or tap an element for details.`.replace(/<\/?b>/g, '')));
+  const svg = svgRoot(x0 + 8 * cw + 6, y0 + 6 * chh + 6, `${P.name} for main-group elements`);
+  box.append(svg);
+  const info = h('div', { class: 'spinfo', 'aria-live': 'polite' }, 'Hover over or tap an element.');
+  const brk = h('div', { class: 'breakout' });
+  box.append(info, brk);
+  const hatch = hatchPattern(svg, '#cfd5de', nextId('sph')), SH = shine(svg);
+  let sel = null;
+  const btns = [];
+  function mkBtn(x, y, w, ht, lines, kind, val) {
+    const g = sv('g', { role: 'button', tabindex: 0, class: 'spbtn' + (reduceMotion ? '' : ' pulse'), 'aria-label': (kind === 'row' ? 'Break out period ' : 'Break out group ') + val, style: 'cursor:pointer' }, svg);
+    sv('rect', { x: x + 2, y: y + 3, width: w, height: ht, rx: 9, fill: '#0b2a63', opacity: 0.35 }, g);
+    const r = sv('rect', { x, y, width: w, height: ht, rx: 9, fill: '#0b3d91', stroke: '#0b3d91', 'stroke-width': 2 }, g);
+    const ts = lines.map(([t, fs, dy]) => sv('text', { x: x + w / 2, y: y + dy, 'text-anchor': 'middle', 'font-size': fs, 'font-weight': 700, fill: '#fff', text: t }, g));
+    const go = () => { sel = { kind, val }; $$('.spbtn', svg).forEach(b => b.classList.remove('pulse')); paintSel(); breakout(); };
+    g.addEventListener('click', go);
+    g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } });
+    btns.push({ kind, val, r, ts, g });
+  }
+  SP_GROUPS.forEach((g, i) => mkBtn(x0 + i * cw + 3, 2, cw - 6, 50, [['Group ▼', 14, 19], [String(g), 21, 42]], 'col', g));
+  for (let p = 1; p <= 6; p++) mkBtn(2, y0 + (p - 1) * chh + 4, x0 - 8, chh - 8, [['Period ▶', 14, 23], [String(p), 22, 47]], 'row', p);
+  const cells = [];
+  SP_ELS.forEach(e => {
+    const i = SP_GROUPS.indexOf(e.group), x = x0 + i * cw, y = y0 + (e.period - 1) * chh;
+    const g = sv('g', { tabindex: 0, 'aria-label': `${e.name}: ${P.name} ${fullVal(e, k)}`, style: 'cursor:pointer' }, svg);
+    g.setAttribute('class', 'spcell');
+    const rect = sv('rect', { x: x + 2.5, y: y + 2.5, width: cw - 5, height: chh - 5, rx: 8, fill: e[k] == null ? hatch : SH.cell, stroke: '#c3ccd9', 'stroke-width': 1.2, filter: SH.drop, class: 'bg' }, g);
+    sv('text', { x: x + 8, y: y + 21, 'font-size': 18, 'font-weight': 700, fill: '#0f172a', text: e.sym }, g);
+    sv('text', { x: x + cw - 7, y: y + 19, 'text-anchor': 'end', 'font-size': 13, fill: '#334155', text: e[k] == null ? 'n/a' : cellVal(e, k) }, g);
+    spGraphic(g, e, k, k === 'R' ? x + cw / 2 : x + cw - 20, y + chh - 7, k === 'R' ? 38 : 34, 18, SH);
+    const show = () => { info.innerHTML = spDetail(e, k); };
+    g.addEventListener('pointerenter', ev => { if (ev.pointerType === 'mouse') show(); });
+    g.addEventListener('click', show); g.addEventListener('focus', show);
+    cells.push({ e, rect });
+  });
+  function paintSel() {
+    btns.forEach(b => { const on = sel && b.kind === sel.kind && b.val === sel.val; b.g.classList.toggle('on', !!on); });
+    cells.forEach(({ e, rect }) => {
+      const on = sel && (sel.kind === 'row' ? e.period === sel.val : e.group === sel.val);
+      rect.setAttribute('stroke', on ? '#d97706' : '#c3ccd9'); rect.setAttribute('stroke-width', on ? 3.5 : 1.2); if (e[k] != null) rect.setAttribute('fill', on ? '#fff7e6' : SH.cell);
+    });
+  }
+  function breakout() {
+    brk.innerHTML = '';
+    const els = SP_ELS.filter(e => sel.kind === 'row' ? e.period === sel.val : e.group === sel.val).sort((a, b) => sel.kind === 'row' ? a.group - b.group : a.period - b.period);
+    const n = els.length, W = 720, slot = (W - 20) / n, bsvg = svgRoot(W, 270, `Trend breakout for ${sel.kind === 'row' ? 'period' : 'group'} ${sel.val}`);
+    const BS = shine(bsvg), defined = els.filter(e => e[k] != null), base = 166;
+    const maxR = Math.max(...defined.map(e => e.R || 0), 1);
+    const scale = k === 'R' ? Math.min(slot / 2 - 8, 64) / maxR : 0;
+    const mk = arrowMarker(bsvg, '#0b3d91', nextId('ba'));
+    sv('rect', { x: 2, y: 2, width: W - 4, height: 266, rx: 14, fill: '#fbfcfe', stroke: '#dbe2ec' }, bsvg);
+    if (k !== 'R') {
+      [0.25, 0.5, 0.75, 1].forEach(f => {
+        const y = base - f * 132;
+        sv('line', { x1: 12, x2: W - 12, y1: y, y2: y, stroke: '#e3e8ef', 'stroke-dasharray': '4 4' }, bsvg);
+        sv('text', { x: 14, y: y - 4, 'font-size': 12, fill: '#64748b', text: fmtRange(k, SP_MAX[k] * f) }, bsvg);
+      });
+    }
+    els.forEach((e, i) => {
+      const cx = 10 + slot * (i + 0.5), v = e[k], g = sv('g', { class: reduceMotion ? null : (k === 'R' ? 'pop' : 'rise'), style: `animation-delay:${(i * 0.08).toFixed(2)}s` }, bsvg);
+      if (v == null) {
+        sv('rect', { x: cx - 26, y: base - 50, width: 52, height: 50, rx: 8, fill: hatchPattern(bsvg, '#cfd5de', nextId('bh')), stroke: '#a3adbb' }, g);
+        sv('text', { x: cx, y: base - 20, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#475569', text: 'n/a' }, g);
+      } else if (k === 'R') {
+        const r = Math.max(3, v * scale);
+        sphere(g, cx, base - 8 - r, r, rgb(colorFor(k, v)), BS, { ground: true, rings: r > 14 ? e.period : 0, nucleus: true });
+      } else {
+        const hh = Math.max(3, v / SP_MAX[k] * 132), bw = Math.min(slot * 0.5, 54);
+        column(g, cx, base, bw, hh, rgb(colorFor(k, v)), BS, 0);
+        sv('text', { x: cx, y: base - hh - 7, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#0f172a', text: e.raw[k].replace('*', '') }, g);
+      }
+      sv('text', { x: cx, y: base + 26, 'text-anchor': 'middle', 'font-size': 23, 'font-weight': 700, fill: '#0f172a', text: e.sym }, bsvg);
+      if (k === 'R' && v != null) sv('text', { x: cx, y: base + 46, 'text-anchor': 'middle', 'font-size': 15, fill: '#334155', text: v + ' pm' }, bsvg);
+    });
+    if (k !== 'R') sv('line', { x1: 12, x2: W - 12, y1: base, y2: base, stroke: '#334155', 'stroke-width': 1.5 }, bsvg);
+    sv('line', { x1: 26, y1: 234, x2: W - 26, y2: 234, stroke: '#0b3d91', 'stroke-width': 5, 'stroke-linecap': 'round', 'marker-end': mk }, bsvg);
+    sv('text', { x: W / 2, y: 258, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#0b3d91', text: sel.kind === 'row' ? `Period ${sel.val}: left → right` : `Group ${sel.val}: top → bottom (shown left → right)` }, bsvg);
+    const t = TREND[k];
+    let msg;
+    if (defined.length < 2) {
+      msg = `Most of these elements have no ${P.name.toLowerCase()} value (${naReason(els.find(e => e[k] == null), k)}).`;
+    } else {
+      const f = defined[0], l = defined[defined.length - 1];
+      const dir = sel.kind === 'row' ? t.row : t.col, why = sel.kind === 'row' ? t.whyRow : t.whyCol;
+      msg = `<b>${P.name} ${dir} ${sel.kind === 'row' ? 'from left to right' : 'going down the group'}</b>: ${why}. Here: ${f.sym} ${fullVal(f, k)} → ${l.sym} ${fullVal(l, k)}.`;
+      const expectUp = sel.kind === 'row' ? k !== 'R' : k === 'R', exc = [], same = [];
+      for (let i = 1; i < defined.length; i++) {
+        const a = defined[i - 1], b = defined[i], d = b[k] - a[k];
+        if (Math.abs(d) <= Math.abs(a[k]) * 0.005) same.push(`${a.sym} ≈ ${b.sym}`);
+        else if ((d > 0) !== expectUp) {
+          const note = EXC_NOTES[`${k}:${a.sym}:${b.sym}`] || (sel.kind === 'col' && b.period >= 4 && b.group >= 13 ? 'the atom below gained many extra protons from the middle of the table, so the pull did not drop as expected' : '');
+          exc.push(`${a.sym} → ${b.sym}${note ? ' (' + note + ')' : ''}`);
+        }
+      }
+      if (exc.length) msg += ` <br><b>Bumps in the real data:</b> ${exc.join('; ')}. The overall trend still holds.`;
+      if (same.length) msg += ` <br>About the same: ${same.join(', ')}.`;
+      if (els.some(e => e[k] == null)) msg += ` <br>n/a = ${uniq(els.filter(e => e[k] == null).map(e => naReason(e, k))).join('; ')}.`;
+    }
+    brk.append(bsvg, h('div', { class: 'explain', html: msg }));
+  }
+  brk.append(h('div', { class: 'explain' }, '▲ Tap a blue Period ▶ (row) or Group ▼ (column) button above to break out the trend.'));
+}
+const visRadius = box => visSP(box, 'R'), visIE = box => visSP(box, 'IE'), visEA = box => visSP(box, 'EA'), visEN = box => visSP(box, 'EN');
+
+function visSummary(box) {
+  const modes = ['R', 'IE', 'EA', 'EN', 'ALL'];
+  let mode = 'ALL';
+  box.append(h('div', { class: 'vis-controls' }, chipRow(modes, mode, m => { mode = m; draw(); }, m => m === 'ALL' ? 'All four' : PROPS[m].short)));
+  const svg = svgRoot(760, 410, 'Blank periodic table with trend arrows'); box.append(svg);
+  const out = h('div', { class: 'eq', 'aria-live': 'polite' }); box.append(out);
+  const mkB = arrowMarker(svg, '#0b3d91', nextId('ar')), mkO = arrowMarker(svg, '#c2410c', nextId('ar'));
+  const x0 = 52, y0 = 66, c = 36;
+  const cellXY = (g, p) => [x0 + (g - 1) * c, y0 + (p - 1) * c];
+  function has(g, p) { if (p === 1) return g === 1 || g === 18; if (p <= 3) return g <= 2 || g >= 13; return true; }
+  function draw() {
+    [...svg.childNodes].forEach(n => { if (n.nodeName !== 'defs') n.remove(); });
+    for (let p = 1; p <= 7; p++) for (let g = 1; g <= 18; g++) {
+      if (!has(g, p)) continue;
+      const [x, y] = cellXY(g, p);
+      const sym = (g === 17 && p === 2) ? 'F' : (g === 1 && p === 7) ? 'Fr' : (g === 1 && p === 6) ? 'Cs' : (g === 18 && p === 1) ? 'He' : '';
+      sv('rect', { x: x + 1, y: y + 1, width: c - 2, height: c - 2, rx: 3, fill: sym === 'F' || sym === 'Fr' ? '#fde68a' : g === 18 ? '#e7eaef' : '#fff', stroke: '#8592a6' }, svg);
+      if (sym) sv('text', { x: x + c / 2, y: y + c / 2 + 6, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, text: sym }, svg);
+    }
+    const W = 18 * c, H = 7 * c;
+    const up = mode === 'IE' || mode === 'EA' || mode === 'EN' || mode === 'ALL', rad = mode === 'R' || mode === 'ALL';
+    const lab = mode === 'ALL' ? 'IE, EA, EN increase' : (mode === 'R' ? '' : PROPS[mode].short + ' increases');
+    if (up) {
+      sv('line', { x1: x0, y1: 40, x2: x0 + W, y2: 40, stroke: '#0b3d91', 'stroke-width': 5, 'marker-end': mkB, class: reduceMotion ? null : 'draw' }, svg);
+      sv('text', { x: x0 + W / 2, y: 28, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#0b3d91', text: lab + ' →' }, svg);
+      sv('line', { x1: 26, y1: y0 + H, x2: 26, y2: y0, stroke: '#0b3d91', 'stroke-width': 5, 'marker-end': mkB, class: reduceMotion ? null : 'draw' }, svg);
+      sv('text', { x: 14, y: y0 + H / 2, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#0b3d91', transform: `rotate(-90 14 ${y0 + H / 2})`, text: lab + ' ↑' }, svg);
+      const [fx, fy] = cellXY(17, 2), [rx, ry] = cellXY(1, 7);
+      sv('line', { x1: rx + c, y1: ry, x2: fx, y2: fy + c, stroke: '#0b3d91', 'stroke-width': 7, 'stroke-opacity': .55, 'marker-end': mkB, class: reduceMotion ? null : 'draw' }, svg);
+    }
+    if (rad) {
+      const [fx, fy] = cellXY(17, 2), [rx, ry] = cellXY(1, 7);
+      const ax = rx + c, ay = ry, bx = fx, by = fy + c, L = Math.hypot(bx - ax, by - ay), px = -(by - ay) / L * 20, py = (bx - ax) / L * 20;
+      sv('line', { x1: bx + px, y1: by + py, x2: ax + px, y2: ay + py, stroke: '#c2410c', 'stroke-width': 7, 'stroke-opacity': .75, 'marker-end': mkO, class: reduceMotion ? null : 'draw' }, svg);
+      const mx = (ax + bx) / 2 + px * 2.1, my = (ay + by) / 2 + py * 2.1, ang = Math.atan2(by - ay, bx - ax) * 180 / Math.PI;
+      sv('text', { x: mx, y: my, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#c2410c', stroke: '#fff', 'stroke-width': 4, 'paint-order': 'stroke', transform: `rotate(${ang.toFixed(1)} ${mx} ${my})`, text: '↙ atomic radius increases' }, svg);
+      const yb = y0 + H + 26;
+      sv('line', { x1: x0 + W, y1: yb, x2: x0, y2: yb, stroke: '#c2410c', 'stroke-width': 5, 'stroke-dasharray': mode === 'ALL' ? '12 6' : null, 'marker-end': mkO }, svg);
+      sv('text', { x: x0 + W / 2, y: yb + 22, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, fill: '#c2410c', text: '← Atomic radius increases' }, svg);
+      sv('line', { x1: x0 + W + 22, y1: y0, x2: x0 + W + 22, y2: y0 + H, stroke: '#c2410c', 'stroke-width': 5, 'stroke-dasharray': mode === 'ALL' ? '12 6' : null, 'marker-end': mkO }, svg);
+      sv('text', { x: x0 + W + 40, y: y0 + H / 2, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#c2410c', transform: `rotate(90 ${x0 + W + 40} ${y0 + H / 2})`, text: 'radius increases ↓' }, svg);
+    }
+    sv('text', { x: x0 + 2 * c + 8, y: y0 + 20, 'font-size': 15, 'font-weight': 700, text: 'Fluorine corner (top right) →' }, svg);
+    sv('text', { x: x0 + 2 * c + 8, y: y0 + 39, 'font-size': 15, text: 'small atoms; high IE, EA and EN' }, svg);
+    sv('text', { x: x0 + 2 * c + 8, y: y0 + 62, 'font-size': 15, 'font-weight': 700, text: '↙ Francium corner (bottom left)' }, svg);
+    sv('text', { x: x0 + 2 * c + 8, y: y0 + 81, 'font-size': 15, text: 'big atoms; low IE and EN' }, svg);
+    const msg = {
+      R: 'Atomic radius increases down a group and to the LEFT: biggest atoms in the francium corner.',
+      IE: 'Ionization energy increases up a group and to the RIGHT (noble gases highest).',
+      EA: 'Electron affinity generally increases to the RIGHT toward the halogens (noble gases n/a); down a group it usually decreases.',
+      EN: 'Electronegativity increases up a group and to the RIGHT: fluorine (3.98) is highest.',
+      ALL: 'Radius grows toward the bottom-left; IE, EA and EN grow toward the top-right. Gray column = noble gases (high IE; EN and EA usually n/a).'
+    };
+    out.textContent = msg[mode];
+  }
+  draw();
+}
+
+function visIons(box) {
+  const pairs = ['Na+', 'Mg2+', 'K+', 'F-', 'Cl-', 'O2-', 'S2-'];
+  let cur = 'Na+';
+  box.append(h('div', { class: 'vis-controls' }, chipRow(pairs, cur, p => { cur = p; draw(); }, p => `${IONS[p].base} → ${IONS[p].label}`)));
+  const svg = svgRoot(720, 262, 'Atom changing into an ion (schematic)'); box.append(svg);
+  const out = h('div', { class: 'eq', 'aria-live': 'polite' }); box.append(out);
+  const svg2 = svgRoot(720, 205, 'Isoelectronic ions drawn to scale'); box.append(svg2);
+  const mk = arrowMarker(svg, '#0b3d91', nextId('ar'));
+  function atomRings(g, cx, cy, counts, Z, k) {
+    const n = counts.length;
+    counts.forEach((cnt, i) => {
+      const r = (26 + i * 25) * k, outer = i === n - 1;
+      sv('circle', { cx, cy, r, fill: 'none', stroke: outer ? '#1d4ed8' : '#7b8aa3', 'stroke-width': outer ? 2 : 1.3 }, g);
+      for (let j = 0; j < cnt; j++) {
+        const a = -Math.PI / 2 + 2 * Math.PI * j / cnt + i * 0.4;
+        sv('circle', { cx: cx + r * Math.cos(a), cy: cy + r * Math.sin(a), r: outer ? 5.5 : 4.2, fill: outer ? '#1d4ed8' : '#475569', stroke: '#fff' }, g);
+      }
+    });
+    sv('circle', { cx, cy, r: 17, fill: '#b91c1c' }, g);
+    sv('text', { x: cx, y: cy + 5, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#fff', text: '+' + Z }, g);
+  }
+  function draw() {
+    [...svg.childNodes].forEach(n => { if (n.nodeName !== 'defs') n.remove(); });
+    const ion = IONS[cur], e = BY_SYM[ion.base], sh = shells(e.Z), cy = 118;
+    let ish = sh.slice(), k;
+    if (ion.q > 0) { ish.pop(); k = 0.88; } else { ish[ish.length - 1] += -ion.q; k = 1.1; }
+    sv('text', { x: 10, y: 16, 'font-size': 14, 'font-style': 'italic', fill: '#333', text: 'Schematic (not to scale)' }, svg);
+    atomRings(sv('g', null, svg), 165, cy, sh, e.Z, 1);
+    atomRings(sv('g', { class: reduceMotion ? null : 'fadein' }, svg), 555, cy, ish, e.Z, k);
+    sv('line', { x1: 300, y1: cy, x2: 418, y2: cy, stroke: '#0b3d91', 'stroke-width': 4, 'marker-end': mk }, svg);
+    const ne = Math.abs(ion.q);
+    sv('text', { x: 359, y: cy - 12, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, text: (ion.q > 0 ? 'loses ' : 'gains ') + ne + ' e⁻' }, svg);
+    const eCount = e.Z - ion.q;
+    sv('text', { x: 165, y: 245, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, text: `${e.sym} atom · ${e.Z} p⁺, ${e.Z} e⁻` }, svg);
+    sv('text', { x: 555, y: 245, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, text: `${ion.label} ion · ${e.Z} p⁺, ${eCount} e⁻` }, svg);
+    if (ion.q > 0) out.innerHTML = `<b>${ion.label} is smaller</b> than ${e.sym}: losing ${ne} electron${ne > 1 ? 's' : ''} empties energy level ${sh.length}, and ${e.Z} protons now pull on only ${eCount} electrons. Ionic radius: ${ion.r} pm.`;
+    else out.innerHTML = `<b>${ion.label} is larger</b> than ${e.sym}: the extra electron${ne > 1 ? 's go' : ' goes'} into the same energy level; more electron–electron repulsion with the same ${e.Z} protons spreads the cloud out. Ionic radius: ${ion.r} pm.`;
+  }
+  function drawIso() {
+    const keys = ['O2-', 'F-', 'Na+', 'Mg2+', 'Al3+'], sc = 0.42, gap = 34;
+    const rs = keys.map(k => IONS[k].r * sc), total = rs.reduce((a, r) => a + 2 * r, 0) + gap * (keys.length - 1);
+    let x = (720 - total) / 2;
+    sv('text', { x: 360, y: 18, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, text: 'All have 10 electrons — more protons → smaller ion (to scale)' }, svg2);
+    keys.forEach((k, i) => {
+      const r = rs[i], ion = IONS[k], e = BY_SYM[ion.base]; x += r;
+      sv('circle', { cx: x, cy: 92, r, fill: ion.q > 0 ? '#fde2e2' : '#dbe7fb', stroke: ion.q > 0 ? '#b3261e' : '#1d4ed8', 'stroke-width': 2.5, 'stroke-dasharray': ion.q > 0 ? '6 3' : null }, svg2);
+      sv('text', { x, y: 99, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 700, text: ion.label }, svg2);
+      sv('text', { x, y: 175, 'text-anchor': 'middle', 'font-size': 15, text: `${e.Z} p⁺` }, svg2);
+      sv('text', { x, y: 193, 'text-anchor': 'middle', 'font-size': 15, text: `${ion.r} pm` }, svg2);
+      x += r + gap;
+    });
+  }
+  draw(); drawIso();
+}
+
+function visBumps(box) {
+  const modes = ['Be → B', 'N → O']; let mode = modes[0];
+  box.append(h('div', { class: 'vis-controls' }, chipRow(modes, mode, m => { mode = m; drawOrb(); drawChart(); })));
+  const svg = svgRoot(720, 262, 'First ionization energy across period 2 with two dips'); box.append(svg);
+  const svg2 = svgRoot(720, 180, 'Lewis dot diagrams'); box.append(svg2);
+  const out = h('div', { class: 'eq', 'aria-live': 'polite' }); box.append(out);
+  const syms = ['Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne'];
+  function drawChart() {
+    svg.innerHTML = '';
+    const yb = 222, yt = 26, max = 2200, X = i => 90 + i * 82, Y = v => yb - v / max * (yb - yt);
+    for (let v = 0; v <= 2000; v += 500) { sv('line', { x1: 60, x2: 700, y1: Y(v), y2: Y(v), stroke: v ? '#d5dbe4' : '#111' }, svg); sv('text', { x: 54, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 14, text: v }, svg); }
+    const pts = syms.map((s, i) => [X(i), Y(BY_SYM[s].IE)]);
+    sv('path', { d: 'M' + pts.map(p => p.map(n => n.toFixed(1)).join(',')).join(' L'), fill: 'none', stroke: '#0b3d91', 'stroke-width': 3, class: reduceMotion ? null : 'draw' }, svg);
+    const hiA = mode === modes[0] ? 1 : 4;
+    sv('line', { x1: pts[hiA][0], y1: pts[hiA][1], x2: pts[hiA + 1][0], y2: pts[hiA + 1][1], stroke: '#c2410c', 'stroke-width': 7, 'stroke-linecap': 'round' }, svg);
+    syms.forEach((s, i) => {
+      const e = BY_SYM[s], [x, y] = pts[i], dip = s === 'B' || s === 'O';
+      sv('circle', { cx: x, cy: y, r: dip ? 8 : 6, fill: dip ? '#fff' : '#0b3d91', stroke: dip ? '#c2410c' : '#0b3d91', 'stroke-width': 3 }, svg);
+      sv('text', { x, y: y - 13, 'text-anchor': 'middle', 'font-size': 14, text: e.raw.IE }, svg);
+      sv('text', { x, y: yb + 20, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700, text: s }, svg);
+      if (dip) sv('text', { x: x + 12, y: y + 22, 'font-size': 15, 'font-weight': 700, fill: '#c2410c', text: 'dip' }, svg);
+    });
+    sv('text', { x: 20, y: 140, 'font-size': 14, transform: 'rotate(-90 20 140)', 'text-anchor': 'middle', text: 'First IE (kJ/mol)' }, svg);
+  }
+  function lewis(g, x, y, sym, n, hot, title, sub) {
+    sv('text', { x, y: 22, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 700, text: title }, g);
+    sv('text', { x, y: 42, 'text-anchor': 'middle', 'font-size': 15, text: sub }, g);
+    sv('text', { x, y: y + 14, 'text-anchor': 'middle', 'font-size': 42, 'font-weight': 700, text: sym }, g);
+    const sides = [[0, -42, 1, 0], [46, -4, 0, 1], [0, 38, 1, 0], [-46, -4, 0, 1]], cnt = [0, 0, 0, 0];
+    for (let i = 0; i < n; i++) cnt[i < 4 ? i : i - 4]++;
+    let idx = 0;
+    const order = [];
+    for (let i = 0; i < n; i++) order.push(i < 4 ? [i, 0] : [i - 4, 1]);
+    const placed = [0, 0, 0, 0];
+    order.forEach(([sd], i) => {
+      const [dx, dy, ox, oy] = sides[sd], two = cnt[sd] === 2, k2 = placed[sd]++;
+      const off = two ? (k2 ? 10 : -10) : 0, px = x + dx + ox * off, py = y + dy + oy * off;
+      const isHot = i === n - 1 && hot;
+      sv('circle', { cx: px, cy: py, r: isHot ? 7 : 5.5, fill: isHot ? '#c2410c' : '#111' }, g);
+      if (isHot) sv('circle', { cx: px, cy: py, r: 13, fill: 'none', stroke: '#c2410c', 'stroke-width': 2.5 }, g);
+      idx++;
+    });
+  }
+  function drawOrb() {
+    svg2.innerHTML = '';
+    const g = sv('g', { class: reduceMotion ? null : 'fadein' }, svg2);
+    if (mode === modes[0]) {
+      lewis(g, 180, 112, 'Be', 2, false, 'Beryllium', '899.5 kJ/mol');
+      lewis(g, 540, 112, 'B', 3, true, 'Boron', '800.6 kJ/mol (lower)');
+      out.innerHTML = 'Boron\'s newest electron (orange) sits a little <b>higher in energy</b> and is partly shielded by the electrons before it, so it is <b>easier to remove</b>.';
+    } else {
+      lewis(g, 180, 112, 'N', 5, false, 'Nitrogen', '1402.3 kJ/mol');
+      lewis(g, 540, 112, 'O', 6, true, 'Oxygen', '1313.9 kJ/mol (lower)');
+      out.innerHTML = 'Oxygen\'s newest electron (orange) has to <b>pair up</b> with another one. The pair repels, so one of them is <b>easier to remove</b>.';
+    }
+  }
+  drawChart(); drawOrb();
+}
+
+/* ================= LEARN STOPS ================= */
+const STOPS = [
+  { title: 'The “why” tools', visual: visWhy, bullets: [
+    '<b>Nuclear charge</b>: protons (+) in the nucleus pull on electrons (−). More protons → a stronger pull.',
+    '<b>Energy levels (shells)</b>: each new level is farther from the nucleus. More energy levels → more distance → a weaker pull on the outer electrons.',
+    '<b>Shielding</b>: inner (<b>core</b>) electrons sit between the nucleus and the outer (<b>valence</b>) electrons and block part of the pull.',
+    '<b>Effective nuclear charge (Z<sub>eff</sub>)</b>: the net pull felt by a valence electron. Simple model: <b>Z<sub>eff</sub> ≈ protons − core electrons</b>.',
+    'Across a period, Z<sub>eff</sub> rises by 1 each step (same energy level). Down a group, Z<sub>eff</sub> stays the same but the distance grows. These ideas explain every trend here.',
+    '<span class="note">Use the slider: watch Z<sub>eff</sub> climb from Li to Ne, then drop back to +1 at Na.</span>'] },
+  { title: 'Atomic radius', visual: visRadius, wide: true, bullets: [
+    '<b>Atomic radius</b>: the distance from the nucleus to the outer edge of the electron cloud, in picometers (1 pm = 10⁻¹² m).',
+    '<b>Across a period → decreases</b>: more protons pull on the <i>same</i> energy level (higher Z<sub>eff</sub>), so the cloud is pulled in.',
+    '<b>Down a group → increases</b>: each row adds an <b>energy level</b>, so outer electrons are farther away and more shielded.',
+    'Largest atoms: bottom-left (Cs = 298 pm here). Smallest: top-right (He = 31 pm).',
+    '<span class="note">Try it: tap a <b>Period</b> button, then a <b>Group</b> button, and compare the breakouts.</span>',
+    '<span class="note">This activity uses one radius type for every element: calculated radii (Clementi), so noble gases can be compared too. Covalent or metallic radius tables give different numbers but the same trends.</span>'] },
+  { title: 'First ionization energy', visual: visIE, wide: true, bullets: [
+    '<b>First ionization energy (IE)</b>: the energy needed to remove the outermost electron from one mole of gaseous atoms: X(g) → X⁺(g) + e⁻ (kJ/mol).',
+    '<b>Across a period → increases</b>: higher Z<sub>eff</sub> holds the outer electrons more tightly.',
+    '<b>Down a group → decreases</b>: the outer electron is farther away and more shielded, so it is easier to remove.',
+    '<b>Noble gases</b> have the highest IE in each period (He is highest of all, 2372.3 kJ/mol). <b>Alkali metals</b> (group 1) have the lowest.',
+    'Low IE → the atom easily loses electrons and forms a <b>cation</b> (typical of metals).',
+    '<span class="note">Try it: tap a <b>Period</b> button, then a <b>Group</b> button, and compare the breakouts.</span>'] },
+  { title: 'Electron affinity', visual: visEA, wide: true, bullets: [
+    '<b>Electron affinity (EA)</b>: the energy released when one mole of gaseous atoms each gain an electron: X(g) + e⁻ → X⁻(g) + energy.',
+    '<b>Sign used in this app:</b> EA is a <b>positive number = energy released</b>. Bigger number → the atom “wants” the electron more. (Some books write the same change as a negative value, e.g. Cl: −349 kJ/mol. Same idea, opposite sign.)',
+    '<b>Trend</b>: generally <b>more energy is released moving right toward the halogens</b> (group 17). Down a group EA usually decreases, but the pattern is bumpy.',
+    '<b>Chlorine releases the most</b> of any element (348.6 kJ/mol), a bit more than fluorine (328.2): F is so small that its electrons crowd and repel the newcomer.',
+    '<b>n/a (≈ 0)</b>: noble gases, Be, Mg and N form <b>unstable anions</b>, so no EA is listed. Ca, Sr and Ba release only a tiny amount (2–14 kJ/mol).',
+    '<span class="note">Try it: tap a <b>Period</b> button, then a <b>Group</b> button, and compare the breakouts.</span>'] },
+  { title: 'Electronegativity', visual: visEN, wide: true, bullets: [
+    '<b>Electronegativity (EN)</b>: an atom\'s ability to attract the <b>shared electrons in a chemical bond</b>, measured on the <b>Pauling scale</b> (no units).',
+    '<b>Fluorine is highest: 3.98.</b> Cesium is lowest in this data set (0.79).',
+    '<b>Across a period → increases</b> (higher Z<sub>eff</sub>). <b>Down a group → decreases</b> (bonding electrons are farther from the nucleus).',
+    '<b>Noble gases</b> get no electronegativity value in this activity: they almost never form bonds, so there are no shared electrons to pull on (gray cells).',
+    'Bigger EN difference between two bonded atoms → more <b>unequal sharing</b> (polar bond). A very large difference → the electron is transferred (ionic bond).',
+    '<span class="note">Try it: tap a <b>Period</b> button, then a <b>Group</b> button, and compare the breakouts.</span>'] },
+  { title: 'Summary: the two corners', visual: visSummary, bullets: [
+    '<b>Atomic radius increases toward the bottom-left</b> (the “francium corner”).',
+    '<b>Ionization energy, electron affinity and electronegativity increase toward the top-right</b> (the “fluorine corner”).',
+    '<b>Fluorine corner</b>: small atoms with high Z<sub>eff</sub> that hold and attract electrons strongly (F has the highest EN; Cl releases the most energy gaining an electron).',
+    '<b>Francium corner</b>: big atoms that lose electrons easily (low IE, low EN). Francium (Z = 87) is beyond this data set and most of its values are estimates, so <b>cesium</b> is the measured extreme here.',
+    '<b>Noble gases</b> are the exception on the right edge: highest IE, but usually no EN and no stable anion (EA n/a).'] },
+  { title: 'Ion size', visual: visIons, bullets: [
+    '<b>Cations (+) are smaller than their atoms.</b> Losing electrons usually empties the outer energy level, and the same protons pull on fewer electrons.',
+    '<b>Anions (−) are larger than their atoms.</b> Added electrons go into the same energy level; more electron–electron repulsion with the same number of protons spreads the cloud out.',
+    'Example: Na → <b>Na⁺</b>: its only electron in energy level 3 is lost, so a whole energy level is gone. Cl → <b>Cl⁻</b>: still 3 energy levels, but one more electron.',
+    '<b>Same number of electrons, more protons → smaller ion</b>: O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺ (all have 10 electrons).',
+    '<span class="note">Ionic radii: Shannon (1976). Ionic and atomic radii are measured in different ways, so the atom → ion picture is a schematic.</span>'] },
+  { title: 'Why are there bumps?', visual: visBumps, bullets: [
+    'Ionization energy <b>generally</b> increases across a period, but there are two small dips: <b>Be → B</b> and <b>N → O</b> (the same dips appear in period 3: Mg → Al and P → S).',
+    '<b>Be → B</b>: boron\'s newest electron sits a little higher in energy than beryllium\'s outer electrons and is partly shielded by them, so it is easier to remove (800.6 &lt; 899.5 kJ/mol).',
+    '<b>N → O</b>: oxygen\'s newest electron has to <b>pair up</b> with another electron (see the Lewis dots). The paired electrons repel, so one is easier to remove (1313.9 &lt; 1402.3 kJ/mol).',
+    'These bumps are why we say IE “generally” increases. <b>They are not on the quiz.</b>'] }
+];
+
+let curStop = 0;
+function buildDots() {
+  const d = $('#dots'); d.innerHTML = '';
+  STOPS.forEach((st, i) => d.append(h('button', { class: 'dot', 'aria-label': `Stop ${i + 1}: ${st.title}`, title: st.title, onclick: () => showStop(i) }, String(i + 1))));
+}
+function showStop(i) {
+  curStop = Math.max(0, Math.min(NSTOPS - 1, i));
+  state.stop = curStop;
+  if (!state.viewed.includes(curStop)) state.viewed.push(curStop);
+  saveState();
+  const st = STOPS[curStop];
+  $('.stop').classList.toggle('wide', !!st.wide);
+  $('#stopTitle').textContent = `${curStop + 1}. ${st.title}`;
+  $('#stopBullets').innerHTML = st.bullets.map(b => `<li>${b}</li>`).join('');
+  const box = $('#stopVisual'); box.innerHTML = '';
+  st.visual(box);
+  $$('#dots .dot').forEach((b, j) => { b.classList.toggle('cur', j === curStop); b.classList.toggle('viewed', state.viewed.includes(j)); b.setAttribute('aria-current', j === curStop ? 'step' : 'false'); });
+  const lc = learnCount();
+  $('#learnBar').style.width = (lc / NSTOPS * 100) + '%';
+  $('#learnCount').textContent = `${lc} of ${NSTOPS} stops viewed`;
+  $('#stopPos').textContent = `Stop ${curStop + 1} of ${NSTOPS}`;
+  $('#prevStop').disabled = curStop === 0;
+  $('#nextStop').textContent = curStop === NSTOPS - 1 ? 'Go to the Lab →' : 'Next →';
+  updateTabs();
+}
+
+/* ================= LAB A: HEAT MAP ================= */
+const SRC = { R: 'Clementi calculated radii (WebElements)', IE: 'NIST ASD / CRC Handbook', EA: 'experimental gas-phase values (see Data sources)', EN: 'Pauling scale (WebElements)' };
+let heatProp = 'R', heatSel = null, show3d = false, station = 'heat';
+function fmtRange(k, v) { return k === 'EN' ? v.toFixed(2) : String(Math.round(v)); }
+function buildTrendBtns() {
+  const box = $('#trendBtns');
+  PKEYS.forEach(k => box.append(h('button', { class: 'chip', 'data-k': k, 'aria-pressed': String(k === heatProp), onclick: () => { heatProp = k; markHeatViewed(); updateHeat(); } }, PROPS[k].short, h('span', { class: 'ck' }))));
+}
+function buildHeatGrid() {
+  const grid = $('#heatGrid'); grid.innerHTML = '';
+  for (let g = 1; g <= 18; g++) grid.append(h('div', { class: 'glabel', style: `grid-column:${g + 1};grid-row:1` }, String(g)));
+  for (let p = 1; p <= 6; p++) grid.append(h('div', { class: 'plabel', style: `grid-column:1;grid-row:${p + 1}` }, String(p)));
+  grid.append(h('div', { class: 'cell ph', style: 'grid-column:4;grid-row:7', 'aria-hidden': 'true' }, '57–71'));
+  ELEMENTS.filter(e => !e.lan).forEach(e => {
+    const col = e.group, row = e.period + 1;
+    const b = h('button', { class: 'cell', 'data-z': e.Z, style: `grid-column:${col + 1};grid-row:${row}` }, h('span', { class: 'z' }, String(e.Z)), h('span', { class: 'sym' }, e.sym), h('span', { class: 'val' }));
+    b.addEventListener('pointerenter', ev => { if (ev.pointerType === 'mouse') showInfo(e); });
+    b.addEventListener('focus', () => showInfo(e));
+    b.addEventListener('click', () => { heatSel = e.Z; showInfo(e); markSel(); });
+    grid.append(b);
+  });
+  grid.addEventListener('pointerleave', () => { if (heatSel) showInfo(BY_Z[heatSel]); });
+}
+function markSel() { $$('#heatGrid .cell[data-z]').forEach(b => b.classList.toggle('sel', +b.dataset.z === heatSel)); if (show3d) draw3d(); }
+function showInfo(e) {
+  const box = $('#heatInfo'); box.innerHTML = '';
+  box.append(h('span', { class: 'nm' }, `${e.sym} · ${e.name}`), h('span', null, `Z = ${e.Z} · ${placeText(e)}`));
+  PKEYS.forEach(k => {
+    const why = naReason(e, k);
+    box.append(h('span', { class: 'pv' + (k === heatProp ? ' cur' : '') }, h('b', null, PROPS[k].short + ': '), fullVal(e, k) + (why ? ` (${why})` : '')));
+  });
+}
+function updateHeat() {
+  const k = heatProp, grid = $('#heatGrid');
+  grid.classList.toggle('nonum', !$('#tgNums').checked);
+  $$('.cell[data-z]', grid).forEach(b => {
+    const e = BY_Z[b.dataset.z], v = e[k], val = b.querySelector('.val');
+    if (v == null) { b.classList.add('na'); b.style.background = ''; b.style.color = ''; val.textContent = 'n/a'; }
+    else { b.classList.remove('na'); const c = colorFor(k, v); b.style.background = rgb(c); b.style.color = textOn(c); val.textContent = cellVal(e, k); }
+    b.setAttribute('aria-label', `${e.name}: ${PROPS[k].name} ${fullVal(e, k)}`);
+  });
+  $$('#trendBtns .chip').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.k === k)); b.querySelector('.ck').textContent = state.heatViewed.includes(b.dataset.k) ? '✓' : ''; });
+  const [lo, hi] = RANGE[k], stops = VIRIDIS.map((c, i) => `${c} ${(i / (VIRIDIS.length - 1) * 100).toFixed(0)}%`).join(',');
+  const lg = $('#legend'); lg.innerHTML = '';
+  lg.append(h('strong', null, PROPS[k].name + ' (' + PROPS[k].unit + '):'), h('span', null, 'low ' + fmtRange(k, lo)), h('span', { class: 'grad', style: `background:linear-gradient(90deg,${stops})` }), h('span', null, fmtRange(k, hi) + ' high'),
+    h('span', { class: 'swatch-na' }), h('span', null, 'n/a'), h('span', null, k === 'EA' ? '* = estimate' : ''), h('span', { class: 'muted' }, 'Source: ' + SRC[k]));
+  if (heatSel) showInfo(BY_Z[heatSel]);
+  drawOverlay();
+  if (show3d) draw3d();
+}
+function markHeatViewed() {
+  if ($('#panel-lab').hidden || station !== 'heat') return;
+  if (!state.heatViewed.includes(heatProp)) { state.heatViewed.push(heatProp); saveState(); updateChecklist(); }
+}
+function drawOverlay() {
+  const wrap = $('#heatWrap'), svg = $('#heatOverlay'), on = $('#tgArrows').checked && !show3d;
+  wrap.classList.toggle('arrows', on);
+  svg.innerHTML = '';
+  if (!on || wrap.offsetParent === null) { svg.setAttribute('width', 0); svg.setAttribute('height', 0); return; }
+  const W = wrap.scrollWidth, H = wrap.scrollHeight;
+  svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const wr = wrap.getBoundingClientRect();
+  const rel = z => { const r = $(`#heatGrid [data-z="${z}"]`).getBoundingClientRect(); return { x: r.left - wr.left + wrap.scrollLeft, y: r.top - wr.top + wrap.scrollTop, w: r.width, h: r.height }; };
+  const cH = rel(1), cHe = rel(2), cCs = rel(55), cSc = rel(21), cNa = rel(11), cZn = rel(30);
+  const k = heatProp, isR = k === 'R', col = '#0b3d91';
+  const mk = arrowMarker(svg, col, nextId('ov'));
+  const line = (x1, y1, x2, y2, w) => { sv('line', { x1, y1, x2, y2, stroke: '#fff', 'stroke-width': w + 5, 'stroke-linecap': 'round' }, svg); sv('line', { x1, y1, x2, y2, stroke: col, 'stroke-width': w, 'marker-end': mk }, svg); };
+  const label = (x, y, t, rot) => sv('text', { x, y, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: col, stroke: '#fff', 'stroke-width': 4, 'paint-order': 'stroke', transform: rot ? `rotate(-90 ${x} ${y})` : null, text: t }, svg);
+  const xL = cH.x, xR = cHe.x + cHe.w, yT = cH.y, yB = cCs.y + cCs.h, yA = 30;
+  const name = PROPS[k].short;
+  if (isR) { line(xR, yA, xL + 6, yA, 4); line(26, yT, 26, yB - 6, 4); }
+  else { line(xL, yA, xR - 6, yA, 4); line(26, yB, 26, yT + 6, 4); }
+  label((xL + xR) / 2, yA - 10, isR ? '← Radius increases to the left' : `${name} increases to the right →`);
+  label(14, (yT + yB) / 2, isR ? 'increases going down ↓' : (k === 'EA' ? 'generally increases going up ↑' : 'increases going up ↑'), true);
+  const gx1 = cSc.x + 8, gy1 = cNa.y + cNa.h - 8, gx2 = cZn.x + cZn.w - 8, gy2 = cH.y + 8;
+  if (isR) line(gx2, gy2, gx1, gy1, 6); else line(gx1, gy1, gx2, gy2, 6);
+  label((gx1 + gx2) / 2, (gy1 + gy2) / 2 - 14, isR ? 'bigger toward the bottom-left' : 'higher toward the top-right (fluorine corner)');
+}
+
+/* ---------- 3D isometric-style bars (canvas) ---------- */
+let bars3d = [], stripePat = null;
+function draw3d() {
+  const cv = $('#bars3d');
+  if (cv.hidden || cv.offsetParent === null) return;
+  const ctx = cv.getContext('2d');
+  const W = Math.max(560, cv.parentElement.clientWidth), rowsN = 6, arrowsOn = $('#tgArrows').checked;
+  const a = (W - 30) / (18 + rowsN * 0.2), b = a * 0.62, sk = a * 0.2, Hmax = Math.min(170, a * 2.8);
+  const ox = 14, oy = Hmax + 50, Ht = Math.round(oy + rowsN * b + (arrowsOn ? 54 : 16));
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(W * dpr); cv.height = Math.round(Ht * dpr); cv.style.height = Ht + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, Ht);
+  if (!stripePat) {
+    const pc = document.createElement('canvas'); pc.width = pc.height = 8; const p = pc.getContext('2d');
+    p.fillStyle = '#eceff3'; p.fillRect(0, 0, 8, 8); p.strokeStyle = '#b8bec8'; p.lineWidth = 2; p.beginPath(); p.moveTo(0, 8); p.lineTo(8, 0); p.stroke();
+    stripePat = ctx.createPattern(pc, 'repeat');
+  }
+  const P = (c, r) => [ox + c * a + (rowsN - r) * sk, oy + r * b];
+  const k = heatProp, hi = RANGE[k][1], nums = $('#tgNums').checked;
+  const items = ELEMENTS.filter(e => !e.lan).map(e => ({ e, c: e.group - 1, r: e.period - 1 }));
+  items.sort((p, q) => p.r - q.r || p.c - q.c);
+  bars3d = [];
+  const poly = (pts, fill) => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 1; ctx.stroke(); };
+  items.forEach(({ e, c, r }) => {
+    const v = e[k], hgt = v == null ? 0 : Math.max(3, v / hi * Hmax);
+    const c0 = c + 0.1, c1 = c + 0.9, r0 = r + 0.1, r1 = r + 0.9;
+    const TL = P(c0, r0), TR = P(c1, r0), BR = P(c1, r1), BL = P(c0, r1), up = p => [p[0], p[1] - hgt];
+    let top;
+    if (v == null) { poly([TL, TR, BR, BL], stripePat); top = [TL, TR, BR, BL]; }
+    else {
+      const col = colorFor(k, v);
+      poly([BL, BR, up(BR), up(BL)], rgb(shadeC(col, 0.78)));
+      poly([TR, BR, up(BR), up(TR)], rgb(shadeC(col, 0.6)));
+      top = [up(TL), up(TR), up(BR), up(BL)];
+      poly(top, rgb(col));
+      e._txt = textOn(col);
+    }
+    if (e.Z === heatSel) { ctx.save(); ctx.lineWidth = 3.5; ctx.strokeStyle = '#d97706'; ctx.beginPath(); top.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.stroke(); ctx.restore(); }
+    const cx = (top[0][0] + top[2][0]) / 2, cy = (top[0][1] + top[2][1]) / 2;
+    ctx.fillStyle = v == null ? '#222' : e._txt; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const fs = Math.max(9, Math.min(16, a * 0.34));
+    ctx.font = `700 ${fs}px "Atkinson Hyperlegible", system-ui, sans-serif`;
+    if (nums && a >= 36) { ctx.fillText(e.sym, cx, cy - fs * 0.32); ctx.font = `${Math.max(8, fs * 0.62)}px "Atkinson Hyperlegible", system-ui, sans-serif`; ctx.fillText(cellVal(e, k), cx, cy + fs * 0.5); }
+    else ctx.fillText(e.sym, cx, cy);
+    bars3d.push({ e, pts: [up(TL), up(TR), TR, BR, BL, up(BL)] });
+  });
+  ctx.textAlign = 'left'; ctx.fillStyle = '#111'; ctx.font = `700 15px "Atkinson Hyperlegible", system-ui, sans-serif`;
+  ctx.fillText(`${PROPS[k].name}: bar height = value (tallest = ${fmtRange(k, hi)} ${PROPS[k].unit})`, 12, 20);
+  ctx.font = `13px "Atkinson Hyperlegible", system-ui, sans-serif`; ctx.fillStyle = '#333';
+  ctx.fillText('Tap a bar for all four values.', 12, 38);
+  if (arrowsOn) {
+    const y = oy + rowsN * b + 26, isR = k === 'R';
+    const arrow = (x1, y1, x2, y2) => { ctx.strokeStyle = '#0b3d91'; ctx.fillStyle = '#0b3d91'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); const ang = Math.atan2(y2 - y1, x2 - x1); ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - 13 * Math.cos(ang - 0.45), y2 - 13 * Math.sin(ang - 0.45)); ctx.lineTo(x2 - 13 * Math.cos(ang + 0.45), y2 - 13 * Math.sin(ang + 0.45)); ctx.closePath(); ctx.fill(); };
+    const L = P(0, rowsN + 0.5)[0], R = P(18, rowsN + 0.5)[0];
+    if (isR) arrow(R, y, L + 10, y); else arrow(L, y, R - 10, y);
+    ctx.font = `700 14px "Atkinson Hyperlegible", system-ui, sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText(isR ? '← radius increases to the left · and toward the front (down a group)' : `${PROPS[k].short} increases to the right → · and toward the back (up a group)`, W / 2, y + 20);
+  }
+}
+function hit3d(x, y) {
+  for (let i = bars3d.length - 1; i >= 0; i--) {
+    const p = bars3d[i].pts; let inside = false;
+    for (let a = 0, b = p.length - 1; a < p.length; b = a++) {
+      if (((p[a][1] > y) !== (p[b][1] > y)) && (x < (p[b][0] - p[a][0]) * (y - p[a][1]) / (p[b][1] - p[a][1]) + p[a][0])) inside = !inside;
+    }
+    if (inside) return bars3d[i].e;
+  }
+  return null;
+}
+function setup3dEvents() {
+  const cv = $('#bars3d');
+  const xy = ev => { const r = cv.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
+  cv.addEventListener('pointermove', ev => { if (ev.pointerType !== 'mouse') return; const e = hit3d(...xy(ev)); if (e) showInfo(e); });
+  cv.addEventListener('pointerdown', ev => { const e = hit3d(...xy(ev)); if (e) { heatSel = e.Z; showInfo(e); markSel(); } });
+}
+
+/* ================= LAB B: SIZE SHOWDOWN ================= */
+const SD_SCALE = 165 / 298;
+let sdA = null, sdB = null, sdCells = {};
+function buildShowdown() {
+  const opts = ELEMENTS.filter(e => e.R != null && !e.lan);
+  const x0 = 28, y0 = 24, cw = 40, ch = 46, W = x0 + 18 * cw + 4, H = y0 + 6 * ch + 4;
+  const svg = svgRoot(W, H, 'Atomic radius heat map: tap two elements to compare');
+  const SH = shine(svg);
+  for (let g = 1; g <= 18; g++) sv('text', { x: x0 + (g - 1) * cw + cw / 2, y: y0 - 8, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#334155', text: g }, svg);
+  for (let p = 1; p <= 6; p++) sv('text', { x: x0 - 8, y: y0 + (p - 1) * ch + ch / 2 + 5, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: '#334155', text: p }, svg);
+  sv('rect', { x: x0 + 2 * cw + 2, y: y0 + 5 * ch + 2, width: cw - 4, height: ch - 4, rx: 5, fill: '#eef1f5', stroke: '#a3adbb', 'stroke-dasharray': '4 3' }, svg);
+  sv('text', { x: x0 + 2.5 * cw, y: y0 + 5.5 * ch + 4, 'text-anchor': 'middle', 'font-size': 10, fill: '#475569', text: '57–71' }, svg);
+  opts.forEach(e => {
+    const x = x0 + (e.group - 1) * cw, y = y0 + (e.period - 1) * ch, c = colorFor('R', e.R), tc = textOn(c);
+    const g = sv('g', { 'data-sym': e.sym, role: 'button', tabindex: 0, 'aria-label': `${e.name}, ${e.R} pm`, style: 'cursor:pointer', class: 'sdcell' }, svg);
+    const r = sv('rect', { x: x + 1.5, y: y + 1.5, width: cw - 3, height: ch - 3, rx: 5, fill: rgb(c), stroke: 'rgba(0,0,0,.3)', 'stroke-width': 1, filter: SH.drop }, g);
+    sv('rect', { x: x + 1.5, y: y + 1.5, width: cw - 3, height: (ch - 3) / 2, rx: 5, fill: '#fff', opacity: .14, 'pointer-events': 'none' }, g);
+    sv('text', { x: x + cw / 2, y: y + 21, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: tc, text: e.sym }, g);
+    sv('text', { x: x + cw / 2, y: y + 37, 'text-anchor': 'middle', 'font-size': 11, fill: tc, text: e.R }, g);
+    const bg = sv('g', { visibility: 'hidden' }, g);
+    sv('circle', { cx: x + cw - 6, cy: y + 7, r: 10, fill: '#b91c1c', stroke: '#fff', 'stroke-width': 2 }, bg);
+    const bt = sv('text', { x: x + cw - 6, y: y + 11.5, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#fff' }, bg);
+    sdCells[e.sym] = { r, bg, bt };
+    const go = () => { if (sdA === null) sdA = e.sym; else if (sdB === null && e.sym !== sdA) sdB = e.sym; else { sdA = e.sym; sdB = null; } drawShowdown(); };
+    g.addEventListener('click', go);
+    g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } });
+  });
+  $('#sdPick').append(svg);
+  $('#sdRandom').addEventListener('click', () => {
+    const mg = opts.filter(e => isMain(e));
+    let a, b; do { a = pick(mg); b = pick(mg); } while (a === b || Math.abs(a.R - b.R) < 10);
+    sdA = a.sym; sdB = b.sym; drawShowdown();
+  });
+  $('#sdClear').addEventListener('click', () => { sdA = sdB = null; drawShowdown(); });
+  drawShowdown();
+}
+function explainSize(A, B) {
+  if (A.R === B.R) return `<b>${A.name} and ${B.name} have the same calculated radius (${A.R} pm).</b>`;
+  const big = A.R > B.R ? A : B, sm = big === A ? B : A, nb = shells(big.Z).length, ns = shells(sm.Z).length;
+  const zb = zeff(big), zs = zeff(sm);
+  const zTxt = (zb != null && zs != null) ? ` (simple Z<sub>eff</sub>: +${zs} for ${sm.sym} vs +${zb} for ${big.sym})` : ` (${sm.Z} protons vs ${big.Z})`;
+  let s = `<b>${big.name} (${big.R} pm) is bigger than ${sm.name} (${sm.R} pm).</b> `;
+  if (nb > ns) s += `Its outer electrons are in energy level n = ${nb} instead of n = ${ns}. More energy levels put the outer electrons farther from the nucleus, with more inner electrons shielding them. That outweighs ${big.sym}'s larger number of protons (${big.Z} vs ${sm.Z}).`;
+  else if (nb === ns) {
+    if (big.Z < sm.Z) s += `Both have outer electrons in energy level n = ${nb}, but ${sm.sym} has more protons${zTxt}. The stronger net pull draws ${sm.sym}'s electron cloud in tighter.`;
+    else s += `Both have outer electrons in energy level n = ${nb}. This is an exception to the simple trend: in the middle block and the lanthanides, radii do not change smoothly.`;
+  } else s += `It has fewer energy levels (n = ${nb} vs n = ${ns}), but ${sm.sym}'s much stronger net pull${zTxt} holds its electrons close. Here the across-a-period effect wins.`;
+  return s;
+}
+function drawShowdown() {
+  const svg = $('#sdSvg'); svg.innerHTML = '';
+  const A = sdA ? BY_SYM[sdA] : null, B = sdB ? BY_SYM[sdB] : null;
+  Object.entries(sdCells).forEach(([sym, o]) => { const n = sym === sdA ? '1' : sym === sdB ? '2' : ''; o.bg.setAttribute('visibility', n ? 'visible' : 'hidden'); o.bt.textContent = n; o.r.setAttribute('stroke', n ? '#b91c1c' : 'rgba(0,0,0,.3)'); o.r.setAttribute('stroke-width', n ? 4 : 1); });
+  $('#sdStatus').innerHTML = `Element 1: <b>${A ? A.sym + ' · ' + A.name : '—'}</b> &nbsp; Element 2: <b>${B ? B.sym + ' · ' + B.name : (A ? 'tap a second element' : '—')}</b>`;
+  [[A, 200], [B, 560]].forEach(([e, cx]) => {
+    if (!e) {
+      sv('circle', { cx, cy: 200, r: 90, fill: '#fff', stroke: '#8592a6', 'stroke-width': 2, 'stroke-dasharray': '8 6' }, svg);
+      sv('text', { x: cx, y: 212, 'text-anchor': 'middle', 'font-size': 40, fill: '#8592a6', text: '?' }, svg);
+      return;
+    }
+    const R = e.R * SD_SCALE, sh = shells(e.Z);
+    drawBohr(svg, cx, 200, R, sh, e.Z, {});
+    sv('text', { x: cx, y: 24, 'text-anchor': 'middle', 'font-size': 20, 'font-weight': 700, text: `${e.sym} — ${e.name}` }, svg);
+    sv('text', { x: cx, y: 388, 'text-anchor': 'middle', 'font-size': 15, text: `${e.R} pm · ${e.Z} protons · ${sh.length} energy level${sh.length > 1 ? 's' : ''}` }, svg);
+    if (R < 22) sv('text', { x: cx, y: 200 + R + 18, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#b91c1c', text: '+' + e.Z }, svg);
+  });
+  const ex = $('#sdExplain');
+  if (A && B && A !== B) {
+    const key = [A.sym, B.sym].sort().join('|');
+    if (!state.sdPairs.includes(key)) { state.sdPairs.push(key); saveState(); updateChecklist(); }
+    const big = A.R >= B.R ? 200 : 560;
+    if (A.R !== B.R) sv('text', { x: big, y: 48, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#145c2b', text: '▲ BIGGER' }, svg);
+    ex.innerHTML = explainSize(A, B);
+  } else if (A && B) ex.textContent = 'Pick two different elements.';
+  else ex.textContent = 'Tap two elements on the heat map to compare their sizes. Both atoms are drawn to the same scale (red = nucleus with proton count; rings = energy levels).';
+  $('#sdCount').textContent = `Comparisons: ${uniq(state.sdPairs).length}`;
+}
+
+/* ================= LAB C: RANKING CHALLENGES ================= */
+const RK_GAP = { R: 6, IE: 40, EA: 12, EN: 0.15 };
+let rkMode = 'MIX', rkCur = null, rkList = null, rkOffset = Math.floor(Math.random() * 4);
+function rkPool(k) { return ELEMENTS.filter(e => isMain(e) && e.Z > 2 && e[k] != null && !(k === 'EA' && e.eaEst) && !(k === 'EN' && e.group === 18)); }
+function genRank(kind, k) {
+  const pool = rkPool(k), gap = RK_GAP[k] * (kind === 'diag' ? 2 : 1);
+  for (let t = 0; t < 600; t++) {
+    const n = 3; let set;
+    if (kind === 'period') { const p = 2 + Math.floor(Math.random() * 5), c = pool.filter(e => e.period === p); if (c.length < n) continue; set = sample(c, n).sort((x, y) => x.group - y.group); }
+    else if (kind === 'group') { const g = pick(uniq(pool.map(e => e.group))), c = pool.filter(e => e.group === g); if (c.length < n) continue; set = sample(c, n).sort((x, y) => x.period - y.period); }
+    else {
+      const ps = sample([2, 3, 4, 5, 6], n).sort((x, y) => y - x), gs = sample([1, 2, 13, 14, 15, 16, 17], n).sort((x, y) => x - y);
+      set = ps.map((p, i) => pool.find(e => e.period === p && e.group === gs[i])); if (set.some(x => !x)) continue;
+    }
+    const inc = kind === 'group' ? (k === 'R') : (k !== 'R');
+    let ok = true;
+    for (let i = 1; i < set.length; i++) { const d = set[i][k] - set[i - 1][k]; if (inc ? d < gap : -d < gap) { ok = false; break; } }
+    if (ok) return { kind, k, set };
+  }
+  return null;
+}
+function rankExplain(c) {
+  const nm = PROPS[c.k].name.toLowerCase(), v = { R: ['decreases', 'increases'], IE: ['increases', 'decreases'], EA: ['increases', 'decreases'], EN: ['increases', 'decreases'] }[c.k];
+  if (c.kind === 'period') return `All are in period ${c.set[0].period}, so their outer electrons are in the same energy level. Moving right adds protons (higher Z<sub>eff</sub>), so ${nm} ${v[0]} to the right.`;
+  if (c.kind === 'group') return `All are in group ${c.set[0].group}. Moving down adds energy levels, so outer electrons are farther from the nucleus and more shielded: ${nm} ${v[1]} going down.`;
+  return `Each element is up and to the right of the one before it, so both trends push the same way: ${c.k === 'R' ? 'atoms get smaller' : nm + ' gets larger'} toward the top-right (fluorine corner).`;
+}
+function RankList(items) {
+  const ul = h('ol', { class: 'ranklist' }); let locked = false, drag = null;
+  function move(li, d) { if (locked) return; if (d < 0 && li.previousElementSibling) ul.insertBefore(li, li.previousElementSibling); else if (d > 0 && li.nextElementSibling) ul.insertBefore(li.nextElementSibling, li); }
+  function start(ev, li) {
+    if (locked || (ev.button != null && ev.button > 0) || ev.target.closest('button')) return;
+    ev.preventDefault(); drag = li; li.classList.add('dragging');
+    const mv = e => {
+      if (!drag) return;
+      const y = e.clientY, sibs = [...ul.children].filter(x => x !== drag); let before = null;
+      for (const s of sibs) { const r = s.getBoundingClientRect(); if (y < r.top + r.height / 2) { before = s; break; } }
+      if (before) { if (drag.nextElementSibling !== before) ul.insertBefore(drag, before); } else if (ul.lastElementChild !== drag) ul.append(drag);
+    };
+    const up = () => { if (drag) drag.classList.remove('dragging'); drag = null; window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  }
+  items.forEach(it => {
+    const li = h('li', { class: 'rk', 'data-id': it.id, tabindex: '0', 'aria-label': it.aria || it.id },
+      h('span', { class: 'grip', 'aria-hidden': 'true' }, '≡'),
+      h('span', { class: 'lbl', html: it.label + (it.sub ? ` <small>${it.sub}</small>` : '') }),
+      h('span', { class: 'val' }), h('span', { class: 'mark' }),
+      h('span', { class: 'mv' }, h('button', { 'aria-label': 'Move up', onclick: ev => { ev.stopPropagation(); move(li, -1); } }, '▲'), h('button', { 'aria-label': 'Move down', onclick: ev => { ev.stopPropagation(); move(li, 1); } }, '▼')));
+    li.addEventListener('pointerdown', ev => start(ev, li));
+    li.addEventListener('keydown', ev => { if (ev.key === 'ArrowUp') { ev.preventDefault(); move(li, -1); li.focus(); } else if (ev.key === 'ArrowDown') { ev.preventDefault(); move(li, 1); li.focus(); } });
+    ul.append(li);
+  });
+  return {
+    el: ul,
+    order: () => [...ul.children].map(li => li.dataset.id),
+    lock() { locked = true; $$('.mv button', ul).forEach(b => { b.disabled = true; }); [...ul.children].forEach(li => { li.style.cursor = 'default'; li.style.touchAction = 'auto'; }); },
+    mark(correct, valFn) { [...ul.children].forEach((li, i) => { const ok = li.dataset.id === correct[i]; li.classList.add(ok ? 'right' : 'wrong'); li.querySelector('.mark').textContent = ok ? '✓' : '✗'; if (valFn) li.querySelector('.val').textContent = valFn(li.dataset.id); }); }
+  };
+}
+function shuffledNotSorted(ids, correct) { let s; let t = 0; do { s = shuffle(ids); t++; } while (s.join() === correct.join() && t < 20); return s; }
+function buildRankProps() {
+  const box = $('#rkProp');
+  box.append(h('span', { class: 'small', style: 'font-weight:700' }, 'Rank by:'));
+  ['MIX', ...PKEYS].forEach(m => box.append(h('button', { class: 'chip', 'data-m': m, 'aria-pressed': String(m === rkMode), onclick: () => { rkMode = m; $$('#rkProp .chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m))); if (rkCur && !rkCur.checked) newRank(); } }, m === 'MIX' ? 'Mix' : PROPS[m].short)));
+}
+function newRank() {
+  const d = state.rankDone;
+  const kind = d < 3 ? 'period' : d < 6 ? 'group' : d < 8 ? 'diag' : pick(['period', 'group', 'diag']);
+  const k = rkMode === 'MIX' ? PKEYS[(d + rkOffset) % 4] : rkMode;
+  let c = genRank(kind, k);
+  if (!c) for (const kk of shuffle(PKEYS)) { c = genRank(kind, kk); if (c) break; }
+  rkCur = c; renderRank();
+}
+function rankTable(k, set) {
+  const x0 = 62, y0 = 64, cw = 68, ch = 54, W = x0 + 8 * cw + 10, H = y0 + 6 * ch + 14;
+  const svg = svgRoot(W, H, `${PROPS[k].name} periodic table with trend arrows`);
+  svg.setAttribute('class', 'rktable');
+  const SH = shine(svg), hatch = hatchPattern(svg, '#cfd5de', nextId('rh')), mk = arrowMarker(svg, '#0b3d91', nextId('ra'));
+  const isR = k === 'R', gen = k === 'EA' ? 'generally ' : '', xL = x0, xR = x0 + 8 * cw, yT = y0, yB = y0 + 6 * ch;
+  sv('line', { x1: isR ? xR : xL, y1: 26, x2: isR ? xL + 4 : xR - 4, y2: 26, stroke: '#0b3d91', 'stroke-width': 5, 'stroke-linecap': 'round', 'marker-end': mk }, svg);
+  sv('text', { x: (xL + xR) / 2, y: 16, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#0b3d91', text: isR ? '← Atomic radius increases to the left' : `${PROPS[k].short} ${gen}increases to the right →` }, svg);
+  sv('line', { x1: 14, y1: isR ? yT : yB, x2: 14, y2: isR ? yB - 4 : yT + 4, stroke: '#0b3d91', 'stroke-width': 5, 'stroke-linecap': 'round', 'marker-end': mk }, svg);
+  const ly = (yT + yB) / 2;
+  sv('text', { x: 32, y: ly, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: '#0b3d91', transform: `rotate(-90 32 ${ly})`, text: isR ? 'increases going down ↓' : `${gen}increases going up ↑` }, svg);
+  SP_GROUPS.forEach((g, i) => sv('text', { x: x0 + i * cw + cw / 2, y: y0 - 8, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#334155', text: 'Gr ' + g }, svg));
+  for (let p = 1; p <= 6; p++) sv('text', { x: x0 - 8, y: y0 + (p - 1) * ch + ch / 2 + 5, 'text-anchor': 'end', 'font-size': 14, 'font-weight': 700, fill: '#334155', text: p }, svg);
+  const cand = {}, vals = [], pend = [];
+  SP_ELS.forEach(e => {
+    const i = SP_GROUPS.indexOf(e.group), x = x0 + i * cw, y = y0 + (e.period - 1) * ch, v = e[k], isC = set.includes(e);
+    const c = v == null ? null : colorFor(k, v), g = sv('g', null, svg);
+    sv('rect', { x: x + 2, y: y + 2, width: cw - 4, height: ch - 4, rx: 7, fill: c ? rgb(c) : hatch, stroke: isC ? '#b91c1c' : 'rgba(0,0,0,.25)', 'stroke-width': isC ? 2 : 1, filter: SH.drop }, g);
+    if (c) sv('rect', { x: x + 2, y: y + 2, width: cw - 4, height: (ch - 4) / 2, rx: 7, fill: '#fff', opacity: .14, 'pointer-events': 'none' }, g);
+    const tc = c ? textOn(c) : '#111';
+    sv('text', { x: x + cw / 2, y: y + 25, 'text-anchor': 'middle', 'font-size': 19, 'font-weight': 700, fill: tc, text: e.sym }, g);
+    const vt = sv('text', { x: isC ? x + cw - 6 : x + cw / 2, y: y + 43, 'text-anchor': isC ? 'end' : 'middle', 'font-size': 13, fill: tc, text: v == null ? 'n/a' : cellVal(e, k), visibility: v == null ? 'visible' : 'hidden' }, g);
+    vals.push(vt);
+    if (isC) {
+      g.setAttribute('style', 'cursor:pointer'); g.setAttribute('tabindex', 0); g.setAttribute('role', 'button'); g.setAttribute('aria-label', e.name);
+      pend.push({ sym: e.sym, x, y, g });
+    }
+  });
+  const top = sv('g', { 'pointer-events': 'none' }, svg);
+  pend.forEach(({ x, y }) => sv('ellipse', { cx: x + cw / 2, cy: y + ch / 2, rx: cw / 2 + 3, ry: ch / 2 + 3, fill: 'none', stroke: '#fff', 'stroke-width': 7 }, top));
+  pend.forEach(({ x, y }) => sv('ellipse', { cx: x + cw / 2, cy: y + ch / 2, rx: cw / 2 + 3, ry: ch / 2 + 3, fill: 'none', stroke: '#dc2626', 'stroke-width': 4 }, top));
+  pend.forEach(({ sym, x, y, g }) => {
+    const bg = sv('g', { visibility: 'hidden' }, top);
+    sv('path', { d: `M${x + 2},${y + ch - 21} h31 l-5,8 l5,8 h-31 z`, fill: '#b91c1c', stroke: '#fff', 'stroke-width': 1.5 }, bg);
+    const bt = sv('text', { x: x + 5, y: y + ch - 8.5, 'font-size': 12, 'font-weight': 700, fill: '#fff' }, bg);
+    cand[sym] = { g, bg, bt };
+  });
+  return {
+    svg, cand,
+    setBadges(order) { Object.keys(cand).forEach(sym => { const i = order.indexOf(sym), c = cand[sym]; c.bg.setAttribute('visibility', i >= 0 ? 'visible' : 'hidden'); c.bt.textContent = i >= 0 ? ['1st', '2nd', '3rd'][i] : ''; }); },
+    reveal() { vals.forEach(t => t.setAttribute('visibility', 'visible')); }
+  };
+}
+function renderRank() {
+  const area = $('#rkArea'); area.innerHTML = '';
+  const c = rkCur, P = PROPS[c.k];
+  const kindTxt = { period: 'Same period', group: 'Same group', diag: 'Diagonal (easy)' }[c.kind];
+  const correct = c.set.slice().sort((x, y) => y[c.k] - x[c.k]).map(e => e.sym);
+  const order = []; let locked = false;
+  area.append(h('h3', null, `Challenge ${state.rankDone + 1} · ${kindTxt} · ${P.name}`));
+  const what = c.k === 'R' ? 'atomic radius' : P.name.toLowerCase();
+  area.append(h('div', { class: 'rkdir', role: 'note' },
+    h('div', { class: 'rkdir-t' }, `Rank by ${what}: ${P.hi} → ${P.lo}`),
+    h('div', { class: 'rkdir-row' },
+      h('span', { class: 'rkpill' }, h('b', null, '1st'), ' = ' + P.hi), h('span', { class: 'rkarrow', 'aria-hidden': 'true' }, '➜'),
+      h('span', { class: 'rkpill' }, h('b', null, '2nd'), ' = middle'), h('span', { class: 'rkarrow', 'aria-hidden': 'true' }, '➜'),
+      h('span', { class: 'rkpill' }, h('b', null, '3rd'), ' = ' + P.lo))));
+  area.append(h('p', { class: 'note', style: 'margin:.2rem 0 .4rem' }, `Click the 3 red-circled elements in that order. Use the trend arrows and colors (light = ${c.k === 'R' ? 'large' : 'high'}, dark = ${c.k === 'R' ? 'small' : 'low'}).`));
+  const tbl = rankTable(c.k, c.set);
+  const slots = h('div', { class: 'slots', 'aria-live': 'polite' });
+  const cards = h('div', { class: 'seg' });
+  const cardBtn = {};
+  shuffle(c.set).forEach(e => { const b = h('button', { class: 'chip', 'aria-pressed': 'false', onclick: () => toggle(e.sym) }, `${e.sym} · ${e.name}`); cardBtn[e.sym] = b; cards.append(b); });
+  Object.entries(tbl.cand).forEach(([sym, o]) => { o.g.addEventListener('click', () => toggle(sym)); o.g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggle(sym); } }); });
+  const clearBtn = h('button', { class: 'btn secondary', onclick: () => { if (locked) return; order.length = 0; update(); } }, 'Clear');
+  const checkBtn = h('button', { class: 'btn', disabled: true }, 'Check');
+  const nextBtn = h('button', { class: 'btn secondary', disabled: true }, 'Next challenge →');
+  const fb = h('div', { 'aria-live': 'polite' });
+  function toggle(sym) { if (locked) return; const i = order.indexOf(sym); if (i >= 0) order.splice(i, 1); else if (order.length < 3) order.push(sym); update(); }
+  function update(marks) {
+    tbl.setBadges(order);
+    const names = [`1st = ${P.hi}`, '2nd = middle', `3rd = ${P.lo}`];
+    slots.innerHTML = '';
+    names.forEach((nm, i) => {
+      const sym = order[i], m = marks ? marks[i] : null;
+      slots.append(h('div', { class: 'slot' + (m === true ? ' right' : m === false ? ' wrong' : '') }, h('span', { class: 'sl' }, nm), h('b', null, sym ? sym + (m === true ? ' ✓' : m === false ? ' ✗' : '') : '—')));
+    });
+    Object.entries(cardBtn).forEach(([sym, b]) => { const i = order.indexOf(sym); b.setAttribute('aria-pressed', String(i >= 0)); b.innerHTML = (i >= 0 ? `<span class="ord">${['1st', '2nd', '3rd'][i]}</span> ` : '') + `${sym} · ${BY_SYM[sym].name}`; });
+    checkBtn.disabled = locked || order.length < 3;
+  }
+  checkBtn.addEventListener('click', () => {
+    if (locked || order.length < 3) return;
+    locked = true;
+    const ok = order.join() === correct.join();
+    c.checked = true; state.rankDone++; if (ok) state.rankCorrect++; saveState();
+    tbl.reveal(); update(order.map((s, i) => s === correct[i]));
+    fb.className = 'fb ' + (ok ? 'ok' : 'bad');
+    fb.innerHTML = `<div class="head">${ok ? '✓ Correct!' : '✗ Not quite.'}</div><div>Correct order: <b>${correct.map(s => `${s} (${fullVal(BY_SYM[s], c.k)})`).join(' > ')}</b></div><div>${rankExplain(c)}</div>`;
+    checkBtn.disabled = true; clearBtn.disabled = true; nextBtn.disabled = false; nextBtn.focus();
+    updateChecklist(); rkStats();
+  });
+  nextBtn.addEventListener('click', newRank);
+  area.append(h('div', { class: 'rkwrap' }, tbl.svg), slots, h('div', { style: 'margin:.4rem 0' }, cards), h('div', { class: 'qactions' }, clearBtn, checkBtn, nextBtn), fb);
+  update();
+  rkStats();
+}
+function rkStats() { $('#rkStats').textContent = `Completed: ${state.rankDone} · Correct: ${state.rankCorrect}`; }
+
+/* ================= CHECKLIST & STATIONS ================= */
+function updateChecklist() {
+  const c = checks(), box = $('#checklist'); box.innerHTML = '';
+  const item = (done, txt) => h('span', { class: 'ci' + (done ? ' done' : '') }, h('span', { class: 'box', 'aria-hidden': 'true' }, done ? '✓' : ''), h('span', null, (done ? 'Done: ' : '') + txt));
+  box.append(h('strong', null, 'Lab Checklist'),
+    item(c.heat >= 4, `View all 4 heat maps (${Math.min(c.heat, 4)}/4)`),
+    item(c.size >= 3, `Use Size Showdown 3 times (${Math.min(c.size, 3)}/3)`),
+    item(c.done >= 8 && c.correct >= 6, `8 ranking challenges, at least 6 correct (${c.done} done, ${c.correct} correct)`));
+  if (labDone()) box.append(h('span', { class: 'ci done' }, learnCount() >= NSTOPS ? '★ Lab complete: the Quiz is unlocked!' : `★ Lab complete. View all Learn stops (${learnCount()}/${NSTOPS}) to unlock the Quiz.`));
+  $$('#trendBtns .chip').forEach(b => { b.querySelector('.ck').textContent = state.heatViewed.includes(b.dataset.k) ? '✓' : ''; });
+  updateTabs();
+}
+function setStation(s) {
+  station = s;
+  ['heat', 'size', 'rank'].forEach(x => { $('#st-' + x).hidden = x !== s; });
+  $$('.subtabs .chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.station === s)));
+  if (s === 'heat') { markHeatViewed(); drawOverlay(); if (show3d) draw3d(); }
+  if (s === 'rank' && !rkCur) newRank();
+}
+function set3d(on) {
+  show3d = on;
+  $('#bars3d').hidden = !on; $('#heatWrap').hidden = on;
+  if (on) draw3d();
+  drawOverlay();
+}
+
+/* ================= QUIZ ================= */
+function miniHeat(k, syms) {
+  const els = syms.map(s => BY_SYM[s]);
+  const gs = uniq(els.map(e => e.group)).sort((a, b) => a - b), ps = uniq(els.map(e => e.period)).sort((a, b) => a - b);
+  const cw = 78, ch = 60, x0 = 74, y0 = 30, W = x0 + gs.length * cw + 8, H = y0 + ps.length * ch + 34;
+  const svg = svgRoot(W, H, `Heat map of ${PROPS[k].name}`);
+  svg.style.maxWidth = (W * 1.15) + 'px';
+  const vals = els.map(e => e[k]).filter(v => v != null), lo = Math.min(...vals), hi = Math.max(...vals);
+  const hatch = hatchPattern(svg, '#c3c9d2', nextId('mh'));
+  gs.forEach((g, i) => sv('text', { x: x0 + i * cw + cw / 2, y: y0 - 10, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, text: 'Group ' + g }, svg));
+  ps.forEach((p, j) => sv('text', { x: x0 - 8, y: y0 + j * ch + ch / 2 + 5, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, text: 'Period ' + p }, svg));
+  els.forEach(e => {
+    const x = x0 + gs.indexOf(e.group) * cw, y = y0 + ps.indexOf(e.period) * ch, v = e[k];
+    const c = v == null ? null : scaleColor((v - lo) / (hi - lo || 1));
+    sv('rect', { x: x + 2, y: y + 2, width: cw - 4, height: ch - 4, rx: 5, fill: c ? rgb(c) : hatch, stroke: '#333' }, svg);
+    const tc = c ? textOn(c) : '#111';
+    sv('text', { x: x + cw / 2, y: y + 26, 'text-anchor': 'middle', 'font-size': 19, 'font-weight': 700, fill: tc, text: e.sym }, svg);
+    sv('text', { x: x + cw / 2, y: y + 46, 'text-anchor': 'middle', 'font-size': 14, fill: tc, text: v == null ? 'n/a' : (k === 'EN' ? e.raw.EN : e.raw[k]) }, svg);
+  });
+  sv('text', { x: 6, y: H - 10, 'font-size': 12.5, text: `${PROPS[k].name} (${PROPS[k].unit}) · dark = low, light = high` }, svg);
+  return svg;
+}
+const ch4 = (a, b, c, d) => [a, b, c, d];
+const BANK = [
+  { type: 'mc', short: 'Largest radius: Na, Mg, Si, Cl', prompt: 'Which element has the largest atomic radius?', choices: ch4('Na', 'Mg', 'Si', 'Cl'), answer: 'Na', explain: 'All four are in period 3 (same energy level), and Na has the fewest protons pulling on its electrons, so its cloud is largest (190 pm).' },
+  { type: 'mc', short: 'Largest radius: Li, Na, K, Rb', prompt: 'Which element has the largest atomic radius?', choices: ch4('Li', 'Na', 'K', 'Rb'), answer: 'Rb', explain: 'Rb is lowest in group 1, so its outer electron is in the highest energy level (n = 5), farthest from the nucleus.' },
+  { type: 'mc', short: 'Why radius decreases across', prompt: 'Why does atomic radius DECREASE from left to right across a period?', choices: ch4('More protons pull on the same energy level, so the electrons are pulled closer', 'Each element adds a new energy level', 'Electrons are removed as you move right', 'Neutrons push the electrons inward'), answer: 'More protons pull on the same energy level, so the electrons are pulled closer', explain: 'Across a period electrons go into the same energy level while protons increase, so the stronger net pull shrinks the atom.' },
+  { type: 'mc', short: 'Why radius increases down', prompt: 'Why does atomic radius INCREASE going down a group?', choices: ch4('Each row adds an energy level, so outer electrons are farther from the nucleus', 'The nucleus loses protons going down', 'Shielding decreases going down', 'Electrons get heavier going down'), answer: 'Each row adds an energy level, so outer electrons are farther from the nucleus', explain: 'Each row down adds a new energy level, and the extra inner electrons shield the outer ones, so the atom gets bigger.' },
+  { type: 'mc', short: 'Highest IE: Na, Al, P, Ar', prompt: 'Which element has the highest first ionization energy?', choices: ch4('Na', 'Al', 'P', 'Ar'), answer: 'Ar', explain: 'Ar is the noble gas at the end of period 3; its many protons pull hard on a full outer level in the same energy level (1520.6 kJ/mol).' },
+  { type: 'mc', short: 'Lowest IE: Li, Na, K, Cs', prompt: 'Which element has the lowest first ionization energy?', choices: ch4('Li', 'Na', 'K', 'Cs'), answer: 'Cs', explain: 'Cs\'s outer electron is in energy level 6, far from the nucleus and heavily shielded, so it is easiest to remove (375.7 kJ/mol).' },
+  { type: 'mc', short: 'Why IE decreases down', prompt: 'Why does first ionization energy DECREASE going down a group?', choices: ch4('The outer electron is farther away and more shielded, so it is held less tightly', 'Atoms lower in a group have fewer protons', 'Atoms lower in a group have more valence electrons', 'Atoms lower in a group are all noble gases'), answer: 'The outer electron is farther away and more shielded, so it is held less tightly', explain: 'Even though protons increase, the added distance and shielding make the outer electron easier to remove.' },
+  { type: 'mc', short: 'Definition of electron affinity', prompt: 'In this activity, electron affinity (EA) is…', choices: ch4('The energy released when a gaseous atom gains an electron', 'The energy needed to remove an electron from a gaseous atom', 'An atom\'s ability to attract shared electrons in a bond', 'The distance from the nucleus to the outer electrons'), answer: 'The energy released when a gaseous atom gains an electron', explain: 'EA describes X(g) + e⁻ → X⁻(g) + energy; this app lists the energy released as a positive number.' },
+  { type: 'mc', short: 'Most energy released: Na, Si, S, Cl', prompt: 'Which of these elements releases the MOST energy when it gains an electron?', choices: ch4('Na', 'Si', 'S', 'Cl'), answer: 'Cl', explain: 'All four are in period 3, and electron affinity increases toward the halogens, so Cl (farthest right) releases the most (348.6 kJ/mol).' },
+  { type: 'mc', short: 'Unstable anion (EA n/a)', prompt: 'Which of these elements does NOT form a stable anion?', choices: ch4('Ne', 'O', 'C', 'Cl'), answer: 'Ne', explain: 'Ne\'s outer level is full, so an added electron would have to start a new, farther energy level; the anion is not stable.' },
+  { type: 'mc', short: 'Definition of electronegativity', prompt: 'Electronegativity is…', choices: ch4('An atom\'s ability to attract shared electrons in a chemical bond', 'The energy released when an atom gains an electron', 'The energy needed to remove an electron', 'The number of electrons in the outer energy level'), answer: 'An atom\'s ability to attract shared electrons in a chemical bond', explain: 'Electronegativity (Pauling scale, no units) describes the pull on electrons that are shared in a bond.' },
+  { type: 'mc', short: 'Highest EN: O, Cl, F, Ne', prompt: 'Which element has the highest electronegativity of all?', choices: ch4('O', 'Cl', 'F', 'N'), answer: 'F', explain: 'F has the highest electronegativity (3.98): a small atom in the top-right “fluorine corner” with many protons pulling on a close outer level.' },
+  { type: 'mc', short: 'Lowest EN in period 3', prompt: 'Which of these elements has the lowest electronegativity?', choices: ch4('Na', 'Mg', 'Si', 'S'), answer: 'Na', explain: 'Na is farthest left in period 3, with the fewest protons pulling on that energy level, so it attracts bonding electrons the least (0.93).' },
+  { type: 'mc', short: 'Why noble gases lack EN', prompt: 'Why do the noble gases have no electronegativity value in this activity?', choices: ch4('They form no compounds, so there are no shared electrons to measure', 'They have no protons', 'Their electronegativity is too high to measure', 'They are metals'), answer: 'They form no compounds, so there are no shared electrons to measure', explain: 'Electronegativity describes the pull on shared electrons in a bond, and noble gases almost never form bonds.' },
+  { type: 'mc', short: 'Size: Na atom vs Na⁺', prompt: 'Which is larger: a sodium atom (Na) or a sodium ion (Na⁺)?', choices: ['Na atom', 'Na⁺ ion', 'They are the same size'], answer: 'Na atom', explain: 'Na⁺ has lost its only n = 3 electron, so the whole outer energy level is gone and the ion is much smaller.' },
+  { type: 'mc', short: 'Size: Cl atom vs Cl⁻', prompt: 'Which is larger: a chlorine atom (Cl) or a chloride ion (Cl⁻)?', choices: ['Cl atom', 'Cl⁻ ion', 'They are the same size'], answer: 'Cl⁻ ion', explain: 'Cl⁻ has one extra electron in the same energy level; more electron–electron repulsion with the same 17 protons spreads the cloud out.' },
+  { type: 'mc', short: 'Why Mg²⁺ is smaller than Mg', prompt: 'Why is a Mg²⁺ ion smaller than a Mg atom?', choices: ch4('It lost both n = 3 electrons, so its outer energy level is gone', 'It gained two protons', 'It gained two electrons', 'Its nucleus got bigger'), answer: 'It lost both n = 3 electrons, so its outer energy level is gone', explain: 'Removing the two valence electrons empties the third energy level, leaving a smaller ion with only two energy levels, pulled by 12 protons.' },
+  { type: 'mc', short: 'Largest 10-electron ion', prompt: 'These ions all have 10 electrons. Which one is the LARGEST?', choices: ch4('O²⁻', 'F⁻', 'Na⁺', 'Mg²⁺'), answer: 'O²⁻', explain: 'With the same number of electrons, the ion with the fewest protons (O²⁻, 8 p⁺) pulls them in the least, so it is largest (140 pm).' },
+  { type: 'mc', short: 'Top-right elements: electronegativity', prompt: 'An element in the top-right corner of the table (not a noble gas) most likely has what kind of electronegativity?', choices: ['High', 'Low', 'About average'], answer: 'High', explain: 'The “fluorine corner” has few energy levels and many protons pulling on them, so its atoms pull hard on shared electrons.' },
+  { type: 'mc', short: 'Predict location from properties', prompt: 'Element X has a large atomic radius, a very low ionization energy and a low electronegativity. Where is X most likely located?', choices: ch4('Bottom-left (like Cs)', 'Top-right (like F)', 'Top-left (like H)', 'In group 18'), answer: 'Bottom-left (like Cs)', explain: 'Bottom-left atoms have many energy levels, so their outer electrons are far from the nucleus; they are large and lose electrons easily.' },
+  { type: 'mc', short: 'Heat map: highest EN in period 3', prompt: 'Use the heat map of electronegativity for period 3. Which element has the highest value?', vis: () => miniHeat('EN', ['Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar']), choices: ch4('Na', 'Al', 'S', 'Cl'), answer: 'Cl', explain: 'Cl\'s cell shows 3.16, the highest in period 3: electronegativity increases to the right (Ar has no value).' },
+  { type: 'mc', short: 'Heat map: where are the largest atoms', prompt: 'Use the heat map of atomic radius. Where are the LARGEST atoms on this map?', vis: () => miniHeat('R', ['Li', 'Be', 'O', 'F', 'Na', 'Mg', 'S', 'Cl', 'K', 'Ca', 'Se', 'Br', 'Rb', 'Sr', 'Te', 'I']), choices: ch4('Bottom-left (Rb)', 'Top-right (F)', 'Top-left (Li)', 'Bottom-right (I)'), answer: 'Bottom-left (Rb)', explain: 'Rb shows 265 pm, the largest value: radius increases going down a group and to the left.' },
+  { type: 'mc', short: 'Heat map: IE pattern down groups 1–2', prompt: 'Use the heat map of first ionization energy. What happens to the values going DOWN each group?', vis: () => miniHeat('IE', ['Li', 'Be', 'Na', 'Mg', 'K', 'Ca', 'Rb', 'Sr', 'Cs', 'Ba']), choices: ch4('They decrease', 'They increase', 'They stay the same', 'They increase, then decrease'), answer: 'They decrease', explain: 'Values drop from Li 520.2 to Cs 375.7 and from Be 899.5 to Ba 502.9: outer electrons are farther away and easier to remove.' },
+  { type: 'mc', short: 'Heat map: group with highest EA', prompt: 'Use the heat map of electron affinity for periods 2–3. Which group has the highest values?', vis: () => miniHeat('EA', ['B', 'C', 'N', 'O', 'F', 'Al', 'Si', 'P', 'S', 'Cl']), choices: ch4('Group 17 (halogens)', 'Group 13', 'Group 14', 'Group 16'), answer: 'Group 17 (halogens)', explain: 'Group 17 cells (F 328.2, Cl 348.6) are the highest: halogens need only one electron to fill their outer energy level.' },
+  { type: 'rank', k: 'R', short: 'Rank radius: K, Ca, Ga, Br', prompt: 'Rank by atomic radius: LARGEST at the top → SMALLEST at the bottom.', items: ['K', 'Ca', 'Ga', 'Br'], explain: 'Same period 4: moving right adds protons to the same energy level, so radius shrinks K > Ca > Ga > Br.' },
+  { type: 'rank', k: 'IE', short: 'Rank IE: F, N, C, Li', prompt: 'Rank by first ionization energy: HIGHEST at the top → LOWEST at the bottom.', items: ['F', 'N', 'C', 'Li'], explain: 'Same period 2: moving right adds protons to the same energy level, so IE increases Li < C < N < F.' },
+  { type: 'rank', k: 'EN', short: 'Rank EN: F, Cl, Br, I', prompt: 'Rank by electronegativity: HIGHEST at the top → LOWEST at the bottom.', items: ['F', 'Cl', 'Br', 'I'], explain: 'Same group 17: moving down adds energy levels, so the pull on bonding electrons drops F > Cl > Br > I.' },
+  { type: 'rank', k: 'R', short: 'Rank radius: Cs, Rb, K, Na', prompt: 'Rank by atomic radius: LARGEST at the top → SMALLEST at the bottom.', items: ['Cs', 'Rb', 'K', 'Na'], explain: 'Same group 1: each step down adds an energy level, so Cs > Rb > K > Na.' },
+  { type: 'rank', k: 'EN', short: 'Rank EN: Be, Mg, Ca, Ba', prompt: 'Rank by electronegativity: HIGHEST at the top → LOWEST at the bottom.', items: ['Be', 'Mg', 'Ca', 'Ba'], explain: 'Same group 2: moving down adds energy levels, so bonding electrons are farther from the nucleus and EN drops Be > Mg > Ca > Ba.' },
+  { type: 'rank', k: 'IE', short: 'Rank IE: Be, Mg, Ca, Ba', prompt: 'Rank by first ionization energy: HIGHEST at the top → LOWEST at the bottom.', items: ['Be', 'Mg', 'Ca', 'Ba'], explain: 'Same group 2: outer electrons get farther and more shielded going down, so IE decreases Be > Mg > Ca > Ba.' },
+  { type: 'rank', k: 'EA', short: 'Rank EA: Cl, S, Si, Na', prompt: 'Rank by electron affinity (energy released): HIGHEST at the top → LOWEST at the bottom.', items: ['Cl', 'S', 'Si', 'Na'], explain: 'Across period 3, atoms release more energy gaining an electron as they approach the halogens: Cl > S > Si > Na.' },
+  { type: 'rank', k: 'R', short: 'Rank radius: I, Br, Cl, F', prompt: 'Rank by atomic radius: LARGEST at the top → SMALLEST at the bottom.', items: ['I', 'Br', 'Cl', 'F'], explain: 'Same group 17: each step down adds an energy level, so I > Br > Cl > F.' },
+  { type: 'click', short: 'Click: highest electronegativity', prompt: 'Click the element with the highest electronegativity.', answer: 'F', explain: 'F (3.98) is the most electronegative element.' },
+  { type: 'click', short: 'Click: largest radius in period 3', hl: ['row', 3], prompt: 'Click the circled element with the largest atomic radius.', answer: 'Na', explain: 'Na is farthest left in period 3: same energy level, fewest protons (190 pm).' },
+  { type: 'click', short: 'Click: highest first IE', prompt: 'Click the element with the highest first ionization energy.', answer: 'He', explain: 'He (2372.3 kJ/mol): its two electrons are in n = 1, very close to the nucleus with no shielding.' },
+  { type: 'click', short: 'Click: highest EA in period 3', hl: ['row', 3], prompt: 'Click the circled element with the highest electron affinity.', answer: 'Cl', explain: 'Electron affinity increases to the right toward the halogens, so Cl releases the most in period 3 (348.6 kJ/mol).' },
+  { type: 'click', short: 'Click: lowest IE in group 1', hl: ['col', 1], prompt: 'Click the circled element with the lowest first ionization energy.', answer: 'Cs', explain: 'Cs (375.7 kJ/mol) is at the bottom of group 1 on this table, so its outer electron is farthest from the nucleus.' },
+  { type: 'click', short: 'Click: smallest radius in group 2', hl: ['col', 2], prompt: 'Click the circled element with the smallest atomic radius.', answer: 'Be', explain: 'Be is at the top of group 2, with only two energy levels (112 pm).' },
+  { type: 'click', short: 'Click: smallest radius in group 18', hl: ['col', 18], prompt: 'Click the circled element with the smallest atomic radius.', answer: 'He', explain: 'He has one energy level and the smallest calculated radius of all (31 pm).' },
+  { type: 'click', short: 'Click: lowest EN in period 2', hl: ['row', 2], prompt: 'Click the circled element with the lowest electronegativity.', answer: 'Li', explain: 'Li (0.98) is farthest left in period 2, with the fewest protons pulling on energy level 2.' }
+];
+function rankValue(q, id) { return q.k === 'ION' ? IONS[id].r : BY_SYM[id][q.k]; }
+function rankLabel(q, id) { if (q.k === 'ION') return IONS[id].label; const e = BY_SYM[id]; return e.sym; }
+function rankFull(q, id) { return q.k === 'ION' ? IONS[id].r + ' pm' : fullVal(BY_SYM[id], q.k); }
+
+let quiz = null;
+function drawQuestions() {
+  const rank = shuffle(BANK.filter(q => q.type === 'rank')), click = shuffle(BANK.filter(q => q.type === 'click')), heat = shuffle(BANK.filter(q => q.vis));
+  const chosen = [rank[0], rank[1], click[0], click[1], heat[0]];
+  const rest = shuffle(BANK.filter(q => !chosen.includes(q)));
+  while (chosen.length < 10) chosen.push(rest.pop());
+  return shuffle(chosen);
+}
+function startQuiz() {
+  state.attempts++; saveState();
+  quiz = { attempt: state.attempts, qs: drawQuestions(), idx: 0, results: [], finished: null };
+  updateTabs(); renderQuiz();
+}
+function renderQuiz() {
+  const area = $('#quizArea'); area.innerHTML = '';
+  if (!quizUnlocked()) {
+    const lc = learnCount(), c = checks();
+    const req = (ok, txt) => h('li', null, h('span', { class: 'box', style: ok ? 'background:#1b7f3b;border-color:#1b7f3b' : '' }, ok ? '✓' : ''), h('span', null, (ok ? 'Done: ' : 'Still needed: ') + txt));
+    area.append(h('div', { class: 'lockpanel' },
+      h('h2', { html: LOCK_SVG + ' The Quiz is locked' }),
+      h('p', null, 'Finish these to unlock it:'),
+      h('ul', { class: 'reqlist' },
+        req(lc >= NSTOPS, `View every Learn stop (${lc}/${NSTOPS})`),
+        req(c.heat >= 4, `Lab: view all 4 heat maps (${Math.min(c.heat, 4)}/4)`),
+        req(c.size >= 3, `Lab: use Size Showdown 3 times (${Math.min(c.size, 3)}/3)`),
+        req(c.done >= 8 && c.correct >= 6, `Lab: 8 ranking challenges with at least 6 correct (${c.done} done, ${c.correct} correct)`)),
+      h('div', { class: 'qactions' }, h('button', { class: 'btn', onclick: () => setTab('learn') }, 'Go to Learn'), h('button', { class: 'btn secondary', onclick: () => setTab('lab') }, 'Go to Lab'))));
+    return;
+  }
+  if (!quiz) {
+    area.append(h('h2', null, 'Periodic Trends Quiz'),
+      h('p', null, `10 questions drawn at random from a bank of ${BANK.length}: multiple choice, drag-to-rank and click-the-element. You get feedback after each answer. Unlimited retakes.`),
+      h('p', { class: 'stats' }, `Attempts so far: ${state.attempts}`),
+      h('button', { class: 'btn', onclick: startQuiz }, state.attempts ? 'Start a new attempt' : 'Start the quiz'));
+    return;
+  }
+  if (quiz.idx >= quiz.qs.length) { renderScore(); return; }
+  renderQuestion();
+}
+function renderQuestion() {
+  const area = $('#quizArea'), q = quiz.qs[quiz.idx];
+  area.append(h('div', { class: 'qhead' }, h('span', null, `Question ${quiz.idx + 1} of ${quiz.qs.length}`), h('span', null, `Attempt #${quiz.attempt} · Score so far: ${quiz.results.filter(r => r.ok).length}`)));
+  area.append(h('div', { class: 'qprompt' }, q.prompt));
+  if (q.vis) area.append(h('div', { class: 'panelbox', style: 'margin-bottom:.5rem' }, q.vis()));
+  const fb = h('div', { 'aria-live': 'polite' });
+  const checkBtn = h('button', { class: 'btn', disabled: true }, 'Check answer');
+  const nextBtn = h('button', { class: 'btn secondary', hidden: true }, quiz.idx === quiz.qs.length - 1 ? 'See my score card →' : 'Next question →');
+  let getAnswer, showResult;
+  if (q.type === 'mc') {
+    const box = h('div', { class: 'choices' }); let sel = null;
+    const btns = shuffle(q.choices).map(c => { const b = h('button', { class: 'choice', 'aria-pressed': 'false' }, c); b.addEventListener('click', () => { if (checkBtn.dataset.done) return; sel = c; btns.forEach(x => x.setAttribute('aria-pressed', String(x === b))); checkBtn.disabled = false; }); box.append(b); return b; });
+    area.append(box);
+    getAnswer = () => sel === q.answer;
+    showResult = () => btns.forEach(b => { b.disabled = true; if (b.textContent === q.answer) { b.classList.add('right'); b.textContent = '✓ ' + b.textContent; } else if (b.textContent === sel) { b.classList.add('wrong'); b.textContent = '✗ ' + b.textContent; } });
+  } else if (q.type === 'rank') {
+    const correct = q.items.slice().sort((a, b) => rankValue(q, b) - rankValue(q, a));
+    const P = q.k === 'ION' ? { hi: 'LARGEST', lo: 'SMALLEST' } : PROPS[q.k];
+    const list = RankList(shuffledNotSorted(q.items, correct).map(id => ({ id, label: rankLabel(q, id), sub: q.k === 'ION' ? '' : BY_SYM[id].name, aria: rankLabel(q, id) })));
+    area.append(h('div', { class: 'rankends' }, h('span', null, '▲ ' + P.hi)), list.el, h('div', { class: 'rankends' }, h('span', null, '▼ ' + P.lo)));
+    checkBtn.disabled = false;
+    getAnswer = () => list.order().join() === correct.join();
+    showResult = () => { list.lock(); list.mark(correct, id => rankFull(q, id)); };
+    q._correctTxt = correct.map(id => rankLabel(q, id)).join(' > ');
+  } else {
+    let sel = null;
+    const t = clickTable(sym => { sel = sym; checkBtn.disabled = false; }, q.hl);
+    area.append(t.wrap);
+    getAnswer = () => sel === q.answer;
+    showResult = () => { t.grid.dataset.locked = '1'; $$('.ccell[data-sym]', t.grid).forEach(b => { b.disabled = true; if (b.dataset.sym === q.answer) { b.classList.add('right'); b.textContent = '✓' + q.answer; } else if (b.dataset.sym === sel) { b.classList.add('wrong'); b.textContent = '✗' + sel; } }); };
+  }
+  checkBtn.addEventListener('click', () => {
+    if (checkBtn.dataset.done) return;
+    checkBtn.dataset.done = '1';
+    const ok = getAnswer();
+    quiz.results.push({ short: q.short, ok });
+    showResult();
+    fb.className = 'fb ' + (ok ? 'ok' : 'bad');
+    let corr = '';
+    if (!ok) corr = q.type === 'rank' ? `Correct order: <b>${q._correctTxt}</b>. ` : `Correct answer: <b>${q.answer}</b>. `;
+    fb.innerHTML = `<div class="head">${ok ? '✓ Correct!' : '✗ Not quite.'}</div><div>${corr}${q.explain}</div>`;
+    checkBtn.hidden = true; nextBtn.hidden = false; nextBtn.focus();
+  });
+  nextBtn.addEventListener('click', () => { quiz.idx++; if (quiz.idx >= quiz.qs.length) quiz.finished = new Date(); renderQuiz(); window.scrollTo({ top: 0 }); });
+  area.append(h('div', { class: 'qactions' }, checkBtn, nextBtn), fb);
+}
+function clickTable(onPick, hl) {
+  const wrap = h('div', { class: 'clickwrap' }), grid = h('div', { class: 'clickgrid' }); wrap.append(grid);
+  ELEMENTS.filter(e => !e.lan).forEach(e => {
+    const b = h('button', { class: 'ccell', style: `grid-column:${e.group};grid-row:${e.period}`, 'aria-pressed': 'false', 'aria-label': e.name, 'data-sym': e.sym }, e.sym);
+    b.addEventListener('click', () => { if (grid.dataset.locked) return; $$('.ccell', grid).forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); onPick(e.sym); });
+    grid.append(b);
+  });
+  grid.append(h('div', { class: 'ccell ph', style: 'grid-column:3;grid-row:6', 'aria-hidden': 'true' }, '57–71'));
+  if (hl) grid.append(h('div', { class: 'hlbox', 'aria-hidden': 'true', style: hl[0] === 'col' ? `grid-column:${hl[1]};grid-row:${hl[1] === 1 || hl[1] === 18 ? 1 : hl[1] <= 2 || hl[1] >= 13 ? 2 : 4} / 7` : `grid-row:${hl[1]};grid-column:1 / 18` }));
+  return { wrap, grid };
+}
+
+/* ---------- Score card ---------- */
+const CARD_TITLE = 'Periodic Trends – Score Card', CARD_URL = 'chemistryteacher.net/periodic-trends';
+function whenText(d) { try { return d.toLocaleString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch (e) { return d.toString(); } }
+function drawCard() {
+  const r = quiz.results, score = r.filter(x => x.ok).length, W = 1000, rowH = 50, top = 262, H = top + r.length * rowH + 70;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const c = cv.getContext('2d'), F = '"Atkinson Hyperlegible", system-ui, sans-serif';
+  c.fillStyle = '#fff'; c.fillRect(0, 0, W, H);
+  c.fillStyle = '#0b3d91'; c.fillRect(0, 0, W, 124);
+  c.fillStyle = '#fff'; c.font = `700 40px ${F}`; c.textBaseline = 'alphabetic'; c.fillText(CARD_TITLE, 40, 64);
+  c.font = `24px ${F}`; c.fillText(CARD_URL, 40, 104);
+  c.fillStyle = '#111'; c.font = `24px ${F}`;
+  c.fillText('Date/time: ' + whenText(quiz.finished || new Date()), 40, 170);
+  c.fillText('Attempt #' + quiz.attempt, 40, 208);
+  c.textAlign = 'right'; c.font = `20px ${F}`; c.fillText('Score', 960, 158);
+  c.font = `700 64px ${F}`; c.fillText(`${score} / ${r.length}`, 960, 220);
+  c.textAlign = 'left';
+  c.strokeStyle = '#0b3d91'; c.lineWidth = 3; c.beginPath(); c.moveTo(40, 236); c.lineTo(960, 236); c.stroke();
+  r.forEach((x, i) => {
+    const y = top + i * rowH, cy = y + 8;
+    if (i % 2) { c.fillStyle = '#f2f5fb'; c.fillRect(30, y - 22, 940, rowH); }
+    c.fillStyle = x.ok ? '#1b7f3b' : '#b3261e'; c.beginPath(); c.arc(62, cy - 8, 16, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = '#fff'; c.lineWidth = 4; c.beginPath();
+    if (x.ok) { c.moveTo(54, cy - 8); c.lineTo(60, cy - 1); c.lineTo(71, cy - 16); } else { c.moveTo(55, cy - 15); c.lineTo(69, cy - 1); c.moveTo(69, cy - 15); c.lineTo(55, cy - 1); }
+    c.stroke();
+    c.fillStyle = '#111'; c.font = `22px ${F}`;
+    let t = `${i + 1}. ${x.short}`;
+    while (c.measureText(t).width > 720 && t.length > 4) t = t.slice(0, -2);
+    if (t !== `${i + 1}. ${x.short}`) t += '…';
+    c.fillText(t, 95, cy);
+    c.textAlign = 'right'; c.font = `700 20px ${F}`; c.fillStyle = x.ok ? '#145c2b' : '#8c1d18'; c.fillText(x.ok ? '✓ Correct' : '✗ Missed', 960, cy); c.textAlign = 'left';
+  });
+  c.fillStyle = '#444'; c.font = `18px ${F}`; c.fillText('Periodic Trends · ' + CARD_URL, 40, H - 26);
+  return cv;
+}
+function cardSummaryText() {
+  const r = quiz.results, score = r.filter(x => x.ok).length;
+  return [CARD_TITLE, CARD_URL, 'Date/time: ' + whenText(quiz.finished || new Date()), 'Attempt #: ' + quiz.attempt, `Score: ${score}/${r.length}`, '',
+    ...r.map((x, i) => `${i + 1}. ${x.ok ? '✓' : '✗'} ${x.short}`), '', '(My score card image is attached.)'].join('\n');
+}
+function renderScore() {
+  const area = $('#quizArea'), r = quiz.results, score = r.filter(x => x.ok).length;
+  const cv = drawCard();
+  const status = h('div', { class: 'note', 'aria-live': 'polite' });
+  const fname = `periodic-trends-score-card-attempt-${quiz.attempt}.png`;
+  const dl = h('button', { class: 'btn' }, 'Download PNG');
+  dl.addEventListener('click', () => {
+    const go = url => { const a = h('a', { href: url, download: fname }); document.body.append(a); a.click(); setTimeout(() => { a.remove(); if (url.startsWith('blob:')) URL.revokeObjectURL(url); }, 1500); };
+    if (cv.toBlob) cv.toBlob(b => { if (b) go(URL.createObjectURL(b)); else go(cv.toDataURL('image/png')); }, 'image/png'); else go(cv.toDataURL('image/png'));
+    status.textContent = 'Saved as ' + fname + ' (check your Downloads).';
+  });
+  const cp = h('button', { class: 'btn secondary' }, 'Copy image');
+  cp.addEventListener('click', () => {
+    if (!(navigator.clipboard && window.ClipboardItem && cv.toBlob)) { status.textContent = 'Copying images is not supported in this browser. Use Download PNG instead.'; return; }
+    try {
+      const item = new ClipboardItem({ 'image/png': new Promise(res => cv.toBlob(res, 'image/png')) });
+      navigator.clipboard.write([item]).then(() => { status.textContent = 'Score card copied! Paste it where your teacher asked.'; }, () => { status.textContent = 'Copy was blocked. Use Download PNG instead.'; });
+    } catch (e) { status.textContent = 'Copy was blocked. Use Download PNG instead.'; }
+  });
+  const gm = h('button', { class: 'btn secondary' }, 'Email via Gmail');
+  gm.addEventListener('click', () => {
+    const url = 'https://mail.google.com/mail/?view=cm&fs=1&to=&su=' + encodeURIComponent(CARD_TITLE) + '&body=' + encodeURIComponent(cardSummaryText());
+    window.open(url, '_blank', 'noopener');
+    status.textContent = 'Gmail opened in a new tab. Add your teacher\'s address and attach the PNG you downloaded.';
+  });
+  const again = h('button', { class: 'btn secondary', onclick: startQuiz }, 'Retake quiz (new attempt)');
+  area.append(h('h2', null, `Quiz complete: ${score} / ${r.length}`),
+    h('p', null, 'Download your score card, then email it (or copy it) to your teacher. Step 1: Download PNG. Step 2: Email via Gmail and attach the file.'),
+    h('div', { class: 'cardbtns' }, dl, cp, gm, again), status,
+    h('div', { class: 'cardwrap' }, cv));
+  updateTabs();
+}
+
+/* ================= TABS & INIT ================= */
+let currentTab = 'learn';
+function setTab(t) {
+  currentTab = t;
+  ['learn', 'lab', 'quiz'].forEach(x => { $('#panel-' + x).hidden = x !== t; $('#tab-' + x).setAttribute('aria-selected', String(x === t)); });
+  if (t === 'lab') { setStation(station); }
+  if (t === 'quiz') renderQuiz();
+  if (t === 'learn') showStop(curStop);
+}
+let resetArmed = false;
+function init() {
+  loadState();
+  ['viewed', 'heatViewed', 'sdPairs'].forEach(k => { if (!Array.isArray(state[k])) state[k] = []; });
+  state.viewed = state.viewed.filter(i => Number.isInteger(i) && i >= 0 && i < NSTOPS);
+  ['rankDone', 'rankCorrect', 'attempts', 'stop'].forEach(k => { state[k] = Math.max(0, parseInt(state[k], 10) || 0); });
+  buildDots();
+  buildTrendBtns(); buildHeatGrid(); updateHeat(); setup3dEvents();
+  buildShowdown(); buildRankProps(); updateChecklist(); rkStats();
+  $$('.tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  $('#prevStop').addEventListener('click', () => showStop(curStop - 1));
+  $('#nextStop').addEventListener('click', () => { if (curStop === NSTOPS - 1) setTab('lab'); else showStop(curStop + 1); });
+  $('#tgNums').addEventListener('change', updateHeat);
+  $('#tgArrows').addEventListener('change', () => { drawOverlay(); if (show3d) draw3d(); });
+  $('#tg3d').addEventListener('change', e => set3d(e.target.checked));
+  $$('.subtabs .chip').forEach(b => b.addEventListener('click', () => setStation(b.dataset.station)));
+  $('#heatWrap').addEventListener('scroll', debounce(drawOverlay, 80));
+  window.addEventListener('resize', debounce(() => { if (!$('#panel-lab').hidden) { drawOverlay(); if (show3d) draw3d(); } }, 150));
+  $('#resetBtn').addEventListener('click', () => {
+    const b = $('#resetBtn');
+    if (!resetArmed) { resetArmed = true; b.textContent = 'Click again to erase all progress'; setTimeout(() => { resetArmed = false; b.textContent = 'Reset my progress'; }, 4000); return; }
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
+    location.reload();
+  });
+  showStop(Math.min(state.stop, NSTOPS - 1));
+}
+init();
+</script>
+</body>
+</html>
