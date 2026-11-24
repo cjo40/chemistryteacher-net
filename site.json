@@ -9,6 +9,7 @@
   "license": "Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosting.",
   "units": [
     "Measurement & Math",
+    "Matter & Change",
     "Atomic Structure",
     "Bonding & Naming",
     "Gases",
@@ -48,7 +49,17 @@
     "/atomic-radius": "/periodic-trends",
     "/ionization-energy": "/periodic-trends",
     "/electronegativity": "/periodic-trends",
-    "/electron-affinity": "/periodic-trends"
+    "/electron-affinity": "/periodic-trends",
+    "/physical-and-chemical-changes": "/physical-chemical-changes",
+    "/physical-vs-chemical": "/physical-chemical-changes",
+    "/physical-vs-chemical-changes": "/physical-chemical-changes",
+    "/chemical-vs-physical": "/physical-chemical-changes",
+    "/physical-chemical-properties": "/physical-chemical-changes",
+    "/physical-and-chemical-properties": "/physical-chemical-changes",
+    "/chemical-changes": "/physical-chemical-changes",
+    "/physical-changes": "/physical-chemical-changes",
+    "/evidence-of-chemical-change": "/physical-chemical-changes",
+    "/properties-and-changes": "/physical-chemical-changes"
   },
   "activities": {
     "dimensional-analysis": {
@@ -446,6 +457,41 @@
         "When the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
       ],
       "classroom": "Use it as interactive notes on periodic trends, as a lab day before a trends worksheet, or as review before a periodic table test. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "tl"
+    },
+    "physical-chemical-changes": {
+      "name": "Physical vs Chemical Changes",
+      "title": "Physical vs Chemical Properties and Changes: Virtual Lab, Swipe Sort & Quiz",
+      "description": "Free interactive lesson on physical and chemical properties and changes: evidence of a chemical change, misleading evidence, a virtual lab bench and a quiz.",
+      "unit": "Matter & Change",
+      "order": 1,
+      "card": "Test 11 substances with heat, acid, water, a magnet and fire on a virtual lab bench, spot real vs. fake evidence, and classify physical vs chemical.",
+      "topics": [
+        "physical properties",
+        "chemical properties",
+        "physical changes",
+        "chemical changes",
+        "evidence of a chemical change",
+        "precipitate",
+        "gas production",
+        "color change",
+        "temperature change",
+        "flammability",
+        "reactivity",
+        "rusting and tarnishing",
+        "changes of state",
+        "dissolving",
+        "misleading evidence",
+        "candle: melting vs burning"
+      ],
+      "about": "Students learn that physical properties (color, state, density, melting and boiling point, hardness, malleability, ductility, conductivity, solubility, magnetism) can be observed without changing a substance, while chemical properties (flammability, reactivity with acid, oxygen or water, rusting and tarnishing) describe its ability to become something new. They compare physical changes with chemical changes, watch atoms rearrange when methane burns, explore the six kinds of evidence of a chemical change and the cases where evidence fools you (boiling bubbles, a cold pack, food coloring, a glowing bulb), then sort tricky cases like the candle. On the Lab Bench they run any of 88 tests on 11 substances (magnesium, ice, an iron nail, sugar, baking soda, a wooden splint, copper wire, salt, steel wool, a candle and chalk), record evidence and classify each result; two 30-card swipe decks sort changes and properties.",
+      "how": [
+        "Work through the 8 Learn stops (Back/Next or tap a numbered stop); each has something to tap or test.",
+        "In Lab A, pick a substance and a test (heat, HCl, vinegar, water, crush/cut, magnet, burn or moist air), press Run test, tick the evidence you saw and classify it as a physical change, chemical change or no change.",
+        "In Lab B, swipe or drag each card left for Physical or right for Chemical (or use the buttons or arrow keys).",
+        "When all Learn stops are viewed and the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
+      ],
+      "classroom": "Use it as notes and a virtual lab before a hands-on physical/chemical change lab, as a make-up lab for absent students (no chemicals needed), or as review before a matter quiz. The Lab Bench works well projected for a whole-class predict-observe-explain. The score card can be turned in through Google Classroom or Gmail.",
       "bar": "tl"
     }
   }
