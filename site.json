@@ -76,7 +76,17 @@
     "/atomic-spectra": "/flame-test",
     "/spectroscope": "/flame-test",
     "/bohr-model-spectra": "/flame-test",
-    "/spectrum-tubes": "/flame-test"
+    "/spectrum-tubes": "/flame-test",
+    "/sci-notation": "/scientific-notation",
+    "/scientific-notation-practice": "/scientific-notation",
+    "/scientific-notation-lab": "/scientific-notation",
+    "/orders-of-magnitude": "/scientific-notation",
+    "/order-of-magnitude": "/scientific-notation",
+    "/standard-form": "/scientific-notation",
+    "/standard-to-scientific-notation": "/scientific-notation",
+    "/multiplying-scientific-notation": "/scientific-notation",
+    "/dividing-scientific-notation": "/scientific-notation",
+    "/exponents": "/scientific-notation"
   },
   "activities": {
     "dimensional-analysis": {
@@ -614,6 +624,40 @@
         "Identify Unknowns A–C, Mixture M (use the cobalt blue glass) and Tubes 1–3. When all 7 are correct the lab is complete — download, copy or email the score card."
       ],
       "classroom": "Use it alongside a real flame test or spectrum tube demo, as a make-up lab, or as practice reading line spectra before a test on the Bohr model and electron transitions. The score card can be turned in through Google Classroom or Gmail.",
+      "bar": "tl"
+    },
+    "scientific-notation": {
+      "name": "Scientific Notation & Orders of Magnitude",
+      "title": "Scientific Notation & Orders of Magnitude: Zoom from a Proton to the Universe",
+      "description": "Free interactive scientific notation practice: zoom from a proton to the observable universe, step through powers of ten, then master converting, fixing the coefficient, multiplying and dividing in scientific notation.",
+      "unit": "Measurement & Math",
+      "order": 0,
+      "card": "Zoom from a proton to the observable universe and step through powers of ten, then learn and practice scientific notation: converting, fixing the coefficient, multiplying and dividing.",
+      "topics": [
+        "scientific notation",
+        "standard form",
+        "orders of magnitude",
+        "powers of ten",
+        "exponents",
+        "coefficient",
+        "multiplying in scientific notation",
+        "dividing in scientific notation",
+        "regrouping terms",
+        "within an order of magnitude",
+        "EE key",
+        "TI-84 calculator",
+        "metric prefixes",
+        "scale of objects"
+      ],
+      "about": "Students start in the Lab: a Size Zoom that goes smoothly from a proton (10⁻¹⁵ m) to the observable universe (10²⁷ m) with 52 original illustrations shown at their real sizes, and a Power Stepper that changes the size by exactly ×10 or ÷10 with each press, showing one object per power of ten, its standard form, its name and its metric prefix. Learn then walks through ten interactive stops: why scientific notation is shorter, powers of ten, the a × 10ⁿ format, standard ↔ scientific with decimal-hop animations, fixing the coefficient, regrouping terms to multiply and divide, being within an order of magnitude, why multiplying and dividing get easier, and entering numbers on a TI-84 with the EE key. Practice has five sections in order (standard → scientific, scientific → standard, fix the coefficient, multiply, divide); three correct in a row moves students to the next section, and wrong answers name the common mistake. Each part unlocks in order, and progress saves on the device.",
+      "how": [
+        "Start with the Lab: press ×10 and ÷10, drag the ruler handle, and reach both ends of the zoom; then step through 20 powers of ten in the Power Stepper.",
+        "Go to Learn and complete each stop in order — each one has a short task that unlocks Next.",
+        "In Practice, get 3 in a row (first try, no hints) to move on to the next section automatically.",
+        "Multiply and Divide are worked in steps with easy numbers: regroup the terms, combine them, then fix the decimal if needed — no calculator required.",
+        "Finish all five sections to reach 100% complete. Teachers can add ?unlock=teacher to the address to open every section for a demo."
+      ],
+      "classroom": "Use the Size Zoom on the projector to open the unit, assign Learn and Practice as independent work, or use the Power Stepper and the within-an-order-of-magnitude stop for estimation discussions. Progress saves on each student's device.",
       "bar": "tl"
     }
   }
