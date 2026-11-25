@@ -86,7 +86,17 @@
     "/standard-to-scientific-notation": "/scientific-notation",
     "/multiplying-scientific-notation": "/scientific-notation",
     "/dividing-scientific-notation": "/scientific-notation",
-    "/exponents": "/scientific-notation"
+    "/exponents": "/scientific-notation",
+    "/calculator-practice": "/calculator-skills",
+    "/calculator": "/calculator-skills",
+    "/calculator-skills-chemistry": "/calculator-skills",
+    "/how-to-use-a-scientific-calculator": "/calculator-skills",
+    "/ti-30xiis": "/calculator-skills",
+    "/ti-30xiis-practice": "/calculator-skills",
+    "/scientific-calculator-practice": "/calculator-skills",
+    "/calculator-dimensional-analysis": "/calculator-skills",
+    "/mole-calculator-practice": "/calculator-skills",
+    "/ee-key": "/calculator-skills"
   },
   "activities": {
     "dimensional-analysis": {
@@ -658,6 +668,40 @@
         "Finish all five sections to reach 100% complete. Teachers can add ?unlock=teacher to the address to open every section for a demo."
       ],
       "classroom": "Use the Size Zoom on the projector to open the unit, assign Learn and Practice as independent work, or use the Power Stepper and the within-an-order-of-magnitude stop for estimation discussions. Progress saves on each student's device.",
+      "bar": "tl"
+    },
+    "calculator-skills": {
+      "name": "Calculator Skills for Chemistry",
+      "title": "Calculator Skills for Chemistry: Dimensional Analysis & Mole Problems on a Scientific Calculator",
+      "description": "Free interactive practice for typing dimensional analysis, mole and stoichiometry problems into a scientific calculator (TI-30XIIS layout): parentheses or multiply-every-top, divide-every-bottom, EE for 6.02 × 10²³.",
+      "unit": "Measurement & Math",
+      "order": 2,
+      "card": "Learn exactly which buttons to press: dimensional analysis work → simplified fraction → calculator, two ways (parentheses, or × every top and ÷ every bottom), with a TI-30XIIS-style on-screen calculator.",
+      "topics": [
+        "using a scientific calculator",
+        "TI-30XIIS",
+        "dimensional analysis",
+        "factor-label method",
+        "unit conversions",
+        "mole conversions",
+        "stoichiometry",
+        "scientific notation on a calculator",
+        "EE key",
+        "Avogadro's number 6.02 × 10²³",
+        "order of operations",
+        "parentheses",
+        "dividing by two numbers on the bottom",
+        "common calculator mistakes"
+      ],
+      "about": "Every problem goes in three stages: the dimensional analysis work (already set up, with units crossed out), the simplified fraction (all top numbers over all bottom numbers, ignoring the 1s), and the calculator. Students learn two correct ways to key it in: Method A puts the whole top and the whole bottom in parentheses, and Method B multiplies every top number and divides by every bottom number. A slider switches between two topics meant for separate days: Dimensional Analysis (no scientific notation) and Moles & Stoichiometry (with 6.02 × 10²³ and the EE key). Learn goes one example at a time: Show Me animates the key presses on an on-screen calculator laid out like the TI-30XIIS (with a 'try it on the calculator' box), then Your Turn has students press the keys themselves with a yellow ring on the next correct key. On Your Own reads the answer straight off the calculator and, when it is wrong, shows the keys the student typed next to the correct order with the first different key circled — including the classic mistake of pressing ÷ only once when there are two numbers on the bottom. Three correct in a row (getting harder each time) makes the topic 100% complete.",
+      "how": [
+        "Pick the topic with the slider at the top: Dimensional Analysis or Moles & Stoichiometry.",
+        "Learn: for each of the 6 examples, watch Show Me with Method A and Method B, then do Your Turn by pressing the key with the yellow ring.",
+        "On Your Own: type the problem on the calculator, press ENTER, then click Check. Three correct in a row finishes the topic.",
+        "When a topic is done, a green ✓ 100% COMPLETE badge shows under the slider with the date — switching topics shows that topic's own progress.",
+        "Teachers can add ?teacher to the address to unlock every section, or ?mode=da / ?mode=mole to open a specific topic."
+      ],
+      "classroom": "Do the Dimensional Analysis topic on one day and Moles & Stoichiometry at least a week later. Check progress at a glance: the badge under the slider says 100% COMPLETE for the topic on screen. Use Show Me on the projector to model both keying methods, especially dividing by two numbers on the bottom.",
       "bar": "tl"
     }
   }
