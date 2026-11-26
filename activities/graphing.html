@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphing Like a Scientist: Data Tables &amp; Line Graphs</title>
+<meta name="description" content="Interactive activity that teaches high school chemistry students how to make a line graph: data tables, independent vs dependent variables, uniform scales, choosing increments, plotting points, best-fit lines, and a free-form grapher for lab data.">
+<style>
+:root{--ink:#1d2731;--muted:#5b6875;--paper:#f6f8fa;--card:#fff;--line:#d5dde5;--acc:#1758b8;--acc2:#e8f0fb;--ok:#17723a;--okbg:#e5f5ea;--bad:#b3261e;--badbg:#fdecea;--hl:#f2a900;--hlbg:#fff4d6;--grid:#cfe2f3;--grid5:#8fb9de}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;min-height:40px}
+button:hover:not(:disabled){border-color:var(--acc)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.pri:hover:not(:disabled){filter:brightness(1.08)}
+button.sm{min-height:32px;padding:4px 10px;font-size:14px}
+button.link{border:none;background:none;color:var(--acc);padding:2px 4px;min-height:0;text-decoration:underline}
+input[type=text],input[type=number],input:not([type]),select{border:1px solid #aab6c2;border-radius:8px;padding:7px 9px;min-height:40px;background:#fff;max-width:100%}
+input:focus,select:focus,button:focus-visible{outline:3px solid #8ab4f8;outline-offset:1px}
+h2{font-size:22px;margin:0 0 6px}
+h3{font-size:18px;margin:0 0 6px}
+p{margin:6px 0}
+.muted{color:var(--muted)}
+.hide{display:none!important}
+
+/* header */
+#top{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 64px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap;min-height:58px}
+#top .brand{font-weight:700;font-size:18px;white-space:nowrap}
+#tabs{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+#tabs button{border-radius:999px;font-weight:600;display:flex;gap:6px;align-items:center}
+#tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#tabs button.locked{color:var(--muted);background:#eef1f4}
+#tabs .st{font-size:13px;font-weight:700}
+#btnSettings{font-size:15px}
+
+/* sections */
+main{padding:12px 14px 30px}
+.sec{display:none}
+.sec.on{display:block}
+.done-banner{display:inline-block;background:var(--okbg);color:var(--ok);border:1px solid #9fd3b0;border-radius:999px;padding:3px 12px;font-weight:700;margin-bottom:8px}
+
+/* work layout */
+.work.on{display:grid;grid-template-columns:minmax(330px,430px) 1fr;gap:16px;align-items:start}
+.side{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;max-height:calc(100vh - 92px);overflow:auto}
+.gcol{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;position:sticky;top:70px}
+svg.graph{display:block;width:100%;height:calc(100vh - 250px);min-height:340px;user-select:none;-webkit-user-select:none}
+svg.graph.plotting{touch-action:none;cursor:crosshair}
+.meters{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;padding:4px 6px}
+.meter{display:flex;align-items:center;gap:6px}
+.meter .bar{width:110px;height:10px;border-radius:5px;background:#e6ebf0;overflow:hidden;border:1px solid #c8d1da}
+.meter .bar i{display:block;height:100%;background:var(--ok)}
+.meter.low .bar i{background:var(--bad)}
+.meter.low b{color:var(--bad)}
+.eqbox{margin:4px 6px 0;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fafcff;font-family:ui-monospace,Consolas,monospace;font-size:15px}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:2px 4px 6px;position:relative;min-height:44px}
+.tools label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:#fff;cursor:pointer}
+.tools input[type=checkbox]{width:20px;height:20px}
+.tools.off{opacity:.45;pointer-events:none}
+.tools .tnote{font-size:13px;color:var(--muted)}
+.pop{position:absolute;top:46px;left:4px;z-index:15;background:#fff;border:1px solid #9fb0c2;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:12px;width:min(360px,92vw)}
+.pop .row{display:flex;gap:8px;align-items:center;margin:6px 0}
+.pop .why{font-size:13px;color:var(--bad)}
+
+/* cards & feedback */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.step-dots{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.step-dots button.sd{width:36px;height:36px;min-height:0;padding:0;border-radius:50%;font-size:14px;font-weight:700;background:#e9eef3;color:var(--muted);border:2px solid transparent}
+.step-dots button.sd.cur{background:var(--acc);color:#fff}
+.step-dots button.sd.dn{background:var(--okbg);color:var(--ok)}
+.step-dots button.sd:not(:disabled):hover{border-color:var(--acc)}
+.step-dots span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:#e9eef3;color:var(--muted)}
+.step-dots span.cur{background:var(--acc);color:#fff}
+.step-dots span.dn{background:var(--okbg);color:var(--ok)}
+.q{font-weight:600;margin:8px 0}
+.fb{margin:8px 0;padding:8px 10px;border-radius:8px;display:none}
+.fb.ok{display:block;background:var(--okbg);color:var(--ok);border:1px solid #a7d8b6}
+.fb.bad{display:block;background:var(--badbg);color:var(--bad);border:1px solid #f0b4ae}
+.fb.info{display:block;background:var(--acc2);color:#123c78;border:1px solid #b8cdf0}
+.fb b.tag{display:inline-block;font-size:12px;text-transform:uppercase;letter-spacing:.03em;margin-right:4px}
+.row2{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:8px 0}
+.row2 label{display:flex;flex-direction:column;font-size:14px;gap:3px;font-weight:600}
+.row2 input{width:130px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.opts button.sel-ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:700}
+.opts button.sel-bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.helper{background:#f4f7fb;border:1px dashed #9fb3c8;border-radius:8px;padding:8px 10px;font-size:14px;margin:6px 0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.chips span{background:#fff;border:1px solid #b9c7d6;border-radius:999px;padding:1px 8px;font-size:13px}
+.why-link{font-size:14px}
+.story{background:#fffbea;border:1px solid #efd88a;border-radius:8px;padding:8px 10px;margin:6px 0}
+
+/* tables */
+table.dt{border-collapse:collapse;width:100%;font-size:15px;margin:6px 0}
+table.dt th,table.dt td{border:1px solid #c5d0db;padding:3px 8px;text-align:center}
+table.dt th{background:#eef3f8}
+table.dt td.tap{cursor:pointer}
+table.dt td.tap:hover{background:var(--hlbg)}
+table.dt tr.next td{background:var(--hlbg);font-weight:700}
+table.dt tr.pl td{color:var(--ok)}
+table.dt td.pick{background:var(--okbg);font-weight:700}
+table.dt th.tap{cursor:pointer}
+table.dt th.tap:hover{background:var(--hlbg)}
+table.dt input{width:100%;min-height:32px;padding:3px 6px;text-align:center}
+.tblwrap{max-height:340px;overflow:auto;border-radius:6px}
+.tblwrap.full{max-height:none;overflow:visible}
+table.dt.compact td,table.dt.compact th{padding:1px 8px;font-size:14px;line-height:1.35}
+#ordT td{padding:4px 6px!important;font-size:14px;line-height:1.3}
+#ordT th{padding:2px 4px;font-size:13px}
+#ordT td.hdl{font-size:16px;width:28px}
+.notebook{max-height:180px;overflow:auto;background:#fffdf3;border:1px solid #e3d9a8;border-radius:8px;padding:6px 10px;font-size:14px;font-family:"Segoe Print","Bradley Hand",cursive,system-ui}
+.notebook div{border-bottom:1px dashed #e8e0b8;padding:2px 0}
+
+/* learn */
+.learn-wrap{max-width:1180px;margin:0 auto}
+.learn-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.learn-nav button{min-width:44px;font-weight:700}
+.learn-nav button.cur{background:var(--acc);color:#fff;border-color:var(--acc)}
+.learn-nav button.dn{background:var(--okbg);color:var(--ok);border-color:#9fd3b0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+.pair figure{margin:0;border:2px solid var(--line);border-radius:10px;padding:6px;background:#fff}
+.pair figure.bad{border-color:#e9a39d}
+.pair figure.good{border-color:#93cfa6}
+.pair figcaption{font-weight:700;padding:0 4px 4px}
+.pair figure.bad figcaption{color:var(--bad)}
+.pair figure.good figcaption{color:var(--ok)}
+svg.mini{display:block;width:100%;height:auto;max-height:340px}
+.lead{font-size:17px;max-width:900px}
+.callout{background:var(--acc2);border:1px solid #b8cdf0;border-radius:10px;padding:8px 12px;margin:8px 0;max-width:900px}
+.numline{font-family:ui-monospace,Consolas,monospace;font-size:18px;letter-spacing:.5px}
+.tails{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}
+.tails div{border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff}
+.tails b{display:block;font-size:30px;color:var(--acc);line-height:1}
+.checklist label{display:flex;gap:8px;align-items:flex-start;margin:6px 0;cursor:pointer}
+.checklist input{width:22px;height:22px;flex:none;margin-top:1px}
+.game-wrap{display:grid;grid-template-columns:minmax(280px,360px) 1fr;gap:14px}
+.found{list-style:none;padding:0;margin:6px 0}
+.found li{padding:4px 0;color:var(--ok)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(20,30,40,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:14px}
+.modal[hidden]{display:none}
+.mbox{background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.ccard{border:3px solid var(--acc);border-radius:14px;padding:14px}
+.ccard h2{color:var(--acc)}
+.ccard table{border-collapse:collapse;width:100%;font-size:15px}
+.ccard td{border-bottom:1px solid #e2e8ee;padding:3px 6px}
+.ccard svg{width:100%;height:auto;max-height:260px;border:1px solid var(--line);border-radius:8px;margin-top:8px}
+
+/* free form */
+.ff-sec{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.ff-sec:first-child{border-top:none;margin-top:0;padding-top:0}
+textarea{width:100%;min-height:80px;font:14px ui-monospace,Consolas,monospace;border:1px solid #aab6c2;border-radius:8px;padding:6px}
+.ff-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ff-grid label{display:flex;flex-direction:column;font-size:14px;font-weight:600;gap:3px}
+.ff-grid input{width:100%}
+.del{color:var(--bad);border:none;background:none;min-height:0;padding:0 4px;font-size:18px}
+
+/* SVG classes */
+.gl{stroke:var(--grid);stroke-width:1}
+.gl5{stroke:var(--grid5);stroke-width:1.2}
+.ax{stroke:#1d2731;stroke-width:2.4}
+.tk{fill:#1d2731}
+.lbl{fill:#1d2731;font-weight:600}
+.ph{fill:#98a4b0;font-style:italic;font-weight:400}
+.ttl{fill:#1d2731;font-weight:700}
+.pt{fill:#1d2731;stroke:#fff;stroke-width:1}
+.pt.ok{fill:var(--ok)}
+.pt.bad{fill:var(--bad)}
+.pt.ghost{fill:none;stroke:#7d8b99;stroke-width:1.6;stroke-dasharray:3 2}
+.ln{fill:none;stroke:#1758b8;stroke-width:2.2;stroke-linejoin:round}
+.ln.bad{stroke:var(--bad)}
+.fit{fill:none;stroke:#c2185b;stroke-width:2.4}
+.barr{fill:#7fa7d9;stroke:#3f6fae}
+.hlr{fill:rgba(242,169,0,.18);stroke:var(--hl);stroke-width:2;stroke-dasharray:6 4}
+.mk-ok{fill:rgba(23,114,58,.12);stroke:var(--ok);stroke-width:3}
+.reg{fill:transparent;cursor:pointer}
+.reg:hover{fill:rgba(23,88,184,.08)}
+.guide{stroke:#c62828;stroke-width:1.8;stroke-dasharray:7 5}
+.guidet{fill:#c62828;font-weight:700}
+.chip{display:inline-flex;align-items:center;gap:6px;border:2px solid #7fa0c6;background:#eef4fb;border-radius:999px;padding:8px 14px;font-weight:700;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;min-height:44px}
+.chip.sel{background:#fff4d6;border-color:var(--hl)}
+.chip.used{opacity:.35}
+.chip.dragging{box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:grabbing}
+.slot{border:2px dashed #9fb3c8;border-radius:10px;min-height:54px;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fafcff;font-weight:700}
+.slot small{font-weight:600;color:var(--muted)}
+.slot.over{background:#fff4d6;border-color:var(--hl)}
+.slot.filled{border-style:solid;border-color:#7fa0c6;background:#eef4fb}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+#ordT tr.drow{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+button.big{font-size:18px;padding:12px 22px}
+table.dt td.hdl{width:40px;cursor:grab;touch-action:none;font-size:20px;color:#5b6875;user-select:none;-webkit-user-select:none;padding:0}
+table.dt tr.drop-above td{box-shadow:inset 0 3px 0 var(--hl)}
+table.dt tr.drop-below td{box-shadow:inset 0 -3px 0 var(--hl)}
+table.dt tr.lift td{opacity:.35}
+table.dt tr.oo td{background:#fdecea}
+.rowghost{position:fixed;pointer-events:none;z-index:60;background:#fff;border:2px solid var(--acc);border-radius:8px;padding:6px 14px;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.mv{min-height:32px;min-width:34px;padding:0 6px;font-size:13px}
+.xh line{stroke:#c2185b;stroke-width:1.3;stroke-dasharray:5 4}
+.xh circle{fill:rgba(194,24,91,.35);stroke:#c2185b;stroke-width:1.5}
+
+#printArea{display:none}
+@media (max-width:920px){
+  .work.on{grid-template-columns:1fr}
+  .gcol{position:static;order:-1}
+  svg.graph{height:58vh}
+  .side{max-height:none}
+  .pair{grid-template-columns:1fr}
+  .game-wrap{grid-template-columns:1fr}
+  .tails{grid-template-columns:repeat(3,1fr)}
+}
+@media print{
+  @page{size:landscape;margin:.35in}
+  body.printing > *:not(#printArea){display:none!important}
+  body.printing #printArea{display:block}
+  #printArea svg{width:100%;height:auto}
+}
+
+/* always-visible scrollbars (ChromeOS hides overlay scrollbars) */
+.side::-webkit-scrollbar,.tblwrap::-webkit-scrollbar,.notebook::-webkit-scrollbar{width:12px}
+.side::-webkit-scrollbar-thumb,.tblwrap::-webkit-scrollbar-thumb,.notebook::-webkit-scrollbar-thumb{background:#aebbc8;border-radius:6px;border:3px solid #fff}
+.side::-webkit-scrollbar-track,.tblwrap::-webkit-scrollbar-track,.notebook::-webkit-scrollbar-track{background:#eef2f6;border-radius:6px}
+
+.bigq{font-size:18px;font-weight:700;background:#fff8e1;border:2px solid var(--hl);border-radius:12px;padding:8px 12px;margin:6px 0;line-height:1.3}
+.bigq .kw{color:#b3261e;text-decoration:underline}
+.bigq .sub{font-size:14px;font-weight:500;color:#4a5560;margin-top:4px}
+.bigq .qn{color:var(--acc)}
+.bigq .ans{display:flex;align-items:center;gap:8px;font-size:16px;margin-top:6px;flex-wrap:wrap}
+.bigq .chips{margin-top:2px}
+.bigq .ans input{width:110px;font-size:18px;font-weight:700}
+.bigq .chips span{font-size:14px;font-weight:600}
+ol.tasks{margin:4px 0 8px;padding-left:22px;font-size:14px;color:var(--muted)}
+ol.tasks li.cur{color:var(--ink);font-weight:700}
+ol.tasks li.dn{color:var(--ok)}
+table.dt td.hlcol,table.dt th.hlcol{background:#fff4d6}
+table.dt td.hlcol.tap:hover{background:#ffe7a3}
+
+/* ===== Question / answer boxes (all parts) ===== */
+.ask{border:3px solid #f2a900;background:#fffaeb;border-radius:14px;padding:0 0 10px;margin:10px 0;box-shadow:0 2px 0 #e9c46a}
+.ask-tag{background:#f2a900;color:#3d2a00;font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;padding:4px 12px;border-radius:10px 10px 0 0}
+.ask-q{font-size:19px;font-weight:800;line-height:1.3;padding:8px 12px 2px;color:#1d2731}
+.ask-q .kw{color:#b3261e;text-decoration:underline}
+.ask-sub{font-size:14px;color:#4a5560;padding:2px 12px}
+.ask-a{margin:8px 10px 0;background:#fff;border:2px dashed #c9a227;border-radius:10px;padding:6px 10px 10px}
+.ask-a.on-graph{border-color:#1758b8;background:#eef4fb}
+.ask-al{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#8a6d00;margin-bottom:4px}
+.ask-a.on-graph .ask-al{color:#1758b8;font-size:14px}
+.ask .btns{padding:0 10px}
+.ask > div[id]{padding:0 10px}
+.ask .ans{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;margin:4px 0;flex-wrap:wrap}
+.ask .ans input{width:120px;font-size:18px;font-weight:700}
+.ask .chips span{font-size:14px;font-weight:600}
+.prev-ok{background:var(--okbg);color:var(--ok);border:1px solid #a7d8b6;border-radius:8px;padding:5px 10px;font-size:14px;margin:6px 0}
+.story,.labstory{background:#f1f4f8;border:1px solid #cfd8e2;border-left:4px solid #8a9aab;border-radius:8px;padding:6px 10px;margin:6px 0;font-size:15px}
+.story b.lt{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#5b6875}
+
+.ask-q .why-link{font-size:14px;font-weight:500}
+.ask-data{padding:4px 10px 0}
+.ask-data .story{margin:2px 0}
+.story.small{font-size:13px;padding:4px 8px}
+.gwrap{display:flex;gap:10px;align-items:flex-start}
+.gwrap svg.graph{flex:1;min-width:0}
+.gdata{flex:none;width:230px;max-height:calc(100vh - 250px);min-height:300px;overflow:auto;border:2px solid #8a9aab;border-radius:10px;background:#fff}
+.gdata .gdh{background:#f1f4f8;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#5b6875;padding:4px 8px;border-bottom:1px solid #cfd8e2;position:sticky;top:0}
+.gdata table.dt{margin:0}
+.gdata table.dt th{position:sticky;top:24px}
+.gdata.tapmode{border-color:#1758b8;box-shadow:0 0 0 3px #b8cdf0}
+@media (max-width:920px){ .gwrap{flex-direction:column} .gdata{width:100%;max-height:230px;min-height:0} }
+.gdata::-webkit-scrollbar{width:12px}
+.gdata::-webkit-scrollbar-thumb{background:#aebbc8;border-radius:6px;border:3px solid #fff}
+.gdata::-webkit-scrollbar-track{background:#eef2f6}
+.incnote{display:block;font-size:14px;font-weight:600;color:#0f5229;background:#e5f5ea;border-radius:8px;padding:0 8px;margin-top:4px}
+.incnote:empty{display:none}
+.incnote.warn{color:#8a4b00;background:#fff1d6}
+
+#tabs .pct{font-size:12px;font-weight:800;background:#e9eef3;color:#4a5560;border-radius:999px;padding:1px 7px}
+#tabs button.on .pct{background:rgba(255,255,255,.25);color:#fff}
+#tabs .pct.full{background:#17723a;color:#fff;font-size:13px}
+#tabs button.tab-full:not(.on){border-color:#17723a;background:#e5f5ea;color:#0f5229}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2731;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;z-index:70;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .5s}
+.toast.out{opacity:0}
+.cardmsg{font-size:14px;margin-top:6px;color:#0f5229}
+
+</style>
+</head>
+<body>
+<header id="top">
+  <div class="brand">Graphing Like a Scientist</div>
+  <nav id="tabs" aria-label="Parts"></nav>
+  <button id="btnSettings" title="Settings">⚙ Settings</button>
+</header>
+<main>
+  <section id="sec-learn" class="sec"></section>
+  <section id="sec-guided" class="sec work"><div class="side"></div><div class="gcol"></div></section>
+  <section id="sec-you" class="sec work"><div class="side"></div><div class="gcol"></div></section>
+  <section id="sec-free" class="sec work"><div class="side"></div><div class="gcol"></div></section>
+</main>
+<div id="modal" class="modal" hidden><div class="mbox" role="dialog" aria-modal="true"></div></div>
+<div id="printArea"></div>
+
+<script>
+(function(){
+'use strict';
+/* ===== Scale grading (shared) ===== */
+var EPS = 1e-9;
+function isFriendly(inc){
+  if(!(inc>0) || !isFinite(inc)) return false;
+  var p = Math.floor(Math.log10(inc)+1e-12), m = inc/Math.pow(10,p);
+  return [1,1.5,2,2.5,3,4,5,10].some(function(f){return Math.abs(m-f)<1e-6;});
+}
+/* 1.5, 2.5, 0.5…: not a whole number, but 2× is — count by 2× and label every 2nd line */
+function halfStep(inc){
+  if(!(inc>0)) return false;
+  var notWhole=Math.abs(inc-Math.round(inc))>1e-9; if(!notWhole) return false;
+  if(Math.abs(2*inc-Math.round(2*inc))<1e-9) return true;            // 0.5, 1.5, 2.5 → count by 1, 3, 5
+  var p=Math.floor(Math.log10(inc)+1e-12), m=inc/Math.pow(10,p);
+  return Math.abs(m-1.5)<1e-6 || Math.abs(m-2.5)<1e-6;                 // 0.15, 0.25 → count by 0.3, 0.5
+}
+function genList(lo, hi){ var out=[], p=Math.floor(Math.log10(lo))-1;
+  for(; p<=Math.ceil(Math.log10(hi))+1; p++) [1,1.5,2,2.5,3,4,5].forEach(function(f){ var v=+(f*Math.pow(10,p)).toPrecision(6); if(v>=lo*0.999&&v<=hi*1.001) out.push(v); });
+  return out.sort(function(a,b){return a-b;}); }
+/* increments (generous list) that fit the data and fill ≥ 50%, smallest first */
+function goodIncs(vals, boxes){
+  var r=rangeOf(vals), range=r.max-r.min, base=range>0?range/boxes:Math.max(Math.abs(r.max),1)/boxes, out=[];
+  genList(base*0.5, base*4).forEach(function(inc){ var st=Math.floor(r.min/inc+1e-9)*inc; if(st+boxes*inc>=r.max-EPS && fillOf(vals,inc,boxes)>=0.5-1e-9) out.push(inc); });
+  return out;
+}
+function incHint(vals, boxes){ var g=goodIncs(vals,boxes).slice(0,3); return g.length ? ' Increments that work here: <b>'+g.map(fmtNum).join('</b>, <b>')+'</b>.' : ''; }
+function isMultiple(start, inc){
+  var q = start/inc; return Math.abs(q-Math.round(q)) < 1e-6;
+}
+function friendlyList(lo, hi){ // friendly increments between lo and hi
+  var out=[], p=Math.floor(Math.log10(lo))-1;
+  for(; p<=Math.ceil(Math.log10(hi))+1; p++){
+    [1,2,2.5,5].forEach(function(f){var v=+(f*Math.pow(10,p)).toPrecision(6); if(v>=lo*0.999 && v<=hi*1.001) out.push(v);});
+  }
+  return out.sort(function(a,b){return a-b;});
+}
+function rangeOf(vals){ var mn=Infinity,mx=-Infinity; vals.forEach(function(v){if(v<mn)mn=v;if(v>mx)mx=v;}); return {min:mn,max:mx}; }
+function fillOf(vals, inc, boxes){ var r=rangeOf(vals); var span=inc*boxes; if(r.max-r.min<EPS) return 1; return (r.max-r.min)/span; }
+/* Best (smallest) friendly increment that fits all data; returns {inc,start,fill} */
+function bestScale(vals, boxes){
+  var r=rangeOf(vals), range=r.max-r.min;
+  var base = range>0 ? range/boxes : Math.max(Math.abs(r.max),1)/boxes;
+  var cands = friendlyList(base*0.5, base*40+1e-9);
+  for(var i=0;i<cands.length;i++){
+    var inc=cands[i], start=Math.floor(r.min/inc+1e-9)*inc; start=+start.toPrecision(10);
+    if(start + boxes*inc >= r.max - EPS){ return {inc:inc,start:start,fill:fillOf(vals,inc,boxes)}; }
+  }
+  return null;
+}
+/* Check one axis. Returns {ok, code, msg, fill}. code = mistake number or 'start-high' / 'nan' */
+function checkAxis(vals, start, inc, boxes, unit){
+  unit = unit ? ' '+unit : '';
+  var r=rangeOf(vals);
+  if(!isFinite(start) || start===null || isNaN(start)) return {ok:false, code:'nan', msg:'Type a number for where the axis starts.'};
+  if(!isFinite(inc) || inc===null || isNaN(inc) || inc<=0) return {ok:false, code:'nan', msg:'Type a positive number for what the axis goes up by.'};
+  if(!isFriendly(inc)) return {ok:false, code:11, msg:'Counting by '+fmtNum(inc)+' is hard to plot. Use a friendly number like 1, 2, 5, 10, 20… (1.5, 2.5, 3 and 4 are OK too).'+incHint(vals, boxes)};
+  if(!isMultiple(start, inc)){
+    var down = Math.floor(start/inc+1e-9)*inc;
+    return {ok:false, code:12, msg:'Your start isn\'t a number you count by. Round your start DOWN to a multiple of '+fmtNum(inc)+': '+fmtNum(start)+' → '+fmtNum(down)+'.'};
+  }
+  if(start > r.min + EPS) return {ok:false, code:'start-high', msg:'Your start ('+fmtNum(start)+unit+') is bigger than your smallest value ('+fmtNum(r.min)+unit+'), so some points would fall off the graph. Start at or just below '+fmtNum(r.min)+'.'};
+  var end = start + boxes*inc;
+  if(end < r.max - EPS){
+    if(Math.abs(start)<EPS && r.min>0 && r.min > (r.max-r.min)*0.3)
+      return {ok:false, code:3, msg:'Starting at 0 wastes space and your data runs off the top. Your smallest value is '+fmtNum(r.min)+unit+' — start at a round number just below it.'+incHint(vals, boxes)};
+    return {ok:false, code:5, msg:'Your axis ends at '+fmtNum(end)+unit+' but your largest value is '+fmtNum(r.max)+unit+', so points run off the grid. Use a bigger increment'+(r.min-start>inc?' or start closer to your smallest value ('+fmtNum(r.min)+')':'')+'.'+incHint(vals, boxes)};
+  }
+  var f = fillOf(vals, inc, boxes);
+  var need = 0.5;
+  if(!goodIncs(vals, boxes).length){ var best=bestScale(vals, boxes); if(best) need = Math.min(0.5, best.fill - 1e-6); }
+  if(f < need){
+    var pct=Math.round(f*100);
+    var base='Your points only use '+pct+'% of the graph — they\'re scrunched to one side and you can\'t see the trend. ';
+    if(Math.abs(start)<EPS && r.min>0 && (r.min-start) > (r.max-r.min)*0.3)
+      return {ok:false, code:3, fill:f, msg:base+'You started at 0, but your smallest value is '+fmtNum(r.min)+unit+'. You don\'t have to start at 0 — start just below your smallest value.'+incHint(vals, boxes)};
+    return {ok:false, code:4, fill:f, msg:base+'Your increment is too big — try a smaller one.'+incHint(vals, boxes)};
+  }
+  return {ok:true, fill:f, msg:'Nice — your data fills '+Math.round(f*100)+'% of the axis.'+(halfStep(inc)?' (Count by '+fmtNum(2*inc)+' and label every 2nd line.)':'')};
+}
+function fmtNum(v){
+  if(v===null||v===undefined||isNaN(v)) return '';
+  var a=Math.abs(v);
+  if(a!==0 && (a>=1e7 || a<1e-4)) return v.toExponential(2);
+  var s = (+v.toPrecision(10)).toString();
+  return s;
+}
+
+var DATA = {"guided":{"id":"guided","name":"Heating Water","xq":"Time","xu":"min","yq":"Temperature","yu":"°F","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"y":[75,84,94,104,114,124,133,142,151,160,168,176,184,192,199,205,209,211,212,212],"line":"dot"},"sets":[{"id":"cool","name":"Cooling Water","story":"A beaker of hot water cools on the lab bench. You read the thermometer every 2 minutes.","xq":"Time","xu":"min","yq":"Temperature","yu":"°C","x":[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38],"y":[85.1,79.5,74.7,70.1,65.6,62,58.4,55.4,52.7,49.8,47.2,45.4,43.3,41.2,39.5,38.1,36.8,35.5,34,33.2],"line":"dot","why":"Each point is a real change over time, so connect the dots."},{"id":"heat","name":"Heating Curve of Ice","story":"Ice starting at −10 °C is heated on a hot plate until the water boils. You read the temperature every 45 seconds.","xq":"Time","xu":"s","yq":"Temperature","yu":"°C","x":[0,45,90,135,180,225,270,315,360,405,450,495,540,585,630,675,720,765,810,855],"y":[-10,-5,0,0.1,-0.1,0,-0.1,-0.1,9.6,19.7,30.1,39.9,49.4,59.5,70,79.7,89.9,99.5,100,100],"line":"dot","why":"A heating curve has flat plateaus where the phase changes — connect the dots to show each change."},{"id":"alka","name":"Alka-Seltzer Reaction","story":"An Alka-Seltzer tablet fizzes in water on a balance. CO₂ escapes, so the mass drops. You record the mass every 10 seconds.","xq":"Time","xu":"s","yq":"Mass","yu":"g","x":[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190],"y":[152.4,152.18,152,151.86,151.75,151.66,151.59,151.53,151.48,151.45,151.42,151.4,151.38,151.36,151.35,151.34,151.33,151.33,151.32,151.32],"line":"dot","why":"The mass changes over time as gas escapes — connect the dots."},{"id":"h2","name":"Hydrogen Gas Collected","story":"Magnesium ribbon reacts with hydrochloric acid at a steady rate. You read the gas volume in a syringe every 10 seconds. Readings are a little jumpy.","xq":"Time","xu":"s","yq":"Volume","yu":"mL","x":[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190],"y":[0,3.6,3.7,8.6,9.6,13.5,13.7,16.1,18.2,21.7,24.4,27.3,30.5,30.7,34.9,38,38.6,42.2,43.2,46.6],"line":"lin","why":"The points scatter around a straight-line pattern (steady rate), so a linear best-fit line shows the trend."},{"id":"cold","name":"NH₄NO₃ Cold Pack","story":"Ammonium nitrate dissolves in water inside a cold pack (endothermic). You read the temperature every 10 seconds.","xq":"Time","xu":"s","yq":"Temperature","yu":"°C","x":[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190],"y":[23,18.8,15.4,13.3,11.3,10.1,8.9,8.2,7.6,7.2,6.8,6.7,6.7,6.9,7.2,7.4,7.6,7.8,7.8,8.1],"line":"dot","why":"The temperature changes over time — connect the dots."},{"id":"cv","name":"Crystal Violet Fading","story":"Purple crystal violet reacts with NaOH and fades. A colorimeter measures absorbance every 2 minutes.","xq":"Time","xu":"min","yq":"Absorbance","yu":"","x":[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38],"y":[0.8,0.69,0.594,0.518,0.445,0.388,0.336,0.285,0.249,0.218,0.183,0.164,0.136,0.122,0.105,0.087,0.077,0.064,0.059,0.049],"line":"dot","why":"The color fades over time — connect the dots."},{"id":"acetone","name":"Acetone Evaporation","story":"A watch glass of acetone sits on a balance and slowly evaporates. You start recording at 5 minutes, then every 5 minutes. Readings are a little jumpy.","xq":"Time","xu":"min","yq":"Mass","yu":"g","x":[5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[2.5,2.488,2.479,2.467,2.459,2.448,2.437,2.431,2.418,2.407,2.401,2.39,2.382,2.372,2.359,2.351,2.341,2.33,2.319,2.313],"line":"lin","why":"The points scatter around a straight-line pattern (steady evaporation), so a linear best-fit line shows the trend."},{"id":"geiger","name":"Radioactive Decay","story":"A Geiger counter (or cloud chamber) counts flashes from a short half-life source. You record counts per minute every minute.","xq":"Time","xu":"min","yq":"Count rate","yu":"counts/min","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"y":[4800,4200,3540,3057,2651,2249,1966,1779,1500,1329,1093,945,836,711,618,536,463,406,345,297],"line":"exp","why":"Decay is a real change over time (dot-to-dot works) and it follows an exponential pattern (exponential best-fit works too)."},{"id":"co2","name":"CO₂ from Yeast","story":"Yeast and sugar water sit in a sealed jar with a CO₂ sensor. You record the CO₂ level every hour.","xq":"Time","xu":"h","yq":"CO₂ concentration","yu":"ppm","x":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"y":[420,494,530,660,837,1093,1455,1914,2500,3158,3819,4420,4873,5230,5522,5669,5777,5859,5893,5955],"line":"dot","why":"The CO₂ level changes over time — connect the dots."},{"id":"press","name":"Pressure in a Sealed Flask","story":"Magnesium reacts with acid inside a sealed flask with a pressure sensor. You record the pressure every 10 seconds.","xq":"Time","xu":"s","yq":"Pressure","yu":"Pa","x":[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190],"y":[101300,103910,106240,108130,109830,111260,112400,113290,114060,114930,115450,116030,116470,116730,116960,117330,117600,117640,117840,118000],"line":"dot","why":"The pressure changes over time — connect the dots."}]};
+var Q = new URLSearchParams(location.search);
+var UNLOCK = Q.get('unlock')==='all';
+var TEACHER = UNLOCK || Q.has('teacher');
+var KEY = 'ctnet-graphing-v2';
+function defaults(){ return {tab:'learn', name:'', settings:{bx:20,by:20}, mistakes:{}, learn:{stop:0, passed:[], game:{g:0,found:[[],[],[]]}, gameDone:false, done:false}, guided:newGuided(), you:null, youDone:false, free:newFree()}; }
+var RESUMED=false;
+function load(){ try{ var s=JSON.parse(localStorage.getItem(KEY)); if(s && s.settings){ RESUMED=true; var d=defaults(); for(var k in d) if(s[k]===undefined) s[k]=d[k]; return s; } }catch(e){} return defaults(); }
+function flush(){ try{ localStorage.setItem(KEY, JSON.stringify(ST)); }catch(e){} }
+window.addEventListener('pagehide', flush); document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden') flush(); });
+var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ try{ localStorage.setItem(KEY, JSON.stringify(ST)); }catch(e){} try{ updateTabs(); }catch(e){} },150); }
+
+var ST;
+/* ===== Utilities ===== */
+function $(s, r){ return (r||document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function num(v){ if(v===''||v===null||v===undefined) return NaN; return parseFloat(String(v).replace(/,/g,'')); }
+function axisLabel(q,u){ return u ? q+' ('+u+')' : q; }
+var UID = 0;
+var MISTAKES = {
+  1:'Data values used as tick labels',
+  2:'Uneven increments / skipped numbers',
+  3:'Started at 0 when data is far from 0',
+  4:'Increment too big (scrunched)',
+  5:'Increment too small (runs off the grid)',
+  6:'Axes swapped (time on y)',
+  7:'Missing axis label or units',
+  8:'Title backwards',
+  9:'Bar graph used for time data',
+  10:'Points connected in table order',
+  11:'Increment not a friendly number',
+  12:'Start not a multiple of the increment'
+};
+function logMistake(code){
+  if(typeof code!=='number') return;
+  ST.mistakes[code] = (ST.mistakes[code]||0)+1; save();
+}
+function fbHTML(kind, msg, code){
+  var tag = (typeof code==='number') ? '<b class="tag">Mistake #'+code+': '+esc(MISTAKES[code])+'</b><br>' : '';
+  return '<div class="fb '+kind+'">'+(kind==='ok'?'✓ ':kind==='bad'?'✗ ':'')+tag+msg+'</div>';
+}
+function fmtTick(v, inc){
+  var d = 0, s = String(+inc.toPrecision(8));
+  if(s.indexOf('e-')>0) d = parseInt(s.split('e-')[1],10)+2;
+  else if(s.indexOf('.')>=0) d = s.split('.')[1].length;
+  var r = +v.toFixed(Math.min(d,12));
+  if(Math.abs(r) < Math.abs(inc)*1e-6) r = 0;
+  if(Math.abs(r) >= 10000) return r.toLocaleString('en-US');
+  return String(r);
+}
+
+/* ===== Graph geometry & markup ===== */
+var BIG = {W:640,H:560,ml:86,mr:24,mt:46,mb:72,fs:13,pr:5.5};
+var MINI = {W:420,H:340,ml:62,mr:14,mt:34,mb:54,fs:12,pr:4.5};
+function geom(c){
+  var b = c.size==='mini' ? MINI : BIG, g = {};
+  for(var k in b) g[k]=b[k];
+  g.pw = g.W-g.ml-g.mr; g.ph = g.H-g.mt-g.mb;
+  g.bx = c.bx||20; g.by = c.by||20;
+  g.bw = g.pw/g.bx; g.bh = g.ph/g.by;
+  return g;
+}
+function axisSet(a){ return a && isFinite(a.start) && isFinite(a.inc) && a.inc>0; }
+function mapper(c, g){
+  var X=c.x||{}, Y=c.y||{};
+  return {
+    px: function(v){ return g.ml + (v-X.start)/X.inc*g.bw; },
+    py: function(v){ return g.mt + g.ph - (v-Y.start)/Y.inc*g.bh; },
+    dx: function(p){ return X.start + (p-g.ml)/g.bw*X.inc; },
+    dy: function(p){ return Y.start + (g.mt+g.ph-p)/g.bh*Y.inc; }
+  };
+}
+function regionBox(name, g){
+  switch(name){
+    case 'title': return [g.ml, 2, g.pw, g.mt-6];
+    case 'plot': return [g.ml, g.mt, g.pw, g.ph];
+    case 'xticks': return [g.ml-14, g.mt+g.ph+3, g.pw+28, g.mb*0.42];
+    case 'xlabel': return [g.ml, g.mt+g.ph+g.mb*0.45, g.pw, g.mb*0.53];
+    case 'yticks': return [g.ml*0.36, g.mt-8, g.ml*0.62, g.ph+16];
+    case 'ylabel': return [1, g.mt, g.ml*0.34, g.ph];
+  }
+  return [0,0,0,0];
+}
+function graphMarkup(c, g){
+  var o=[], id='clip'+(++UID), X=c.x||{}, Y=c.y||{}, fs=g.fs;
+  var xs = axisSet(X) || !!c.cats, ys = axisSet(Y), m = mapper(c,g);
+  o.push('<defs><clipPath id="'+id+'"><rect x="'+g.ml+'" y="'+g.mt+'" width="'+g.pw+'" height="'+g.ph+'"/></clipPath></defs>');
+  o.push('<defs><clipPath id="'+id+'p"><rect x="'+(g.ml-g.pr-2)+'" y="'+(g.mt-g.pr-2)+'" width="'+(g.pw+2*g.pr+4)+'" height="'+(g.ph+2*g.pr+4)+'"/></clipPath></defs>');
+  o.push('<rect x="'+g.ml+'" y="'+g.mt+'" width="'+g.pw+'" height="'+g.ph+'" fill="#fff"/>');
+  var i, xx, yy;
+  if(!c.cats){
+    for(i=0;i<=g.bx;i++){ xx=g.ml+i*g.bw; o.push('<line class="'+(i%5===0?'gl5':'gl')+'" x1="'+xx+'" y1="'+g.mt+'" x2="'+xx+'" y2="'+(g.mt+g.ph)+'"/>'); }
+  }
+  for(i=0;i<=g.by;i++){ yy=g.mt+g.ph-i*g.bh; o.push('<line class="'+(i%5===0?'gl5':'gl')+'" x1="'+g.ml+'" y1="'+yy+'" x2="'+(g.ml+g.pw)+'" y2="'+yy+'"/>'); }
+  if(c.hl) [].concat(c.hl).forEach(function(r){ var b=regionBox(r,g); o.push('<rect class="hlr" x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+b[3]+'" rx="6"/>'); });
+  // x tick labels
+  var xl = [];
+  if(c.cats){
+    var sw = g.pw/c.cats.length;
+    c.cats.forEach(function(t,k){ xl.push({x:g.ml+(k+.5)*sw, t:String(t)}); });
+  } else if(c.xticks){
+    c.xticks.forEach(function(t,k){ if(t!==''&&t!=null) xl.push({x:g.ml+k*g.bw, t:String(t)}); });
+  } else if(xs){
+    for(i=0;i<=g.bx;i++) xl.push({x:g.ml+i*g.bw, t:fmtTick(X.start+i*X.inc, X.inc), i:i, v:X.start+i*X.inc});
+  }
+  var maxc = xl.reduce(function(a,b){ return Math.max(a,b.t.length); },0);
+  var step = 1, slot = c.cats ? g.pw/c.cats.length : g.bw;
+  var xhalf = !c.xticks && !c.cats && xs && halfStep(X.inc);
+  if(!c.xticks && !c.cats){ while(maxc*fs*0.6 > slot*(xhalf?2:1)*step*0.92 && step<10) step = step===1?2:step===2?5:10; }
+  var tfs = fs;
+  if(c.cats && maxc*fs*0.6 > slot*0.95) tfs = Math.max(9, slot*0.95/(maxc*0.6));
+  xl.forEach(function(L,k){
+    if(xhalf){ if(!isMultiple(L.v, 2*X.inc*step)) return; }
+    else if(L.i!==undefined && L.i%step!==0) return;
+    o.push('<text class="tk" x="'+L.x+'" y="'+(g.mt+g.ph+fs+6)+'" font-size="'+tfs+'" text-anchor="middle">'+esc(L.t)+'</text>');
+    if(!c.cats) o.push('<line class="ax" style="stroke-width:1.4" x1="'+L.x+'" y1="'+(g.mt+g.ph)+'" x2="'+L.x+'" y2="'+(g.mt+g.ph+4)+'"/>');
+  });
+  // y tick labels
+  var yl=[];
+  if(c.yticks){ c.yticks.forEach(function(t,k){ if(t!==''&&t!=null) yl.push({y:g.mt+g.ph-k*g.bh, t:String(t)}); }); }
+  else if(ys){ for(i=0;i<=g.by;i++) yl.push({y:g.mt+g.ph-i*g.bh, t:fmtTick(Y.start+i*Y.inc, Y.inc), i:i, v:Y.start+i*Y.inc}); }
+  var yhalf = !c.yticks && ys && halfStep(Y.inc);
+  var ystep = 1; while(fs*1.15 > g.bh*(yhalf?2:1)*ystep && ystep<10) ystep = ystep===1?2:ystep===2?5:10;
+  var ymaxc = yl.reduce(function(a,b){ return Math.max(a,b.t.length); },0);
+  var yfs = Math.min(fs, (g.ml*0.6)/(Math.max(ymaxc,1)*0.6));
+  yl.forEach(function(L){
+    if(yhalf){ if(!isMultiple(L.v, 2*Y.inc*ystep)) return; }
+    else if(L.i!==undefined && L.i%ystep!==0) return;
+    o.push('<text class="tk" x="'+(g.ml-7)+'" y="'+(L.y+yfs*0.36)+'" font-size="'+yfs+'" text-anchor="end">'+esc(L.t)+'</text>');
+    o.push('<line class="ax" style="stroke-width:1.4" x1="'+(g.ml-4)+'" y1="'+L.y+'" x2="'+g.ml+'" y2="'+L.y+'"/>');
+  });
+  // axes
+  o.push('<line class="ax" x1="'+g.ml+'" y1="'+(g.mt+g.ph)+'" x2="'+(g.ml+g.pw)+'" y2="'+(g.mt+g.ph)+'"/>');
+  o.push('<line class="ax" x1="'+g.ml+'" y1="'+g.mt+'" x2="'+g.ml+'" y2="'+(g.mt+g.ph)+'"/>');
+  // axis titles & title
+  var xt = c.xlabel, yt = c.ylabel, tt = c.title;
+  o.push('<text class="'+(xt?'lbl':'lbl ph')+'" x="'+(g.ml+g.pw/2)+'" y="'+(g.H-12)+'" font-size="'+(fs+2)+'" text-anchor="middle">'+esc(xt||(c.noPh?'':'x-axis label'))+'</text>');
+  o.push('<text class="'+(yt?'lbl':'lbl ph')+'" transform="translate('+(fs+5)+','+(g.mt+g.ph/2)+') rotate(-90)" font-size="'+(fs+2)+'" text-anchor="middle">'+esc(yt||(c.noPh?'':'y-axis label'))+'</text>');
+  o.push('<text class="'+(tt?'ttl':'ttl ph')+'" x="'+(g.ml+g.pw/2)+'" y="'+(g.mt-14)+'" font-size="'+(fs+4)+'" text-anchor="middle">'+esc(tt||(c.noPh?'':'Title'))+'</text>');
+  // data layers
+  var pts = c.pts||[];
+  var canX = function(p){ return c.cats ? true : xs; };
+  if(pts.length && (ys && (xs||c.cats))){
+    var P = pts.map(function(p,k){
+      var x = c.cats ? g.ml+(p.ci+.5)*(g.pw/c.cats.length) : (p.px!==undefined? p.px : m.px(p.x));
+      return {x:x, y:(p.py!==undefined?p.py:m.py(p.y)), s:p.s, k:k, dx:p.x};
+    });
+    if(c.bars){
+      var bw2 = c.cats ? (g.pw/c.cats.length)*0.6 : Math.max(4, Math.min(g.bw*0.7, g.pw/Math.max(pts.length,1)*0.7));
+      P.forEach(function(p){
+        var top=Math.max(g.mt, Math.min(p.y, g.mt+g.ph));
+        o.push('<rect class="barr" clip-path="url(#'+id+')" x="'+(p.x-bw2/2)+'" y="'+top+'" width="'+bw2+'" height="'+(g.mt+g.ph-top)+'"/>');
+      });
+    }
+    if(c.connect){
+      var Q = P.filter(function(p){ return p.s!=='bad' && p.s!=='ghost'; });
+      if(c.connectOrder!=='table') Q = Q.slice().sort(function(a,b){ return a.x-b.x; });
+      if(Q.length>1) o.push('<polyline class="ln'+(c.connectOrder==='table'?' bad':'')+'" clip-path="url(#'+id+')" points="'+Q.map(function(p){return p.x.toFixed(1)+','+p.y.toFixed(1);}).join(' ')+'"/>');
+    }
+    if(c.fitPts && c.fitPts.length>1){
+      var d='', pen=false;
+      c.fitPts.forEach(function(q){
+        if(q===null || !isFinite(q[1])){ pen=false; return; }
+        var X1=m.px(q[0]), Y1=m.py(q[1]);
+        if(Math.abs(Y1)>1e5){ pen=false; return; }
+        d += (pen?'L':'M')+X1.toFixed(1)+','+Y1.toFixed(1); pen=true;
+      });
+      o.push('<path class="fit" clip-path="url(#'+id+')" d="'+d+'"/>');
+    }
+    if(!c.bars || c.dotsWithBars){
+      P.forEach(function(p){
+        o.push('<circle class="pt '+(p.s||'')+'" clip-path="url(#'+id+'p)" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+g.pr+'"/>');
+        if(c.valueLabels) o.push('<text x="'+(p.x+6)+'" y="'+(p.y-7)+'" font-size="'+(fs-2)+'" fill="#5b6875">('+esc(p.dx)+', '+esc(pts[p.k].y)+')</text>');
+      });
+    }
+  }
+  if(c.guides && xs && ys){
+    c.guides.forEach(function(G){
+      if(G.x!==undefined){ var gx=m.px(G.x); o.push('<line class="guide" x1="'+gx+'" y1="'+g.mt+'" x2="'+gx+'" y2="'+(g.mt+g.ph)+'"/><text class="guidet" x="'+(gx+4)+'" y="'+(g.mt+fs+2)+'" font-size="'+fs+'">x = '+esc(fmtNum(G.x))+'</text>'); }
+      if(G.y!==undefined){ var gy=m.py(G.y); o.push('<line class="guide" x1="'+g.ml+'" y1="'+gy+'" x2="'+(g.ml+g.pw)+'" y2="'+gy+'"/><text class="guidet" x="'+(g.ml+g.pw-4)+'" y="'+(gy-5)+'" text-anchor="end" font-size="'+fs+'">y = '+esc(fmtNum(G.y))+'</text>'); }
+    });
+  }
+  if(c.marks) c.marks.forEach(function(r){ var b=regionBox(r,g); o.push('<rect class="mk-ok" x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+b[3]+'" rx="8"/>'); });
+  if(c.callouts) c.callouts.forEach(function(co){ o.push(calloutSVG(co, g)); });
+  if(c.regions) ['plot','title','xlabel','ylabel','xticks','yticks'].forEach(function(r){ var b=regionBox(r,g); o.push('<rect class="reg" data-r="'+r+'" x="'+b[0]+'" y="'+b[1]+'" width="'+b[2]+'" height="'+b[3]+'"/>'); });
+  o.push('<g class="xh"></g>');
+  return o.join('');
+}
+/* Green explanation box placed next to the part of the graph that is wrong */
+function calloutSVG(co, g){
+  var w = co.pos==='left'||co.pos==='right' ? 250 : 330, fs=13, per=Math.floor((w-16)/(fs*0.56));
+  var words=String(co.text).split(' '), lines=[], cur='';
+  words.forEach(function(wd){ if((cur+' '+wd).trim().length>per){ lines.push(cur.trim()); cur=wd; } else cur+=' '+wd; });
+  if(cur.trim()) lines.push(cur.trim());
+  var h = lines.length*(fs+4)+14, x, y;
+  if(co.pos==='top'){ x=g.ml+g.pw/2-w/2; y=g.mt+8; }
+  else if(co.pos==='bottom'){ x=g.ml+g.pw/2-w/2; y=g.mt+g.ph-h-10; }
+  else if(co.pos==='left'){ x=g.ml+12; y=g.mt+g.ph*0.30; }
+  else { x=g.ml+g.pw-w-12; y=g.mt+12; }
+  var tgt = {title:[g.ml+g.pw/2, g.mt-18], xlabel:[g.ml+g.pw/2, g.H-18], xticks:[g.ml+g.pw/2, g.mt+g.ph+12], ylabel:[16, g.mt+g.ph/2], yticks:[g.ml-24, g.mt+g.ph/2]}[co.to];
+  var o='';
+  if(tgt){
+    var sx = Math.max(x, Math.min(x+w, tgt[0])), sy = tgt[1] < y ? y : (tgt[1] > y+h ? y+h : y+h/2);
+    if(co.pos==='left'){ sx=x; sy=y+h/2; }
+    o+='<line x1="'+sx+'" y1="'+sy+'" x2="'+tgt[0]+'" y2="'+tgt[1]+'" stroke="#17723a" stroke-width="2.5"/><circle cx="'+tgt[0]+'" cy="'+tgt[1]+'" r="4" fill="#17723a"/>';
+  }
+  o+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="#f2fbf4" fill-opacity="0.97" stroke="#17723a" stroke-width="2"/>';
+  lines.forEach(function(L,i){ o+='<text x="'+(x+8)+'" y="'+(y+10+fs+i*(fs+4))+'" font-size="'+fs+'" fill="#0f5229" font-weight="'+(i===0?700:500)+'">'+(i===0?'✓ ':'')+esc(L)+'</text>'; });
+  return o;
+}
+function drawGraph(svg, c){
+  var g = geom(c);
+  svg.setAttribute('viewBox','0 0 '+g.W+' '+g.H);
+  svg.innerHTML = graphMarkup(c, g);
+  svg._g = g; svg._c = c;
+}
+function svgPoint(svg, e){
+  var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+  var ctm = svg.getScreenCTM(); if(!ctm) return {x:0,y:0};
+  return p.matrixTransform(ctm.inverse());
+}
+
+/* ===== Plotting (tap to place, drag before release to adjust) ===== */
+function enablePlotting(svg, opts){
+  // opts.active() -> bool ; opts.place(dataX, dataY)
+  var drag = null;
+  function inside(p){ var g=svg._g; return g && p.x>=g.ml-8 && p.x<=g.ml+g.pw+8 && p.y>=g.mt-8 && p.y<=g.mt+g.ph+8; }
+  function clampP(p){ var g=svg._g; return {x:Math.max(g.ml,Math.min(g.ml+g.pw,p.x)), y:Math.max(g.mt,Math.min(g.mt+g.ph,p.y))}; }
+  function hair(p){
+    var layer = svg.querySelector('.xh'); if(!layer) return;
+    if(!p){ layer.innerHTML=''; return; }
+    var g=svg._g;
+    layer.innerHTML = '<line x1="'+p.x+'" y1="'+p.y+'" x2="'+p.x+'" y2="'+(g.mt+g.ph)+'"/><line x1="'+g.ml+'" y1="'+p.y+'" x2="'+p.x+'" y2="'+p.y+'"/>'+
+      (drag?'<circle cx="'+p.x+'" cy="'+p.y+'" r="'+(g.pr+2)+'"/>':'');
+  }
+  svg.addEventListener('pointerdown', function(e){
+    if(!opts.active() || e.button>0) return;
+    var p = svgPoint(svg,e); if(!inside(p)) return;
+    e.preventDefault(); drag = clampP(p);
+    try{ svg.setPointerCapture(e.pointerId); }catch(_){}
+    hair(drag);
+  });
+  svg.addEventListener('pointermove', function(e){
+    if(!opts.active()){ return; }
+    var p = svgPoint(svg,e);
+    if(drag){ e.preventDefault(); drag = clampP(p); hair(drag); }
+    else if(e.pointerType==='mouse'){ hair(inside(p)?clampP(p):null); }
+  });
+  function up(e){
+    if(!drag) return;
+    var p = drag; drag = null; hair(null);
+    var m = mapper(svg._c, svg._g);
+    opts.place(m.dx(p.x), m.dy(p.y));
+  }
+  svg.addEventListener('pointerup', up);
+  svg.addEventListener('pointercancel', function(){ drag=null; hair(null); });
+  svg.addEventListener('pointerleave', function(e){ if(!drag) hair(null); });
+}
+/* Match a placed point to an unplotted data point (within ½ box on both axes) */
+var SNAP = 1; // a tap within 1 box (each direction) snaps onto the data point
+function matchPoint(dx, dy, xs, ys, used, X, Y){
+  var best=-1, bd=1e9;
+  for(var i=0;i<xs.length;i++){
+    if(used[i]) continue;
+    var ex=Math.abs(dx-xs[i])/X.inc, ey=Math.abs(dy-ys[i])/Y.inc;
+    if(ex<=SNAP+1e-9 && ey<=SNAP+1e-9){ var d=ex*ex+ey*ey; if(d<bd){bd=d;best=i;} }
+  }
+  return best;
+}
+function missHint(dx, dy, xs, ys, used, X, Y, xu, yu){
+  // find unplotted point with closest x
+  var bi=-1, bd=1e9;
+  for(var i=0;i<xs.length;i++){ if(used[i]) continue; var d=Math.abs(dx-xs[i]); if(d<bd){bd=d;bi=i;} }
+  if(bi<0) return 'All points are plotted.';
+  if(Math.abs(dx-xs[bi])/X.inc<=SNAP) return 'The red dot is where you tapped. Your x is right ('+fmtNum(xs[bi])+(xu?' '+xu:'')+'), but go straight up to '+fmtNum(ys[bi])+(yu?' '+yu:'')+' on the y-axis.';
+  return 'The red dot is where you tapped — not close to a data point. Find an x value from the table on the x-axis, then go straight up to its y value.';
+}
+
+/* ===== Curve fitting ===== */
+var FITS = {
+  lin:{name:'Linear (y = mx + b)'}, lin0:{name:'Linear through origin — force to zero (y = mx)'},
+  quad:{name:'Quadratic (y = ax² + bx + c)'}, exp:{name:'Exponential (y = a·e^(bx))'},
+  pow:{name:'Power (y = a·xᵇ)'}, inv:{name:'Inverse (y = k/x)'}, log:{name:'Logarithmic (y = a + b·ln x)'}
+};
+function fitWhyNot(type, xs, ys){
+  var n=xs.length;
+  if(n<2) return 'Need at least 2 points.';
+  if(type==='quad' && n<3) return 'Need at least 3 points.';
+  if(type==='exp' && ys.some(function(v){return v<=0;})) return 'Needs every y > 0.';
+  if(type==='pow' && (xs.some(function(v){return v<=0;})||ys.some(function(v){return v<=0;}))) return 'Needs every x > 0 and y > 0.';
+  if(type==='inv' && xs.some(function(v){return v===0;})) return 'Can\'t use x = 0.';
+  if(type==='log' && xs.some(function(v){return v<=0;})) return 'Needs every x > 0.';
+  var sx = xs.some(function(v){return v!==xs[0];}); if(!sx && type!=='inv') return 'All x values are the same.';
+  return '';
+}
+function linReg(X, Y){
+  var n=X.length, sx=0, sy=0, sxx=0, sxy=0;
+  for(var i=0;i<n;i++){ sx+=X[i]; sy+=Y[i]; sxx+=X[i]*X[i]; sxy+=X[i]*Y[i]; }
+  var d = n*sxx-sx*sx; var m = d ? (n*sxy-sx*sy)/d : 0;
+  return {m:m, b:(sy-m*sx)/n};
+}
+function solve3(A, B){
+  var M=A.map(function(r,i){ return r.concat([B[i]]); });
+  for(var c=0;c<3;c++){
+    var p=c; for(var r=c+1;r<3;r++) if(Math.abs(M[r][c])>Math.abs(M[p][c])) p=r;
+    var t=M[c]; M[c]=M[p]; M[p]=t;
+    if(Math.abs(M[c][c])<1e-14) return null;
+    for(r=0;r<3;r++){ if(r===c) continue; var f=M[r][c]/M[c][c]; for(var k=c;k<4;k++) M[r][k]-=f*M[c][k]; }
+  }
+  return [M[0][3]/M[0][0], M[1][3]/M[1][1], M[2][3]/M[2][2]];
+}
+function doFit(type, xs, ys){
+  if(fitWhyNot(type,xs,ys)) return null;
+  var f, co, n=xs.length, i;
+  if(type==='lin'){ var r=linReg(xs,ys); co=r; f=function(x){ return r.m*x+r.b; }; }
+  else if(type==='lin0'){ var sxy=0,sxx=0; for(i=0;i<n;i++){ sxy+=xs[i]*ys[i]; sxx+=xs[i]*xs[i]; } var mm=sxx?sxy/sxx:0; co={m:mm}; f=function(x){ return mm*x; }; }
+  else if(type==='quad'){
+    var S=[0,0,0,0,0], T=[0,0,0];
+    for(i=0;i<n;i++){ var x=xs[i], p=1; for(var k=0;k<5;k++){ S[k]+=p; if(k<3) T[k]+=p*ys[i]; p*=x; } }
+    var sol = solve3([[S[4],S[3],S[2]],[S[3],S[2],S[1]],[S[2],S[1],S[0]]],[ (function(){var s=0;for(var j=0;j<n;j++) s+=xs[j]*xs[j]*ys[j]; return s;})(), T[1], T[0] ]);
+    if(!sol) return null; co={a:sol[0],b:sol[1],c:sol[2]}; f=function(x){ return sol[0]*x*x+sol[1]*x+sol[2]; };
+  }
+  else if(type==='exp'){ var r2=linReg(xs, ys.map(Math.log)); var a=Math.exp(r2.b), b=r2.m; co={a:a,b:b}; f=function(x){ return a*Math.exp(b*x); }; }
+  else if(type==='pow'){ var r3=linReg(xs.map(Math.log), ys.map(Math.log)); var a2=Math.exp(r3.b), b2=r3.m; co={a:a2,b:b2}; f=function(x){ return x>0? a2*Math.pow(x,b2) : NaN; }; }
+  else if(type==='inv'){ var s1=0,s2=0; for(i=0;i<n;i++){ s1+=ys[i]/xs[i]; s2+=1/(xs[i]*xs[i]); } var kk=s1/s2; co={k:kk}; f=function(x){ return x!==0? kk/x : NaN; }; }
+  else if(type==='log'){ var r4=linReg(xs.map(Math.log), ys); co={a:r4.b,b:r4.m}; f=function(x){ return x>0? r4.b+r4.m*Math.log(x) : NaN; }; }
+  var mean=ys.reduce(function(a,b){return a+b;},0)/n, ssr=0, sst=0;
+  for(i=0;i<n;i++){ var e=ys[i]-f(xs[i]); ssr+=e*e; sst+=(ys[i]-mean)*(ys[i]-mean); }
+  return {type:type, f:f, co:co, r2: sst>0 ? 1-ssr/sst : 1};
+}
+function fmtCo(v){
+  if(!isFinite(v)) return '?';
+  var a=Math.abs(v);
+  if(a!==0 && (a>=1e5 || a<1e-3)){
+    var e=Math.floor(Math.log10(a)), mnt=v/Math.pow(10,e);
+    var sup=String(e).replace(/-/g,'⁻').replace(/\d/g,function(d){return '⁰¹²³⁴⁵⁶⁷⁸⁹'[d];});
+    return (+mnt.toPrecision(4))+'×10'+sup;
+  }
+  return String(+v.toPrecision(4));
+}
+function signed(v){ return (v<0?' − ':' + ')+fmtCo(Math.abs(v)); }
+function fitEquation(F, xn, yn){
+  var c=F.co;
+  switch(F.type){
+    case 'lin': return yn+' = '+fmtCo(c.m)+'·'+xn+signed(c.b);
+    case 'lin0': return yn+' = '+fmtCo(c.m)+'·'+xn;
+    case 'quad': return yn+' = '+fmtCo(c.a)+'·'+xn+'²'+signed(c.b)+'·'+xn+signed(c.c);
+    case 'exp': return yn+' = '+fmtCo(c.a)+'·e^('+fmtCo(c.b)+'·'+xn+')';
+    case 'pow': return yn+' = '+fmtCo(c.a)+'·'+xn+'^'+fmtCo(c.b);
+    case 'inv': return yn+' = '+fmtCo(c.k)+' / '+xn;
+    case 'log': return yn+' = '+fmtCo(c.a)+signed(c.b)+'·ln('+xn+')';
+  }
+  return '';
+}
+function fitSamples(F, x0, x1){
+  var out=[], N=160;
+  for(var i=0;i<=N;i++){ var x=x0+(x1-x0)*i/N; var y=F.f(x); out.push(isFinite(y)?[x,y]:null); }
+  return out;
+}
+function newLine(){ return {connect:false, fit:false, type:'lin', showEq:true, showR2:true, extend:false}; }
+
+/* ===== Graph column (toolbar + svg + meters + equation) ===== */
+function makeGraphCol(host){
+  host.innerHTML = '<div class="tools"></div><div class="gwrap"><svg class="graph" role="img" aria-label="Graph"></svg><div class="gdata hide"></div></div><div class="meters"></div><div class="eqbox hide"></div>';
+  return {host:host, tools:$('.tools',host), svg:$('svg',host), meters:$('.meters',host), eq:$('.eqbox',host), data:$('.gdata',host)};
+}
+function renderMeters(el, xvals, yvals, X, Y, bx, by){
+  var h='';
+  function one(name, vals, A, boxes){
+    if(!vals || !vals.length || !axisSet(A)) return '<span class="meter muted">'+name+'-axis use: —</span>';
+    var f = fillOf(vals, A.inc, boxes), r=rangeOf(vals), end=A.start+boxes*A.inc;
+    var off = A.start>r.min+1e-9 || end<r.max-1e-9;
+    var pct = Math.round(f*100);
+    return '<span class="meter'+(f<0.5||off?' low':'')+'">'+name+'-axis use: <span class="bar"><i style="width:'+Math.min(100,pct)+'%"></i></span><b>'+(off?'runs off!':pct+'%')+'</b></span>';
+  }
+  h = one('x', xvals, X, bx) + one('y', yvals, Y, by);
+  el.innerHTML = h;
+}
+/* Line toolbar. L = line state object; getXY() -> {xs,ys} ; onChange() rerender */
+function renderTools(gc, L, enabled, getXY, onChange, note){
+  var t = gc.tools;
+  t.className = 'tools'+(enabled?'':' off');
+  t.innerHTML = '<label><input type="checkbox" data-k="connect" '+(L.connect?'checked':'')+'> Connect dots</label>'+
+    '<label><input type="checkbox" data-k="fit" '+(L.fit?'checked':'')+'> Best-fit line</label>'+
+    '<button class="sm" data-k="set">⚙ Fit settings</button>'+(note?'<span class="tnote">'+note+'</span>':'');
+  $$('input[data-k]', t).forEach(function(cb){ cb.onchange=function(){ L[cb.dataset.k]=cb.checked; save(); onChange(); }; });
+  $('button[data-k=set]', t).onclick = function(e){
+    e.stopPropagation();
+    if($('.pop',t)){ $('.pop',t).remove(); POPGC=null; return; }
+    POPGC=gc; openPop(gc, L, getXY, onChange);
+  };
+  if(POPGC===gc && enabled) openPop(gc, L, getXY, onChange);
+}
+var POPGC=null;
+function openPop(gc, L, getXY, onChange){
+    var t=gc.tools, d = getXY(), pop=document.createElement('div'); pop.className='pop';
+    var opts = Object.keys(FITS).map(function(k){ var w=fitWhyNot(k,d.xs,d.ys); return '<option value="'+k+'" '+(w?'disabled':'')+' '+(L.type===k?'selected':'')+'>'+esc(FITS[k].name)+(w?' — '+esc(w):'')+'</option>'; }).join('');
+    pop.innerHTML = '<b>Best-fit settings</b><div class="row"><select data-s="type" style="width:100%">'+opts+'</select></div>'+
+      '<div class="row"><label><input type="checkbox" data-s="showEq" '+(L.showEq?'checked':'')+'> Show equation</label></div>'+
+      '<div class="row"><label><input type="checkbox" data-s="showR2" '+(L.showR2?'checked':'')+'> Show R²</label></div>'+
+      '<div class="row"><label><input type="checkbox" data-s="extend" '+(L.extend?'checked':'')+'> Extend line past data (to the edge of the graph)</label></div>'+
+      '<div class="row"><button class="sm pri" data-s="close">Done</button></div>';
+    t.appendChild(pop);
+    pop.addEventListener('click', function(ev){ ev.stopPropagation(); });
+    $('select',pop).onchange=function(){ L.type=this.value; L.fit=true; save(); onChange(); };
+    $$('input[data-s]',pop).forEach(function(cb){ cb.onchange=function(){ L[cb.dataset.s]=cb.checked; save(); onChange(); }; });
+    $('[data-s=close]',pop).onclick=function(){ pop.remove(); POPGC=null; };
+}
+document.addEventListener('click', function(){ $$('.pop').forEach(function(p){ p.remove(); }); POPGC=null; });
+/* apply line state to a graph cfg; returns equation text or '' */
+function applyLine(cfg, L, xs, ys, xname, yname, bx){
+  cfg.connect = !!L.connect;
+  var eq='';
+  if(L.fit && xs.length>1){
+    var F = doFit(L.type, xs, ys);
+    if(!F){ return '<span style="color:#b3261e">This fit type can\'t be used with this data: '+esc(fitWhyNot(L.type,xs,ys))+'</span>'; }
+    var r=rangeOf(xs), x0=r.min, x1=r.max;
+    if(L.extend && axisSet(cfg.x)){ x0=cfg.x.start; x1=cfg.x.start+bx*cfg.x.inc; }
+    cfg.fitPts = fitSamples(F, x0, x1);
+    var parts=[];
+    if(L.showEq) parts.push(esc(fitEquation(F, xname||'x', yname||'y')));
+    if(L.showR2) parts.push('R² = '+F.r2.toFixed(4)+(F.r2<0.5?' (poor fit — try another type)':''));
+    eq = parts.join('&nbsp;&nbsp;&nbsp;');
+    if(!eq) eq = '<span class="muted">'+esc(FITS[L.type].name)+'</span>';
+  }
+  return eq;
+}
+function showEq(gc, html){ gc.eq.innerHTML = html||''; gc.eq.classList.toggle('hide', !html); }
+
+/* Pop-up note next to a "go up by" box */
+function incNote(v, un){
+  var x=num(v); if(!(x>0)) return '';
+  if(halfStep(x)) return '👍 <b>'+fmtNum(x)+'</b> works: count by <b>'+fmtNum(2*x)+'</b> and label every 2nd line, so each box = '+fmtNum(x)+(un?' '+esc(un):'')+'.';
+  if(!isFriendly(x)) return '⚠ '+fmtNum(x)+' is hard to count by. Try 1, 2, 5, 10, 20… (or 1.5, 2.5).';
+  return '';
+}
+function wireIncNote(input, noteEl, un){ if(!input||!noteEl) return; var f=function(){ noteEl.innerHTML=incNote(input.value, un); }; input.addEventListener('input', f); f(); }
+/* ===== Question box: one clear style for every question in every part ===== */
+function ask(o){
+  // o.n label, o.q question (html), o.sub hint (html), o.a answer controls (html), o.graph true if answered on the graph, o.fb id for feedback, o.btns buttons html
+  return '<div class="ask"><div class="ask-tag">❓ '+(o.n||'Question')+'</div><div class="ask-q">'+o.q+'</div>'+
+    (o.sub?'<div class="ask-sub">'+o.sub+'</div>':'')+(o.data?'<div class="ask-data">'+o.data+'</div>':'')+
+    '<div class="ask-a'+(o.graph?' on-graph':'')+'"><div class="ask-al">'+(o.graph?'👉 Answer on the graph':'✎ Your answer')+'</div>'+(o.a||'')+'</div>'+
+    (o.fb?'<div id="'+o.fb+'"></div>':'')+(o.btns?'<div class="btns">'+o.btns+'</div>':'')+'</div>';
+}
+function prevOk(msg){ return msg ? '<div class="prev-ok">✓ '+msg+'</div>' : ''; }
+
+/* ===== Progress % for the tabs ===== */
+function pctLearn(){ var L=ST.learn, n=0; for(var k=0;k<9;k++) if(L.passed[k]) n++; if(L.gameDone) n++; return L.done?100:Math.round(n/10*100); }
+function pctGuided(){ var g=ST.guided; if(g.done||g.everDone) return 100; return Math.round(Math.max(g.reach||0, g.step + (g.pend?1:0))/8*100); }
+function pctYou(){ if(ST.youDone) return 100; return ST.you ? Math.round(ST.you.step/11*100) : 0; }
+function toast(msg){ var t=document.createElement('div'); t.className='toast'; t.innerHTML=msg; document.body.appendChild(t); setTimeout(function(){ t.classList.add('out'); },3800); setTimeout(function(){ t.remove(); },4400); }
+
+/* ===== Modal ===== */
+function modal(html, buttons){
+  var m=$('#modal'), b=$('.mbox',m);
+  b.innerHTML = html + '<div class="btns" style="justify-content:flex-end">'+(buttons||[{t:'Close',pri:true}]).map(function(x,i){ return '<button data-i="'+i+'" class="'+(x.pri?'pri':'')+'"'+(x.id?' id="'+x.id+'"':'')+'>'+esc(x.t)+'</button>'; }).join('')+'</div>';
+  m.hidden=false;
+  $$('.btns:last-child button',b).forEach(function(btn){ btn.onclick=function(){ var x=(buttons||[{}])[+btn.dataset.i]; if(!(x&&x.keep)) m.hidden=true; if(x&&x.fn) x.fn(); }; });
+}
+
+/* ===== PART 1: LEARN ===== */
+var HW = null; // heating water data (set at init)
+var CD = {t:[0,2,5,6,11,19], y:[85,69.3,52.8,48.7,35.1,26.2]}; // cooling demo, uneven times
+var CL = {t:[0,20,40,60,80,100], v:[251.8,266.0,288.9,302.1,325.7,340.2]}; // Charles's law demo
+function hwPts(){ return HW.x.map(function(x,i){ return {x:x,y:HW.y[i]}; }); }
+
+var STOPS = [
+ { t:'Data table first — which variable goes where?',
+   html:function(){ return '<p class="lead">Before you graph, put your data in a table with the x column on the left.</p>'+
+     '<div class="pair" style="margin:8px 0"><div class="callout" style="margin:0"><b style="font-size:19px">X-axis</b> (across, horizontal)<br><b>Independent</b> variable = what <b>you change or control</b>.<br><b>Time always goes on x.</b><br><span class="muted">DRY MIX: <b>M</b>anipulated / <b>I</b>ndependent → <b>X</b></span></div>'+
+     '<div class="callout" style="margin:0"><b style="font-size:19px">Y-axis</b> (up, vertical)<br><b>Dependent</b> variable = what <b>you measure</b>. It <b>responds</b> to x.<br>Example: temperature, mass, volume.<br><span class="muted">DRY MIX: <b>D</b>ependent / <b>R</b>esponding → <b>Y</b></span></div></div>'+
+     '<div class="pair"><figure class="bad"><figcaption>✗ Wrong</figcaption>'+tbl(['Temp','Time'],[[133,6],[75,0],[94,2],[84,1],[114,4]])+'<p class="muted">Time isn\'t first, no units, rows out of order.</p></figure>'+
+     '<figure class="good"><figcaption>✓ Right</figcaption>'+tbl(['Time (min)','Temperature (°F)'],[[0,75],[1,84],[2,94],[3,104],[4,114]])+'<p class="muted">x column first, headings with units, rows in time order.</p></figure></div>'; },
+   check:{q:'You measure the temperature of water every minute. Which goes on the x-axis?', o:[
+     {t:'Time',ok:1,fb:'Yes — time is what you control (you choose when to read). It goes on x.'},
+     {t:'Temperature',fb:'Temperature is what you measure — the dependent variable — so it goes on y. Time goes on x.'}]} },
+ { t:'Labels and title',
+   html:function(){ return '<p class="lead">Every axis label needs the <b>quantity + (unit)</b>, like <b>Time (min)</b> or <b>Temperature (°F)</b>. The title is <b>"[y] vs. [x]"</b> — dependent first, e.g. <b>Temperature vs. Time</b>.</p>'+
+     pairSVG('m2a','m2b','No title, no units — what was measured?','Clear title and labels with units.'); },
+   mount:function(){
+     var base={size:'mini',bx:10,by:10,x:{start:0,inc:2},y:{start:60,inc:20},pts:hwPts(),connect:true};
+     drawGraph($('#m2a'), Object.assign({},base,{title:'Graph',xlabel:'x',ylabel:'y'}));
+     drawGraph($('#m2b'), Object.assign({},base,{title:'Temperature vs. Time',xlabel:'Time (min)',ylabel:'Temperature (°F)'}));
+   },
+   check:{q:'Which is the best y-axis label?', o:[
+     {t:'Temperature',fb:'Missing the unit. Was it °F or °C?'},
+     {t:'Temperature (°F)',ok:1,fb:'Yes — quantity + (unit).'},
+     {t:'°F',fb:'That\'s only the unit. Name the quantity too: Temperature (°F).'}]} },
+ { t:'Uniform scale — the #1 mistake',
+   html:function(){ return '<p class="lead">Every box must be worth the <b>same amount</b>. A common mistake is writing your <b>data values in order</b> as the axis numbers (0, 2, 5, 6, 11, 19…). The spacing becomes uneven and the shape of the graph becomes a lie.</p>'+
+     '<div class="card" style="max-width:640px"><svg class="mini" id="m3" style="max-height:360px"></svg><div class="btns"><button class="pri" id="m3go">Show the truth ▶</button><span class="muted" id="m3lab" style="align-self:center">Fake: data values used as tick labels</span></div></div>'+
+     '<div class="callout">Never skip numbers: <span class="numline" style="color:#17723a">✓ 20, 22, 24, 26, 28</span> &nbsp; <span class="numline" style="color:#b3261e">✗ 20, 22, 30, 31, 40</span></div>'; },
+   mount:function(){
+     var svg=$('#m3'), u=0, target=0, anim=null;
+     function draw(){ svg.setAttribute('viewBox','0 0 520 360'); svg.innerHTML = morphMarkup(u); }
+     draw();
+     $('#m3go').onclick=function(){
+       target = target? 0 : 1;
+       this.textContent = target? '◀ Show the fake' : 'Show the truth ▶';
+       $('#m3lab').textContent = target? 'Truth: every box = 2 min. The real curve bends!' : 'Fake: data values used as tick labels';
+       if(anim) cancelAnimationFrame(anim);
+       var t0=null, u0=u;
+       function step(ts){ if(!t0) t0=ts; var k=Math.min(1,(ts-t0)/900); u=u0+(target-u0)*(k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2); draw(); if(k<1) anim=requestAnimationFrame(step); }
+       anim=requestAnimationFrame(step);
+     };
+   },
+   check:{q:'Which x-axis numbers are correct?', o:[
+     {t:'0, 2, 5, 6, 11, 19',fb:'Those are the data values — the spacing between them isn\'t equal. That\'s mistake #1.'},
+     {t:'0, 5, 10, 15, 20',ok:1,fb:'Yes — every box is worth 5. Uniform scale.'},
+     {t:'0, 5, 10, 20, 30',fb:'That skips 15 and 25 — the jumps aren\'t equal.'}]} },
+ { t:'You DON\'T have to start at 0',
+   html:function(){ return '<p class="lead">Heating water: <b>time</b> runs 0–19 min, so time starts at 0. But <b>temperature</b> runs 75–212 °F — start temperature at <b>70</b>, not 0. Starting at 0 scrunches the points into a thin band and hides the trend. <b>The point of a graph is to SEE the trend.</b></p>'+
+     pairSVG('m4a','m4b','y starts at 0: points use only 27% of the graph.','y starts at 70: spread out, trend easy to see.')+
+     '<div class="callout">Start at a <b>round number you count by</b>, at or just below your smallest value. Counting by 10 → start at <b>70</b>, not 73 or 75.</div>'; },
+   mount:function(){
+     var base={size:'mini',bx:20,by:20,x:{start:0,inc:1},pts:hwPts(),connect:true,xlabel:'Time (min)',ylabel:'Temperature (°F)',title:'Temperature vs. Time'};
+     drawGraph($('#m4a'), Object.assign({},base,{y:{start:0,inc:25}}));
+     drawGraph($('#m4b'), Object.assign({},base,{y:{start:70,inc:10}}));
+   },
+   check:{q:'Temperatures go from 75 to 212 °F and you count by 10. Where should the y-axis start?', o:[
+     {t:'0',fb:'0 is far below 75 — the points would be scrunched. Start just below your smallest value.'},
+     {t:'70',ok:1,fb:'Yes — a round number you count by, just below 75.'},
+     {t:'75',fb:'Close! But counting by 10 from 75 gives 75, 85, 95… — hard to plot. Round down to 70.'}]} },
+ { t:'Picking each axis\'s increment — "count the boxes"',
+   html:function(){ return '<p class="lead"><b>Range ÷ number of boxes</b>, then round <b>UP</b> to a friendly number (1, 2, 2.5, 5, 10, 20, 25, 50…). Do this <b>separately</b> for x and y — every graph is different (0.05 on one graph, 500 on another).</p>'+
+     '<div class="helper">Heating water y-axis: range = 212 − 75 = <b>137</b>. 137 ÷ 20 boxes = <b>6.85</b> → round UP to a friendly number → <b>10</b>.</div>'+
+     '<div class="callout"><b>Friendly numbers:</b> 1, 2, 5, 10, 20, 25, 50… (and 0.1, 0.2, 0.5…).<br><b>1.5 and 2.5 work too — skip a line.</b> Count by 3 (or 5) and only label every 2nd line, so each box is worth 1.5 (or 2.5):'+
+     '<div class="numline" style="margin-top:4px">0 ┊ <b>3</b> ┊ <b>6</b> ┊ <b>9</b> ┊ <b>12</b> &nbsp;<span class="muted" style="font-family:system-ui;font-size:14px">← labels on every 2nd line; each box = 1.5</span></div></div>'+
+     '<div class="card" style="max-width:640px"><div class="row2"><label>y increment: <b id="m5v">10</b></label><input id="m5s" type="range" min="0" max="4" value="2" style="flex:1;min-width:200px"></div><svg class="mini" id="m5"></svg><div id="m5m" class="meters"></div><div id="m5fb"></div></div>'; },
+   mount:function(){
+     var incs=[2,5,10,20,50];
+     function upd(){
+       var inc=incs[+$('#m5s').value], st=Math.floor(75/inc)*inc;
+       $('#m5v').textContent=inc+' (start at '+st+')';
+       drawGraph($('#m5'),{size:'mini',bx:20,by:20,x:{start:0,inc:1},y:{start:st,inc:inc},pts:hwPts(),connect:true,xlabel:'Time (min)',ylabel:'Temperature (°F)',title:'Temperature vs. Time'});
+       renderMeters($('#m5m'), HW.x, HW.y, {start:0,inc:1}, {start:st,inc:inc}, 20, 20);
+       var r=checkAxis(HW.y, st, inc, 20, '°F');
+       $('#m5fb').innerHTML = r.ok ? fbHTML('ok','Counting by '+inc+' fits the data and fills '+Math.round(r.fill*100)+'% of the axis.') : fbHTML('bad', inc<10?'Too small — the points run off the top of the grid.':'Too big — the points are scrunched and the trend is hard to see.');
+     }
+     $('#m5s').oninput=upd; upd();
+   },
+   check:{q:'Mass goes from 20 g to 52 g. You have 20 boxes. Range = 52 − 20 = 32. 32 ÷ 20 = 1.6. What should you count by?', o:[
+     {t:'1.6',fb:'1.6 isn\'t a friendly number to count by. Round UP to a friendly one.'},
+     {t:'2',ok:1,fb:'Yes — 1.6 rounded UP to the friendly number 2. Count 20, 22, 24…'},
+     {t:'10',fb:'Too big — the data would only use a small part of the graph. Round 1.6 up to the NEXT friendly number.'}]} },
+ { t:'Plotting points',
+   html:function(){ return '<p class="lead">Find the <b>x</b> value on the x-axis, go <b>straight up</b> to the <b>y</b> value, and make a <b>small dot</b>. Don\'t write the values next to each point — the axes already tell us.</p>'+
+     ask({n:'Your turn', q:'Plot the point <span class="kw">(6 min, 133 °F)</span> on the graph on the right.', sub:'Tap where the two red dashed lines cross. Close is fine — it snaps into place.', graph:true, a:'Tap the right-hand graph →'})+
+     '<div class="pair"><figure class="bad"><figcaption>✗ Wrong</figcaption><svg class="mini" id="m6a"></svg><p class="muted">Values written by every point — messy and unnecessary.</p></figure>'+
+     '<figure class="good"><figcaption>✓ Your turn: plot (6 min, 133 °F)</figcaption><svg class="mini graph plotting" id="m6b" style="height:auto"></svg><p id="m6t">Tap where the two <b style="color:#c62828">red dashed lines</b> cross: <b>x = 6</b> and <b>y = 133</b>. If you\'re close, the dot snaps into place.</p></figure></div>'; },
+   mount:function(){
+     var base={size:'mini',bx:20,by:20,x:{start:0,inc:1},y:{start:70,inc:10},xlabel:'Time (min)',ylabel:'Temperature (°F)',title:'Temperature vs. Time'};
+     drawGraph($('#m6a'), Object.assign({},base,{pts:hwPts().slice(0,6),valueLabels:true}));
+     var pts=hwPts().slice(0,6).map(function(p){ return {x:p.x,y:p.y}; }).filter(function(p){ return p.x!==6; });
+     var svg=$('#m6b'), done=!!ST.learn.passed[5];
+     function d(){ drawGraph(svg, Object.assign({},base,{pts:pts, guides: done?null:[{x:6},{y:133}]})); }
+     if(done) pts.push({x:6,y:133,s:'ok'});
+     d();
+     enablePlotting(svg,{active:function(){ return !done; }, place:function(x,y){
+       if(Math.abs(x-6)<=SNAP && Math.abs(y-133)<=10*SNAP){ done=true; pts.push({x:6,y:133,s:'ok'}); d(); $('#m6t').innerHTML='<b style="color:#17723a">✓ Snapped to (6, 133).</b> Find x, go straight up to y.'; learnPass(5,'Nice — straight up from 6 to 133.'); }
+       else { var p={x:x,y:y,s:'bad'}; pts.push(p); d(); $('#m6t').innerHTML='<span style="color:#b3261e">The red dot is where you tapped — not quite. Tap where the two <b>red dashed lines</b> cross (x = 6, y = 133).</span>'; setTimeout(function(){ pts.splice(pts.indexOf(p),1); d(); },1400); }
+     }});
+   },
+   check:null },
+ { t:'Line graph, not bar graph, for data over time',
+   html:function(){ return '<p class="lead">Data that changes <b>over time</b> is continuous, so we use a <b>line graph</b>. <b>Bar graphs</b> are for separate <b>categories</b> (like the density of 5 different metals).</p>'+
+     pairSVG('m7a','m7b','Bars hide how the temperature changes from moment to moment.','A line shows the change over time.'); },
+   mount:function(){
+     var base={size:'mini',bx:20,by:20,x:{start:0,inc:1},y:{start:70,inc:10},pts:hwPts(),xlabel:'Time (min)',ylabel:'Temperature (°F)',title:'Temperature vs. Time'};
+     drawGraph($('#m7a'), Object.assign({},base,{bars:true}));
+     drawGraph($('#m7b'), Object.assign({},base,{connect:true}));
+   },
+   check:{q:'You record the mass of a fizzing tablet every 10 seconds. Which kind of graph?', o:[
+     {t:'Line graph',ok:1,fb:'Yes — mass changing over time → line graph.'},
+     {t:'Bar graph',fb:'Bar graphs are for categories. Time data changes continuously → line graph.'}]} },
+ { t:'Dot-to-dot vs. best-fit line',
+   html:function(){ return '<p class="lead"><b>Dot-to-dot</b> when each point is a real change over time (heating curve). <b>Best-fit line</b> when the data has measurement scatter around a pattern (gas laws: volume vs. temperature is a straight line; pressure vs. volume is inverse). A best-fit line doesn\'t touch every point — about as many points sit <b>above</b> it as <b>below</b>.</p>'+
+     '<div class="pair"><figure class="good"><figcaption>Dot-to-dot: heating water</figcaption><svg class="mini" id="m8a"></svg></figure><figure class="good"><figcaption>Best-fit line: Charles\'s law</figcaption><svg class="mini" id="m8b"></svg><p class="muted" id="m8eq" style="font-family:monospace"></p></figure></div>'+
+     '<p class="muted">On your graphs, use the toolbar above the graph: <b>☑ Connect dots</b>, <b>☑ Best-fit line</b> and <b>⚙ Fit settings</b> (linear, force to zero, quadratic, exponential, inverse…).</p>'; },
+   mount:function(){
+     drawGraph($('#m8a'),{size:'mini',bx:20,by:20,x:{start:0,inc:1},y:{start:70,inc:10},pts:hwPts(),connect:true,xlabel:'Time (min)',ylabel:'Temperature (°F)',title:'Temperature vs. Time'});
+     var F=doFit('lin',CL.t,CL.v), c={size:'mini',bx:10,by:10,x:{start:0,inc:10},y:{start:250,inc:10},pts:CL.t.map(function(t,i){return {x:t,y:CL.v[i]};}),xlabel:'Temperature (°C)',ylabel:'Volume (mL)',title:'Volume vs. Temperature',fitPts:fitSamples(F,0,100)};
+     drawGraph($('#m8b'),c);
+     $('#m8eq').textContent = fitEquation(F,'Temperature','Volume')+'   R² = '+F.r2.toFixed(4);
+   },
+   check:{q:'Charles\'s law lab: you measure gas volume at 6 temperatures. The points scatter around a straight line. Which line?', o:[
+     {t:'Connect the dots',fb:'The zig-zags are just measurement error. Show the pattern with a best-fit line.'},
+     {t:'Linear best-fit line',ok:1,fb:'Yes — a best-fit line shows the straight-line pattern through the scatter.'}]} },
+ { t:'The TAILS checklist',
+   html:function(){ return '<p class="lead">Check every graph with <b>TAILS</b> before you turn it in.</p><div class="tails">'+
+     '<div><b>T</b>Title<br><span class="muted">"y vs. x"</span></div><div><b>A</b>Axes<br><span class="muted">Right variable on each (time on x)</span></div><div><b>I</b>Intervals<br><span class="muted">Uniform, friendly, no skips</span></div><div><b>L</b>Labels<br><span class="muted">Quantity + (unit)</span></div><div><b>S</b>Scale<br><span class="muted">Fills ≥ 50%; don\'t start at 0 unless the data is near 0</span></div></div>'; },
+   check:{q:'A graph is titled "Time vs. Temperature". Which TAILS letter does it break?', o:[
+     {t:'T',ok:1,fb:'Yes — the title is backwards. It should be Temperature vs. Time (y vs. x).'},
+     {t:'I',fb:'Intervals are about the numbers on the axes. The problem here is the title.'},
+     {t:'S',fb:'Scale is about how much of the grid the data fills. The problem here is the title.'}]} }
+];
+function tbl(h, rows){ return '<table class="dt"><tr>'+h.map(function(x){return '<th>'+esc(x)+'</th>';}).join('')+'</tr>'+rows.map(function(r){ return '<tr>'+r.map(function(c){return '<td>'+esc(c)+'</td>';}).join('')+'</tr>'; }).join('')+'</table>'; }
+function pairSVG(a,b,ta,tb){ return '<div class="pair"><figure class="bad"><figcaption>✗ Wrong</figcaption><svg class="mini" id="'+a+'"></svg><p class="muted">'+ta+'</p></figure><figure class="good"><figcaption>✓ Right</figcaption><svg class="mini" id="'+b+'"></svg><p class="muted">'+tb+'</p></figure></div>'; }
+function morphMarkup(u){
+  var W=520,H=360,ml=62,mr=16,mt=30,mb=56,pw=W-ml-mr,ph=H-mt-mb,o=[];
+  var by=10, ys=20, yi=10;
+  function py(v){ return mt+ph-(v-ys)/yi*(ph/by); }
+  o.push('<rect x="'+ml+'" y="'+mt+'" width="'+pw+'" height="'+ph+'" fill="#fff"/>');
+  for(var j=0;j<=by;j++){ var yy=mt+ph-j*ph/by; o.push('<line class="gl" x1="'+ml+'" y1="'+yy+'" x2="'+(ml+pw)+'" y2="'+yy+'"/><text class="tk" font-size="12" x="'+(ml-7)+'" y="'+(yy+4)+'" text-anchor="end">'+(ys+j*yi)+'</text>'); }
+  var fake=[], tru=[];
+  for(var i=0;i<=5;i++) fake.push(ml+i*pw/5);
+  for(var k=0;k<=10;k++) tru.push(ml+k*pw/10);
+  tru.forEach(function(x,k){ o.push('<line class="gl" style="opacity:'+u+'" x1="'+x+'" y1="'+mt+'" x2="'+x+'" y2="'+(mt+ph)+'"/><text class="tk" font-size="12" style="opacity:'+u+'" x="'+x+'" y="'+(mt+ph+18)+'" text-anchor="middle">'+(k*2)+'</text>'); });
+  fake.forEach(function(x,k){ o.push('<line class="gl5" style="opacity:'+(1-u)+'" x1="'+x+'" y1="'+mt+'" x2="'+x+'" y2="'+(mt+ph)+'"/><text font-size="13" font-weight="700" fill="#b3261e" style="opacity:'+(1-u)+'" x="'+x+'" y="'+(mt+ph+18)+'" text-anchor="middle">'+CD.t[k]+'</text>'); });
+  var P = CD.t.map(function(t,k){ var xt=ml+t/20*pw; return [fake[k]+(xt-fake[k])*u, py(CD.y[k])]; });
+  o.push('<line class="ax" x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'"/><line class="ax" x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(mt+ph)+'"/>');
+  o.push('<polyline class="ln" points="'+P.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'"/>');
+  P.forEach(function(p){ o.push('<circle class="pt" cx="'+p[0]+'" cy="'+p[1]+'" r="5"/>'); });
+  o.push('<text class="lbl" font-size="14" x="'+(ml+pw/2)+'" y="'+(H-10)+'" text-anchor="middle">Time (min)</text><text class="lbl" font-size="14" transform="translate(16,'+(mt+ph/2)+') rotate(-90)" text-anchor="middle">Temperature (°C)</text><text class="ttl" font-size="15" x="'+(ml+pw/2)+'" y="20" text-anchor="middle">Temperature vs. Time (cooling water)</text>');
+  return o.join('');
+}
+
+/* Spot the Mistakes */
+var GAME = [
+  {intro:'Find 3 mistakes.', cfg:function(){ return {bx:20,by:20,x:{start:0,inc:1},y:{start:0,inc:25},pts:hwPts(),connect:true,title:'Time vs. Temperature',xlabel:'Time',ylabel:'Temperature (°F)'}; },
+   err:[{r:['title'],pos:'top',to:'title',m:'Title is backwards — it should be "Temperature vs. Time" (y vs. x).'},
+        {r:['xlabel'],pos:'bottom',to:'xlabel',m:'x-axis label has no unit — should be "Time (min)".'},
+        {r:['yticks','plot'],pos:'left',to:'yticks',m:'y-axis starts at 0, so the points are scrunched (only 27% used). Start at 70.'}]},
+  {intro:'Find 3 mistakes.', cfg:function(){ var xt=[]; for(var i=0;i<=20;i++) xt.push(i%3===0&&i/3<CD.t.length?String(CD.t[i/3]):''); return {bx:20,by:20,x:{start:0,inc:1},y:{start:20,inc:5},xticks:xt,pts:CD.t.map(function(t,k){return {x:k*3,y:CD.y[k]};}),bars:true,title:'Temperature vs. Time',xlabel:'Time (min)',ylabel:'Temperature'}; },
+   err:[{r:['xticks'],pos:'bottom',to:'xticks',m:'The x numbers are just the data values (0, 2, 5, 6, 11, 19) — the spacing isn\'t uniform.'},
+        {r:['plot'],pos:'right',m:'Bar graph used for data over time — it should be a line graph.'},
+        {r:['ylabel'],pos:'left',to:'ylabel',m:'y-axis label has no unit — °C or °F?'}]},
+  {intro:'Find 2 mistakes.', cfg:function(){ var yt=[]; for(var k=0;k<=20;k++) yt.push(String(k<=5?k:k+4)); return {bx:20,by:20,x:{start:70,inc:10},y:{start:0,inc:1},yticks:yt,pts:HW.x.map(function(t,i){return {x:HW.y[i],y:t};}),connect:true,title:'Temperature vs. Time',xlabel:'Temperature (°F)',ylabel:'Time (min)'}; },
+   err:[{r:['xlabel','ylabel'],pos:'bottom',to:'xlabel',m:'The axes are swapped — time must go on the x-axis, temperature on y.'},
+        {r:['yticks'],pos:'right',m:'The y-axis (left side) skips numbers: …4, 5, then 10, 11… Every box must be worth the same amount.'}]}
+];
+
+function renderLearn(){
+  var sec=$('#sec-learn'), L=ST.learn, i=L.stop;
+  var nav='<div class="learn-nav">'+STOPS.map(function(s,k){ return '<button data-s="'+k+'" class="'+(k===i?'cur':L.passed[k]?'dn':'')+'" '+(k>firstOpen()?'disabled':'')+' title="'+esc(s.t)+'">'+(L.passed[k]?'✓':(k+1))+'</button>'; }).join('')+
+    '<button data-s="9" class="'+(i===9?'cur':L.gameDone?'dn':'')+'" '+(firstOpen()<9?'disabled':'')+'>'+(L.gameDone?'✓ ':'')+'Spot the Mistakes</button></div>';
+  var body='';
+  if(i<9){
+    var s=STOPS[i];
+    body='<div class="card"><div class="muted">Stop '+(i+1)+' of 9</div><h2>'+esc(s.t)+'</h2>'+s.html()+
+      (s.check?ask({n:'Check your understanding', q:esc(s.check.q), a:'<div class="opts" style="margin:0">'+s.check.o.map(function(o,k){ return '<button data-o="'+k+'">'+esc(o.t)+'</button>'; }).join('')+'</div>', fb:'lfb'}):'<div id="lfb"></div>')+
+      '<div class="btns">'+(i>0?'<button data-go="-1">◀ Back</button>':'')+'<button class="pri" data-go="1" '+(L.passed[i]?'':'disabled')+'>'+(i<8?'Next ▶':'Spot the Mistakes ▶')+'</button></div></div>';
+  } else body = gameHTML();
+  sec.innerHTML = (L.done?'<div class="done-banner">✓ 100% complete</div>':'')+'<div class="learn-wrap">'+nav+body+'</div>';
+  $$('.learn-nav button',sec).forEach(function(b){ b.onclick=function(){ L.stop=+b.dataset.s; save(); renderLearn(); window.scrollTo(0,0); }; });
+  $$('[data-go]',sec).forEach(function(b){ b.onclick=function(){ L.stop=Math.max(0,Math.min(9,L.stop+(+b.dataset.go))); save(); renderLearn(); window.scrollTo(0,0); }; });
+  if(i<9){
+    var s2=STOPS[i]; if(s2.mount) s2.mount();
+    if(s2.check){
+      if(L.passed[i]){ var okk=s2.check.o.findIndex(function(o){return o.ok;}); var bb=$('[data-o="'+okk+'"]',sec); if(bb) bb.className='sel-ok'; }
+      $$('[data-o]',sec).forEach(function(b){ b.onclick=function(){
+        var o=s2.check.o[+b.dataset.o];
+        $$('[data-o]',sec).forEach(function(x){ x.className=''; });
+        b.className = o.ok?'sel-ok':'sel-bad';
+        if(o.ok) learnPass(i, o.fb); else $('#lfb').innerHTML=fbHTML('bad',esc(o.fb));
+      }; });
+    }
+  } else mountGame();
+}
+function firstOpen(){ var L=ST.learn; for(var k=0;k<9;k++) if(!L.passed[k]) return k; return 9; }
+function learnPass(i, msg){
+  var L=ST.learn; L.passed[i]=true; save();
+  $('#lfb').innerHTML=fbHTML('ok',esc(msg).replace(/^✓ /,''));
+  var nb=$('#sec-learn [data-go="1"]'); if(nb) nb.disabled=false;
+  var nv=$('#sec-learn .learn-nav [data-s="'+i+'"]'); if(nv){ nv.classList.add('dn'); nv.textContent='✓'; }
+  var nn=$('#sec-learn .learn-nav [data-s="'+(i+1)+'"]'); if(nn && firstOpen()>=i+1) nn.disabled=false;
+  updateTabs();
+}
+function gameHTML(){
+  var L=ST.learn, G=L.game, k=G.g, d=GAME[k], f=G.found[k]||[];
+  return '<div class="game-wrap"><div class="card"><h2>Spot the Mistakes</h2>'+
+    ask({n:'Graph '+(k+1)+' of '+GAME.length, q:'Tap each <span class="kw">mistake</span> on the graph. '+esc(d.intro), sub:'Tap the part that\'s wrong: the title, the axis numbers, an axis label, or the plot. Each one you find gets a green note on the graph.', graph:true,
+      a:'<b>Found '+f.length+' of '+d.err.length+'</b>', fb:'lfb', btns:(k>0?'<button data-gg="-1">◀ Previous graph</button>':'')+(f.length===d.err.length && k<GAME.length-1?'<button class="pri big" data-gg="1">Next graph ▶</button>':'')})+
+    (L.done?'<div class="fb ok" style="display:block">✓ Learn complete! Go to <b>2 Guided</b>.</div><button class="pri" id="toGuided">Go to Guided ▶</button>':'')+'</div>'+
+    '<div class="card"><svg class="graph" id="gsvg"></svg></div></div>';
+}
+function mountGame(){
+  var L=ST.learn, G=L.game, k=G.g, d=GAME[k], svg=$('#gsvg');
+  G.found[k]=G.found[k]||[];
+  var c=d.cfg(); c.regions=true; c.marks=[]; c.callouts=[];
+  G.found[k].forEach(function(e){ var er=d.err[e]; c.marks.push(er.to||er.r[0]); c.callouts.push({pos:er.pos,to:er.to,text:er.m}); });
+  drawGraph(svg,c);
+  svg.onclick=function(e){
+    var r=e.target.getAttribute && e.target.getAttribute('data-r'); if(!r) return;
+    var hit=-1; d.err.forEach(function(er,j){ if(hit<0 && er.r.indexOf(r)>=0 && G.found[k].indexOf(j)<0) hit=j; });
+    if(hit>=0){
+      G.found[k].push(hit);
+      if(G.found.every(function(f,j){ return f && f.length===GAME[j].err.length; }) && G.found.length===GAME.length){ L.gameDone=true; L.done=true; }
+      save(); renderLearn(); updateTabs();
+    } else {
+      var already=d.err.some(function(er,j){ return er.r.indexOf(r)>=0 && G.found[k].indexOf(j)>=0; });
+      $('#lfb').innerHTML=fbHTML('info', already?'You already found that one.':'That part looks OK. Keep looking!');
+    }
+  };
+  $$('[data-gg]').forEach(function(b){ b.onclick=function(){ G.g=Math.max(0,Math.min(GAME.length-1,G.g+(+b.dataset.gg))); save(); renderLearn(); }; });
+  var tg=$('#toGuided'); if(tg) tg.onclick=function(){ go('guided'); };
+}
+
+/* ===== PART 2: GUIDED (We do) — touch friendly ===== */
+var NB_ORDER = [0,1,4,2,3,5,9,6,7,8,10,11,16,12,13,14,15,19,17,18]; // lab notebook order (a few written late)
+function newGuided(){ return {step:0, slotX:'', slotY:'', ord:NB_ORDER.slice(), mm:0, x:{start:'',inc:''}, y:{start:'',inc:''}, pts:[], type:'', order:'', L:newLine(), ta:'', tb:'', titleOk:false, tails:[false,false,false,false,false], done:false, pend:null, tries:{}}; }
+var GSTEPS = ['Column headings','Put rows in time order','Find min & max','X axis','Y axis','Plot points','Line graph','Title & TAILS'];
+var GWHY = [0,0,4,4,3,5,6,1];
+var HEAD_CHIPS = ['Time (min)','Temperature (°F)','Time','Temperature'];
+var gGC = null, gBad = [], gSel = null;
+function gSt(){ return ST.guided; }
+function gNext(){ var s=gSt(); for(var k=0;k<20;k++) if(s.pts.indexOf(k)<0) return k; return -1; }
+function guidedCfg(){
+  var s=gSt(), c={bx:ST.settings.bx, by:ST.settings.by, pts:[]};
+  var X={start:num(s.x.start),inc:num(s.x.inc)}, Y={start:num(s.y.start),inc:num(s.y.inc)};
+  if(s.step>=3 && axisSet(X)) c.x=X;
+  if(s.step>=4 && axisSet(Y)) c.y=Y;
+  if(s.step>=1){ c.xlabel='Time (min)'; c.ylabel='Temperature (°F)'; }
+  c.hl = {0:['xlabel','ylabel'],3:['xticks'],4:['yticks'],7:['title']}[s.step];
+  if(s.done) c.hl=null;
+  if(s.done||s.titleOk) c.title='Temperature vs. Time';
+  c.pts = s.pts.map(function(i){ return {x:HW.x[i], y:HW.y[i], s:s.step===5?'ok':''}; }).concat(gBad);
+  if(s.step===4) c.pts = HW.x.map(function(x,i){ return {x:x,y:HW.y[i],s:'ghost'}; });
+  if(s.step===5 && !s.done && !s.pend){ var n=gNext(); if(n>=0) c.guides=[{x:HW.x[n]},{y:HW.y[n]}]; }
+  if(s.barPreview) c.bars=true;
+  if(s.orderPreview){ c.connect=true; c.connectOrder='table'; c.pts = NB_ORDER.map(function(i){ return {x:HW.x[i],y:HW.y[i]}; }); }
+  return c;
+}
+function drawGuided(){
+  var s=gSt(), c=guidedCfg(), eq='';
+  if(s.step>=6 && s.order==='x'){ eq = applyLine(c, s.L, HW.x, HW.y, 'Time', 'Temperature', ST.settings.bx); }
+  drawGraph(gGC.svg, c); showEq(gGC, eq);
+  gGC.svg.classList.toggle('plotting', s.step===5 && !s.done && !s.pend);
+  renderMeters(gGC.meters, HW.x, HW.y, c.x, c.y, ST.settings.bx, ST.settings.by);
+  renderTools(gGC, s.L, s.step>=6 && s.order==='x', function(){ return {xs:HW.x, ys:HW.y}; }, function(){ guidedLineCheck(); drawGuided(); }, s.step===6&&s.order==='x'&&!s.done?'← turn on Connect dots':'');
+}
+function hwTable(opts){
+  opts=opts||{};
+  var s=gSt(), next=opts.plot?gNext():-1;
+  function half(from,to){
+    var h='<table class="dt compact" style="margin:0"><tr><th class="'+(opts.hlCol===0?'hlcol':'')+'">Time (min)</th><th class="'+(opts.hlCol===1?'hlcol':'')+'">Temp (°F)</th></tr>';
+    for(var i=from;i<to;i++){
+      var cls = opts.plot ? (s.pts.indexOf(i)>=0?'pl':(i===next?'next':'')) : '';
+      var hc=function(c){ return (opts.tap?'tap ':'')+(opts.hlCol===c?'hlcol':''); };
+      h+='<tr class="'+cls+'"><td class="'+hc(0)+'" data-c="0" data-i="'+i+'">'+HW.x[i]+(opts.plot&&s.pts.indexOf(i)>=0?' ✓':'')+'</td><td class="'+hc(1)+'" data-c="1" data-i="'+i+'">'+HW.y[i]+'</td></tr>';
+    }
+    return h+'</table>';
+  }
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0">'+half(0,10)+half(10,20)+'</div><p class="muted" style="margin:0;font-size:13px">Rows 0–9 on the left, 10–19 on the right.</p>';
+}
+function renderGuided(){
+  var s=gSt(), side=$('#sec-guided .side'), st=s.step;
+  var reach=Math.max(s.reach||0, st);
+  var dots='<div class="step-dots">'+GSTEPS.map(function(t,k){ var ok=s.done||k<=reach; return '<button class="sd '+(k===st&&!s.done?'cur':(k<reach||s.done)?'dn':'')+'" data-sd="'+k+'" title="Step '+(k+1)+': '+esc(t)+'" '+(ok?'':'disabled')+'>'+(k+1)+'</button>'; }).join('')+'</div>';
+  var why=' <button class="link why-link" data-why="'+GWHY[st]+'">Why?</button>';
+  var h = (s.done?'<div class="done-banner">✓ 100% complete</div>':'')+'<h3>Guided: Heating Water</h3>'+dots;
+  if(!s.done && s.pend){
+    h += '<p class="q">Step '+(st+1)+': '+esc(GSTEPS[st])+' — done!</p>'+fbHTML('ok',s.pend)+'<div class="btns"><button class="pri big" id="gGo">Next: Step '+(st+2)+' — '+esc(GSTEPS[st+1])+' ▶</button></div>';
+  } else if(s.done){
+    h += fbHTML('ok','Guided graph complete! Now try one on your own.')+'<div class="btns"><button class="pri big" id="gNext">Next: 3 Graph It ▶</button></div>'+hwTable();
+  } else if(st===0){
+    h += ask({n:'Step 1 of 8', q:'Drag each heading into the right <span class="kw">column</span>.'+why, sub:'The left column is the <b>x</b> column (independent). You can also tap a heading, then tap a column.',
+      a:'<div class="chips" id="chipTray" style="gap:8px">'+HEAD_CHIPS.map(function(t){ var used=(s.slotX===t||s.slotY===t); return '<span class="chip'+(used?' used':'')+(gSel===t?' sel':'')+'" data-chip="'+esc(t)+'">'+esc(t)+'</span>'; }).join('')+'</div>'+
+      '<div class="slots"><div class="slot'+(s.slotX?' filled':'')+'" data-drop="x"><small>x column (left)</small>'+(esc(s.slotX)||'drop here')+'</div><div class="slot'+(s.slotY?' filled':'')+'" data-drop="y"><small>y column (right)</small>'+(esc(s.slotY)||'drop here')+'</div></div>',
+      fb:'gfb', btns:'<button class="pri big" id="gChk" '+(s.slotX&&s.slotY?'':'disabled')+'>Check</button>'+(s.slotX||s.slotY?'<button id="gClr">Clear</button>':'')})+
+      '<div class="story"><b class="lt">Lab notebook</b></div><div class="notebook">'+NB_ORDER.map(function(i){ return '<div>At '+HW.x[i]+' min the thermometer read '+HW.y[i]+' °F.</div>'; }).join('')+'</div>';
+  } else if(st===1){
+    h += ask({n:'Step 2 of 8', q:'Drag the <span class="kw">red rows</span> into time order.'+why, sub:'Drag a row to where it belongs. Rows stay red until they\'re in order. Reads down the left half, then the right half.',
+      a:ordTable(s.ord), fb:'gfb'});
+  } else if(st===2){
+    var tg=[['SMALLEST','Time',0,'0 min'],['LARGEST','Time',0,'19 min'],['SMALLEST','Temperature',1,'75 °F'],['LARGEST','Temperature',1,'212 °F']];
+    var t=tg[Math.min(s.mm,3)];
+    h += ask({n:'Step 3 of 8 — part '+(Math.min(s.mm,3)+1)+' of 4', q:'Tap the <span class="kw">'+t[0]+'</span> '+t[1]+' in the table.'+why, sub:'Look in the highlighted '+t[1]+' column'+(t[0]==='LARGEST'?' — check the right half too':'')+'.',
+      a:'<ol class="tasks">'+tg.map(function(x,k){ return '<li class="'+(k<s.mm?'dn':k===s.mm?'cur':'')+'">'+(k<s.mm?'✓ ':'')+x[0].toLowerCase()+' '+x[1]+(k<s.mm?' = <b>'+x[3]+'</b>':'')+'</li>'; }).join('')+'</ol>'+hwTable({tap:true, hlCol:t[2]}), fb:'gfb'});
+  } else if(st===3||st===4){
+    var isX = st===3, A = isX?s.x:s.y, vals = isX?HW.x:HW.y, nm = isX?'Time':'Temperature', un = isX?'min':'°F', r=rangeOf(vals), B=ST.settings[isX?'bx':'by'];
+    var q=fmtNum(+((r.max-r.min)/B).toPrecision(3));
+    h += '<p class="q" style="margin:4px 0">Step '+(st+1)+' of 8: set up the '+(isX?'x-axis (across)':'y-axis (up)')+' for '+nm+'.'+why+'</p>'+
+      ask({n:'Question ①', q:'What number should the '+(isX?'x':'y')+'-axis <span class="kw">START</span> at?', sub:nm+' goes from <b>'+r.min+'</b> to <b>'+r.max+' '+un+'</b>. Pick a round number at or just below '+r.min+' — it does NOT have to be 0.',
+        a:'<label class="ans">Start at <input inputmode="decimal" id="aStart" value="'+esc(A.start)+'"> '+un+'</label>'})+
+      ask({n:'Question ②', q:'How much should each box <span class="kw">GO UP BY</span>?', sub:'Count the boxes: ('+r.max+' − '+r.min+') ÷ '+B+' boxes '+(isX?'across':'up')+' = <b>'+q+'</b> → round UP to a friendly number:<div class="chips">'+[1,2,5,10,20,25,50].map(function(v){return '<span>'+v+'</span>';}).join('')+'</div><div style="margin-top:3px">1.5 or 2.5 work too — count by 3 or 5 and label every 2nd line.</div>',
+        a:'<label class="ans">Go up by <input inputmode="decimal" id="aInc" value="'+esc(A.inc)+'"> '+un+' per box</label><span class="incnote" id="incNote"></span>', fb:'gfb',
+        btns:'<button class="pri big" id="gChk">Check my '+(isX?'x':'y')+'-axis</button>'+((s.tries[st]||0)>=2?'<button id="gShow">Show me</button>':'')})+
+      (isX?'':'<p class="muted" style="margin:2px 0;font-size:13px">Dashed preview dots show where your data will land.</p>');
+  } else if(st===5){
+    var n=gNext();
+    h += ask({n:'Step 6 of 8', q:'<span class="kw">Plot</span> the highlighted row'+(n>=0?' (<b>'+HW.x[n]+' min, '+HW.y[n]+' °F</b>)':'')+'.'+why, sub:'Tap where the <b style="color:#c62828">red dashed lines</b> cross. Close is fine — the dot snaps into place.', graph:true,
+      a:'<b>Plotted: '+s.pts.length+' / 20</b>', fb:'gfb', btns:'<button id="gUndo" '+(s.pts.length?'':'disabled')+'>↶ Undo</button>'+(TEACHER?'<button id="gAuto">Auto-plot (teacher)</button>':'')})+hwTable({plot:true});
+  } else if(st===6){
+    if(s.type!=='line'){
+      h += ask({n:'Step 7 of 8', q:'What kind of <span class="kw">graph</span> fits temperature measured over time?'+why, a:'<div class="opts" style="margin:0"><button data-t="bar">Bar graph</button><button data-t="scatter">Scatter (dots only)</button><button data-t="line">Line graph</button></div>', fb:'gfb'});
+    } else if(s.order!=='x'){
+      h += prevOk('Line graph — data changes over time.')+ask({n:'Step 7 of 8', q:'Connect the dots in which <span class="kw">order</span>?', a:'<div class="opts" style="margin:0"><button data-ord="table">In the order the notebook lists them</button><button data-ord="x">Left to right (time order)</button></div>', fb:'gfb'});
+    } else {
+      h += prevOk('Left to right, in time order.')+ask({n:'Step 7 of 8', q:'Turn on <span class="kw">Connect dots</span>.', sub:'Use the toolbar at the top of the graph — or press the button.', a:'<button class="pri big" id="gConn">☑ Connect the dots ▶</button>', fb:'gfb'});
+    }
+  } else if(st===7){
+    var to=['Temperature','Time'];
+    function selT(id,v){ return '<select id="'+id+'"><option value="">— choose —</option>'+to.map(function(o){return '<option '+(v===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select>'; }
+    if(!s.titleOk){
+      h += ask({n:'Step 8 of 8 — part 1', q:'What is the <span class="kw">title</span>?'+why, sub:'Titles are "[y] vs. [x]".', a:'<div class="row2" style="margin:0;align-items:center">'+selT('ta',s.ta)+'<b>vs.</b>'+selT('tb',s.tb)+'</div>', fb:'gfb', btns:'<button class="pri big" id="gChk">Check title</button>'});
+    } else {
+      h += prevOk('Title: Temperature vs. Time.')+ask({n:'Step 8 of 8 — part 2', q:'<span class="kw">TAILS</span> check — look at your graph.', a:tailsHTML(s.tails).replace('<p class="q">TAILS — look at your graph and check each one:</p>',''), fb:'gfb2', btns:'<button class="pri big" id="gFin">Finish Guided ✓</button>'});
+    }
+  }
+  if(!s.done && !s.pend && st<reach) h += '<div class="btns" style="margin-top:14px"><button class="pri big" id="gFwd">Next: Step '+(st+2)+' — '+esc(GSTEPS[st+1])+' ▶</button></div>';
+  side.innerHTML=h;
+  wireGuided();
+  drawGuided();
+}
+function tailsHTML(t){
+  var items=['<b>T</b>itle — "y vs. x"','<b>A</b>xes — time on x, temperature on y','<b>I</b>ntervals — uniform, friendly, no skips','<b>L</b>abels — quantity + (unit) on both axes','<b>S</b>cale — data fills ≥ 50% of each axis'];
+  return '<div class="checklist"><p class="q">TAILS — look at your graph and check each one:</p>'+items.map(function(x,i){ return '<label><input type="checkbox" data-tl="'+i+'" '+(t[i]?'checked':'')+'><span>'+x+'</span></label>'; }).join('')+'</div>';
+}
+function gDone(msg){ var s=gSt(); s.pend=msg; s.reach=Math.max(s.reach||0,s.step+1); save(); renderGuided(); var b=$('#gGo'); if(b && b.scrollIntoView) b.scrollIntoView({block:'nearest'}); }
+function ordTable(ord){
+  function half(from,to){
+    var h='<table class="dt" style="margin:0"><tr><th></th><th>Time (min)</th><th>Temp (°F)</th></tr>';
+    for(var k=from;k<to;k++){ var i=ord[k];
+      var oo = (k>0 && HW.x[ord[k-1]]>HW.x[i]) || (k<19 && HW.x[ord[k+1]]<HW.x[i]);
+      h+='<tr data-k="'+k+'" data-h="'+k+'" class="drow '+(oo?'oo':'')+'"><td class="hdl" aria-hidden="true">☰</td><td>'+HW.x[i]+'</td><td>'+HW.y[i]+'</td></tr>'; }
+    return h+'</table>';
+  }
+  return '<div id="ordT" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0">'+half(0,10)+half(10,20)+'</div>';
+}
+function gfb(kind,msg,code){ var e=$('#gfb'); if(e) e.innerHTML=fbHTML(kind,msg,code); }
+
+/* --- drag helpers (mouse + touch via pointer events) --- */
+function autoScroll(y){
+  var side=$('#sec-guided .side'), Z=32;
+  var sideCan = side && side.scrollHeight>side.clientHeight+2;
+  var winCan = document.documentElement.scrollHeight>window.innerHeight+2;
+  if(y<Z+56){ if(sideCan) side.scrollTop-=10; else if(winCan) window.scrollBy(0,-10); }
+  else if(y>window.innerHeight-Z){ if(sideCan) side.scrollTop+=10; else if(winCan) window.scrollBy(0,10); }
+}
+function dragGhost(el, e, html){
+  var r=el.getBoundingClientRect(), g=document.createElement('div');
+  g.className='rowghost'; g.innerHTML=html; document.body.appendChild(g);
+  var ox=e.clientX-r.left, oy=e.clientY-r.top;
+  function pos(ev){ g.style.left=(ev.clientX-Math.min(ox,40))+'px'; g.style.top=(ev.clientY-Math.min(oy,20))+'px'; }
+  pos(e);
+  return {move:pos, done:function(){ g.remove(); }};
+}
+function wireChips(){
+  var s=gSt();
+  function place(slot, val){
+    if(slot==='x'){ if(s.slotY===val) s.slotY=''; s.slotX=val; } else { if(s.slotX===val) s.slotX=''; s.slotY=val; }
+    gSel=null; save(); renderGuided();
+  }
+  $$('[data-chip]').forEach(function(ch){
+    ch.addEventListener('pointerdown', function(e){
+      if(e.button>0) return; e.preventDefault();
+      var val=ch.dataset.chip, sx=e.clientX, sy=e.clientY, moved=false, G=null, over=null;
+      function mv(ev){
+        if(!moved && Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy)>6){ moved=true; G=dragGhost(ch, ev, esc(val)); }
+        if(!moved) return;
+        G.move(ev); autoScroll(ev.clientY);
+        var t=document.elementFromPoint(ev.clientX,ev.clientY), d=t&&t.closest('[data-drop]');
+        if(over&&over!==d) over.classList.remove('over'); over=d; if(d) d.classList.add('over');
+      }
+      function up(ev){
+        window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up);
+        if(G) G.done();
+        if(!moved){ gSel = (gSel===val?null:val); renderGuided(); return; }
+        var t=document.elementFromPoint(ev.clientX,ev.clientY), d=t&&t.closest('[data-drop]');
+        if(d) place(d.dataset.drop, val); else if(over) over.classList.remove('over');
+      }
+      window.addEventListener('pointermove',mv); window.addEventListener('pointerup',up); window.addEventListener('pointercancel',up);
+    });
+  });
+  $$('[data-drop]').forEach(function(sl){ sl.onclick=function(){ if(gSel) place(sl.dataset.drop, gSel); }; });
+}
+function moveRow(from, to){
+  var s=gSt(); if(to<0||to>19||from===to) return;
+  var v=s.ord.splice(from,1)[0]; s.ord.splice(to,0,v); save();
+  var sorted=s.ord.every(function(v,k){ return v===k; });
+  if(sorted){ gDone('All rows are in time order (0 → 19 min).'); }
+  else renderGuided();
+}
+function wireRows(){
+  $$('tr[data-h]').forEach(function(hd){
+    hd.addEventListener('pointerdown', function(e){
+      if(e.button>0) return; e.preventDefault();
+      var from=+hd.dataset.h, tr=hd, s=gSt(), i=s.ord[from];
+      var G=dragGhost(tr, e, '☰ '+HW.x[i]+' min — '+HW.y[i]+' °F'), target=null, below=false;
+      tr.classList.add('lift');
+      function clear(){ $$('#ordT tr').forEach(function(r){ r.classList.remove('drop-above','drop-below'); }); }
+      function mv(ev){
+        G.move(ev); autoScroll(ev.clientY);
+        var t=document.elementFromPoint(ev.clientX,ev.clientY), r=t&&t.closest('#ordT tr[data-k]');
+        clear(); if(!r) return;
+        var bb=r.getBoundingClientRect(); below = ev.clientY > bb.top+bb.height/2;
+        target=+r.dataset.k; r.classList.add(below?'drop-below':'drop-above');
+      }
+      function up(){
+        window.removeEventListener('pointermove',mv); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up);
+        G.done(); clear(); tr.classList.remove('lift');
+        if(target===null) return;
+        var to = target + (below?1:0); if(to>from) to--;
+        moveRow(from, to);
+      }
+      window.addEventListener('pointermove',mv); window.addEventListener('pointerup',up); window.addEventListener('pointercancel',up);
+    });
+  });
+}
+
+function wireGuided(){
+  var s=gSt(), side=$('#sec-guided .side');
+  $$('[data-sd]',side).forEach(function(b){ b.onclick=function(){ var k=+b.dataset.sd; s.reach=Math.max(s.reach||0,s.step+(s.pend?1:0)); s.done=false; s.pend=null; s.step=k; save(); renderGuided(); }; });
+  var fw=$('#gFwd'); if(fw) fw.onclick=function(){ s.step++; s.pend=null; save(); renderGuided(); window.scrollTo(0,0); var sd=$('#sec-guided .side'); if(sd) sd.scrollTop=0; };
+  $$('[data-why]',side).forEach(function(b){ b.onclick=function(){ ST.learn.stop=+b.dataset.why; save(); go('learn'); }; });
+  var gn=$('#gNext'); if(gn) gn.onclick=function(){ go('you'); };
+  if(s.done) return;
+  var st=s.step;
+  if(s.pend){ $('#gGo').onclick=function(){ s.step++; s.reach=Math.max(s.reach||0,s.step); s.pend=null; save(); renderGuided(); window.scrollTo(0,0); var sd=$('#sec-guided .side'); if(sd) sd.scrollTop=0; }; return; }
+  if(st===0){
+    wireChips();
+    var cl=$('#gClr'); if(cl) cl.onclick=function(){ s.slotX=''; s.slotY=''; gSel=null; save(); renderGuided(); };
+    $('#gChk').onclick=function(){
+      if(/Temp/.test(s.slotX) || /^Time/.test(s.slotY)){ logMistake(6); return gfb('bad','Swapped! Time is the independent variable — it goes in the <b>x (left) column</b>. Temperature goes in the y column.',6); }
+      if(s.slotX!=='Time (min)'||s.slotY!=='Temperature (°F)'){ logMistake(7); return gfb('bad','Headings need the quantity AND the unit: <b>Time (min)</b> and <b>Temperature (°F)</b>.',7); }
+      gDone('Headings set — the notebook data is in the table. These headings also become your axis labels.');
+    };
+  } else if(st===1){
+    wireRows();
+  } else if(st===2){
+    $$('td.tap',side).forEach(function(td){ td.onclick=function(){
+      var c=+td.dataset.c, i=+td.dataset.i, v=c?HW.y[i]:HW.x[i];
+      var want=[[0,0],[0,19],[1,75],[1,212]][s.mm];
+      if(c!==want[0]) return gfb('bad','Look in the '+(want[0]?'Temperature':'Time')+' column.');
+      if(v!==want[1]) return gfb('bad','That isn\'t the '+(s.mm%2?'largest':'smallest')+' — look again.');
+      s.mm++; save();
+      if(s.mm>=4){ gDone('Time: 0 → 19 min. Temperature: 75 → 212 °F.'); }
+      else { renderGuided(); gfb('ok','Yes — '+v+'.'); }
+    }; });
+  } else if(st===3||st===4){
+    var isX=st===3, A=isX?s.x:s.y;
+    $('#aStart').oninput=function(){ A.start=this.value; save(); drawGuided(); };
+    $('#aInc').oninput=function(){ A.inc=this.value; save(); drawGuided(); };
+    wireIncNote($('#aInc'), $('#incNote'), isX?'min':'°F');
+    $('#gChk').onclick=function(){
+      var r=checkAxis(isX?HW.x:HW.y, num(A.start), num(A.inc), ST.settings[isX?'bx':'by'], isX?'min':'°F');
+      if(r.ok){ gDone((isX?'x-axis':'y-axis')+' set! '+r.msg.replace('Nice — y','Y')); }
+      else { logMistake(r.code); s.tries[st]=(s.tries[st]||0)+1; save(); renderGuided(); gfb('bad', r.msg, r.code); }
+    };
+    var sh=$('#gShow'); if(sh) sh.onclick=function(){
+      var B=bestScale(isX?HW.x:HW.y, ST.settings[isX?'bx':'by']);
+      A.start=String(B.start); A.inc=String(B.inc); save(); renderGuided();
+      gfb('info','Range ÷ boxes, rounded UP to a friendly number = <b>'+fmtNum(B.inc)+'</b>. Start at a multiple of '+fmtNum(B.inc)+' at or just below the smallest value = <b>'+fmtNum(B.start)+'</b>. Press Check.');
+    };
+  } else if(st===5){
+    var u=$('#gUndo'); if(u) u.onclick=function(){ s.pts.pop(); save(); renderGuided(); };
+    var au=$('#gAuto'); if(au) au.onclick=function(){ s.pts=HW.x.map(function(_,i){return i;}); gDone('All 20 points plotted.'); };
+  } else if(st===6){
+    $$('[data-t]',side).forEach(function(b){ b.onclick=function(){
+      var t=b.dataset.t;
+      if(t==='bar'){ logMistake(9); s.barPreview=true; drawGuided(); s.barPreview=false; gfb('bad','Bars are for categories. Temperature changes continuously over time → line graph.',9); }
+      else if(t==='scatter'){ gfb('bad','Close — but for data that changes over time, connect the points into a line graph.'); }
+      else { s.type='line'; save(); renderGuided(); }
+    }; });
+    var cn=$('#gConn'); if(cn) cn.onclick=function(){ s.L.connect=true; s.L.fit=false; save(); guidedLineCheck(); };
+    $$('[data-ord]',side).forEach(function(b){ b.onclick=function(){
+      if(b.dataset.ord==='table'){ logMistake(10); s.orderPreview=true; drawGuided(); s.orderPreview=false; gfb('bad','See the mess? Connect in <b>time order</b> (left to right), not the order things were written down.',10); }
+      else { s.order='x'; save(); renderGuided(); }
+    }; });
+  } else if(st===7){
+    if($('#ta')){ $('#ta').onchange=function(){ s.ta=this.value; save(); };
+    $('#tb').onchange=function(){ s.tb=this.value; save(); }; }
+    if($('#gChk')) $('#gChk').onclick=function(){
+      if(s.ta==='Time'&&s.tb==='Temperature'){ logMistake(8); return gfb('bad','Backwards! The title is <b>y vs. x</b>: Temperature vs. Time.',8); }
+      if(s.ta!=='Temperature'||s.tb!=='Time') return gfb('bad','Pick both parts: [y] vs. [x].');
+      s.titleOk=true; save(); renderGuided();
+    };
+    $$('[data-tl]',side).forEach(function(cb){ cb.onchange=function(){ s.tails[+cb.dataset.tl]=cb.checked; save(); }; });
+    var fin=$('#gFin'); if(fin) fin.onclick=function(){
+      if(!s.tails.every(Boolean)){ var e=$('#gfb2'); if(e) e.innerHTML=fbHTML('bad','Look at your graph and tick all 5 TAILS boxes, then press Finish.'); return; }
+      s.done=true; s.everDone=true; save(); renderGuided(); updateTabs(); window.scrollTo(0,0); $('#sec-guided .side').scrollTop=0;
+    };
+  }
+}
+function guidedLineCheck(){
+  var s=gSt(); if(s.step!==6||s.done||s.pend) return;
+  if(s.L.fit){ gfb('bad','For heating water, each point is a real change over time — use <b>Connect dots</b>, not a best-fit line. Turn Best-fit off.'); return; }
+  if(s.L.connect){ gDone('Dots connected left to right — that\'s a line graph.'); }
+}
+function guidedPlace(x,y){
+  var s=gSt(); if(s.step!==5||s.done||s.pend) return;
+  var used=HW.x.map(function(_,i){ return s.pts.indexOf(i)>=0; });
+  var X={start:num(s.x.start),inc:num(s.x.inc)}, Y={start:num(s.y.start),inc:num(s.y.inc)};
+  var k=matchPoint(x,y,HW.x,HW.y,used,X,Y);
+  if(k>=0){
+    s.pts.push(k); save();
+    if(s.pts.length===20){ gDone('All 20 points plotted!'); }
+    else { renderGuided(); gfb('ok','Snapped to ('+HW.x[k]+' min, '+HW.y[k]+' °F).'); }
+  } else {
+    var p={x:x,y:y,s:'bad'}; gBad.push(p); drawGuided(); gfb('bad','The red dot is where you tapped — too far from a data point. Tap where the red dashed lines cross.');
+    setTimeout(function(){ gBad.splice(gBad.indexOf(p),1); drawGuided(); },1500);
+  }
+}
+
+/* ===== PART 3: GRAPH IT (You do) ===== */
+var ySTEPS = ['x variable','y variable','x start','x increment','y start','y increment','Graph type','Title','Plot','Line','TAILS'];
+var yGC=null, yBad=[];
+var QPOOL=['Temperature','Mass','Volume','Pressure','Absorbance','Count rate','CO₂ concentration','Time','Height','Density'];
+var UPOOL=['°C','°F','g','mL','Pa','kPa','ppm','counts/min','cm','s','min','h','(no unit)'];
+function newYou(ex){
+  var n=DATA.sets.length, k=Math.floor(Math.random()*n);
+  if(ex!==undefined && n>1){ while(k===ex) k=Math.floor(Math.random()*n); }
+  return {ds:k, swap:Math.random()<0.5, step:0, tries:{}, yq:'', yu:'', x:{start:'',inc:''}, y:{start:'',inc:''}, type:'', ta:'', tb:'', pts:[], L:newLine(), tails:[false,false,false,false,false], done:false};
+}
+function yS(){ return ST.you; }
+function yD(){ return DATA.sets[ST.you.ds]; }
+function yUnit(u){ return u||'(no unit)'; }
+function shuffleSeed(arr, seed){ var a=arr.slice(), s=seed+7; for(var i=a.length-1;i>0;i--){ s=(s*9301+49297)%233280; var j=Math.floor(s/233280*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function youCfg(){
+  var s=yS(), d=yD(), c={bx:ST.settings.bx, by:ST.settings.by};
+  var X={start:num(s.x.start),inc:num(s.x.inc)}, Y={start:num(s.y.start),inc:num(s.y.inc)};
+  if(s.step>=3 && axisSet(X)) c.x=X;
+  if(s.step>=5 && axisSet(Y)) c.y=Y;
+  if(s.step>=1) c.xlabel=axisLabel(d.xq,d.xu);
+  if(s.step>=2) c.ylabel=axisLabel(d.yq,d.yu);
+  if(s.step>=8) c.title=d.yq+' vs. '+d.xq;
+  c.hl = {0:['xlabel'],1:['ylabel'],2:['xticks'],3:['xticks'],4:['yticks'],5:['yticks'],7:['title']}[s.step];
+  if(s.done) c.hl=null;
+  c.pts = s.pts.map(function(i){ return {x:d.x[i], y:d.y[i], s:s.step===8?'ok':''}; }).concat(yBad);
+  if(s.step>=2 && s.step<=5) c.pts = d.x.map(function(x,i){ return {x:x,y:d.y[i],s:'ghost'}; });
+  if(s.barPreview) c.bars=true;
+  return c;
+}
+function drawYou(){
+  var s=yS(), d=yD(), c=youCfg(), eq='';
+  if(s.step>=9) eq = applyLine(c, s.L, d.x, d.y, d.xq, d.yq, ST.settings.bx);
+  drawGraph(yGC.svg, c); showEq(yGC, eq);
+  yGC.svg.classList.toggle('plotting', s.step===8 && !s.done);
+  renderMeters(yGC.meters, d.x, d.y, c.x, c.y, ST.settings.bx, ST.settings.by);
+  renderTools(yGC, s.L, s.step>=9, function(){ return {xs:d.x, ys:d.y}; }, function(){ drawYou(); }, s.step===9&&!s.done?'← choose a line, then press Check my line':'');
+}
+function youTable(opts){
+  opts=opts||{}; var s=yS(), d=yD(), next=-1, n=d.x.length;
+  if(opts.plot){ for(var k=0;k<n;k++) if(s.pts.indexOf(k)<0){ next=k; break; } }
+  var cols = s.swap && opts.raw ? [1,0] : [0,1];
+  var head = [axisLabel(d.xq,d.xu), axisLabel(d.yq,d.yu)];
+  var h='<div class="gdh">'+(opts.tapHead?'👉 Tap a column heading':'Data table')+'</div><table class="dt compact"><tr>'+cols.map(function(c){ return '<th class="'+(opts.tapHead?'tap ':'')+(opts.hlCol===c?'hlcol':'')+'" data-col="'+c+'">'+esc(head[c])+'</th>'; }).join('')+'</tr>';
+  for(var i=0;i<n;i++){
+    var cls=opts.plot?(s.pts.indexOf(i)>=0?'pl':(i===next?'next':'')):'';
+    var v=[fmtNum(d.x[i])+(opts.plot&&s.pts.indexOf(i)>=0?' ✓':''), fmtNum(d.y[i])];
+    h+='<tr class="'+cls+'">'+cols.map(function(c){ return '<td class="'+(opts.hlCol===c?'hlcol':'')+'">'+v[c]+'</td>'; }).join('')+'</tr>';
+  }
+  return h+'</table>';
+}
+function yfb(kind,msg,code){ var e=$('#yfb'); if(e) e.innerHTML=fbHTML(kind,msg,code); }
+function renderYou(){
+  var side=$('#sec-you .side');
+  if(!ST.you){
+    side.innerHTML='<h3>Graph It — on your own</h3><p>You\'ll get one random lab dataset (20 points). The app asks one question at a time and builds the graph as you answer.</p>'+
+      '<div id="yfb"></div><div class="btns"><button class="pri big" id="yStart">Start ▶</button></div>';
+    $('#yStart').onclick=function(){ ST.you=newYou(); save(); renderYou(); };
+    yGC.data.classList.add('hide');
+    drawGraph(yGC.svg,{bx:ST.settings.bx,by:ST.settings.by}); yGC.meters.innerHTML=''; showEq(yGC,''); renderTools(yGC,newLine(),false,function(){return {xs:[],ys:[]};},function(){});
+    return;
+  }
+  var s=yS(), d=yD(), st=s.step;
+  var dots='<div class="step-dots">'+ySTEPS.map(function(t,k){ return '<span title="'+esc(t)+'" class="'+(k===st&&!s.done?'cur':(k<st||s.done)?'dn':'')+'">'+(k+1)+'</span>'; }).join('')+'</div>';
+  var h=(ST.youDone?'<div class="done-banner">✓ 100% complete</div>':'')+'<h3>Graph It: '+esc(d.name)+'</h3>'+dots+'<div class="story'+(st>0?' small':'')+'"><b class="lt">Lab story</b>'+esc(d.story)+'</div>'+prevOk(s.lastOk);
+  var showBtn = (s.tries[st]||0)>=2 ? '<button id="yShow">Show me</button>' : '';
+  var chk = '<button class="pri big" id="yChk">Check</button>'+showBtn;
+  var rx=rangeOf(d.x), ry=rangeOf(d.y), n='Question '+(st+1)+' of '+ySTEPS.length;
+  function sel(id,opts,v){ return '<select id="'+id+'"><option value="">— choose —</option>'+opts.map(function(o){return '<option '+(v===o?'selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>'; }
+  if(s.done){
+    h += fbHTML('ok','Graph complete! Show your teacher your completion card.')+'<div class="btns"><button class="pri big" id="yCard">Show completion card</button><button id="yNew">New dataset (extra practice)</button></div>';
+  } else if(st===0){
+    h += ask({n:n, q:'Which goes on the <span class="kw">x-axis</span>?', sub:'Tap the heading of that column in the data table next to the graph.', graph:'👉 Answer in the data table', a:'Tap a column heading in the data table →', fb:'yfb', btns:showBtn});
+  } else if(st===1){
+    var qo=shuffleSeed([d.yq,'Time'].concat(QPOOL.filter(function(q){return q!==d.yq&&q!=='Time';}).slice(s.ds%5,s.ds%5+2)), s.ds);
+    var uo=shuffleSeed([yUnit(d.yu), d.xu].concat(UPOOL.filter(function(u){return u!==yUnit(d.yu)&&u!==d.xu;}).slice(s.ds%7,s.ds%7+3)), s.ds+3);
+    h += ask({n:n, q:'What does the <span class="kw">y-axis</span> measure, and in what <span class="kw">unit</span>?', sub:'Look at the lab story and the data table next to the graph.',
+      a:'<div class="row2" style="margin:0"><label>Quantity'+sel('yq',qo,s.yq)+'</label><label>Unit'+sel('yu',uo,s.yu)+'</label></div>', fb:'yfb', btns:chk});
+  } else if(st===2||st===4){
+    var isX=st===2, r=isX?rx:ry, A=isX?s.x:s.y, nm=isX?d.xq:d.yq, un=isX?d.xu:d.yu;
+    h += ask({n:n, q:'Where should the '+(isX?'x':'y')+'-axis ('+esc(nm)+') <span class="kw">START</span>?',
+      sub:esc(nm)+' goes from <b>'+fmtNum(r.min)+'</b> to <b>'+fmtNum(r.max)+(un?' '+esc(un):'')+'</b>. Pick a round number at or just below '+fmtNum(r.min)+' — it does NOT have to be 0.',
+      a:'<label class="ans">Start at <input inputmode="decimal" id="aStart" value="'+esc(A.start)+'"> '+esc(un)+'</label>', fb:'yfb', btns:chk});
+  } else if(st===3||st===5){
+    var isX2=st===3, r2=isX2?rx:ry, A2=isX2?s.x:s.y, nm2=isX2?d.xq:d.yq, un2=isX2?d.xu:d.yu, B=ST.settings[isX2?'bx':'by'];
+    h += ask({n:n, q:'How much should each box on the '+(isX2?'x':'y')+'-axis <span class="kw">GO UP BY</span>?',
+      sub:esc(nm2)+': '+fmtNum(r2.min)+' → '+fmtNum(r2.max)+(un2?' '+esc(un2):'')+'. You have <b>'+B+' boxes '+(isX2?'across':'up')+'</b>.'+
+        '<details style="margin-top:4px"><summary><b>Count the boxes</b> helper</summary>('+fmtNum(r2.max)+' − '+fmtNum(r2.min)+') ÷ '+B+' = <b>'+fmtNum(+((r2.max-r2.min)/B).toPrecision(3))+'</b> → round UP to a friendly number (1, 2, 5, 10, 20…). 1.5 or 2.5 work too: count by 3 or 5 and label every 2nd line.</details>',
+      a:'<label class="ans">Go up by <input inputmode="decimal" id="aInc" value="'+esc(A2.inc)+'"> '+esc(un2)+' per box</label><span class="incnote" id="incNote"></span><label class="ans" style="font-weight:500;font-size:14px">Start at <input inputmode="decimal" id="aStart" value="'+esc(A2.start)+'" style="width:100px;font-size:15px"> <span class="muted">(you can still change it)</span></label>',
+      fb:'yfb', btns:chk})+'<p class="muted" style="font-size:13px;margin:2px 0">The graph updates as you type; dashed preview dots show where your data will land.</p>';
+  } else if(st===6){
+    h += ask({n:n, q:'What kind of <span class="kw">graph</span> fits this data?', a:'<div class="opts" style="margin:0"><button data-t="bar">Bar graph</button><button data-t="scatter">Scatter (dots only)</button><button data-t="line">Line graph</button></div>', fb:'yfb'});
+  } else if(st===7){
+    h += ask({n:n, q:'What is the <span class="kw">title</span>?', sub:'Titles are "[y] vs. [x]".', a:'<div class="row2" style="margin:0;align-items:center">'+sel('ta',[d.yq,d.xq],s.ta)+'<b>vs.</b>'+sel('tb',[d.yq,d.xq],s.tb)+'</div>', fb:'yfb', btns:chk});
+  } else if(st===8){
+    h += ask({n:n, q:'<span class="kw">Plot</span> all '+d.x.length+' points.', sub:'Plot the highlighted row in the data table (or any row). Close is fine — the dot snaps into place.', graph:true,
+      a:'<b>Plotted: '+s.pts.length+' / '+d.x.length+'</b>', fb:'yfb', btns:'<button id="yUndo" '+(s.pts.length?'':'disabled')+'>↶ Undo</button>'+(TEACHER?'<button id="yAuto">Auto-plot (teacher)</button>':'')});
+  } else if(st===9){
+    h += ask({n:n, q:'Which <span class="kw">line</span> fits this data?', sub:'Use the toolbar at the top of the graph: <b>Connect dots</b> or <b>Best-fit line</b> (pick the type in <b>⚙ Fit settings</b>).', graph:true,
+      a:'Choose a line in the toolbar, then press Check.', fb:'yfb', btns:'<button class="pri big" id="yLine">Check my line</button>'+showBtn});
+  } else if(st===10){
+    h += ask({n:n, q:'<span class="kw">TAILS</span> check — look at your graph.', a:tailsHTML(s.tails).replace('time on x, temperature on y','independent (time) on x, measured value on y').replace('<p class="q">TAILS — look at your graph and check each one:</p>',''), fb:'yfb', btns:'<button class="pri big" id="yFin">Finish ✓</button>'});
+  }
+  side.innerHTML=h;
+  var to = s.done?{} : st===0?{raw:true,tapHead:true} : st===1?{hlCol:1} : (st>=2&&st<=5)?{hlCol:(st===2||st===3)?0:1} : st===8?{plot:true} : {};
+  yGC.data.innerHTML = youTable(to); yGC.data.classList.remove('hide'); yGC.data.classList.toggle('tapmode', st===0&&!s.done);
+  var nx=$('tr.next', yGC.data); if(nx) nx.scrollIntoView({block:'nearest'});
+  wireYou();
+  drawYou();
+}
+function wireYou(){
+  var s=yS(), d=yD(), side=$('#sec-you .side'), st=s.step;
+  function wrong(msg, code){ if(typeof code==='number') logMistake(code); s.tries[st]=(s.tries[st]||0)+1; save(); renderYou(); yfb('bad',msg,code); }
+  function right(msg){ s.step++; s.lastOk=msg||''; save(); renderYou(); }
+  var sh=$('#yShow');
+  if(s.done){
+    $('#yCard').onclick=showCard;
+    $('#yNew').onclick=function(){ ST.you=newYou(s.ds); save(); renderYou(); };
+    return;
+  }
+  if(st===0){
+    $$('th[data-col]',yGC.data).forEach(function(th){ th.onclick=function(){
+      if(+th.dataset.col===0) right('Yes — '+d.xq+' is the independent variable. It goes on x.');
+      else wrong(d.yq+' is what you measured (dependent) — it goes on y. Time goes on x.',6);
+    }; });
+    if(sh) sh.onclick=function(){ right('Time is the independent variable, so it goes on the x-axis.'); };
+  } else if(st===1){
+    $('#yq').onchange=function(){ s.yq=this.value; save(); };
+    $('#yu').onchange=function(){ s.yu=this.value; save(); };
+    $('#yChk').onclick=function(){
+      if(s.yq==='Time') return wrong('Time goes on x. What did you <b>measure</b>?',6);
+      if(s.yq!==d.yq) return wrong('Look at the story and the table — what was measured?');
+      if(s.yu!==yUnit(d.yu)) return wrong('Check the unit in the table heading.',7);
+      right('y-axis: '+esc(axisLabel(d.yq,d.yu))+'.');
+    };
+    if(sh) sh.onclick=function(){ s.yq=d.yq; s.yu=yUnit(d.yu); right('The table heading tells you: '+esc(axisLabel(d.yq,d.yu))+'.'); };
+  } else if(st===2||st===4){
+    var isX=st===2, A=isX?s.x:s.y, vals=isX?d.x:d.y, un=isX?d.xu:d.yu;
+    $('#aStart').oninput=function(){ A.start=this.value; save(); drawYou(); };
+    $('#yChk').onclick=function(){
+      var v=num(A.start), r=rangeOf(vals);
+      if(!isFinite(v)) return wrong('Type a number.');
+      if(v>r.min+1e-9) return wrong('Your start ('+fmtNum(v)+') is bigger than your smallest value ('+fmtNum(r.min)+') — some points would fall off. Start at or just below '+fmtNum(r.min)+'.');
+      right('Start = '+fmtNum(v)+'. Next, pick the increment — you can still adjust the start.');
+    };
+    if(sh) sh.onclick=function(){ var B=bestScale(vals, ST.settings[isX?'bx':'by']); A.start=String(B.start); right('A good start is '+fmtNum(B.start)+' — a round number at or just below the smallest value ('+fmtNum(rangeOf(vals).min)+').'); };
+  } else if(st===3||st===5){
+    var isX2=st===3, A2=isX2?s.x:s.y, vals2=isX2?d.x:d.y, un2=isX2?d.xu:d.yu, B=ST.settings[isX2?'bx':'by'];
+    $('#aStart').oninput=function(){ A2.start=this.value; save(); drawYou(); };
+    $('#aInc').oninput=function(){ A2.inc=this.value; save(); drawYou(); };
+    wireIncNote($('#aInc'), $('#incNote'), un2);
+    $('#yChk').onclick=function(){
+      var r=checkAxis(vals2, num(A2.start), num(A2.inc), B, un2);
+      if(r.ok) right((isX2?'x-axis':'y-axis')+' set! '+r.msg.replace('Nice — y','Y')); else wrong(r.msg, r.code);
+    };
+    if(sh) sh.onclick=function(){ var b=bestScale(vals2,B), r=rangeOf(vals2); A2.start=String(b.start); A2.inc=String(b.inc); right('Range ÷ boxes = '+fmtNum(+((r.max-r.min)/B).toPrecision(3))+' → round UP to the friendly number <b>'+fmtNum(b.inc)+'</b>. Start at a multiple of '+fmtNum(b.inc)+' at or below '+fmtNum(r.min)+': <b>'+fmtNum(b.start)+'</b>.'); };
+  } else if(st===6){
+    $$('[data-t]',side).forEach(function(b){ b.onclick=function(){
+      var t=b.dataset.t;
+      if(t==='bar'){ s.barPreview=true; drawYou(); s.barPreview=false; logMistake(9); yfb('bad','Bars are for categories. This data changes over time → line graph.',9); }
+      else if(t==='scatter') yfb('bad','Close — for data that changes over time, we make a line graph.');
+      else right('Line graph — data over time.');
+    }; });
+  } else if(st===7){
+    $('#ta').onchange=function(){ s.ta=this.value; save(); };
+    $('#tb').onchange=function(){ s.tb=this.value; save(); };
+    $('#yChk').onclick=function(){
+      if(s.ta===d.xq&&s.tb===d.yq) return wrong('Backwards! The title is <b>y vs. x</b>: '+esc(d.yq)+' vs. '+esc(d.xq)+'.',8);
+      if(s.ta!==d.yq||s.tb!==d.xq) return wrong('Pick both parts: [y] vs. [x].');
+      right('Title: '+esc(d.yq)+' vs. '+esc(d.xq)+'. Now plot your points.');
+    };
+    if(sh) sh.onclick=function(){ s.ta=d.yq; s.tb=d.xq; right('Title = [y] vs. [x] = '+esc(d.yq)+' vs. '+esc(d.xq)+'.'); };
+  } else if(st===8){
+    var u=$('#yUndo'); if(u) u.onclick=function(){ s.pts.pop(); save(); renderYou(); };
+    var au=$('#yAuto'); if(au) au.onclick=function(){ s.pts=d.x.map(function(_,i){return i;}); s.step=9; save(); renderYou(); };
+  } else if(st===9){
+    $('#yLine').onclick=function(){
+      var L=s.L, ok=false, msg='';
+      if(!L.connect && !L.fit) return yfb('bad','Turn on a line in the toolbar above the graph first.');
+      if(L.connect && L.fit) return yfb('bad','Pick one: Connect dots OR Best-fit line.');
+      if(d.line==='dot'){ ok=L.connect; msg=L.fit?'Each point here is a real change over time — connect the dots instead of a best-fit line.':''; }
+      else if(d.line==='lin'){ ok=L.fit&&(L.type==='lin'||L.type==='lin0'); msg=L.connect?'The zig-zags are measurement scatter. Use a best-fit line to show the pattern.':'The points follow a straight-line pattern — choose Linear in ⚙ Fit settings.'; }
+      else if(d.line==='exp'){ ok=L.connect||(L.fit&&L.type==='exp'); msg='Decay curves bend — a straight line doesn\'t fit. Connect the dots or use an Exponential fit.'; }
+      if(ok) right(esc(d.why)); else wrong(msg);
+    };
+    if(sh) sh.onclick=function(){ var L=s.L; if(d.line==='lin'){ L.fit=true; L.type='lin'; L.connect=false; } else { L.connect=true; L.fit=false; } right(esc(d.why)); };
+  } else if(st===10){
+    $$('[data-tl]',side).forEach(function(cb){ cb.onchange=function(){ s.tails[+cb.dataset.tl]=cb.checked; save(); }; });
+    $('#yFin').onclick=function(){ if(!s.tails.every(Boolean)) return yfb('bad','Look at your graph and tick all 5 TAILS boxes, then press Finish.'); s.done=true; ST.youDone=true; s.finished=new Date().toLocaleString(); save(); renderYou(); updateTabs(); showCard(); };
+  }
+}
+function youPlace(x,y){
+  var s=yS(), d=yD(); if(s.step!==8||s.done) return;
+  var used=d.x.map(function(_,i){ return s.pts.indexOf(i)>=0; });
+  var X={start:num(s.x.start),inc:num(s.x.inc)}, Y={start:num(s.y.start),inc:num(s.y.inc)};
+  var k=matchPoint(x,y,d.x,d.y,used,X,Y);
+  if(k>=0){ s.pts.push(k); if(s.pts.length===d.x.length){ s.step=9; s.lastOk='All points plotted!'; } save(); renderYou(); if(s.step===8) yfb('ok','Snapped to ('+fmtNum(d.x[k])+', '+fmtNum(d.y[k])+').'); }
+  else { var msg=missHint(x,y,d.x,d.y,used,X,Y,d.xu,d.yu); var p={x:x,y:y,s:'bad'}; yBad.push(p); drawYou(); yfb('bad',msg); setTimeout(function(){ yBad.splice(yBad.indexOf(p),1); drawYou(); },1500); }
+}
+function cardData(){
+  var s=ST.you, d=DATA.sets[s.ds];
+  var mk=Object.keys(MISTAKES).filter(function(k){ return ST.mistakes[k]; }).map(function(k){ return {k:k, t:MISTAKES[k], n:ST.mistakes[k]}; });
+  return {when:s.finished||new Date().toLocaleString(), learn:pctLearn(), guided:pctGuided(), you:pctYou(), ds:d.name, mk:mk};
+}
+function cardText(){
+  var c=cardData();
+  return 'Graphing Like a Scientist — Completion Card\n'+
+    'Date/time: '+c.when+'\n'+
+    'Learn: '+c.learn+'%   Guided: '+c.guided+'%   Graph It: '+c.you+'%\n'+
+    'Dataset: '+c.ds+'\n'+
+    'Mistakes along the way: '+(c.mk.length? '\n'+c.mk.map(function(m){ return '  #'+m.k+' '+m.t+' × '+m.n; }).join('\n') : 'none')+'\n'+
+    'chemistryteacher.net/graphing';
+}
+function cardSVG(){
+  var s=ST.you, d=DATA.sets[s.ds], c=cardData();
+  var gc=youCfg(); gc.hl=null; gc.noPh=true; var eq=applyLine(gc, s.L, d.x, d.y, d.xq, d.yq, ST.settings.bx);
+  var g=geom(gc), W=1000, rowsH=Math.max(1,c.mk.length)*30, gy=375+rowsH, H=gy+20+770+30+(eq?50:0), o=[];
+  o.push('<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" font-family="Segoe UI, Roboto, Arial, sans-serif"><style>'+SVG_CSS+'</style>');
+  o.push('<rect width="'+W+'" height="'+H+'" fill="#fff"/><rect x="8" y="8" width="'+(W-16)+'" height="'+(H-16)+'" rx="18" fill="none" stroke="#1758b8" stroke-width="6"/>');
+  o.push('<text x="40" y="70" font-size="34" font-weight="800" fill="#1758b8">Graphing Like a Scientist — Completion Card</text>');
+  function row(y,l,v){ o.push('<text x="40" y="'+y+'" font-size="24" fill="#5b6875">'+esc(l)+'</text><text x="300" y="'+y+'" font-size="24" font-weight="700" fill="#1d2731">'+esc(v)+'</text>'); }
+  row(130,'Date / time',c.when);
+  row(175,'Learn',c.learn+'%'+(c.learn>=100?'  ✓':'')); row(215,'Guided',c.guided+'%'+(c.guided>=100?'  ✓':'')); row(255,'Graph It',c.you+'%'+(c.you>=100?'  ✓':''));
+  row(295,'Dataset',c.ds);
+  o.push('<text x="40" y="'+(gy-rowsH-14)+'" font-size="22" font-weight="800" fill="#1d2731">Mistakes made along the way</text>');
+  if(c.mk.length) c.mk.forEach(function(m,i){ o.push('<text x="60" y="'+(gy-rowsH+20+i*30)+'" font-size="20" fill="#1d2731">#'+m.k+' '+esc(m.t)+'  ×'+m.n+'</text>'); });
+  else o.push('<text x="60" y="'+(gy-rowsH+20)+'" font-size="20" fill="#17723a">None — nice work!</text>');
+  o.push('<svg x="60" y="'+(gy+20)+'" width="880" height="770" viewBox="0 0 '+g.W+' '+g.H+'">'+graphMarkup(gc,g)+'</svg>');
+  if(eq) o.push('<text x="60" y="'+(H-30)+'" font-size="22" font-family="Consolas, monospace" fill="#1d2731">'+eq.replace(/(&nbsp;)+/g,'  ').replace(/<[^>]+>/g,'')+'</text>');
+  o.push('</svg>');
+  return {svg:o.join(''), W:W, H:H};
+}
+function cardPNG(cb){
+  var c=cardSVG(), img=new Image();
+  img.onload=function(){ var cv=document.createElement('canvas'); cv.width=c.W; cv.height=c.H; var x=cv.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.W,c.H); x.drawImage(img,0,0); cv.toBlob(function(b){ cb(b); },'image/png'); };
+  img.onerror=function(){ cb(null); };
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(c.svg);
+}
+function cardMsg(t){ var e=$('#cardMsg'); if(e) e.innerHTML=t; }
+function showCard(){
+  var s=ST.you, d=DATA.sets[s.ds], c=cardData();
+  var gc=youCfg(); gc.hl=null; var eq=applyLine(gc, s.L, d.x, d.y, d.xq, d.yq, ST.settings.bx);
+  var g=geom(gc);
+  var rows=c.mk.map(function(m){ return '<tr><td>#'+m.k+' '+esc(m.t)+'</td><td style="text-align:right"><b>'+m.n+'</b></td></tr>'; }).join('');
+  var html='<div class="ccard"><h2>Graphing Like a Scientist — Completion Card</h2>'+
+    '<table><tr><td>Date / time</td><td>'+esc(c.when)+'</td></tr>'+
+    '<tr><td>Learn</td><td><b>'+c.learn+'%</b> '+(c.learn>=100?'✓':'')+'</td></tr><tr><td>Guided</td><td><b>'+c.guided+'%</b> '+(c.guided>=100?'✓':'')+'</td></tr><tr><td>Graph It</td><td><b>'+c.you+'%</b> '+(c.you>=100?'✓':'')+'</td></tr>'+
+    '<tr><td>Dataset</td><td>'+esc(c.ds)+'</td></tr></table>'+
+    '<h3 style="margin-top:10px">Mistakes made along the way</h3><table>'+(rows||'<tr><td>None — nice work!</td></tr>')+'</table>'+
+    '<svg viewBox="0 0 '+g.W+' '+g.H+'">'+graphMarkup(gc,g)+'</svg>'+(eq?'<div class="eqbox">'+eq+'</div>':'')+'</div><div id="cardMsg" class="cardmsg"></div>';
+  modal(html,[
+    {t:'📋 Copy', keep:true, fn:function(){
+      var txt=cardText();
+      try{
+        if(navigator.clipboard && window.ClipboardItem){
+          navigator.clipboard.write([new ClipboardItem({'image/png': new Promise(function(res,rej){ cardPNG(function(b){ b?res(b):rej(); }); }), 'text/plain': new Blob([txt],{type:'text/plain'})})])
+            .then(function(){ cardMsg('✓ Copied — paste it into Google Classroom, a Doc, or an email.'); })
+            .catch(function(){ navigator.clipboard.writeText(txt).then(function(){ cardMsg('✓ Copied as text.'); }, function(){ cardMsg('Copy didn\'t work here — use Save PNG instead.'); }); });
+        } else if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){ cardMsg('✓ Copied as text.'); }); }
+        else cardMsg('Copy isn\'t available in this browser — use Save PNG instead.');
+      }catch(e){ cardMsg('Copy didn\'t work here — use Save PNG instead.'); }
+    }},
+    {t:'⬇ Save PNG', keep:true, fn:function(){
+      cardPNG(function(b){ if(!b){ cardMsg('Could not make the image.'); return; }
+        var u=URL.createObjectURL(b), a=document.createElement('a'); a.href=u; a.download='graphing-completion-card.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); URL.revokeObjectURL(u); },3000);
+        cardMsg('✓ Saved graphing-completion-card.png — upload it to Google Classroom or attach it to an email.'); });
+    }},
+    {t:'✉ Email using Google', keep:true, fn:function(){
+      var to=Q.get('email')||'';
+      var url='https://mail.google.com/mail/?view=cm&fs=1'+(to?'&to='+encodeURIComponent(to):'')+'&su='+encodeURIComponent('Graphing Like a Scientist — Completion Card')+'&body='+encodeURIComponent(cardText()+'\n\n(Attach your saved PNG to include the picture of your graph.)');
+      window.open(url,'_blank','noopener');
+      cardMsg('Gmail opened in a new tab. Tip: press Save PNG first, then attach the picture in Gmail.');
+    }},
+    {t:'Close', pri:true}
+  ]);
+}
+
+/* ===== PART 4: FREE FORM ===== */
+function newFree(){ return {xq:'Time', xu:'s', yq:'', yu:'', title:'', rows:[['',''],['',''],['',''],['',''],['','']], cats:null, x:{start:'',inc:''}, y:{start:'',inc:''}, tries:{}, pts:[], auto:false, L:newLine()}; }
+var fGC=null, fBad=[];
+function fS(){ return ST.free; }
+function fIsTime(){ var f=fS(); return /time/i.test(f.xq) || ['s','sec','ms','min','mins','h','hr','hrs','hours','minutes','seconds','day','days','d','wk','weeks'].indexOf(String(f.xu).trim().toLowerCase())>=0; }
+function fBar(){ return fS().cats==='bar' && !fIsTime(); }
+function fData(){ // valid rows
+  var f=fS(), bar=fBar(), xs=[], ys=[], idx=[];
+  f.rows.forEach(function(r,i){
+    var y=num(r[1]); if(!isFinite(y)) return;
+    if(bar){ if(String(r[0]).trim()==='') return; xs.push(String(r[0]).trim()); }
+    else { var x=num(r[0]); if(!isFinite(x)) return; xs.push(x); }
+    ys.push(y); idx.push(i);
+  });
+  return {xs:xs, ys:ys, idx:idx};
+}
+function fAxes(){
+  var f=fS(), d=fData(), bar=fBar();
+  var X={start:num(f.x.start),inc:num(f.x.inc)}, Y={start:num(f.y.start),inc:num(f.y.inc)};
+  var xr = bar ? {ok:true} : (d.xs.length? checkAxis(d.xs, X.start, X.inc, ST.settings.bx, f.xu) : {ok:false});
+  var yr = d.ys.length ? checkAxis(d.ys, Y.start, Y.inc, ST.settings.by, f.yu) : {ok:false};
+  return {X:X, Y:Y, xr:xr, yr:yr, ok: xr.ok && yr.ok && d.ys.length>0};
+}
+function fTitle(){ var f=fS(); return f.title.trim() || (f.yq&&f.xq ? f.yq+' vs. '+f.xq : ''); }
+function freeCfg(forExport){
+  var f=fS(), d=fData(), bar=fBar(), A=fAxes(), c={bx:ST.settings.bx, by:ST.settings.by};
+  if(bar){ c.cats=d.xs; c.bars=true; c.dotsWithBars=false; }
+  else if(axisSet(A.X)) c.x=A.X;
+  if(axisSet(A.Y)) c.y=A.Y;
+  c.xlabel = f.xq ? axisLabel(f.xq,f.xu) : '';
+  c.ylabel = f.yq ? axisLabel(f.yq,f.yu) : '';
+  c.title = fTitle();
+  if(forExport) c.noPh=true;
+  var show = (f.auto||bar) ? d.idx.map(function(_,k){return k;}) : f.pts.filter(function(k){ return k<d.ys.length; });
+  c.pts = show.map(function(k){ return bar ? {ci:k, x:d.xs[k], y:d.ys[k]} : {x:d.xs[k], y:d.ys[k]}; });
+  if(!forExport) c.pts = c.pts.concat(fBad);
+  if(!forExport && !bar && !f.auto && !A.ok && c.x && c.y) c.pts = d.xs.map(function(x,k){ return {x:x,y:d.ys[k],s:'ghost'}; });
+  return c;
+}
+function drawFree(){
+  var f=fS(), d=fData(), bar=fBar(), c=freeCfg(false), eq='';
+  var plotted = (f.auto||bar) ? d.ys.length : f.pts.length;
+  var lineOK = !bar && plotted>=2 && c.x && c.y;
+  if(lineOK){
+    var sx=[], sy=[];
+    if(f.auto) { sx=d.xs; sy=d.ys; } else f.pts.forEach(function(k){ if(k<d.xs.length){ sx.push(d.xs[k]); sy.push(d.ys[k]); } });
+    eq = applyLine(c, f.L, sx, sy, f.xq||'x', f.yq||'y', ST.settings.bx);
+  }
+  drawGraph(fGC.svg, c); showEq(fGC, eq);
+  var A=fAxes();
+  fGC.svg.classList.toggle('plotting', !bar && !f.auto && A.ok);
+  if(bar) renderMeters(fGC.meters, null, d.ys, null, c.y, ST.settings.bx, ST.settings.by);
+  else renderMeters(fGC.meters, d.xs, d.ys, c.x, c.y, ST.settings.bx, ST.settings.by);
+  renderTools(fGC, f.L, lineOK, function(){ return {xs:d.xs, ys:d.ys}; }, drawFree, bar?'(lines are for line graphs)':(!lineOK?'plot at least 2 points first':''));
+  var st=$('#fStatus'); if(st) st.innerHTML=freeStatus();
+}
+function freeStatus(){
+  var f=fS(), d=fData(), A=fAxes(), bar=fBar();
+  var plotted=(f.auto||bar)?d.ys.length:f.pts.filter(function(k){return k<d.ys.length;}).length;
+  return '<div class="chips"><span>'+d.ys.length+' data points</span>'+(bar?'':'<span>x-axis '+(A.xr.ok?'✓':'—')+'</span>')+'<span>y-axis '+(A.yr.ok?'✓':'—')+'</span><span>plotted '+plotted+' / '+d.ys.length+'</span></div>';
+}
+function ffb(id,kind,msg,code){ var e=$('#'+id); if(e) e.innerHTML=msg?fbHTML(kind,msg,code):''; }
+function renderFree(){
+  var f=fS(), side=$('#sec-free .side'), bar=fBar(), isT=fIsTime(), d=fData();
+  var h='<h3>Free Form — graph your own lab data</h3><p class="muted">Enter your data, set up the axes (same rules as Graph It), plot, then download or print to turn in.</p>';
+  h+='<div class="ff-sec"><b>1. Labels</b><div class="ff-grid" style="margin-top:6px">'+
+    '<label style="grid-column:1/3">Name (optional — only goes on your download/printout; leave blank to write it by hand)<input id="fName" value="'+esc(ST.name)+'"></label>'+
+    '<label>x quantity (independent)<input id="fxq" value="'+esc(f.xq)+'" placeholder="Time"></label><label>x unit<input id="fxu" value="'+esc(f.xu)+'" placeholder="s"></label>'+
+    '<label>y quantity (measured)<input id="fyq" value="'+esc(f.yq)+'" placeholder="Temperature"></label><label>y unit<input id="fyu" value="'+esc(f.yu)+'" placeholder="°C"></label>'+
+    '<label style="grid-column:1/3">Title (blank = "y vs. x")<input id="fti" value="'+esc(f.title)+'" placeholder="'+esc((f.yq||'y')+' vs. '+(f.xq||'x'))+'"></label></div><div id="fLblFb"></div></div>';
+  h+='<div class="ff-sec"><b>2. Data</b> <span class="muted">(up to 50 rows)</span>'+
+    '<details style="margin:6px 0"><summary>Paste from Google Sheets / Excel</summary><p class="muted">Copy two columns (x then y) and paste here. A heading row like "Time (s)" fills in the labels.</p><textarea id="fPaste" placeholder="0\t22.1\n10\t25.4"></textarea><button class="sm pri" id="fUsePaste">Use pasted data</button><div id="fPasteFb"></div></details>'+
+    '<div class="tblwrap"><table class="dt"><tr><th>'+esc(f.xq?axisLabel(f.xq,f.xu):'x')+'</th><th>'+esc(f.yq?axisLabel(f.yq,f.yu):'y')+'</th><th></th></tr>'+
+    f.rows.map(function(r,i){ return '<tr><td><input data-r="'+i+'" data-c="0" value="'+esc(r[0])+'" '+(bar?'':'inputmode="decimal"')+'></td><td><input inputmode="decimal" data-r="'+i+'" data-c="1" value="'+esc(r[1])+'"></td><td><button class="del" data-del="'+i+'" title="Delete row">✕</button></td></tr>'; }).join('')+'</table></div>'+
+    '<div class="btns"><button class="sm" id="fAdd" '+(f.rows.length>=50?'disabled':'')+'>+ Add row</button>'+(bar?'':'<button class="sm" id="fSort">Sort by x</button>')+'<button class="sm" id="fClear">Clear data</button></div></div>';
+  if(!isT){
+    h+='<div class="ff-sec">'+ask({n:'3. Question', q:'Are your x values <span class="kw">numbers that change</span>, or separate <span class="kw">categories</span>?', a:'<div class="opts" style="margin:0"><button data-cat="line" class="'+(f.cats==='line'?'sel-ok':'')+'">Numbers that change → line graph</button><button data-cat="bar" class="'+(f.cats==='bar'?'sel-ok':'')+'">Separate categories → bar graph</button></div>'})+'</div>';
+  }
+  var n=isT?3:4;
+  h+='<div class="ff-sec">'+(bar?'':ask({n:n+'. Question — x-axis', q:'Where should the x-axis <span class="kw">START</span>, and what should each box <span class="kw">GO UP BY</span>?', sub:d.xs.length?'x goes from <b>'+fmtNum(rangeOf(d.xs).min)+'</b> to <b>'+fmtNum(rangeOf(d.xs).max)+'</b>. '+ST.settings.bx+' boxes across.':'Enter your data first.',
+      a:'<label class="ans">Start at <input inputmode="decimal" id="fxs" value="'+esc(f.x.start)+'"></label><label class="ans">Go up by <input inputmode="decimal" id="fxi" value="'+esc(f.x.inc)+'"> per box</label><span class="incnote" id="fxNote"></span>', fb:'fxfb', btns:'<button class="pri" id="fChkX">Check x-axis</button>'+((f.tries.x||0)>=2?'<button id="fShowX">Show me</button>':'')}))+
+    ask({n:(bar?n:n)+'. Question — y-axis', q:'Where should the y-axis <span class="kw">START</span>, and what should each box <span class="kw">GO UP BY</span>?', sub:d.ys.length?'y goes from <b>'+fmtNum(rangeOf(d.ys).min)+'</b> to <b>'+fmtNum(rangeOf(d.ys).max)+'</b>. '+ST.settings.by+' boxes up.':'Enter your data first.',
+      a:'<label class="ans">Start at <input inputmode="decimal" id="fys" value="'+esc(f.y.start)+'"></label><label class="ans">Go up by <input inputmode="decimal" id="fyi" value="'+esc(f.y.inc)+'"> per box</label><span class="incnote" id="fyNote"></span>', fb:'fyfb', btns:'<button class="pri" id="fChkY">Check y-axis</button>'+((f.tries.y||0)>=2?'<button id="fShowY">Show me</button>':'')})+
+    (d.ys.length?'<details class="helper"><summary><b>Count the boxes</b> helper</summary>'+boxHelp(d)+'</details>':'')+'</div>';
+  h+='<div class="ff-sec"><b>'+(n+1)+'. Points</b>'+(bar?'<p class="muted">Bars are drawn for you.</p>':
+    '<div class="opts"><button data-pm="hand" class="'+(!f.auto?'sel-ok':'')+'">Plot by hand (tap the graph)</button><button data-pm="auto" class="'+(f.auto?'sel-ok':'')+'">Auto-plot points</button></div>'+
+    (!f.auto?'<div class="btns"><button class="sm" id="fUndo">↶ Undo</button><button class="sm" id="fClrPts">Clear points</button></div>':'')+'<div id="fptfb"></div>')+'</div>';
+  h+='<div class="ff-sec"><b>'+(n+2)+'. Turn it in</b><div id="fStatus">'+freeStatus()+'</div><div class="btns"><button class="pri" id="fPng">⬇ Download PNG</button><button id="fCopy">📋 Copy</button><button id="fMail">✉ Email using Google</button><button id="fPrint">🖨 Print</button></div><div id="fExFb"></div><p class="muted">The PNG and printout include the date, the graph, the equation (if on), your full data table, and your name only if you typed one.</p></div>';
+  side.innerHTML=h;
+  wireFree();
+  drawFree();
+  labelNotes();
+}
+function boxHelp(d){
+  var bar=fBar(), out='';
+  function one(n, vals, B){ var r=rangeOf(vals); return n+': range = '+fmtNum(r.max)+' − '+fmtNum(r.min)+' = <b>'+fmtNum(+(r.max-r.min).toPrecision(6))+'</b>; ÷ '+B+' boxes = <b>'+fmtNum(+((r.max-r.min)/B).toPrecision(3))+'</b> → round UP to a friendly number.<br>'; }
+  if(!bar) out+=one('x', d.xs, ST.settings.bx);
+  out+=one('y', d.ys, ST.settings.by);
+  return out;
+}
+function labelNotes(){
+  var f=fS(), m=[];
+  if(f.xq && f.yq && f.title.trim().toLowerCase().indexOf(f.xq.toLowerCase()+' vs')===0) m.push(fbHTML('bad','Your title looks backwards — it should be <b>'+esc(f.yq)+' vs. '+esc(f.xq)+'</b> (y vs. x).',8));
+  if(/time/i.test(f.yq)) m.push(fbHTML('bad','Time should go on the x-axis, not y.',6));
+  if((f.xq&&!f.xu.trim()) || (f.yq&&!f.yu.trim())) m.push(fbHTML('info','Add a unit to each axis (leave it blank only if there truly is none, like absorbance).'));
+  var e=$('#fLblFb'); if(e) e.innerHTML=m.join('');
+}
+function fDataChanged(){ var f=fS(); f.pts=[]; save(); }
+function wireFree(){
+  var f=fS(), side=$('#sec-free .side');
+  $('#fName').oninput=function(){ ST.name=this.value; save(); };
+  [['fxq','xq'],['fxu','xu'],['fyq','yq'],['fyu','yu'],['fti','title']].forEach(function(p){
+    $('#'+p[0]).oninput=function(){ f[p[1]]=this.value; save(); drawFree(); labelNotes(); };
+    $('#'+p[0]).onchange=function(){ renderFree(); };
+  });
+  $$('input[data-r]',side).forEach(function(inp){ inp.oninput=function(){ f.rows[+inp.dataset.r][+inp.dataset.c]=inp.value; fDataChanged(); drawFree(); }; });
+  $$('[data-del]',side).forEach(function(b){ b.onclick=function(){ f.rows.splice(+b.dataset.del,1); if(!f.rows.length) f.rows.push(['','']); fDataChanged(); renderFree(); }; });
+  $('#fAdd').onclick=function(){ if(f.rows.length<50){ f.rows.push(['','']); save(); renderFree(); var ins=$$('#sec-free input[data-c="0"]'); if(ins.length) ins[ins.length-1].focus(); } };
+  var so=$('#fSort'); if(so) so.onclick=function(){ f.rows.sort(function(a,b){ var x=num(a[0]), y=num(b[0]); if(!isFinite(x)) return 1; if(!isFinite(y)) return -1; return x-y; }); fDataChanged(); renderFree(); };
+  $('#fClear').onclick=function(){ modal('<h3>Clear all data?</h3><p>This removes every row.</p>',[{t:'Cancel'},{t:'Clear',pri:true,fn:function(){ f.rows=[['',''],['',''],['','']]; fDataChanged(); renderFree(); }}]); };
+  $('#fUsePaste').onclick=function(){
+    var txt=$('#fPaste').value, lines=txt.split(/\r?\n/).filter(function(l){ return l.trim(); }), rows=[];
+    lines.forEach(function(l,k){
+      var p = l.indexOf('\t')>=0 ? l.split('\t') : l.split(/,|\s{2,}|;/);
+      p=p.map(function(s){ return s.trim(); }).filter(function(s,i){ return s!==''||i<2; });
+      if(p.length<2) return;
+      if(k===0 && !isFinite(num(p[1]))){ // header row
+        var hx=p[0].match(/^(.*?)\s*\((.*)\)\s*$/), hy=p[1].match(/^(.*?)\s*\((.*)\)\s*$/);
+        if(hx){ f.xq=hx[1]; f.xu=hx[2]; } else f.xq=p[0];
+        if(hy){ f.yq=hy[1]; f.yu=hy[2]; } else f.yq=p[1];
+        return;
+      }
+      rows.push([p[0], p[1]]);
+    });
+    if(!rows.length) return ffb('fPasteFb','bad','No rows found. Copy two columns (x, then y).');
+    f.rows=rows.slice(0,50); fDataChanged(); renderFree();
+    ffb('fPasteFb','ok',rows.length>50?'Used the first 50 rows.':'Loaded '+rows.length+' rows.');
+  };
+  $$('[data-cat]',side).forEach(function(b){ b.onclick=function(){ f.cats=b.dataset.cat; fDataChanged(); renderFree(); }; });
+  function axWire(k, sId, iId){ var s=$('#'+sId), i=$('#'+iId); if(!s) return; s.oninput=function(){ f[k].start=this.value; save(); drawFree(); }; i.oninput=function(){ f[k].inc=this.value; save(); drawFree(); }; }
+  axWire('x','fxs','fxi'); axWire('y','fys','fyi');
+  wireIncNote($('#fxi'), $('#fxNote'), f.xu); wireIncNote($('#fyi'), $('#fyNote'), f.yu);
+  function chk(k){
+    var d=fData(), vals=k==='x'?d.xs:d.ys, id='f'+k+'fb';
+    if(vals.length<2) return ffb(id,'bad','Enter at least 2 rows of data first.');
+    var r=checkAxis(vals, num(f[k].start), num(f[k].inc), ST.settings[k==='x'?'bx':'by'], k==='x'?f.xu:f.yu);
+    if(r.ok){ ffb(id,'ok',r.msg); } else { f.tries[k]=(f.tries[k]||0)+1; save(); renderFree(); ffb(id,'bad',r.msg,r.code); }
+    drawFree();
+  }
+  var cx=$('#fChkX'); if(cx) cx.onclick=function(){ chk('x'); };
+  $('#fChkY').onclick=function(){ chk('y'); };
+  function show(k){ var d=fData(), vals=k==='x'?d.xs:d.ys, B=bestScale(vals, ST.settings[k==='x'?'bx':'by']); if(!B) return; f[k].start=String(B.start); f[k].inc=String(B.inc); save(); renderFree(); ffb('f'+k+'fb','info','Range ÷ boxes, rounded UP to a friendly number → go up by <b>'+fmtNum(B.inc)+'</b>; start at <b>'+fmtNum(B.start)+'</b>.'); }
+  var sx=$('#fShowX'); if(sx) sx.onclick=function(){ show('x'); };
+  var sy=$('#fShowY'); if(sy) sy.onclick=function(){ show('y'); };
+  $$('[data-pm]',side).forEach(function(b){ b.onclick=function(){ f.auto=b.dataset.pm==='auto'; save(); renderFree(); }; });
+  var u=$('#fUndo'); if(u) u.onclick=function(){ f.pts.pop(); save(); drawFree(); };
+  var cp=$('#fClrPts'); if(cp) cp.onclick=function(){ f.pts=[]; save(); drawFree(); };
+  $('#fPng').onclick=function(){ exportGo('png'); };
+  $('#fPrint').onclick=function(){ exportGo('print'); };
+  $('#fCopy').onclick=function(){ exportGo('copy'); };
+  $('#fMail').onclick=function(){ exportGo('email'); };
+}
+function freePlace(x,y){
+  var f=fS(); if(f.auto||fBar()) return;
+  var A=fAxes(); if(!A.ok){ ffb('fptfb','bad','Set up both axes (and check them) before plotting.'); return; }
+  var d=fData(), used=d.xs.map(function(_,i){ return f.pts.indexOf(i)>=0; });
+  var k=matchPoint(x,y,d.xs,d.ys,used,A.X,A.Y);
+  if(k>=0){ f.pts.push(k); save(); drawFree(); ffb('fptfb','ok', f.pts.length===d.xs.length?'All points plotted!':'Snapped to ('+fmtNum(d.xs[k])+', '+fmtNum(d.ys[k])+').'); }
+  else { var p={x:x,y:y,s:'bad'}; fBad.push(p); drawFree(); ffb('fptfb','bad',missHint(x,y,d.xs,d.ys,used,A.X,A.Y,f.xu,f.yu)); setTimeout(function(){ fBad.splice(fBad.indexOf(p),1); drawFree(); },1500); }
+}
+/* ----- Export (PNG + print) with data table ----- */
+function exportSVG(){
+  var f=fS(), d=fData(), bar=fBar(), c=freeCfg(true), eq='';
+  var plotted=(f.auto||bar)?d.ys.length:f.pts.length;
+  if(!bar && plotted>=2 && c.x && c.y){ var sx=[],sy=[]; if(f.auto){sx=d.xs;sy=d.ys;} else f.pts.forEach(function(k){ sx.push(d.xs[k]); sy.push(d.ys[k]); }); eq=applyLine(c, f.L, sx, sy, f.xq||'x', f.yq||'y', ST.settings.bx); }
+  var g=geom(c), W=1600, H=1000, o=[];
+  o.push('<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" font-family="Segoe UI, Roboto, Arial, sans-serif">');
+  o.push('<style>'+SVG_CSS+'</style><rect width="'+W+'" height="'+H+'" fill="#fff"/>');
+  o.push('<text x="24" y="40" font-size="26" fill="#1d2731"><tspan font-weight="700">Name:</tspan> '+esc(ST.name||'________________')+'</text>');
+  o.push('<text x="1010" y="40" font-size="22" fill="#1d2731" text-anchor="end"><tspan font-weight="700">Date:</tspan> '+esc(new Date().toLocaleDateString())+'</text>');
+  o.push('<svg x="10" y="56" width="1010" height="884" viewBox="0 0 '+g.W+' '+g.H+'">'+graphMarkup(c,g)+'</svg>');
+  if(eq) o.push('<text x="40" y="975" font-size="22" font-family="Consolas, monospace" fill="#1d2731">'+eq.replace(/(&nbsp;)+/g,'\u2003\u2003').replace(/<[^>]+>/g,'')+'</text>');
+  // data table
+  var n=d.ys.length, per = n>25 ? Math.ceil(n/2) : n, blocks = n>25?2:1, tx=1050, tw=530, bwid=tw/blocks, cw=bwid/2;
+  var rh=Math.min(34, 880/(per+1)), fsz=Math.min(18, rh*0.62);
+  o.push('<text x="'+(tx)+'" y="40" font-size="22" font-weight="700" fill="#1d2731">Data table</text>');
+  var hx=f.xq?axisLabel(f.xq,f.xu):'x', hy=f.yq?axisLabel(f.yq,f.yu):'y';
+  for(var b=0;b<blocks;b++){
+    var bx0=tx+b*bwid, y0=56;
+    [hx,hy].forEach(function(t,j){ var hf=Math.min(fsz, (cw-8)/(Math.max(t.length,1)*0.55)); o.push('<rect x="'+(bx0+j*cw)+'" y="'+y0+'" width="'+cw+'" height="'+rh+'" fill="#eef3f8" stroke="#9fb0c2"/><text x="'+(bx0+j*cw+cw/2)+'" y="'+(y0+rh*0.68)+'" font-size="'+hf+'" font-weight="700" text-anchor="middle" fill="#1d2731">'+esc(t)+'</text>'); });
+    for(var r=0;r<per;r++){
+      var k=b*per+r; if(k>=n) break;
+      var yy=y0+rh*(r+1);
+      [bar?d.xs[k]:fmtNum(d.xs[k]), fmtNum(d.ys[k])].forEach(function(t,j){ o.push('<rect x="'+(bx0+j*cw)+'" y="'+yy+'" width="'+cw+'" height="'+rh+'" fill="#fff" stroke="#c5d0db"/><text x="'+(bx0+j*cw+cw/2)+'" y="'+(yy+rh*0.68)+'" font-size="'+fsz+'" text-anchor="middle" fill="#1d2731">'+esc(t)+'</text>'); });
+    }
+  }
+  o.push('<text x="'+(W-20)+'" y="'+(H-14)+'" font-size="14" fill="#8a96a3" text-anchor="end">chemistryteacher.net/graphing</text></svg>');
+  return o.join('');
+}
+var SVG_CSS='.gl{stroke:#cfe2f3;stroke-width:1}.gl5{stroke:#8fb9de;stroke-width:1.2}.ax{stroke:#1d2731;stroke-width:2.4}.tk{fill:#1d2731}.lbl{fill:#1d2731;font-weight:600}.ph{fill:#98a4b0}.ttl{fill:#1d2731;font-weight:700}.pt{fill:#1d2731;stroke:#fff;stroke-width:1}.ln{fill:none;stroke:#1758b8;stroke-width:2.2}.fit{fill:none;stroke:#c2185b;stroke-width:2.4}.barr{fill:#7fa7d9;stroke:#3f6fae}.reg,.hlr,.mk-ok{display:none}';
+function exportGo(kind){
+  var f=fS(), d=fData(), A=fAxes(), bar=fBar();
+  if(d.ys.length<2) return ffb('fExFb','bad','Enter at least 2 rows of data.');
+  if(!A.ok) return ffb('fExFb','bad','Your axes don\'t pass the rules yet — press Check x / Check y and fix them.');
+  if(!bar && !f.auto && f.pts.length<d.ys.length) return ffb('fExFb','bad','Plot all '+d.ys.length+' points first (or choose Auto-plot points).');
+  ffb('fExFb','','');
+  var svg=exportSVG();
+  if(kind==='print'){
+    var pa=$('#printArea'); pa.innerHTML=svg; document.body.classList.add('printing');
+    setTimeout(function(){ window.print(); }, 60);
+    return;
+  }
+  if(kind==='email'){
+    var to=Q.get('email')||'';
+    var url='https://mail.google.com/mail/?view=cm&fs=1'+(to?'&to='+encodeURIComponent(to):'')+'&su='+encodeURIComponent('Graph: '+(fTitle()||'my lab data'))+'&body='+encodeURIComponent(freeText()+'\n\n(Attach your downloaded PNG to include the picture of the graph.)');
+    window.open(url,'_blank','noopener');
+    ffb('fExFb','info','Gmail opened in a new tab with your data table. Tip: press <b>Download PNG</b> first, then attach the picture in Gmail.');
+    return;
+  }
+  freePNG(svg, function(blob, name){
+    if(!blob){ ffb('fExFb','bad','Could not make the image — use Print instead.'); return; }
+    if(kind==='copy'){
+      try{
+        if(navigator.clipboard && window.ClipboardItem){
+          navigator.clipboard.write([new ClipboardItem({'image/png':blob, 'text/plain':new Blob([freeText()],{type:'text/plain'})})])
+            .then(function(){ ffb('fExFb','ok','Copied — paste it into Google Classroom, a Doc, or an email.'); })
+            .catch(function(){ navigator.clipboard.writeText(freeText()).then(function(){ ffb('fExFb','ok','Copied the data table as text (this browser can\'t copy pictures — use Download PNG for the graph).'); }, function(){ ffb('fExFb','bad','Copy didn\'t work here — use Download PNG instead.'); }); });
+        } else if(navigator.clipboard){ navigator.clipboard.writeText(freeText()).then(function(){ ffb('fExFb','ok','Copied the data table as text — use Download PNG for the graph picture.'); }); }
+        else ffb('fExFb','bad','Copy isn\'t available in this browser — use Download PNG instead.');
+      }catch(e){ ffb('fExFb','bad','Copy didn\'t work here — use Download PNG instead.'); }
+      return;
+    }
+    var u=URL.createObjectURL(blob), a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ a.remove(); URL.revokeObjectURL(u); },4000);
+    ffb('fExFb','ok','Downloaded '+name+'. Upload it to Google Classroom.');
+  });
+}
+function freePNG(svg, cb){
+  var img=new Image(), scale=1.5;
+  var name=('graph-'+(ST.name?ST.name+'-':'')+(fTitle()||'lab')).replace(/[^a-z0-9]+/gi,'-').replace(/-+$/,'').toLowerCase().slice(0,80)+'.png';
+  img.onload=function(){
+    var cv=document.createElement('canvas'); cv.width=1600*scale; cv.height=1000*scale;
+    var ctx=cv.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,cv.width,cv.height); ctx.drawImage(img,0,0,cv.width,cv.height);
+    try{ cv.toBlob(function(b){ cb(b, name); },'image/png'); }catch(e){ cb(null); }
+  };
+  img.onerror=function(){ cb(null); };
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function freeText(){
+  var f=fS(), d=fData(), bar=fBar(), A=fAxes();
+  var hx=f.xq?axisLabel(f.xq,f.xu):'x', hy=f.yq?axisLabel(f.yq,f.yu):'y', lines=[];
+  lines.push(fTitle()||'Graph'); if(ST.name) lines.push('Name: '+ST.name); lines.push('Date: '+new Date().toLocaleDateString()); lines.push('');
+  lines.push(hx+'\t'+hy);
+  d.xs.forEach(function(x,i){ lines.push((bar?x:fmtNum(x))+'\t'+fmtNum(d.ys[i])); });
+  if(!bar && f.L.fit){ var F=doFit(f.L.type, d.xs, d.ys); if(F) { lines.push(''); lines.push('Best-fit: '+fitEquation(F, f.xq||'x', f.yq||'y')+'   R² = '+F.r2.toFixed(4)); } }
+  lines.push(''); lines.push('Made with chemistryteacher.net/graphing');
+  return lines.join('\n');
+}
+window.addEventListener('afterprint', function(){ document.body.classList.remove('printing'); var pa=$('#printArea'); if(pa) pa.innerHTML=''; });
+
+/* ===== App shell ===== */
+var TABS=[['learn','1 Learn'],['guided','2 Guided'],['you','3 Graph It'],['free','4 Free Form']];
+function unlocked(t){
+  if(UNLOCK || t==='learn' || t==='free') return true;
+  if(t==='guided') return ST.learn.done;
+  if(t==='you') return ST.learn.done && (ST.guided.done||ST.guided.everDone);
+  return false;
+}
+function tabDone(t){ return t==='learn'?ST.learn.done : t==='guided'?(ST.guided.done||ST.guided.everDone) : t==='you'?!!ST.youDone : false; }
+function updateTabs(){
+  $('#tabs').innerHTML = TABS.map(function(t){
+    var lk=!unlocked(t[0]), dn=tabDone(t[0]);
+    var pc = t[0]==='learn'?pctLearn() : t[0]==='guided'?pctGuided() : t[0]==='you'?pctYou() : null;
+    var badge = pc===null ? '' : (pc>=100 ? ' <span class="pct full">✓ 100%</span>' : ' <span class="pct">'+pc+'%</span>');
+    return '<button data-tab="'+t[0]+'" class="'+(ST.tab===t[0]?'on ':'')+(lk?'locked ':'')+(pc>=100?'tab-full':'')+'">'+(lk?'🔒 ':'')+t[1]+badge+'</button>';
+  }).join('');
+  $$('#tabs button').forEach(function(b){ b.onclick=function(){ go(b.dataset.tab); }; });
+}
+function go(t){
+  if(!unlocked(t)){
+    var need = t==='guided' ? 'Learn' : (!ST.learn.done ? 'Learn' : 'Guided');
+    modal('<h3>🔒 Locked</h3><p>Finish <b>'+need+'</b> first.</p>');
+    return;
+  }
+  ST.tab=t; save();
+  $$('.sec').forEach(function(s){ s.classList.remove('on'); });
+  $('#sec-'+t).classList.add('on');
+  updateTabs();
+  if(t==='learn') renderLearn();
+  if(t==='guided') renderGuided();
+  if(t==='you') renderYou();
+  if(t==='free') renderFree();
+  window.scrollTo(0,0);
+}
+function settings(){
+  var s=ST.settings;
+  modal('<h3>Settings</h3><div class="row2"><label>Boxes across (x)<input type="number" id="sbx" min="10" max="30" value="'+s.bx+'"></label><label>Boxes up (y)<input type="number" id="sby" min="10" max="30" value="'+s.by+'"></label></div>'+
+    '<p class="muted">Match the graph paper your class uses (10–30). Changing this mid-graph may make your axis choices need re-checking.</p>'+
+    '<p class="muted">Teacher links: add <b>?unlock=all</b> to unlock every part (and show Auto-plot), <b>?mode=free</b> to open Free Form directly, <b>?teacher</b> to show Auto-plot.</p>'+
+    '<div class="btns"><button id="sReset" style="color:#b3261e;border-color:#e9a39d">Reset all progress…</button></div>',
+    [{t:'Cancel'},{t:'Save',pri:true,fn:function(){}}]);
+  var saveBtn=$$('#modal .btns:last-child button')[1];
+  saveBtn.onclick=function(){
+    var bx=Math.round(num($('#sbx').value)), by=Math.round(num($('#sby').value));
+    if(bx>=10&&bx<=30) s.bx=bx; if(by>=10&&by<=30) s.by=by; save(); $('#modal').hidden=true; go(ST.tab);
+  };
+  $('#sReset').onclick=function(){
+    modal('<h3>Reset all progress?</h3><p>This clears Learn, Guided, Graph It, Free Form data and the mistake counts on this device.</p>',[{t:'Cancel'},{t:'Reset everything',pri:true,fn:function(){ var keep=ST.settings; ST=defaults(); ST.settings=keep; save(); go('learn'); }}]);
+  };
+}
+function init(){
+  HW = DATA.guided;
+  gGC = makeGraphCol($('#sec-guided .gcol'));
+  yGC = makeGraphCol($('#sec-you .gcol'));
+  fGC = makeGraphCol($('#sec-free .gcol'));
+  enablePlotting(gGC.svg,{active:function(){ return ST.tab==='guided' && ST.guided.step===5 && !ST.guided.done && !ST.guided.pend; }, place:guidedPlace});
+  enablePlotting(yGC.svg,{active:function(){ return ST.tab==='you' && ST.you && ST.you.step===8 && !ST.you.done; }, place:youPlace});
+  enablePlotting(fGC.svg,{active:function(){ return ST.tab==='free' && !ST.free.auto && !fBar() && fAxes().ok; }, place:freePlace});
+  $('#btnSettings').onclick=settings;
+  $('#modal').addEventListener('click', function(e){ if(e.target.id==='modal') this.hidden=true; });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') $('#modal').hidden=true; });
+  var start = Q.get('mode')==='free' ? 'free' : (unlocked(ST.tab)?ST.tab:'learn');
+  go(start);
+  if(RESUMED && (pctLearn()>0 || ST.tab!=='learn')) toast('👋 Welcome back — you\'re right where you left off.');
+  window.GR={ST:function(){return ST;}, go:go, DATA:DATA};
+}
+ST = load();
+init();
+
+})();
+</script>
+</body>
+</html>
