@@ -121,7 +121,19 @@
     "/best-fit-line": "/graphing",
     "/independent-dependent-variables": "/graphing",
     "/dry-mix": "/graphing",
-    "/data-table": "/graphing"
+    "/data-table": "/graphing",
+    "/solving-for-variables": "/solving-for-a-variable",
+    "/solve-for-a-variable": "/solving-for-a-variable",
+    "/solve-for-variable": "/solving-for-a-variable",
+    "/rearranging-formulas": "/solving-for-a-variable",
+    "/rearranging-equations": "/solving-for-a-variable",
+    "/rearrange-formulas": "/solving-for-a-variable",
+    "/rearranging-chemistry-formulas": "/solving-for-a-variable",
+    "/isolating-variables": "/solving-for-a-variable",
+    "/isolate-the-variable": "/solving-for-a-variable",
+    "/equation-board": "/solving-for-a-variable",
+    "/formula-practice": "/solving-for-a-variable",
+    "/solving-equations": "/solving-for-a-variable"
   },
   "activities": {
     "dimensional-analysis": {
@@ -807,6 +819,46 @@
         "Teachers: add ?unlock=all to open every part for a demo, ?mode=free to open Free Form directly, and ?email=you@school.org to fill in your address on the email buttons."
       ],
       "classroom": "Do Learn and Guided together on the projector the first week, then let students finish Graph It on their own (about 25–45 minutes total). After any lab with time-based data, send students to Free Form to graph their own results and turn in the PNG on Google Classroom — the data table is printed with the graph so you can check the plotting.",
+      "bar": "tl"
+    },
+    "solving-for-a-variable": {
+      "name": "Solving for a Variable",
+      "title": "Solving for a Variable: Rearranging Chemistry Formulas (Density, Molarity, Gas Laws, Specific Heat)",
+      "description": "Free interactive practice for rearranging chemistry formulas: plug in the numbers, then get the unknown alone by doing the same thing to both sides. Density, molarity, dilution, specific heat, Charles' and combined gas laws, pH and more.",
+      "unit": "Measurement & Math",
+      "order": 5,
+      "card": "Can plug into a formula but can't solve for V? Tap values into their slots, then use × ÷ + − on both sides to get the unknown alone — with the unknown on the bottom, two things multiplied, and gas-law proportions.",
+      "topics": [
+        "solving for a variable",
+        "rearranging formulas",
+        "isolating the unknown",
+        "do the same thing to both sides",
+        "inverse operations (× ↔ ÷, + ↔ −)",
+        "unknown in the denominator",
+        "D = m/V",
+        "molarity M = n/V",
+        "dilution M₁V₁ = M₂V₂",
+        "specific heat q = mcΔT",
+        "Charles' law",
+        "combined gas law",
+        "Boyle's and Gay-Lussac's laws",
+        "ideal gas law PV = nRT",
+        "moles and particles",
+        "heat of phase change",
+        "percent yield",
+        "pH and pOH",
+        "units for each variable",
+        "start vs final (1 vs 2) values"
+      ],
+      "about": "Students can plug numbers into a formula but can't get the unknown by itself — especially when it's on the bottom, like V in D = m/V. Every problem is two steps on an equation board with real stacked fractions. Step 1, plug in: tap a value chip (number + unit) and tap its slot; a chip in the wrong slot bounces back with the reason (\"g is a mass unit, so 54.0 g goes in m\"). Red arrows on the formula card show the unit each variable needs, and START/FINAL tags keep M₁/M₂ and V₁/V₂ straight. Step 2, solve: tap an operation and a number and the app does it to BOTH sides, shows what cancels, and does the move even if it's wrong — then names the mistake and says why (\"You multiplied by 2.70, but 2.70 was already multiplying V. To undo × you ÷.\") with Undo. Any mathematically valid path is accepted, including dividing by two numbers at once. The formula card rearranges itself after each correct move (D = m/V → D × V = m → V = m/D). When the unknown is alone the app does the arithmetic (no calculator) and rounds to 3 significant figures; answers are graded on value only. Learn has 6 short stops (solve for = alone, plug in then solve, the balance, undo with the opposite, unknown on the bottom, common mistakes). Guided works three problems together with the right button glowing. Practice has 6 levels (density, molarity and dilution, unknown on the bottom, specific heat, Charles' law, combined gas law) with new random numbers each time; 3 correct in a row with no mistakes unlocks the next level, and Show me plays the solution after 2 misses. Free Form covers 16 formulas (including PV = nRT, pH = −log[H⁺] with a 10⁻ˣ button, pH + pOH = 14 and percent yield) with an on-screen keypad for homework and lab calculations. Progress saves on the device, tabs show % complete, and the completion card can be copied, saved as a PNG or emailed. No student names are collected.",
+      "how": [
+        "Learn: go through the 6 stops and answer each yellow question box.",
+        "Guided: do every tap yourself — the glowing button and the 👉 hint show what's next and why.",
+        "Practice: Step 1 tap a value, then its slot. Step 2 tap an operation (+ − × ÷), then a number; it happens to both sides. Get 3 in a row with no mistakes to unlock the next level.",
+        "Free Form: pick a formula, tap what you're solving for, type the known values on the keypad, solve, then Copy, Email using Google or Print the steps and the rearranged formula.",
+        "Teachers: add ?unlock=all to open every part for a demo, ?mode=free to open Free Form directly, and ?email=you@school.org to fill in your address on the email buttons."
+      ],
+      "classroom": "Do Learn and Guided together on the projector, then let students work through Practice on their own (about 20 minutes for a fast student, 40 for a slow one). Walk around and check the green ✓ 100% tabs. Later in the year, send students to Free Form for any lab or homework calculation — it shows the rearranged formula so they can copy it into their notes.",
       "bar": "tl"
     }
   }

@@ -6,7 +6,7 @@ Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosti
 
 <!-- ACTIVITIES:START (made by make_readme.py from site.json; edit site.json, not this list) -->
 
-## All activities (21)
+## All activities (22)
 
 Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones) and needs no login. Open them at [chemistryteacher.net](https://chemistryteacher.net).
 
@@ -19,6 +19,7 @@ Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones
 | **[Dimensional Analysis Lab](https://chemistryteacher.net/dimensional-analysis)** | Build conversion factors, cancel units, and solve unit, mole and stoichiometry problems. | dimensional analysis, factor-label method, unit conversions, mole conversions, stoichiometry |
 | **[Calculator Skills for Chemistry](https://chemistryteacher.net/calculator-skills)** | Learn exactly which buttons to press: dimensional analysis work → simplified fraction → calculator, two ways (parentheses, or × every top and ÷ every bottom), with a TI-30XIIS-style on-screen calculator. | using a scientific calculator, TI-30XIIS, dimensional analysis, factor-label method, unit conversions, mole conversions, stoichiometry, scientific notation on a calculator |
 | **[Graphing Like a Scientist](https://chemistryteacher.net/graphing)** | Learn to make a real line graph: x vs. y, uniform scales, don't start at 0 unless the data is near 0, count the boxes for each axis, plot, connect or add a best-fit line — then graph your own lab data and turn it in. | how to make a line graph, data tables, independent vs dependent variable, DRY MIX, time on the x-axis, axis labels and units, graph titles (y vs. x), uniform scale |
+| **[Solving for a Variable](https://chemistryteacher.net/solving-for-a-variable)** | Can plug into a formula but can't solve for V? Tap values into their slots, then use × ÷ + − on both sides to get the unknown alone — with the unknown on the bottom, two things multiplied, and gas-law proportions. | solving for a variable, rearranging formulas, isolating the unknown, do the same thing to both sides, inverse operations (× ↔ ÷, + ↔ −), unknown in the denominator, D = m/V, molarity M = n/V |
 
 ### Matter & Change
 
