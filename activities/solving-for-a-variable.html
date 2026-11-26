@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solving for a Variable: Rearranging Chemistry Formulas</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#eef1f5;color:#15191e;-webkit-tap-highlight-color:transparent;font-size:16px}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default}
+/* header */
+header{display:flex;align-items:center;gap:10px;min-height:56px;padding:5px 10px 5px 64px;background:#1f3a5f;color:#fff}
+header h1{font-size:1.05rem;margin:0;font-weight:700;line-height:1.15}
+header h1 small{display:block;font-weight:500;font-size:.75rem;opacity:.85}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{min-height:46px;min-width:96px;padding:3px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.35);background:#2d4f7c;color:#fff;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.tab small{font-weight:600;font-size:.74rem;opacity:.95;margin-top:2px}
+.tab.on{background:#fff;color:#1f3a5f;border-color:#fff}
+.tab.full{background:#1d7a35;border-color:#9fe0b0;color:#fff}
+.tab.full.on{box-shadow:0 0 0 3px #fff inset}
+.tab.lock{opacity:.62}
+/* layout */
+main{height:calc(100% - 56px);display:grid;grid-template-columns:minmax(380px,44%) 1fr;gap:12px;padding:10px 12px}
+.col{overflow:auto;min-height:0;padding-bottom:6px}
+.panel{background:#fff;border:1px solid #d5dbe2;border-radius:14px;padding:12px}
+#right .panel{min-height:100%;display:flex;flex-direction:column;gap:10px}
+/* step pills */
+.pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.pills .lbl{font-weight:700;color:#3b4652;margin-right:2px;font-size:.9rem}
+.pill{min-width:44px;min-height:40px;padding:2px 10px;border-radius:20px;border:2px solid #b9c3ce;background:#fff;font-weight:700;color:#3b4652}
+.pill.cur{border-color:#1f3a5f;background:#1f3a5f;color:#fff}
+.pill.done{border-color:#1d7a35;color:#1d7a35;background:#e6f4ea}
+.pill.cur.done{background:#1d7a35;color:#fff}
+.pill:disabled{opacity:.45}
+.pill.cur:disabled,.pill.done:disabled{opacity:1}
+.streak{margin-left:auto;display:flex;gap:4px;align-items:center;font-size:.85rem;font-weight:700;color:#3b4652}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid #1d7a35;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff}
+.dot.on{background:#1d7a35}
+/* gray reference boxes */
+.gray{background:#eceff3;border:1px solid #cfd6de;border-radius:10px;padding:8px 12px;color:#26303a}
+.gray .t{font-size:.75rem;font-weight:800;letter-spacing:.04em;color:#5a6672;text-transform:uppercase;margin-bottom:2px}
+.teach{font-size:1.02rem;line-height:1.4;margin:0 0 8px}
+.story{margin-bottom:8px;font-size:1rem;line-height:1.38}
+/* question box */
+.qbox{border:5px solid #f29d12;border-radius:14px;background:#fffdf7;overflow:hidden;margin-bottom:8px}
+.qhead{background:#f29d12;color:#2b1a00;font-weight:800;font-size:.85rem;letter-spacing:.04em;padding:4px 10px}
+.qbody{padding:8px 12px 10px}
+.qtext{font-size:1.22rem;font-weight:800;line-height:1.3}
+.kw{color:#b3141a;text-decoration:underline;text-decoration-color:#d4202a;text-decoration-thickness:3px;text-underline-offset:3px}
+.qhint{font-size:.92rem;color:#4a5560;margin-top:3px}
+.ans{border:2px dashed #9aa6b2;border-radius:10px;padding:5px 8px 7px;margin-top:6px;background:#fff}
+.anslbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#6a7682;margin-bottom:5px}
+.row{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.row+.row{margin-top:7px}
+.opt{min-height:48px;padding:6px 14px;border-radius:10px;border:2px solid #9aa6b2;background:#f7f9fb;font-weight:700;font-size:1.05rem;display:inline-flex;align-items:center;gap:6px}
+.opt:hover:not(:disabled){border-color:#1f3a5f}
+.opt.right{background:#e6f4ea;border-color:#1d7a35;color:#145a27}
+.opt.wrong{background:#fdecea;border-color:#b3261e;color:#8c1d18}
+.opbtn{min-width:52px;min-height:46px;border-radius:10px;border:2px solid #1f3a5f;background:#fff;font-size:1.45rem;font-weight:800;color:#1f3a5f}
+.opbtn.sel{background:#1f3a5f;color:#fff}
+.opbtn.p10{font-size:1.05rem;min-width:64px}
+.undo{min-height:46px;padding:4px 12px;border-radius:10px;border:2px solid #6a7682;background:#fff;font-weight:700;margin-left:auto}
+.chip{min-height:46px;padding:4px 12px;border-radius:12px;border:2px solid #2b6cb0;background:#eef5fd;font-weight:800;font-size:1.12rem;color:#123;display:inline-flex;align-items:baseline;gap:4px;touch-action:none;user-select:none;-webkit-user-select:none}
+.chip small,.tk small{font-size:.62em;color:#66727e;font-weight:600}
+.chip.sel{background:#2b6cb0;color:#fff;border-color:#174a80}
+.chip.sel small{color:#dbe8f7}
+.chip.used{display:none}
+.chip.grp{border-style:double;border-width:4px}
+.big{min-height:52px;padding:6px 22px;border-radius:12px;border:none;background:#1f3a5f;color:#fff;font-weight:800;font-size:1.15rem}
+.big.green{background:#1d7a35}
+.big.ghost{background:#fff;color:#1f3a5f;border:2px solid #1f3a5f}
+.nextrow{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 8px}
+.fb{margin-top:8px;border-radius:10px;padding:7px 10px;font-size:.98rem;line-height:1.35}
+.fb.bad{background:#fdecea;border:2px solid #b3261e;color:#6f1510}
+.fb.good{background:#e6f4ea;border:2px solid #1d7a35;color:#0f4720}
+.fb b{display:block}
+.doneline{background:#e6f4ea;border:1px solid #8fcca0;border-left:6px solid #1d7a35;color:#0f4720;border-radius:8px;padding:4px 10px;font-weight:700;font-size:.92rem;margin-bottom:6px}
+.measuring *,.measuring *::after{animation:none!important;transition:none!important}
+.dl2{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+.glow{animation:glow 1.1s ease-in-out infinite;position:relative;z-index:1}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(242,157,18,.9)}50%{box-shadow:0 0 0 7px rgba(242,157,18,.35)}}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* equation board */
+.boardt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.boardt h2{margin:0;font-size:1rem;color:#1f3a5f}
+.fcard{display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
+.fcard.moved{background:#fff7e6;border-color:#f29d12}
+.fcard .t{line-height:1.15}
+.fcard .eq{font-size:1.8rem;gap:.25em}
+.ann{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05}
+.ann .ar{color:#c8102e;font-size:.7em;font-weight:900;line-height:.9}
+.ann .al{color:#c8102e;font-size:.5em;font-weight:800;white-space:nowrap;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.ann .al em{font-style:normal;text-transform:uppercase;font-size:.85em;letter-spacing:.03em}
+.chip .role{font-style:normal;font-size:.62em;font-weight:800;color:#fff;background:#c8102e;border-radius:6px;padding:1px 5px;margin-left:3px;text-transform:uppercase;letter-spacing:.03em;align-self:center}
+.chip.sel .role{background:#fff;color:#c8102e}
+.eqwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:170px;border:2px solid #e1e6ec;border-radius:14px;background:#fbfcfe;padding:10px 6px;overflow:hidden}
+.eq{display:flex;align-items:center;justify-content:center;gap:.3em;font-size:2.3rem;font-weight:700;white-space:nowrap;max-width:100%}
+.eqs{padding:0 .15em;color:#1f3a5f}
+.side{display:inline-flex;align-items:center;gap:.18em}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.fn,.fd{display:flex;align-items:center;gap:.18em;padding:0 .2em}
+.fn{border-bottom:.08em solid currentColor;padding-bottom:.08em}
+.fd{padding-top:.08em}
+.times{color:#5d6975;font-weight:600;font-size:.8em}
+.tk{display:inline-flex;align-items:baseline;gap:.12em;transition:opacity .5s}
+.tk small{font-size:.42em}
+.tile{display:inline-flex;align-items:center;justify-content:center;min-width:1.25em;padding:0 .22em;height:1.3em;border-radius:.22em;background:#6a2fb0;color:#fff;font-weight:800;font-size:.92em}
+.symtk{font-style:italic;font-weight:700;color:#26303a}
+.cst{color:#1f3a5f}
+.x{position:relative;opacity:.35}
+.x::after{content:"";position:absolute;left:-4%;right:-4%;top:50%;border-top:.09em solid #b3261e;transform:rotate(-18deg)}
+.nw{animation:pop .5s}
+@keyframes pop{0%{transform:scale(1.5);color:#c56a00}100%{transform:scale(1)}}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:2.1em;min-height:1.45em;padding:0 .2em;border:.07em dashed #6a7682;border-radius:.2em;background:#fff;cursor:pointer;color:#7a8692;font-style:italic;font-size:.95em}
+.slot.filled{border-style:solid;border-color:#2b6cb0;background:#eef5fd;color:#123;font-style:normal}
+.slot.unk{border-color:#6a2fb0;background:#f5effc}
+.slot.tgt{outline:.1em solid #f29d12}
+.paren{color:#5d6975;font-weight:500}
+.pw{display:inline-flex;align-items:flex-start}
+.pw sup{font-size:.55em;display:inline-flex;align-items:center;gap:.1em;margin-top:-.2em}
+.status.bad{color:#b3261e}
+.status{font-size:1.15rem;font-weight:800;color:#1d7a35;text-align:center;min-height:1.6em}
+.answer{font-size:1.9rem;font-weight:800;text-align:center;color:#0f4720;background:#e6f4ea;border:2px solid #1d7a35;border-radius:12px;padding:6px}
+.answer small{font-size:.55em;color:#2d5d3a}
+.flipnote{font-size:.85rem;color:#5a6672;font-weight:600;margin-top:4px}
+.rearr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.rearr .eq{font-size:1.6rem}
+/* learn visuals */
+.vis{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.vcard{border:2px solid #d5dbe2;border-radius:12px;padding:10px 16px;background:#fbfcfe;min-width:260px}
+.vcard.ok{border-color:#1d7a35;background:#f1faf3}
+.vcard.no{border-color:#b3261e;background:#fdf3f2}
+.vcard .h{font-weight:800;margin-bottom:6px}
+.vcard .eq{font-size:1.8rem}
+.pairs{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.pair{font-size:2.4rem;font-weight:800;border:2px solid #d5dbe2;border-radius:14px;padding:6px 22px;background:#fbfcfe;color:#1f3a5f}
+.mtab{border-collapse:collapse;font-size:1rem;width:100%;max-width:560px}
+.mtab td,.mtab th{border:1px solid #d5dbe2;padding:6px 8px;text-align:left;vertical-align:middle}
+.mtab th{background:#eceff3;font-size:.85rem}
+.mtab .w{color:#8c1d18;background:#fdf3f2}
+.mtab .r{color:#145a27;background:#f1faf3}
+.mtab .eq{font-size:1.15rem;justify-content:flex-start;display:inline-flex;vertical-align:middle}
+.mini{display:inline-flex;vertical-align:middle}
+.mini .eq{font-size:1rem;gap:.2em}
+.mini .tk small{font-size:.6em}
+.opt.sm{min-height:44px;padding:4px 10px;font-size:.95rem}
+.opt .eq{font-size:1.25rem}
+.qtext .eq{font-size:1em;display:inline-flex}
+.frame{font-size:.95rem;font-weight:800;color:#c56a00;min-height:1.4em}
+/* balance */
+.bal{position:relative;width:420px;max-width:100%;height:230px}
+.post{position:absolute;left:50%;bottom:20px;width:14px;margin-left:-7px;height:150px;background:#6a7682;border-radius:4px}
+.base{position:absolute;left:50%;bottom:6px;width:160px;margin-left:-80px;height:18px;background:#6a7682;border-radius:9px}
+.beam{position:absolute;left:75px;right:75px;top:64px;height:12px;background:#1f3a5f;border-radius:6px;transition:transform .8s cubic-bezier(.3,1.6,.5,1);transform-origin:50% 50%}
+.pan{position:absolute;top:70px;width:150px;margin-left:-75px;text-align:center}
+.pan .str{height:30px;border-left:2px solid #6a7682;width:0;margin:0 auto}
+.pan .dish{border:3px solid #1f3a5f;border-top:none;border-radius:0 0 60px 60px;background:#fff;min-height:58px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;padding:4px}
+.pan .dish .eq{font-size:1.35rem}
+.panL{left:0}.panR{left:100%}
+/* modal + toast + keypad */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:10px}
+.mbox{background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:96vh;overflow:auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.mbox h3{margin:0 0 8px;color:#1f3a5f}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1f3a5f;color:#fff;padding:10px 18px;border-radius:24px;font-weight:700;z-index:60;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:opacity .6s}
+.kp{max-width:360px}
+.kpd{font-size:1.9rem;font-weight:800;border:2px solid #9aa6b2;border-radius:10px;padding:6px 10px;min-height:56px;text-align:right;background:#fbfcfe;overflow:auto;white-space:nowrap}
+.kpd small{font-size:.5em;color:#66727e}
+.kpg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.kpg button{min-height:56px;border-radius:10px;border:2px solid #b9c3ce;background:#f7f9fb;font-size:1.35rem;font-weight:800}
+.kpg .ok{background:#1d7a35;color:#fff;border-color:#1d7a35}
+.kperr{color:#8c1d18;font-weight:700;min-height:1.3em;margin-top:6px}
+.card{border:3px solid #1f3a5f;border-radius:14px;padding:12px 16px}
+.card table{border-collapse:collapse;width:100%}
+.card td{padding:4px 6px;border-bottom:1px solid #e1e6ec}
+.card td:last-child{text-align:right;font-weight:800}
+.grpl{font-size:.74rem;font-weight:800;color:#5a6672;letter-spacing:.05em;text-transform:uppercase;margin:4px 0 3px;width:100%}
+.fgrid .row{gap:5px;margin-top:5px}
+.fgrid .grpl{width:96px;margin:0;line-height:1.15}
+.units{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;font-weight:700}
+.units .opt{min-height:44px;padding:4px 12px;font-size:.95rem}
+.units .opt.sel{background:#1f3a5f;color:#fff;border-color:#1f3a5f}
+#print{display:none}
+@media (max-width:900px){
+  main{display:block;height:auto}
+  .col{overflow:visible}
+  #right{margin-top:10px}
+  .eq{font-size:1.8rem}
+}
+@media print{
+  header,main,.modal,.toast{display:none!important}
+  #print{display:block;padding:20px;font-size:14pt}
+  #print .eq{font-size:20pt;justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Solving for a Variable<small>Rearranging Chemistry Formulas</small></h1>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main>
+  <section class="col" id="left"></section>
+  <section class="col" id="right"></section>
+</main>
+<div id="print"></div>
+<script>
+/* ===== EQUATION ENGINE (no DOM) ===== */
+var SYMS = {M1:'M₁',M2:'M₂',V1:'V₁',V2:'V₂',T1:'T₁',T2:'T₂',P1:'P₁',P2:'P₂',dT:'ΔT',dH:'ΔH',H:'[H⁺]',OH:'[OH⁻]',PY:'% yield',act:'actual',theo:'theoretical'};
+function sy(s){ return SYMS[s] || s; }
+var SUPM = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':''};
+function sup(s){ return String(s).split('').map(function(c){ return SUPM[c] !== undefined ? SUPM[c] : c; }).join(''); }
+function fmt3(x){
+  if (!isFinite(x) || isNaN(x)) return '—';
+  if (x === 0) return '0';
+  var a = Math.abs(x);
+  if (a >= 1e5 || a < 1e-3){ var p = x.toExponential(2).split('e'); return p[0] + '×10' + sup(parseInt(p[1], 10)); }
+  if (a >= 1000) return String(Math.round(Number(x.toPrecision(3))));
+  var s = Number(x).toPrecision(3);
+  if (s.indexOf('e') >= 0) s = String(Number(s));
+  if (s.indexOf('.') < 0 && /0$/.test(s)) s += '.';
+  return s;
+}
+function r3(x){ return Number(Number(x).toPrecision(3)); }
+
+var CONSTS = {
+  'c:R':  {val:0.0821, txt:'0.0821', unit:'L·atm/mol·K', name:'R'},
+  'c:NA': {val:6.02e23, txt:'6.02×10²³', unit:'/mol', name:'6.02×10²³'},
+  'c:100':{val:100, txt:'100', unit:'', name:'100'},
+  'c:14': {val:14, txt:'14', unit:'', name:'14'}
+};
+
+/* quantity types: name + whether a slot's unit is a ___ unit */
+var QT = {
+  density:'density', mass:'mass', volume:'volume', molarity:'concentration (molarity)', moles:'moles',
+  heat:'energy (heat)', sheat:'specific heat', dtemp:'temperature change', temp:'temperature',
+  pressure:'pressure', mm:'molar mass', count:'particle count', dh:'heat per gram', pct:'percent',
+  ph:'pH', poh:'pOH', conc:'concentration'
+};
+
+/* formulas: L/R templates; vars: sym -> quantity type */
+var FORMULAS = {
+  density:  {name:'Density', grp:'Measurement & Math', L:{k:'f',num:['D']}, R:{k:'f',num:['m'],den:['V']}, q:{D:'density',m:'mass',V:'volume'}},
+  pyield:   {name:'Percent yield', grp:'Measurement & Math', L:{k:'f',num:['PY']}, R:{k:'f',num:['act','c:100'],den:['theo']}, q:{PY:'pct',act:'mass',theo:'mass'}},
+  moles:    {name:'Moles', grp:'Moles & Solutions', L:{k:'f',num:['n']}, R:{k:'f',num:['m'],den:['MM']}, q:{n:'moles',m:'mass',MM:'mm'}},
+  particles:{name:'Particles', grp:'Moles & Solutions', L:{k:'f',num:['N']}, R:{k:'f',num:['n','c:NA']}, q:{N:'count',n:'moles'}},
+  molarity: {name:'Molarity', grp:'Moles & Solutions', L:{k:'f',num:['M']}, R:{k:'f',num:['n'],den:['V']}, q:{M:'molarity',n:'moles',V:'volume'}},
+  dilution: {name:'Dilution', grp:'Moles & Solutions', L:{k:'f',num:['M1','V1']}, R:{k:'f',num:['M2','V2']}, q:{M1:'molarity',V1:'volume',M2:'molarity',V2:'volume'}},
+  specheat: {name:'Specific heat', grp:'Energy', L:{k:'f',num:['q']}, R:{k:'f',num:['m','c','dT']}, q:{q:'heat',m:'mass',c:'sheat',dT:'dtemp'}},
+  phase:    {name:'Heat of phase change', grp:'Energy', L:{k:'f',num:['q']}, R:{k:'f',num:['m','dH']}, q:{q:'heat',m:'mass',dH:'dh'}},
+  boyle:    {name:"Boyle's law", grp:'Gases', L:{k:'f',num:['P1','V1']}, R:{k:'f',num:['P2','V2']}, q:{P1:'pressure',V1:'volume',P2:'pressure',V2:'volume'}},
+  charles:  {name:"Charles' law", grp:'Gases', L:{k:'f',num:['V1'],den:['T1']}, R:{k:'f',num:['V2'],den:['T2']}, q:{V1:'volume',T1:'temp',V2:'volume',T2:'temp'}},
+  gaylussac:{name:"Gay-Lussac's law", grp:'Gases', L:{k:'f',num:['P1'],den:['T1']}, R:{k:'f',num:['P2'],den:['T2']}, q:{P1:'pressure',T1:'temp',P2:'pressure',T2:'temp'}},
+  combined: {name:'Combined gas law', grp:'Gases', L:{k:'f',num:['P1','V1'],den:['T1']}, R:{k:'f',num:['P2','V2'],den:['T2']}, q:{P1:'pressure',V1:'volume',T1:'temp',P2:'pressure',V2:'volume',T2:'temp'}},
+  ideal:    {name:'Ideal gas law', grp:'Gases', L:{k:'f',num:['P','V']}, R:{k:'f',num:['n','c:R','T']}, q:{P:'pressure',V:'volume',n:'moles',T:'temp'}},
+  ph:       {name:'pH', grp:'Acids & Bases', L:{k:'f',num:['pH']}, R:{k:'l',a:'H'}, q:{pH:'ph',H:'conc'}, log:true},
+  poh:      {name:'pOH', grp:'Acids & Bases', L:{k:'f',num:['pOH']}, R:{k:'l',a:'OH'}, q:{pOH:'poh',OH:'conc'}, log:true},
+  phpoh:    {name:'pH + pOH = 14', grp:'Acids & Bases', L:{k:'s',t:[[1,'pH'],[1,'pOH']]}, R:{k:'f',num:['c:14']}, q:{pH:'ph',pOH:'poh'}}
+};
+function formulaSyms(fid){ return Object.keys(FORMULAS[fid].q); }
+
+function F(num, den){ return {k:'f', num:num || [], den:den || []}; }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+/* build an equation side from a template; mk(sym) -> factor */
+function buildSide(t, mk){
+  if (t.k === 'f') return F(t.num.map(mk), (t.den || []).map(mk));
+  if (t.k === 's') return {k:'s', t:t.t.map(function(p){ return {s:p[0], f:F([mk(p[1])])}; })};
+  if (t.k === 'l') return {k:'l', a:F([mk(t.a)])};
+}
+function constFactor(sym){ var c = CONSTS[sym]; return {id:sym, sym:sym, val:c.val, txt:c.txt, unit:c.unit, k:1}; }
+/* values: sym -> {val,txt,unit}; U = unknown sym */
+function buildEq(fid, values, U){
+  var fo = FORMULAS[fid];
+  function mk(sym){
+    if (sym.indexOf('c:') === 0) return constFactor(sym);
+    if (sym === U) return {id:sym, sym:sym, v:1};
+    var g = values[sym];
+    return {id:sym, sym:sym, val:g.val, txt:g.txt, unit:g.unit};
+  }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+
+/* ---------- searching ---------- */
+function locIn(side, id){
+  if (!side) return null;
+  if (side.k === 'f'){
+    var i;
+    for (i = 0; i < side.num.length; i++) if (side.num[i].id === id) return {w:'num'};
+    for (i = 0; i < side.den.length; i++) if (side.den[i].id === id) return {w:'den'};
+    var all = side.num.concat(side.den);
+    for (i = 0; i < all.length; i++) if (all[i].w && locIn(all[i].w, id)) return {w:'wrap'};
+    return null;
+  }
+  if (side.k === 's'){
+    for (var j = 0; j < side.t.length; j++){
+      var t = side.t[j], r = locIn(t.f, id);
+      if (r){
+        if (r.w === 'num' && t.f.num.length === 1 && t.f.den.length === 0) return {w: t.s > 0 ? 'plus' : 'minus'};
+        return {w:'deep'};
+      }
+    }
+    return null;
+  }
+  if (side.k === 'l') return locIn(side.a, id) ? {w:'log'} : null;
+  if (side.k === 'p') return locIn(side.a, id) ? {w:'pow'} : null;
+  return null;
+}
+function locate(eq, id){
+  var r = locIn(eq.L, id); if (r){ r.sd = 'L'; return r; }
+  r = locIn(eq.R, id); if (r){ r.sd = 'R'; return r; }
+  return null;
+}
+function findFactor(eq, id){
+  var found = null;
+  function walk(side){
+    if (!side || found) return;
+    if (side.k === 'f'){ side.num.concat(side.den).forEach(function(f){ if (found) return; if (f.w) walk(f.w); else if (f.id === id) found = f; }); }
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return found;
+}
+/* every plain factor in order (L then R) */
+function allFactors(eq){
+  var out = [];
+  function walk(side){
+    if (side.k === 'f') side.num.concat(side.den).forEach(function(f){ if (f.w) walk(f.w); else out.push(f); });
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return out;
+}
+function isAlone(side, U){ return side.k === 'f' && side.num.length === 1 && side.den.length === 0 && side.num[0].id === U && !side.num[0].w; }
+function aloneSide(eq, U){ if (isAlone(eq.L, U)) return 'L'; if (isAlone(eq.R, U)) return 'R'; return null; }
+
+/* ---------- applying a move to BOTH sides ---------- */
+function simplify(side){
+  if (side.k === 'f'){
+    side.num = side.num.filter(function(f){ return !f.x; });
+    side.den = side.den.filter(function(f){ return !f.x; });
+    side.num.concat(side.den).forEach(function(f){ delete f.nw; if (f.w) f.w = simplify(f.w); });
+    if (side.num.length === 1 && side.den.length === 0 && side.num[0].w) return side.num[0].w;
+    return side;
+  }
+  if (side.k === 's'){
+    side.t = side.t.filter(function(t){ return !t.x; });
+    side.t.forEach(function(t){ delete t.nw; t.f = simplify(t.f); });
+    if (side.t.length === 1 && side.t[0].s === 1) { var f = side.t[0].f; return f.k ? f : F([{id:'w', w:f}]); }
+    if (side.t.length === 0) return F([{id:'zero', sym:'0', val:0, txt:'0', unit:'', k:1}]);
+    return side;
+  }
+  if (side.k === 'l' || side.k === 'p'){ delete side.nw; side.a = simplify(side.a); return side; }
+  return side;
+}
+function asFrac(S){ return S.k === 'f' ? S : F([{id:'w', w:S}]); }
+/* op: '×','÷','+','−','p10'; ids: factor ids (group = several). Returns {mid,out,cancels} */
+function applyOp(eq, op, ids){
+  var mid = clone(eq), cancels = [], cs = [];
+  ['L','R'].forEach(function(sd){
+    var S = mid[sd];
+    if (op === 'p10'){
+      if (S.k === 'l'){ var a = S.a; a.num.forEach(function(f){ f.nw = 1; }); mid[sd] = a; cancels.push('log'); }
+      else mid[sd] = {k:'p', a:S, nw:1};
+      return;
+    }
+    if (op === '×' || op === '÷'){
+      S = asFrac(S);
+      ids.forEach(function(id){
+        var fac = clone(findFactor(eq, id)); delete fac.x; fac.nw = 1;
+        var same = op === '×' ? S.den : S.num, other = op === '×' ? S.num : S.den;
+        var hit = null;
+        for (var i = 0; i < same.length; i++) if (same[i].id === id && !same[i].x){ hit = same[i]; break; }
+        if (hit){ hit.x = 1; fac.x = 1; cancels.push(id); cs.push(sd); }
+        other.push(fac);
+      });
+      mid[sd] = S;
+      return;
+    }
+    var sg = op === '+' ? 1 : -1;
+    var fac2 = clone(findFactor(eq, ids[0])); delete fac2.x; fac2.nw = 1;
+    if (S.k !== 's') S = {k:'s', t:[{s:1, f:asFrac(S)}]};
+    var hit2 = null;
+    S.t.forEach(function(t){
+      if (!hit2 && !t.x && t.s === -sg && t.f.k === 'f' && t.f.den.length === 0 && t.f.num.length === 1 && t.f.num[0].id === fac2.id) hit2 = t;
+    });
+    var nt = {s:sg, f:F([fac2]), nw:1};
+    if (hit2){ hit2.x = 1; nt.x = 1; cancels.push(fac2.id); cs.push(sd); }
+    S.t.push(nt);
+    mid[sd] = S;
+  });
+  return {mid:mid, out:{L:simplify(clone(mid.L)), R:simplify(clone(mid.R))}, cancels:cancels, cs:cs};
+}
+
+/* ---------- judging a move ---------- */
+function chipLabel(eq, ids){
+  if (ids.length > 1) return '(' + ids.map(function(id){ var f = findFactor(eq, id); return f.v ? sy(f.sym) : f.txt; }).join(' × ') + ')';
+  var f = findFactor(eq, ids[0]);
+  if (!f) return '?';
+  return f.v ? sy(f.sym) : f.txt;
+}
+function judge(eq, op, ids, res, U){
+  var u = sy(U), uL = locate(eq, U), uSd = uL.sd, uSide = eq[uSd];
+  function bad(type, title, why){ return {ok:false, type:type, title:title, why:why}; }
+  if (op === 'p10'){
+    if (res.cancels.indexOf('log') >= 0) return {ok:true};
+    return bad('opposite', 'Mistake: 10⁻ˣ with no −log', '10⁻ˣ only undoes −log, and there is no −log here. Tap ↶ Undo.');
+  }
+  if (uSide.k === 'l') return bad('opposite', 'Mistake: ' + u + ' is stuck inside −log', 'Nothing can reach ' + u + ' until the −log is gone. 10⁻ˣ undoes −log. Tap ↶ Undo and try 10⁻ˣ.');
+  if (res.cancels.indexOf(U) >= 0 && op !== '×'){
+    if (op === '÷') return bad('opposite', 'Mistake: divided by the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+    return bad('opposite', 'Mistake: subtracted the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+  }
+  if (res.cancels.length > 0 && (op === '×' || op === '÷' || res.cs.indexOf(uSd) >= 0)) return {ok:true};
+  var x = chipLabel(eq, ids), L = locate(eq, ids[0]), onU = L && L.sd === uSd, isVar = ids[0] === U && ids.length === 1;
+  var uDen = uSide.k === 'f' && uSide.den.some(function(f){ return f.id === U; });
+  if (uDen && onU && !isVar && L.w === 'num') return bad('nohelp', 'Mistake: work on ' + u + ' first', x + ' is on top, but ' + u + ' is on the bottom. Bring ' + u + ' up first: × ' + u + ' on both sides. Tap ↶ Undo.');
+  var nohelp = bad('nohelp', "Mistake: that move doesn't help", x + " isn't on " + u + "'s side, so that just adds clutter. Tap ↶ Undo and work on what's next to " + u + '.');
+  if (op === '×' || op === '÷'){
+    if (uSide.k === 's'){
+      if (!onU) return nohelp;
+      var und = L.w === 'minus' ? '+' : '−';
+      return bad('opposite', 'Mistake: ' + (op === '×' ? 'multiplied' : 'divided') + ' instead of ' + (und === '−' ? 'subtracting' : 'adding'),
+        x + ' is ' + (L.w === 'minus' ? 'subtracted from ' : 'added to ') + u + ', not multiplied. To undo ' + (und === '−' ? '+' : '−') + ' you ' + und + '. Tap ↶ Undo and try ' + und + ' ' + x + '.');
+    }
+    if (isVar){
+      if (op === '×') return bad('opposite', 'Mistake: ' + u + ' is already on top', u + ' is already on top, so × ' + u + ' just makes ' + u + ' × ' + u + '. Tap ↶ Undo.');
+      return bad('opposite', 'Mistake: divided by ' + u + ' again', u + ' is already on the bottom. To bring it up, × ' + u + '. Tap ↶ Undo and try × ' + u + '.');
+    }
+    if (!onU) return nohelp;
+    if (op === '×') return bad('opposite', 'Mistake: multiplied when you should divide', 'You multiplied by ' + x + ', but ' + x + ' was already multiplying ' + u + '. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+    return bad('opposite', 'Mistake: divided when you should multiply', x + ' was already dividing ' + u + " (it's on the bottom). To undo ÷ you ×. Tap ↶ Undo and try × " + x + '.');
+  }
+  /* + or − */
+  var verb = op === '+' ? 'added' : 'subtracted';
+  if (uSide.k === 's'){
+    if (!onU) return nohelp;
+    if (L.w === 'plus') return bad('opposite', 'Mistake: added when you should subtract', x + ' was already added to ' + u + '. To undo + you −. Tap ↶ Undo and try − ' + x + '.');
+    if (L.w === 'minus') return bad('opposite', 'Mistake: subtracted when you should add', x + ' was already subtracted from ' + u + '. To undo − you +. Tap ↶ Undo and try + ' + x + '.');
+    return nohelp;
+  }
+  if (isVar) return bad('opposite', 'Mistake: ' + verb + ' ' + u, 'Adding or subtracting ' + u + " won't get it alone. Tap ↶ Undo.");
+  if (!onU) return nohelp;
+  if (L.w === 'den') return bad('opposite', 'Mistake: ' + verb + ' instead of multiplying', x + ' is dividing ' + u + ', not added to it. To undo ÷ you ×. Tap ↶ Undo and try × ' + x + '.');
+  return bad('opposite', 'Mistake: ' + verb + ' instead of dividing', x + ' is multiplying ' + u + ', not added to it. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+}
+
+/* ---------- best next move + hint ---------- */
+function nextMove(eq, U){
+  var L = locate(eq, U); if (!L) return null;
+  var S = eq[L.sd];
+  if (isAlone(S, U)) return null;
+  if (S.k === 'l') return {op:'p10', ids:[], why: sy(U) + ' is inside −log. 10⁻ˣ undoes −log, so tap 10⁻ˣ.'};
+  if (S.k === 's'){
+    for (var i = 0; i < S.t.length; i++){
+      var t = S.t[i];
+      if (!(t.f.num.length === 1 && t.f.num[0].id === U)){
+        var f = t.f.num[0], o = t.s > 0 ? '−' : '+';
+        return {op:o, ids:[f.id], why: f.txt + ' is ' + (t.s > 0 ? 'added to ' : 'subtracted from ') + sy(U) + '. To undo ' + (t.s > 0 ? '+ you −' : '− you +') + ': ' + o + ' ' + f.txt + ' on both sides.'};
+      }
+    }
+  }
+  if (S.k === 'f'){
+    if (S.den.some(function(f){ return f.id === U; })) return {op:'×', ids:[U], why: sy(U) + ' is on the bottom. Multiply both sides by ' + sy(U) + ' to bring it up.'};
+    if (S.den.length){ var d = S.den[0]; return {op:'×', ids:[d.id], why: d.txt + ' is dividing ' + sy(U) + " (it's on the bottom). To undo ÷ you ×: multiply both sides by " + d.txt + '.'}; }
+    var o2 = S.num.filter(function(f){ return f.id !== U; });
+    if (o2.length >= 2) return {op:'÷', ids:o2.map(function(f){ return f.id; }), group:true,
+      why: o2.map(function(f){ return f.txt; }).join(' and ') + ' are all multiplying ' + sy(U) + '. Divide both sides by all of them at once (or one at a time).'};
+    if (o2.length === 1) return {op:'÷', ids:[o2[0].id], why: o2[0].txt + ' is multiplying ' + sy(U) + '. To undo × you ÷: divide both sides by ' + o2[0].txt + '.'};
+  }
+  return null;
+}
+
+/* chips available in the solve step */
+function solveChips(eq, U){
+  var out = [], seen = {};
+  allFactors(eq).forEach(function(f){
+    if (seen[f.id]) return; seen[f.id] = 1;
+    if (f.v){ var L = locate(eq, U); if (L && eq[L.sd].k === 'f' && eq[L.sd].den.some(function(d){ return d.id === U; })) out.push({ids:[f.id]}); return; }
+    out.push({ids:[f.id]});
+  });
+  var L2 = locate(eq, U);
+  if (L2){
+    var S = eq[L2.sd];
+    if (S.k === 'f' && !S.den.some(function(d){ return d.id === U; })){
+      var o = S.num.filter(function(f){ return f.id !== U && !f.w; });
+      if (o.length >= 2) out.push({ids:o.map(function(f){ return f.id; }), group:true});
+    }
+  }
+  return out;
+}
+
+/* ---------- evaluating ---------- */
+function ev(S){
+  if (S.k === 'f'){ var v = 1; S.num.forEach(function(f){ v *= fv(f); }); S.den.forEach(function(f){ v /= fv(f); }); return v; }
+  if (S.k === 's') return S.t.reduce(function(a, t){ return a + t.s * ev(t.f); }, 0);
+  if (S.k === 'l') return -Math.log10(ev(S.a));
+  if (S.k === 'p') return Math.pow(10, -ev(S.a));
+}
+function fv(f){ return f.w ? ev(f.w) : f.val; }
+
+/* ---------- plain-text form (for copy/email) ---------- */
+function facText(f, symMode){
+  if (f.w) return '(' + sideText(f.w, symMode) + ')';
+  if (f.v) return sy(f.sym);
+  if (symMode) return f.k ? CONSTS[f.id].name : sy(f.sym);
+  return f.txt;
+}
+function prodText(arr, symMode){ return arr.length ? arr.map(function(f){ return facText(f, symMode); }).join(' × ') : '1'; }
+function sideText(S, symMode){
+  if (S.k === 'f'){
+    if (!S.den.length) return prodText(S.num, symMode);
+    var n = prodText(S.num, symMode), d = prodText(S.den, symMode);
+    if (S.num.length > 1) n = '(' + n + ')';
+    if (S.den.length > 1) d = '(' + d + ')';
+    return n + ' / ' + d;
+  }
+  if (S.k === 's') return S.t.map(function(t, i){ var tx = sideText(t.f, symMode); return i === 0 ? (t.s < 0 ? '−' + tx : tx) : (t.s < 0 ? ' − ' : ' + ') + tx; }).join('');
+  if (S.k === 'l') return '−log(' + sideText(S.a, symMode) + ')';
+  if (S.k === 'p') return '10^−(' + sideText(S.a, symMode) + ')';
+}
+function eqText(eq, symMode){ return sideText(eq.L, symMode) + ' = ' + sideText(eq.R, symMode); }
+
+if (typeof module !== 'undefined' && module.exports) module.exports = {FORMULAS:FORMULAS, CONSTS:CONSTS, buildEq:buildEq, applyOp:applyOp, judge:judge, nextMove:nextMove, solveChips:solveChips, ev:ev, eqText:eqText, aloneSide:aloneSide, fmt3:fmt3, locate:locate, sy:sy};
+
+</script>
+<script>
+/* ===== APP ===== */
+(function(){
+'use strict';
+var Q = new URLSearchParams(location.search);
+var UNLOCK = Q.get('unlock') === 'all';
+var EMAIL = Q.get('email') || '';
+var KEY = 'ctn-solving-for-a-variable-v1';
+var LEFT = document.getElementById('left'), RIGHT = document.getElementById('right'), TABS = document.getElementById('tabs');
+var PAGE = 'chemistryteacher.net/solving-for-a-variable';
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function R(a, b){ return a + Math.random() * (b - a); }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function shuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function G(v, unit, role){ v = r3(v); return {val:v, txt:fmt3(v), unit:unit || '', role:role || ''}; }
+function T(g){ return g.txt + (g.unit ? ' ' + g.unit : ''); }
+
+/* ---------- state ---------- */
+function fresh(){
+  return {tab:'learn',
+    learn:{cur:0, done:[0,0,0,0,0,0]},
+    guided:{cur:0, done:[0,0,0], b:null},
+    prac:{lvl:0, streak:[0,0,0,0,0,0], done:[0,0,0,0,0,0], count:[0,0,0,0,0,0], b:null, cardShown:0},
+    free:{step:1, fid:null, U:null, vals:{}, units:{P:'atm', V:'L'}, b:null},
+    mis:{slot:0, opposite:0, nohelp:0, showme:0}};
+}
+var S, hadSave = false;
+try { var raw = localStorage.getItem(KEY); if (raw){ S = JSON.parse(raw); hadSave = true; } } catch(e){}
+if (!S || !S.learn || !S.prac) { S = fresh(); hadSave = false; }
+[S.guided.b, S.prac.b, S.free.b].forEach(function(b){ if (b){ b.anim = null; if (b.auto){ b.auto = false; b.dead = true; } } });
+var saveT = null;
+function flush(){ clearTimeout(saveT); try { localStorage.setItem(KEY, JSON.stringify(S, function(k, v){ return k === 'anim' ? undefined : v; })); } catch(e){} }
+function save(){ clearTimeout(saveT); saveT = setTimeout(flush, 250); }
+window.addEventListener('pagehide', flush);
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') flush(); });
+
+/* ---------- equation HTML ---------- */
+function tokHTML(f, o){
+  o = o || {};
+  if (f.slot) return slotHTML(f, o);
+  if (f.w) return '<span class="paren">(</span>' + sideHTML(f.w, o) + '<span class="paren">)</span>';
+  var cls = 'tk' + (f.x ? ' x' : '') + (f.nw ? ' nw' : '');
+  if (f.v) return annotate('<span class="' + cls + '"><span class="tile">' + esc(sy(f.sym)) + '</span></span>', f, o);
+  if (o.sym) return annotate('<span class="' + cls + ' symtk">' + esc(f.k ? (CONSTS[f.id] ? CONSTS[f.id].name : f.txt) : sy(f.sym)) + '</span>', f, o);
+  return '<span class="' + cls + (f.k ? ' cst' : '') + '"><b>' + esc(f.txt) + '</b>' + (f.unit ? '<small>' + esc(f.unit) + '</small>' : '') + '</span>';
+}
+/* red arrow + unit (and start/final for subscripts) pointing at each variable in the formula card */
+function roleOf(sym){ return /1$/.test(sym) ? 'start' : /2$/.test(sym) ? 'final' : ''; }
+function annotate(html, f, o){
+  if (!o.units || f.k || f.w || o.units[f.sym] === undefined) return html;
+  var unit = o.units[f.sym], role = roleOf(f.sym);
+  if (!unit && !role) return html;
+  var lbl = '<span class="al">' + (role ? '<em>' + role + '</em>' : '') + esc(unit || '') + '</span>';
+  if (o.pos === 'num') return '<span class="ann">' + lbl + '<span class="ar">↓</span>' + html + '</span>';
+  return '<span class="ann">' + html + '<span class="ar">↑</span>' + lbl + '</span>';
+}
+function withPos(o, pos){ var c = {}; for (var k in (o || {})) c[k] = o[k]; c.pos = pos; return c; }
+function prodHTML(arr, o){ return arr.length ? arr.map(function(f){ return tokHTML(f, o); }).join('<span class="times">×</span>') : '<span class="tk"><b>1</b></span>'; }
+function sideHTML(S0, o){
+  if (S0.k === 'f'){
+    if (!S0.den.length) return '<span class="side">' + prodHTML(S0.num, withPos(o, (o && o.pos) || 'flat')) + '</span>';
+    return '<span class="frac"><span class="fn">' + prodHTML(S0.num, withPos(o, 'num')) + '</span><span class="fd">' + prodHTML(S0.den, withPos(o, 'den')) + '</span></span>';
+  }
+  if (S0.k === 's'){
+    return '<span class="side">' + S0.t.map(function(t, i){
+      var sign = i === 0 ? (t.s < 0 ? '−' : '') : (t.s < 0 ? '−' : '+');
+      var inner = (sign ? '<span class="eqs">' + sign + '</span>' : '') + sideHTML(t.f, o);
+      return (t.x || t.nw) ? '<span class="tk' + (t.x ? ' x' : '') + (t.nw ? ' nw' : '') + '">' + inner + '</span>' : inner;
+    }).join('') + '</span>';
+  }
+  if (S0.k === 'l'){
+    var a = S0.a, single = a.k === 'f' && a.num.length === 1 && !a.den.length && (a.num[0].v || a.num[0].slot || a.num[0].sym === 'H' || a.num[0].sym === 'OH');
+    return '<span class="side"><span class="tk">−log</span>' + (single ? sideHTML(a, o) : '<span class="paren">(</span>' + sideHTML(a, o) + '<span class="paren">)</span>') + '</span>';
+  }
+  if (S0.k === 'p'){
+    var a2 = S0.a, one = a2.k === 'f' && a2.num.length === 1 && !a2.den.length;
+    return '<span class="pw' + (S0.nw ? ' nw' : '') + '"><span class="tk"><b>10</b></span><sup>−' + (one ? sideHTML(a2, o) : '(' + sideHTML(a2, o) + ')') + '</sup></span>';
+  }
+  return '';
+}
+function eqHTML(eq, o){ return '<div class="eq">' + sideHTML(eq.L, o) + '<span class="eqs">=</span>' + sideHTML(eq.R, o) + '</div>'; }
+function symEq(fid){
+  var fo = FORMULAS[fid];
+  function mk(sym){ return sym.indexOf('c:') === 0 ? {id:sym, sym:sym, k:1, txt:CONSTS[sym].txt} : {id:sym, sym:sym, txt:sy(sym)}; }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+function formulaHTML(fid, units){ return eqHTML(symEq(fid), {sym:true, units:units}); }
+function boardUnits(b){
+  var u = {};
+  tmplSyms(b.p.fid).forEach(function(s){ u[s] = s === b.p.U ? (b.p.aunit || '') : (b.p.givens[s] ? b.p.givens[s].unit : ''); });
+  return u;
+}
+function freeUnits(fid){ var u = {}; tmplSyms(fid).forEach(function(s){ u[s] = unitFor(fid, s) || ''; }); return u; }
+function fcardHTML(inner, moved, label){
+  return '<div class="gray fcard' + (moved ? ' moved' : '') + '"><span class="t" style="margin:0">' + (label || (moved ? 'Formula,<br>rearranged' : 'Formula')) + '</span>' +
+    '<div class="eq">' + inner.replace(/^<div class="eq">|<\/div>$/g, '') + '</div></div>';
+}
+function formulaText(fid){ return eqText(symEq(fid), true); }
+function tmplSyms(fid){
+  var fo = FORMULAS[fid], out = [];
+  function walk(t){
+    if (t.k === 'f') out = out.concat(t.num, t.den || []);
+    else if (t.k === 's') t.t.forEach(function(p){ out.push(p[1]); });
+    else out.push(t.a);
+  }
+  walk(fo.L); walk(fo.R);
+  return out.filter(function(s){ return s.indexOf('c:') !== 0; });
+}
+
+/* slots for the plug-in step */
+var SLOTCTX = null;
+function slotHTML(f, o){
+  var c = SLOTCTX, sym = f.sym, U = c.U, filled = c.fills[sym], cls = 'slot', inner = esc(sy(sym));
+  if (filled){
+    cls += ' filled';
+    if (filled === 'U'){ cls += ' unk'; inner = '<span class="tile">' + esc(sy(U)) + '</span>'; }
+    else { var g = c.vals[filled]; inner = '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small style="font-size:.42em;color:#66727e">' + esc(g.unit) + '</small>' : ''); }
+  }
+  if (c.glow === sym) cls += ' glow';
+  if (c.shake === sym) cls += ' shake';
+  if (c.sel && !filled) cls += ' tgt';
+  return '<span class="' + cls + '" role="button" tabindex="0" data-act="' + (c.act || 'slot') + '" data-arg="' + sym + '" aria-label="slot ' + esc(sy(sym)) + '">' + inner + '</span>';
+}
+function templateHTML(fid, ctx){
+  SLOTCTX = ctx;
+  var fo = FORMULAS[fid];
+  function mk(sym){ return sym.indexOf('c:') === 0 ? constFactor(sym) : {id:sym, sym:sym, slot:1}; }
+  var h = eqHTML({L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)});
+  SLOTCTX = null;
+  return h;
+}
+function chipHTML(g, extra){ return '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small>' + esc(g.unit) + '</small>' : '') + (extra || ''); }
+
+/* ---------- UI helpers ---------- */
+function qbox(head, qtext, hint, ansHTML, fbHTML, extra){
+  return '<div class="qbox"><div class="qhead">❓ ' + head + '</div><div class="qbody"><div class="qtext">' + qtext + '</div>' +
+    (hint ? '<div class="qhint">' + hint + '</div>' : '') +
+    (ansHTML ? '<div class="ans"><div class="anslbl">✎ YOUR ANSWER</div>' + ansHTML + '</div>' : '') +
+    (fbHTML || '') + (extra || '') + '</div></div>';
+}
+function fbHTML(fb){
+  if (!fb) return '';
+  return '<div class="fb ' + (fb.ok ? 'good' : 'bad') + '" role="status">' + (fb.title ? '<b>' + (fb.ok ? '✓ ' : '✗ ') + esc(fb.title) + '</b>' : '') + (fb.why ? esc(fb.why) : '') + (fb.html || '') + '</div>';
+}
+function toast(msg){
+  var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity = '0'; }, 3200); setTimeout(function(){ t.remove(); }, 4000);
+}
+var modalEl = null;
+function modal(html){
+  closeModal();
+  modalEl = document.createElement('div'); modalEl.className = 'modal';
+  modalEl.innerHTML = '<div class="mbox" role="dialog" aria-modal="true">' + html + '</div>';
+  modalEl.addEventListener('click', function(e){ if (e.target === modalEl) closeModal(); });
+  document.body.appendChild(modalEl);
+}
+function closeModal(){ if (modalEl){ modalEl.remove(); modalEl = null; } }
+function copyText(text, done){
+  function fallback(){
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(true); } catch(e){ done(false); } ta.remove();
+  }
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback); else fallback(); } catch(e){ fallback(); }
+}
+function gmail(subject, body){
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.open(url, '_blank', 'noopener');
+}
+function fitEqs(){
+  document.body.classList.add('measuring');
+  document.querySelectorAll('.eqwrap .eq, .rearr .eq').forEach(function(el){
+    el.style.fontSize = '';
+    var fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while (el.scrollWidth > el.clientWidth + 1 && fs > 13 && n < 40){ fs -= 1.5; el.style.fontSize = fs + 'px'; n++; }
+  });
+  document.body.classList.remove('measuring');
+}
+
+/* ---------- progress ---------- */
+function cnt(a){ return a.reduce(function(s, x){ return s + (x ? 1 : 0); }, 0); }
+function pct(which){
+  if (which === 'learn') return Math.round(cnt(S.learn.done) / 6 * 100);
+  if (which === 'guided') return Math.round(cnt(S.guided.done) / 3 * 100);
+  if (which === 'prac') return Math.round(cnt(S.prac.done) / 6 * 100);
+  return 0;
+}
+function unlocked(t){
+  if (UNLOCK || t === 'learn' || t === 'free') return true;
+  if (t === 'guided') return pct('learn') === 100;
+  if (t === 'prac') return pct('guided') === 100;
+}
+var TABDEF = [['learn','1 Learn'],['guided','2 Guided'],['prac','3 Practice'],['free','4 Free Form']];
+var LOCKMSG = {guided:'Finish Learn first', prac:'Finish Guided first'};
+function renderTabs(){
+  TABS.innerHTML = TABDEF.map(function(d){
+    var t = d[0], on = S.tab === t, lk = !unlocked(t), p = t === 'free' ? null : pct(t);
+    var cls = 'tab' + (on ? ' on' : '') + (p === 100 ? ' full' : '') + (lk ? ' lock' : '');
+    var sub = lk ? '🔒 ' + LOCKMSG[t] : (p === null ? 'always open' : (p === 100 ? '✓ 100%' : p + '%'));
+    return '<button class="' + cls + '" data-act="tab" data-arg="' + t + '"' + (on ? ' aria-current="page"' : '') + '>' + d[1] + '<small>' + sub + '</small></button>';
+  }).join('');
+}
+
+/* ===================================================================
+   PART 1: LEARN
+   =================================================================== */
+function fr(n, d){ return '<span class="frac"><span class="fn">' + n + '</span><span class="fd">' + d + '</span></span>'; }
+function tl(s){ return '<span class="tile">' + s + '</span>'; }
+function sv(s){ return '<span class="symtk">' + s + '</span>'; }
+function nu(n, u){ return '<span class="tk"><b>' + n + '</b>' + (u ? '<small>' + u + '</small>' : '') + '</span>'; }
+function X(s){ return '<span class="tk x">' + s + '</span>'; }
+var TM = '<span class="times">×</span>';
+function E(l, r){ return '<div class="eq">' + l + '<span class="eqs">=</span>' + r + '</div>'; }
+
+var LV = {pick:null, wrong:null, bal:null, frame:0, timer:null};
+var STOPS = [
+  {title:'“Solve for” = get it ALONE',
+   teach:'“Solve for V” means get V <b>alone</b> on one side of the = sign, with nothing else stuck to it.',
+   q:'Which one is <span class="kw">solved for V</span>?', hint:'Look for V all by itself on one side.',
+   opts:[
+     {h:E(nu('2.70') + TM + tl('V'), nu('54.0')), t:'Mistake: V isn’t alone', why:'2.70 is still multiplying V.'},
+     {h:E(tl('V'), fr(nu('54.0'), nu('2.70'))), ok:1, why:'V is by itself on the left.'},
+     {h:E(nu('2.70'), fr(nu('54.0'), tl('V'))), t:'Mistake: V isn’t alone', why:'V is stuck on the bottom of a fraction.'}],
+   take:'“Solve for” means get that letter alone.',
+   vis:function(){ return '<div class="vis"><div class="vcard ok"><div class="h">✓ Solved for m</div>' + E(tl('m'), sv('D') + TM + sv('V')) + '<div>m is alone on one side.</div></div>' +
+     '<div class="vcard no"><div class="h">✗ Not solved for m</div>' + E(sv('D'), fr(tl('m'), sv('V'))) + '<div>m is stuck in a fraction.</div></div></div>'; }},
+  {title:'Two steps, every time',
+   teach:'<b>Step 1:</b> plug the numbers into their slots. <b>Step 2:</b> get the unknown alone.',
+   q:'A different rock: 54.0 g. Which <span class="kw">slot</span> does 54.0 g go in?', hint:'Watch the animation: which slot did the g (grams) value go in?',
+   opts:[
+     {h:E(tl('D'), ''), lbl:'D (density)', t:'Mistake: wrong slot', why:'D is density (g/mL). g is a mass unit, so it goes in m.'},
+     {h:'', lbl:'m (mass)', ok:1, why:'g is a mass unit, so it goes in m.'},
+     {h:'', lbl:'V (volume)', t:'Mistake: wrong slot', why:'V is volume (mL). g is a mass unit, so it goes in m.'}],
+   take:'Step 1 plug in, Step 2 get the unknown alone.',
+   frames:[
+     {cap:'Step 1: plug in', l:'<span class="slot">D</span>', r:fr('<span class="slot">m</span>', '<span class="slot">V</span>')},
+     {cap:'Step 1: g/mL is a density unit, so 2.70 g/mL goes in D', l:'<span class="slot filled nw"><b>2.70</b><small style="font-size:.42em;color:#66727e">g/mL</small></span>', r:fr('<span class="slot">m</span>', '<span class="slot">V</span>')},
+     {cap:'Step 1: g (grams) is a mass unit, so 13.5 g goes in m', l:nu('2.70','g/mL'), r:fr('<span class="slot filled nw"><b>13.5</b><small style="font-size:.42em;color:#66727e">g</small></span>', '<span class="slot">V</span>')},
+     {cap:'Step 1: V is the unknown, so it gets the V tile', l:nu('2.70','g/mL'), r:fr(nu('13.5','g'), '<span class="slot filled unk nw">' + tl('V') + '</span>')},
+     {cap:'Step 2: now get V alone', l:nu('2.70','g/mL'), r:fr(nu('13.5','g'), tl('V'))}]},
+  {title:'Keep it balanced',
+   teach:'An equation is a balance. Whatever you do to one side, do to the <b>other side</b> too.',
+   q:'Get V alone. Which move keeps the <span class="kw">balance level</span>?', hint:'Watch the scale.',
+   opts:[
+     {lbl:'÷ 2.70 on the left only', t:'Mistake: did it to only one side', why:'The left changed but the right didn’t, so the scale tips and the = isn’t true anymore.', bal:'tip'},
+     {lbl:'÷ 2.70 on BOTH sides', ok:1, why:'Both sides changed the same way, so it stays level: V = 54.0 ÷ 2.70.', bal:'level'}],
+   take:'Do the same thing to both sides.'},
+  {title:'Undo with the opposite',
+   teach:'× and ÷ undo each other. + and − undo each other. Divided by V? Multiply by V. Times m? Divide by m.',
+   q:'In 2.70 × V = 54.0, what <span class="kw">undoes</span> the × 2.70?', hint:'2.70 is multiplying V.',
+   opts:[
+     {lbl:'× 2.70', t:'Mistake: multiplied when you should divide', why:'2.70 is already multiplying V. Multiplying again just stacks another 2.70.'},
+     {lbl:'÷ 2.70', ok:1, why:'÷ undoes ×. The 2.70s cancel and V is alone.'},
+     {lbl:'− 2.70', t:'Mistake: subtracted instead of dividing', why:'2.70 is multiplied, not added. The opposite of × is ÷.'}],
+   take:'Undo × with ÷, ÷ with ×, + with −, − with +.',
+   vis:function(){ return '<div class="vis"><div class="pairs"><div class="pair">× ⇄ ÷</div><div class="pair">+ ⇄ −</div></div>' +
+     '<div class="vcard"><div class="h">Divided by V? Multiply by V.</div>' + E(fr(sv('m'), tl('V')) + TM + tl('V'), sv('m')) + '</div>' +
+     '<div class="vcard"><div class="h">Times m? Divide by m.</div>' + E(fr(tl('m') + TM + sv('c'), sv('c')), tl('m')) + '</div></div>'; }},
+  {title:'Unknown on the BOTTOM',
+   teach:'If the unknown is on the bottom, first <b>× by it</b> to bring it up. Then ÷ to get it alone.',
+   q:'In 2.70 = 54.0 / V, what’s the <span class="kw">first move</span> to get V alone?', hint:'Where is V? On top or on the bottom?',
+   qh:'In ' + '<span style="display:inline-flex;vertical-align:middle;font-size:.9em">' + E(nu('2.70'), fr(nu('54.0'), tl('V'))) + '</span>' + ', what’s the <span class="kw">first move</span> to get V alone?',
+   opts:[
+     {lbl:'× V both sides', ok:1, why:'V is on the bottom, so × V brings it up: 2.70 × V = 54.0.'},
+     {lbl:'÷ V both sides', t:'Mistake: divided when you should multiply', why:'V is already dividing (it’s on the bottom). To undo ÷ you ×.'},
+     {lbl:'× 54.0 both sides', t:'Mistake: worked on the wrong number', why:'54.0 is on top. Work on V first: it’s on the bottom, so × V.'}],
+   take:'Unknown on the bottom? × by it first, then ÷.',
+   frames:[
+     {cap:'Start: V is on the bottom', l:sv('D'), r:fr(sv('m'), tl('V'))},
+     {cap:'× V on BOTH sides: the V’s on the right cancel', l:sv('D') + TM + '<span class="tk nw">' + tl('V') + '</span>', r:fr(sv('m') + TM + X(tl('V')), X(tl('V')))},
+     {cap:'Now V is on top', l:sv('D') + TM + tl('V'), r:sv('m')},
+     {cap:'÷ D on BOTH sides: the D’s on the left cancel', l:fr(X(sv('D')) + TM + tl('V'), X(sv('D'))), r:fr(sv('m'), '<span class="tk nw">' + sv('D') + '</span>')},
+     {cap:'V is alone! ✓', l:tl('V'), r:fr(sv('m'), sv('D'))}]},
+  {title:'Common mistakes',
+   teach:'Watch out for these four.',
+   q:'Solving D = m / V for V, a student wrote V = D / m. <span class="kw">What’s the mistake?</span>', hint:'Compare it with the right answer in the table.',
+   qh:'Solving <span style="display:inline-flex;vertical-align:middle;font-size:.9em">' + E(sv('D'), fr(sv('m'), sv('V'))) + '</span> for V, a student wrote <span style="display:inline-flex;vertical-align:middle;font-size:.9em">' + E(tl('V'), fr(sv('D'), sv('m'))) + '</span>. <span class="kw">What’s the mistake?</span>',
+   opts:[
+     {lbl:'Divided upside down', ok:1, why:'The fraction got flipped. The right answer is V = m / D.'},
+     {lbl:'Did it to only one side', t:'Not this one', why:'Both sides were changed. The fraction got flipped: it should be m over D.'},
+     {lbl:'Number in the wrong slot', t:'Not this one', why:'There are no numbers here yet. Look at which letter is on top: it should be m over D.'}],
+   take:'Learn complete!',
+   vis:function(){
+     function rw(name, w, r){ return '<tr><td><b>' + name + '</b></td><td class="w">✗ ' + w + '</td><td class="r">✓ ' + r + '</td></tr>'; }
+     return '<div class="vis"><table class="mtab"><tr><th>Mistake</th><th>Wrong</th><th>Right</th></tr>' +
+       rw('Divided upside down', E(tl('V'), fr(sv('D'), sv('m'))), E(tl('V'), fr(sv('m'), sv('D')))) +
+       rw('× when you should ÷', E(nu('2.70') + TM + nu('2.70') + TM + tl('V'), nu('54.0') + TM + nu('2.70')), E(tl('V'), fr(nu('54.0'), nu('2.70')))) +
+       rw('Did it to only one side', E(tl('V'), nu('54.0')), E(tl('V'), fr(nu('54.0'), nu('2.70')))) +
+       rw('Number in the wrong slot', '54.0 g in V', '54.0 g in m') + '</table></div>'; }}
+];
+
+function balanceHTML(st){
+  var rot = st === 'tip' ? 12 : 0, dy = st === 'tip' ? 28 : 0;
+  var left = st ? '<div class="eq">' + tl('V') + '</div>' : '<div class="eq">' + nu('2.70') + TM + tl('V') + '</div>';
+  var right = st === 'level' ? '<div class="eq">' + fr(nu('54.0'), nu('2.70')) + '</div>' : '<div class="eq">' + nu('54.0') + '</div>';
+  return '<div class="vis"><div class="bal"><div class="base"></div><div class="post"></div>' +
+    '<div class="beam" style="transform:rotate(' + rot + 'deg)"></div>' +
+    '<div class="pan" style="left:75px;transform:translateY(' + (-dy) + 'px);transition:transform .8s cubic-bezier(.3,1.6,.5,1)"><div class="str"></div><div class="dish">' + left + '</div></div>' +
+    '<div class="pan" style="left:345px;transform:translateY(' + dy + 'px);transition:transform .8s cubic-bezier(.3,1.6,.5,1)"><div class="str"></div><div class="dish">' + right + '</div></div>' +
+    '</div><div class="frame">' + (st === 'tip' ? '✗ Tipped! The two sides aren’t equal anymore.' : st === 'level' ? '✓ Still level: V = 54.0 ÷ 2.70' : 'Left side = right side') + '</div></div>';
+}
+function framesHTML(stop){
+  var f = stop.frames[Math.min(LV.frame, stop.frames.length - 1)];
+  var dots = stop.frames.map(function(x, k){ return '<span class="dot' + (k <= LV.frame ? ' on' : '') + '"></span>'; }).join('');
+  return '<div class="vis"><div class="frame">' + f.cap + '</div><div class="eqwrap" style="flex:0 0 auto;min-height:150px;width:100%">' + E(f.l, f.r) + '</div>' +
+    '<div class="row" style="justify-content:center;gap:6px" aria-hidden="true">' + dots + '</div><div class="qhint">The animation repeats. Watch it as many times as you need.</div></div>';
+}
+function playFrames(){
+  clearInterval(LV.timer); LV.frame = 0; LV.hold = 0;
+  var stop = STOPS[S.learn.cur];
+  if (!stop.frames) return;
+  LV.timer = setInterval(function(){
+    if (S.tab !== 'learn' || STOPS[S.learn.cur] !== stop){ clearInterval(LV.timer); return; }
+    if (LV.frame >= stop.frames.length - 1){ if (++LV.hold < 2) return; LV.hold = 0; LV.frame = 0; }
+    else LV.frame++;
+    renderLearnRight(); fitEqs();
+  }, 1600);
+}
+function renderLearnRight(){
+  var st = STOPS[S.learn.cur], body;
+  if (S.learn.cur === 2) body = balanceHTML(LV.bal);
+  else if (st.frames) body = framesHTML(st);
+  else body = st.vis();
+  RIGHT.innerHTML = '<div class="panel"><div class="boardt"><h2>' + esc(st.title) + '</h2></div>' + body + '</div>';
+}
+function renderLearn(){
+  var i = S.learn.cur, st = STOPS[i], done = S.learn.done[i];
+  var pills = '<div class="pills"><span class="lbl">Learn</span>' + STOPS.map(function(s, k){
+    var en = UNLOCK || k === 0 || S.learn.done[k - 1] || S.learn.done[k];
+    return '<button class="pill' + (k === i ? ' cur' : '') + (S.learn.done[k] ? ' done' : '') + '" data-act="lstop" data-arg="' + k + '"' + (en ? '' : ' disabled') + '>' + (S.learn.done[k] ? '✓' : k + 1) + '</button>';
+  }).join('') + '</div>';
+  var prev = i > 0 && S.learn.done[i - 1] ? '<div class="doneline">✓ ' + esc(STOPS[i - 1].take) + '</div>' : '';
+  var opts = '<div class="row">' + st.opts.map(function(o, k){
+    var cls = 'opt' + ((done && o.ok) || LV.pick === k ? ' right' : '') + (LV.wrong === k ? ' wrong' : '');
+    var mark = cls.indexOf('right') >= 0 ? '✓ ' : cls.indexOf('wrong') >= 0 ? '✗ ' : '';
+    var inner = o.h && !o.lbl ? o.h : esc(o.lbl || '');
+    return '<button class="' + cls + '" data-act="lopt" data-arg="' + k + '"' + (done ? ' disabled' : '') + '>' + mark + inner + '</button>';
+  }).join('') + '</div>';
+  var fb = null;
+  if (LV.wrong !== null && !done){ var w = st.opts[LV.wrong]; fb = {ok:false, title:w.t, why:w.why}; }
+  if (done){ var r = st.opts.filter(function(o){ return o.ok; })[0]; fb = {ok:true, title:'Right!', why:r.why}; }
+  var next = done ? '<div class="nextrow"><button class="big" data-act="lnext">' + (i < 5 ? 'Next ▶' : 'Go to Guided ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + prev + '<p class="teach">' + st.teach + '</p>' + qbox('QUESTION ' + (i + 1) + ' OF 6', st.qh || st.q, st.hint, opts, fbHTML(fb)) + next;
+  renderLearnRight();
+}
+
+/* ===================================================================
+   SHARED EQUATION BOARD (Guided, Practice, Free Form)
+   =================================================================== */
+function newBoard(mode, p){
+  var b = {mode:mode, p:p, phase:'plug', fills:{}, sel:null, eq:null, eq0:null, hist:[], moves:[], locked:false, op:null, fb:null, miss:0, ans:null, flipped:false, shown:false, view:null, auto:false};
+  if (mode === 'free'){ b.fills = {}; finishPlug(b); }
+  return b;
+}
+function curBoard(){ return S.tab === 'guided' ? S.guided.b : S.tab === 'prac' ? S.prac.b : S.tab === 'free' ? S.free.b : null; }
+function fo(b){ return FORMULAS[b.p.fid]; }
+function uName(b){ return sy(b.p.U); }
+function mistake(b, type){
+  b.miss++;
+  if (b.mode !== 'free') S.mis[type] = (S.mis[type] || 0) + 1;
+  if (b.mode === 'prac') S.prac.streak[S.prac.lvl] = 0;
+}
+function slotReason(b, chip, slot){
+  var U = b.p.U, u = sy(U), fq = fo(b).q;
+  if (chip === 'U') return 'That slot gets a number. The ' + u + ' tile goes in ' + u + '’s slot: ' + u + ' is what you’re finding.';
+  var g = b.p.givens[chip];
+  if (slot === U) return u + ' is the unknown, so nothing is given for it. Put the purple ' + u + ' tile there.';
+  var qc = fq[chip], qs = fq[slot];
+  if (qc !== qs){
+    if (g.unit) return g.unit + ' is a ' + QT[qc] + ' unit, so ' + T(g) + ' goes in ' + sy(chip) + '.';
+    return T(g) + ' is the ' + QT[qc] + ', so it goes in ' + sy(chip) + '.';
+  }
+  return T(g) + ' is the ' + (g.role || QT[qc]) + ', so it goes in ' + sy(chip) + '.';
+}
+function placeChip(b, chip, slot){
+  if (b.phase !== 'plug' || b.auto || b.fills[slot]) return;
+  var ok = chip === slot || (chip === 'U' && slot === b.p.U);
+  if (!ok){
+    b.fb = {ok:false, title:'Mistake: wrong slot', why:slotReason(b, chip, slot)};
+    b.shake = slot; b.sel = null; mistake(b, 'slot');
+  } else {
+    b.fills[slot] = chip; b.sel = null; b.fb = null; b.shake = null;
+    if (tmplSyms(b.p.fid).every(function(s){ return b.fills[s]; })) finishPlug(b);
+  }
+  save(); render();
+  setTimeout(function(){ if (b.shake){ b.shake = null; } }, 450);
+}
+function finishPlug(b){
+  b.eq = buildEq(b.p.fid, b.p.givens, b.p.U);
+  b.eq0 = clone(b.eq); b.hist = []; b.moves = []; b.phase = 'solve'; b.op = null; b.locked = false;
+  normalize(b);
+}
+function normalize(b){
+  if (aloneSide(b.eq, b.p.U) === 'R'){ var t = b.eq.L; b.eq.L = b.eq.R; b.eq.R = t; b.flipped = true; }
+}
+function opWord(op){ return op === 'p10' ? '10⁻ˣ' : op; }
+function doMove(b, op, ids){
+  if (b.locked || b.auto && !b.autoOK || b.phase !== 'solve') return;
+  var before = b.eq, res = applyOp(before, op, ids), j = judge(before, op, ids, res, b.p.U);
+  b.hist.push(before); b.flipHist = b.flipHist || []; b.flipHist.push(b.flipped);
+  b.moves.push({op:op, label: op === 'p10' ? '' : chipLabel(before, ids), ok:j.ok, text:eqText(res.out)});
+  b.anim = res.mid; b.eq = res.out; b.op = null;
+  if (!j.ok){ b.locked = true; b.fb = {ok:false, title:j.title, why:j.why}; mistake(b, j.type); }
+  else b.fb = null;
+  save(); render();
+  b.busy = true;
+  /* Guided: let the cancel animation finish (0.5 s), then hold the struck-out state 1 full second */
+  setTimeout(function(){ b.anim = null; b.busy = false; normalize(b); save(); if (curBoard() === b) render(); }, b.mode === 'guided' ? 1500 : 800);
+}
+function undo(b){
+  if (!b.hist.length || b.phase !== 'solve') return;
+  b.eq = b.hist.pop(); b.moves.pop(); b.flipped = b.flipHist && b.flipHist.length ? b.flipHist.pop() : false;
+  b.locked = false; b.fb = null; b.op = null; b.anim = null;
+  save(); render();
+}
+function calc(b){
+  if (b.phase !== 'solve' || b.locked || !aloneSide(b.eq, b.p.U)) return;
+  var v = ev(b.eq.R);
+  if (!isFinite(v) || isNaN(v)){ b.fb = {ok:false, title:'That can’t be calculated', why:'Check the values: you can’t divide by 0 or take the log of 0 or a negative number.'}; render(); return; }
+  b.ans = v; b.phase = 'done'; b.fb = null;
+  if (b.mode === 'guided') S.guided.done[S.guided.cur] = 1;
+  if (b.mode === 'prac') pracScore(b);
+  save(); render();
+}
+function ansText(b){ return uName(b) + ' = ' + fmt3(b.ans) + (b.p.aunit ? ' ' + b.p.aunit : ''); }
+
+/* expected next action (Guided glow + Show me) */
+function expect(b){
+  if (b.phase === 'plug'){
+    var order = tmplSyms(b.p.fid);
+    for (var i = 0; i < order.length; i++){
+      var s = order[i];
+      if (!b.fills[s]){
+        var chip = s === b.p.U ? 'U' : s;
+        var why;
+        if (chip === 'U') why = sy(s) + ' is what you’re finding, so its slot gets the purple ' + sy(s) + ' tile.';
+        else { var g = b.p.givens[s]; why = T(g) + ' is the ' + (g.role || QT[fo(b).q[s]]) + ', so it goes in ' + sy(s) + '.'; }
+        return {kind:'plug', chip:chip, slot:s, why:why};
+      }
+    }
+    return null;
+  }
+  if (b.phase === 'solve'){
+    if (b.locked) return {kind:'undo', why:'Tap ↶ Undo to take that move back.'};
+    if (aloneSide(b.eq, b.p.U)) return {kind:'calc', why:uName(b) + ' is alone. Tap = Calculate and the app does the math.'};
+    var mv = nextMove(b.eq, b.p.U);
+    if (mv) return {kind:'move', op:mv.op, ids:mv.ids, why:mv.why};
+  }
+  return null;
+}
+
+/* ----- board left (question box) ----- */
+function boardLeft(b, headPrefix){
+  var u = uName(b), ex = b.mode === 'guided' ? expect(b) : null, h = '';
+  var stepPills = '<div class="pills"><span class="lbl">Step</span>' +
+    '<button class="pill' + ((b.phase === 'plug' || b.view === 'plug') ? ' cur' : '') + (b.phase !== 'plug' ? ' done' : '') + '" data-act="bview" data-arg="plug"' + (b.phase === 'plug' ? ' disabled' : '') + '>' + (b.phase !== 'plug' ? '✓ ' : '') + '1 Plug in</button>' +
+    '<button class="pill' + (b.phase !== 'plug' && b.view !== 'plug' ? ' cur' : '') + (b.phase === 'done' ? ' done' : '') + '" data-act="bview" data-arg=""' + (b.phase === 'plug' ? ' disabled' : '') + '>' + (b.phase === 'done' ? '✓ ' : '') + '2 Solve</button></div>';
+  if (b.mode !== 'free') h += stepPills;
+  if (b.view === 'plug' && b.phase !== 'plug'){
+    return h + qbox(headPrefix + 'STEP 1 OF 2 — PLUG IN', '✓ Every value is in its <span class="kw">slot</span>.', 'Tap Next ▶ to go back to Step 2.', '<div class="eq" style="font-size:1.5rem;justify-content:flex-start">' + eqHTML(b.eq0).replace(/^<div class="eq">|<\/div>$/g, '') + '</div>', '') +
+      '<div class="nextrow"><button class="big" data-act="bview" data-arg="">Next ▶</button></div>';
+  }
+  if (b.phase === 'plug'){
+    var chips = Object.keys(b.p.givens).filter(function(s){ return s !== b.p.U; });
+    var order = b.mode === 'guided' ? tmplSyms(b.p.fid).filter(function(s){ return s !== b.p.U; }) : (b.p.order || chips);
+    var list = order.concat(['U']);
+    var row = '<div class="row">' + list.map(function(c){
+      var used = c === 'U' ? b.fills[b.p.U] : b.fills[c];
+      var cls = 'chip' + (used ? ' used' : '') + (b.sel === c ? ' sel' : '') + (ex && ex.chip === c && b.sel !== c ? ' glow' : '');
+      var inner = c === 'U' ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(u) + '</span><small>unknown</small>' : chipHTML(b.p.givens[c], roleOf(c) ? '<em class="role">' + roleOf(c) + '</em>' : '');
+      return '<button class="' + cls + '" data-act="chip" data-arg="' + c + '"' + (used || b.auto ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    var hint = ex ? '👉 ' + esc(b.sel === ex.chip ? 'Now tap the ' + sy(ex.slot) + ' slot in the formula. ' + ex.why : 'Tap the glowing chip. ' + ex.why) :
+      (b.sel ? 'Now tap its slot in the formula (or drag it there).' : 'Tap a value, then tap its slot in the formula. The unknown gets the purple ' + esc(u) + ' tile.');
+    h += qbox(headPrefix + 'STEP 1 OF 2 — PLUG IN', 'Put each value in its <span class="kw">slot</span>.', hint, row, fbHTML(b.fb), showMeBtn(b));
+    return h;
+  }
+  /* solve + done */
+  var okm = b.moves.filter(function(m){ return m.ok; });
+  h += '<div class="doneline dl2"><span role="button" data-act="bview" data-arg="plug" style="cursor:pointer">✓ Plugged in: <span class="mini">' + eqHTML(b.eq0) + '</span></span>' +
+    (okm.length ? '<span>✓ ' + okm.map(function(m, i){ return 'Move ' + (i + 1) + ': ' + (m.op === 'p10' ? '10⁻ˣ' : m.op + '&nbsp;' + esc(m.label)); }).join(' · ') + '</span>' : '') + '</div>';
+  var alone = aloneSide(b.eq, b.p.U) && !b.anim;
+  var ans = '', qt, hint2;
+  if (b.phase === 'done'){
+    qt = '<span class="kw">' + esc(u) + ' is alone</span> and calculated.';
+    hint2 = 'The app did the arithmetic for you, rounded to 3 significant figures.';
+    var extra = b.mode === 'guided' ? ['V was on the bottom: × V brought it up, then ÷ got it alone.', 'Two numbers multiplied c, so you divided by both.', '450. K was dividing V₂, so × 450. undid it.'][S.guided.cur] : '';
+    var msg = b.mode === 'prac' ? b.pmsg : extra;
+    var fbd = {ok:true, title:ansText(b), why:msg || ''};
+    h += qbox(headPrefix + 'STEP 2 OF 2 — SOLVE', qt, hint2, '', fbHTML(fbd));
+    return h;
+  }
+  var dis = b.locked || b.auto || b.busy;
+  if (alone && !b.locked){
+    qt = '<span class="kw">' + esc(u) + ' is alone!</span> ✓';
+    hint2 = ex ? '👉 ' + esc(ex.why) : 'Tap = Calculate. The app does the math.';
+    ans = '<div class="row"><button class="big green' + (ex && ex.kind === 'calc' ? ' glow' : '') + '" data-act="calc"' + (b.auto ? ' disabled' : '') + '>= Calculate</button>' +
+      '<button class="undo" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+  } else {
+    qt = 'Get <span class="kw">' + esc(u) + '</span> alone. Do the same thing to <span class="kw">BOTH sides</span>.';
+    hint2 = ex ? '👉 ' + esc(ex.why) : (b.locked ? 'Tap ↶ Undo to take that move back.' : b.op ? 'Now tap a number to ' + opName(b.op) + ' both sides by.' : 'Tap an operation, then a number.');
+    var ops = ['+','−','×','÷'];
+    if (fo(b).log) ops.push('p10');
+    var row1 = '<div class="row">' + ops.map(function(o){
+      var g = ex && ex.kind === 'move' && ex.op === o && b.op !== o;
+      return '<button class="opbtn' + (o === 'p10' ? ' p10' : '') + (b.op === o ? ' sel' : '') + (g ? ' glow' : '') + '" data-act="op" data-arg="' + o + '"' + (dis ? ' disabled' : '') + ' aria-label="' + opName(o) + '">' + (o === 'p10' ? '10⁻ˣ' : o) + '</button>';
+    }).join('') + '<button class="undo' + (b.locked ? ' glow' : '') + '" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+    var chips2 = solveChips(b.eq, b.p.U);
+    var row2 = '<div class="row">' + chips2.map(function(c, k){
+      var fac = c.group ? null : findFactor(b.eq, c.ids[0]);
+      var inner = c.group ? '<b>' + esc(chipLabel(b.eq, c.ids)) + '</b><small>both</small>' : fac.v ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(sy(fac.sym)) + '</span>' : chipHTML(fac);
+      var g = ex && ex.kind === 'move' && b.op === ex.op && ex.ids.join() === c.ids.join();
+      return '<button class="chip' + (c.group ? ' grp' : '') + (g ? ' glow' : '') + '" data-act="schip" data-arg="' + k + '"' + (dis || fo(b).log && false ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    ans = row1 + row2;
+  }
+  h += qbox(headPrefix + 'STEP 2 OF 2 — SOLVE', qt, hint2, ans, fbHTML(b.fb), showMeBtn(b));
+  return h;
+}
+function opName(o){ return {'+':'add','−':'subtract','×':'multiply','÷':'divide','p10':'10⁻ˣ'}[o]; }
+function showMeBtn(b){
+  if (b.mode !== 'prac' || b.miss < 2 || b.phase === 'done' || b.auto) return '';
+  return '<div class="row" style="margin-top:8px"><button class="big ghost" data-act="showme">👀 Show me</button><span class="qhint">Two misses: watch the solution step by step.</span></div>';
+}
+
+/* ----- board right (equation board) ----- */
+function boardRight(b, extraTop){
+  /* the formula card follows along: after each correct move it shows the rearranged letters */
+  var fEq = null, okMoves = (b.moves || []).filter(function(m){ return m.ok; }).length;
+  if (b.phase !== 'plug' && b.view !== 'plug' && okMoves){
+    fEq = b.locked ? b.hist[b.hist.length - 1] : (b.anim || b.eq);
+  }
+  var fInner = fEq ? eqHTML(fEq, {sym:true, units:boardUnits(b)}) : formulaHTML(b.p.fid, boardUnits(b));
+  var u = uName(b), h = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(fInner, !!fEq, b.mode === 'free' && b.phase === 'done' ? 'Rearranged<br>formula<br>(for your notes)' : '') + '</div>' + (extraTop || '');
+  var main;
+  if (b.phase === 'plug' && !(b.mode === 'free')){
+    var ex = b.mode === 'guided' ? expect(b) : null;
+    main = templateHTML(b.p.fid, {U:b.p.U, fills:b.fills, vals:b.p.givens, sel:b.sel, glow:ex && b.sel === ex.chip ? ex.slot : null, shake:b.shake});
+  } else if (b.view === 'plug'){
+    main = eqHTML(b.eq0);
+  } else {
+    main = eqHTML(b.anim || b.eq);
+  }
+  h += '<div class="eqwrap">' + main + (b.flipped && !b.anim && b.view !== 'plug' ? '<div class="flipnote">(same thing, just flipped so ' + esc(u) + ' is on the left)</div>' : '') + '</div>';
+  var alone = b.phase !== 'plug' && b.view !== 'plug' && !b.anim && aloneSide(b.eq, b.p.U) && !b.locked;
+  h += '<div class="status' + (b.locked && !alone ? ' bad' : '') + '">' + (alone ? esc(u) + ' is alone! ✓' : b.phase === 'plug' ? 'Step 1: plug in' : b.locked ? '✗ Tap ↶ Undo' : '') + '</div>';
+  if (b.phase === 'done') h += '<div class="answer">' + esc(u) + ' = ' + esc(fmt3(b.ans)) + (b.p.aunit ? ' <small>' + esc(b.p.aunit) + '</small>' : '') + '</div>';
+  return h + '</div>';
+}
+
+/* ===================================================================
+   PART 2: GUIDED
+   =================================================================== */
+var GP = [
+  {fid:'density', U:'V', givens:{D:G(2.70,'g/mL'), m:G(54.0,'g')}, aunit:'mL',
+   story:'A rock has a mass of <b>54.0 g</b> and a density of <b>2.70 g/mL</b>. Find its <b>volume</b>, V.', tip:'V ends up on the bottom, so it’s the hard one. Bring it up first.'},
+  {fid:'specheat', U:'c', givens:{q:G(250,'J'), m:G(25.0,'g'), dT:G(20.0,'°C')}, aunit:'J/g·°C',
+   story:'<b>250. J</b> of heat warms <b>25.0 g</b> of a metal by <b>20.0 °C</b>. Find the metal’s <b>specific heat</b>, c.', tip:'Two numbers multiply c. Divide by each one, or by both at once.'},
+  {fid:'charles', U:'V2', givens:{V1:G(2.00,'L','STARTING volume'), T1:G(300,'K','STARTING temperature'), T2:G(450,'K','FINAL temperature')}, aunit:'L',
+   story:'A gas takes up <b>2.00 L</b> at <b>300. K</b>. It is heated to <b>450. K</b> (same pressure). Find the <b>new volume</b>, V₂.', tip:'To get V₂ alone, × T₂. If T₂ were the unknown (on the bottom), you’d × T₂ first to bring it up.'}
+];
+function guidedBoard(){
+  var g = S.guided;
+  if (!g.b || g.b.gi !== g.cur || g.b.dead){ g.b = newBoard('guided', clone(GP[g.cur])); g.b.gi = g.cur; }
+  return g.b;
+}
+function renderGuided(){
+  var g = S.guided, b = guidedBoard(), gp = GP[g.cur];
+  var pills = '<div class="pills"><span class="lbl">Problem</span>' + GP.map(function(p, k){
+    var en = UNLOCK || k === 0 || g.done[k - 1] || g.done[k];
+    return '<button class="pill' + (k === g.cur ? ' cur' : '') + (g.done[k] ? ' done' : '') + '" data-act="gprob" data-arg="' + k + '"' + (en ? '' : ' disabled') + '>' + (g.done[k] ? '✓ ' : '') + (k + 1) + ' ' + FORMULAS[p.fid].name + '</button>';
+  }).join('') + '</div>';
+  var story = '<div class="gray story"><div class="t">Problem ' + (g.cur + 1) + ' of 3 · We do it together</div>' + gp.story + '<div class="qhint" style="margin-top:4px">💡 ' + esc(gp.tip) + '</div></div>';
+  var next = b.phase === 'done' ? '<div class="nextrow"><button class="big" data-act="gnext">' + (g.cur < 2 ? 'Next problem ▶' : 'Go to Practice ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + story + boardLeft(b, '') + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+
+/* ===================================================================
+   PART 3: PRACTICE
+   =================================================================== */
+var LEVELS = ['Density: unknown on top or alone', 'Molarity & dilution', 'Unknown on the bottom', 'Specific heat', 'Charles’ law', 'Combined gas law'];
+var MATS = [['aluminum',2.70],['iron',7.87],['copper',8.96],['lead',11.3],['zinc',7.14],['glass',2.50],['ethanol',0.789],['olive oil',0.918],['glycerin',1.26]];
+var METALS = [['aluminum',0.900],['iron',0.449],['copper',0.385],['zinc',0.388],['lead',0.129],['silver',0.235]];
+var SOLS = ['NaCl','KCl','glucose','CuSO₄','NaOH','KNO₃'];
+function gen(lvl, idx){
+  var p;
+  if (lvl === 0){
+    if (idx % 2 === 0){
+      var m = G(R(12, 180), 'g'), V = G(R(4, 60), 'mL'), obj = pick(['A rock','A metal bolt','A plastic cube','A rubber stopper','An unknown solid']);
+      p = {fid:'density', U:'D', givens:{m:m, V:V}, aunit:'g/mL', story:obj + ' has a mass of <b>' + T(m) + '</b> and a volume of <b>' + T(V) + '</b>. Find its <b>density</b>, D.'};
+    } else {
+      var mt = pick(MATS), D = G(mt[1], 'g/mL'), V2 = G(R(3, 45), 'mL');
+      p = {fid:'density', U:'m', givens:{D:D, V:V2}, aunit:'g', story:'A sample of ' + mt[0] + ' has a volume of <b>' + T(V2) + '</b>. Its density is <b>' + T(D) + '</b>. Find its <b>mass</b>, m.'};
+    }
+  } else if (lvl === 1){
+    var k = idx % 3, sol = pick(SOLS);
+    if (k === 0){
+      var M = G(R(0.1, 2), 'M'), VL = G(R(0.1, 1.5), 'L');
+      p = {fid:'molarity', U:'n', givens:{M:M, V:VL}, aunit:'mol', story:'You have <b>' + T(VL) + '</b> of <b>' + T(M) + '</b> ' + sol + ' solution. How many <b>moles</b> of ' + sol + ' are in it? Find n.'};
+    } else if (k === 1){
+      var M1 = G(R(2, 6), 'M', 'STARTING concentration'), V1 = G(R(10, 50), 'mL', 'STARTING volume'), M2 = G(R(0.2, 1.5), 'M', 'FINAL concentration');
+      p = {fid:'dilution', U:'V2', givens:{M1:M1, V1:V1, M2:M2}, aunit:'mL', story:'You dilute <b>' + T(V1) + '</b> of <b>' + T(M1) + '</b> HCl with water until it is <b>' + T(M2) + '</b>. What is the <b>final volume</b>, V₂?'};
+    } else {
+      var Va = G(R(5, 40), 'mL', 'STARTING volume'), Vb = G(R(100, 500), 'mL', 'FINAL volume'), Mb = G(R(0.1, 1), 'M', 'FINAL concentration');
+      p = {fid:'dilution', U:'M1', givens:{V1:Va, V2:Vb, M2:Mb}, aunit:'M', story:'You dilute <b>' + T(Va) + '</b> of a stock solution up to <b>' + T(Vb) + '</b>. The final concentration is <b>' + T(Mb) + '</b>. What was the <b>starting concentration</b>, M₁?'};
+    }
+  } else if (lvl === 2){
+    if (idx % 2 === 0){
+      var mt2 = pick(MATS), D2 = G(mt2[1], 'g/mL'), m2 = G(R(10, 150), 'g');
+      p = {fid:'density', U:'V', givens:{D:D2, m:m2}, aunit:'mL', story:'A sample of ' + mt2[0] + ' has a mass of <b>' + T(m2) + '</b>. Its density is <b>' + T(D2) + '</b>. What is its <b>volume</b>, V?'};
+    } else {
+      var sol2 = pick(SOLS), M3 = G(R(0.2, 2), 'M'), n3 = G(R(0.05, 0.8), 'mol');
+      p = {fid:'molarity', U:'V', givens:{M:M3, n:n3}, aunit:'L', story:'What volume of <b>' + T(M3) + '</b> ' + sol2 + ' contains <b>' + T(n3) + '</b> of ' + sol2 + '? Find V in liters.'};
+    }
+  } else if (lvl === 3){
+    var k3 = idx % 3;
+    if (k3 === 0){
+      var me = pick(METALS), m4 = G(R(10, 150), 'g'), dT = G(R(5, 50), '°C'), q = G(m4.val * me[1] * dT.val, 'J');
+      p = {fid:'specheat', U:'c', givens:{q:q, m:m4, dT:dT}, aunit:'J/g·°C', story:'A <b>' + T(m4) + '</b> piece of metal absorbs <b>' + T(q) + '</b> of heat and warms by <b>' + T(dT) + '</b>. Find its <b>specific heat</b>, c.'};
+    } else if (k3 === 1){
+      var c = G(4.18, 'J/g·°C'), dT2 = G(R(5, 25), '°C'), q2 = G(R(20, 90) * 4.18 * dT2.val, 'J');
+      p = {fid:'specheat', U:'m', givens:{q:q2, c:c, dT:dT2}, aunit:'g', story:'Water (c = <b>' + T(c) + '</b>) absorbs <b>' + T(q2) + '</b> and warms by <b>' + T(dT2) + '</b>. What <b>mass</b> of water is there? Find m.'};
+    } else {
+      var me2 = pick(METALS), c2 = G(me2[1], 'J/g·°C'), m5 = G(R(10, 120), 'g'), q3 = G(m5.val * me2[1] * R(5, 40), 'J');
+      p = {fid:'specheat', U:'dT', givens:{q:q3, m:m5, c:c2}, aunit:'°C', story:'A <b>' + T(m5) + '</b> block of ' + me2[0] + ' (c = <b>' + T(c2) + '</b>) absorbs <b>' + T(q3) + '</b>. How much does its <b>temperature change</b>? Find ΔT.'};
+    }
+  } else if (lvl === 4){
+    var V1c = G(R(1, 5), 'L', 'STARTING volume'), T1c = G(R(250, 350), 'K', 'STARTING temperature'), up = Math.random() < 0.6, f = up ? R(1.2, 1.6) : R(0.6, 0.85);
+    if (idx % 2 === 0){
+      var T2c = G(T1c.val * f, 'K', 'FINAL temperature');
+      p = {fid:'charles', U:'V2', givens:{V1:V1c, T1:T1c, T2:T2c}, aunit:'L', story:'A balloon holds <b>' + T(V1c) + '</b> at <b>' + T(T1c) + '</b>. It is ' + (up ? 'heated' : 'cooled') + ' to <b>' + T(T2c) + '</b> (same pressure). What is the <b>new volume</b>, V₂?'};
+    } else {
+      var V2c = G(V1c.val * f, 'L', 'FINAL volume');
+      p = {fid:'charles', U:'T2', givens:{V1:V1c, T1:T1c, V2:V2c}, aunit:'K', story:'A gas takes up <b>' + T(V1c) + '</b> at <b>' + T(T1c) + '</b>. At what <b>temperature</b> will it take up <b>' + T(V2c) + '</b> (same pressure)? Find T₂.'};
+    }
+  } else {
+    var atm = Math.random() < 0.5, pu = atm ? 'atm' : 'kPa';
+    var P1 = G(atm ? R(0.8, 2.5) : R(80, 250), pu, 'STARTING pressure'), P2 = G(atm ? R(0.8, 2.5) : R(80, 250), pu, 'FINAL pressure');
+    var V1d = G(R(1, 6), 'L', 'STARTING volume'), T1d = G(R(250, 350), 'K', 'STARTING temperature');
+    if (idx % 2 === 0){
+      var T2d = G(R(220, 450), 'K', 'FINAL temperature');
+      p = {fid:'combined', U:'V2', givens:{P1:P1, V1:V1d, T1:T1d, P2:P2, T2:T2d}, aunit:'L', story:'A gas at <b>' + T(P1) + '</b>, <b>' + T(V1d) + '</b> and <b>' + T(T1d) + '</b> is changed to <b>' + T(P2) + '</b> and <b>' + T(T2d) + '</b>. What is the <b>new volume</b>, V₂?'};
+    } else {
+      var V2d = G(R(1, 6), 'L', 'FINAL volume');
+      p = {fid:'combined', U:'T2', givens:{P1:P1, V1:V1d, T1:T1d, P2:P2, V2:V2d}, aunit:'K', story:'A gas at <b>' + T(P1) + '</b>, <b>' + T(V1d) + '</b> and <b>' + T(T1d) + '</b> is changed to <b>' + T(P2) + '</b> and <b>' + T(V2d) + '</b>. What is the <b>new temperature</b>, T₂?'};
+    }
+  }
+  p.order = shuffle(Object.keys(p.givens));
+  return p;
+}
+function newPracProblem(){
+  var pr = S.prac, idx = pr.count[pr.lvl]++;
+  pr.b = newBoard('prac', gen(pr.lvl, idx)); pr.b.lvl = pr.lvl;
+}
+function pracScore(b){
+  var pr = S.prac, l = pr.lvl;
+  if (b.shown){ b.pmsg = 'That one was a demo, so it doesn’t count. Try a new one.'; return; }
+  if (b.miss === 0){
+    pr.streak[l] = Math.min(3, pr.streak[l] + 1);
+    if (pr.streak[l] >= 3 && !pr.done[l]){ pr.done[l] = 1; b.pmsg = 'No mistakes! Level ' + (l + 1) + ' complete ✓'; b.lvlDone = 1; }
+    else b.pmsg = pr.done[l] ? 'No mistakes! (This level is already complete.)' : 'No mistakes! Streak: ' + pr.streak[l] + ' of 3.';
+  } else b.pmsg = 'Solved, but there was a mistake, so the streak starts over. You need 3 in a row with no mistakes.';
+}
+function renderPractice(){
+  var pr = S.prac;
+  if (!pr.b || pr.b.lvl !== pr.lvl || pr.b.dead) newPracProblem();
+  var b = pr.b, l = pr.lvl;
+  var pills = '<div class="pills"><span class="lbl">Level</span>' + LEVELS.map(function(n, k){
+    var en = UNLOCK || k === 0 || pr.done[k - 1] || pr.done[k];
+    return '<button class="pill' + (k === l ? ' cur' : '') + (pr.done[k] ? ' done' : '') + '" data-act="plvl" data-arg="' + k + '"' + (en ? '' : ' disabled') + ' title="' + esc(n) + '">' + (pr.done[k] ? '✓' : 'L' + (k + 1)) + '</button>';
+  }).join('') + '<span class="streak" aria-label="streak ' + pr.streak[l] + ' of 3">' + (pr.done[l] ? '✓ done' : 'Streak') + [0,1,2].map(function(i){ return '<span class="dot' + (i < pr.streak[l] ? ' on' : '') + '">' + (i < pr.streak[l] ? '✓' : '') + '</span>'; }).join('') + '</span></div>';
+  var story = '<div class="gray story"><div class="t">Level ' + (l + 1) + ' of 6 · ' + esc(LEVELS[l]) + '</div>' + b.p.story + '</div>';
+  var next = '';
+  if (b.phase === 'done'){
+    var allDone = cnt(pr.done) === 6;
+    if (b.lvlDone && l < 5) next = '<button class="big green" data-act="pnext" data-arg="lvl">Next level ▶</button>';
+    else if (b.lvlDone && allDone) next = '<button class="big green" data-act="card">🏆 See completion card</button>';
+    else next = '<button class="big" data-act="pnext">Next problem ▶</button>';
+    next = '<div class="nextrow">' + next + (allDone && !(b.lvlDone && allDone) ? '<button class="big ghost" data-act="card">🏆 Completion card</button>' : '') + '</div>';
+  } else if (cnt(pr.done) === 6) next = '<div class="nextrow"><button class="big ghost" data-act="card">🏆 Completion card</button></div>';
+  LEFT.innerHTML = pills + story + boardLeft(b, '') + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+async function showMe(b){
+  S.mis.showme++; b.shown = true; b.auto = true; b.autoOK = true;
+  b.phase = 'plug'; b.fills = {}; b.sel = null; b.fb = {ok:true, title:'Watch', why:'Here is the solution, one step at a time.'}; b.hist = []; b.moves = []; b.locked = false; b.op = null; b.flipped = false;
+  render();
+  var order = tmplSyms(b.p.fid);
+  for (var i = 0; i < order.length; i++){
+    await wait(700); if (S.prac.b !== b) return;
+    var s = order[i]; b.sel = s === b.p.U ? 'U' : s; render(); await wait(500);
+    b.fills[s] = b.sel; b.sel = null; render();
+  }
+  await wait(600); finishPlug(b); b.fb = {ok:true, title:'Watch', why:'Now get ' + uName(b) + ' alone.'}; render();
+  var guard = 0;
+  while (!aloneSide(b.eq, b.p.U) && guard++ < 8){
+    await wait(1300); if (S.prac.b !== b) return;
+    var mv = nextMove(b.eq, b.p.U); if (!mv) break;
+    b.fb = {ok:true, title:mv.op === 'p10' ? '10⁻ˣ both sides' : mv.op + ' ' + chipLabel(b.eq, mv.ids) + ' on both sides', why:mv.why};
+    doMove(b, mv.op, mv.ids);
+    await wait(900);
+  }
+  await wait(1000); if (S.prac.b !== b) return;
+  b.auto = false; b.autoOK = false; calc(b);
+}
+
+/* ----- completion card ----- */
+function cardData(){
+  var d = new Date();
+  return {when:d.toLocaleDateString(undefined, {weekday:'short', year:'numeric', month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'}),
+    learn:pct('learn'), guided:pct('guided'), prac:pct('prac'), mis:S.mis};
+}
+var MISNAMES = [['slot','Number in the wrong slot'],['opposite','Opposite operation (× vs ÷, + vs −)'],['nohelp','Move that didn’t help'],['showme','“Show me” used']];
+function cardText(c){
+  return 'Solving for a Variable — Completion Card\n' + c.when + '\nLearn: ' + c.learn + '%   Guided: ' + c.guided + '%   Practice: ' + c.prac + '%\n\nMistakes by type:\n' +
+    MISNAMES.map(function(m){ return '  • ' + m[1] + ': ' + (c.mis[m[0]] || 0); }).join('\n') + '\n\n' + PAGE;
+}
+function cardCanvas(c){
+  var cv = document.createElement('canvas'); cv.width = 900; cv.height = 560;
+  var x = cv.getContext('2d'), F2 = 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+  x.fillStyle = '#fff'; x.fillRect(0, 0, 900, 560);
+  x.fillStyle = '#1f3a5f'; x.fillRect(0, 0, 900, 90);
+  x.fillStyle = '#fff'; x.font = 'bold 34px ' + F2; x.fillText('Solving for a Variable', 30, 52);
+  x.font = '20px ' + F2; x.fillText('Completion Card · ' + c.when, 30, 80);
+  var y = 140;
+  [['Learn', c.learn], ['Guided', c.guided], ['Practice', c.prac]].forEach(function(r, i){
+    var bx = 30 + i * 285; x.fillStyle = r[1] === 100 ? '#1d7a35' : '#6a7682'; x.fillRect(bx, y - 34, 265, 70);
+    x.fillStyle = '#fff'; x.font = 'bold 26px ' + F2; x.fillText(r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%'), bx + 18, y + 10);
+  });
+  y = 230; x.fillStyle = '#1f3a5f'; x.font = 'bold 24px ' + F2; x.fillText('Mistakes by type', 30, y);
+  x.font = '22px ' + F2;
+  MISNAMES.forEach(function(m, i){
+    var yy = y + 42 + i * 44; x.fillStyle = '#15191e'; x.fillText(m[1], 50, yy);
+    x.font = 'bold 22px ' + F2; x.fillText(String(c.mis[m[0]] || 0), 820, yy); x.font = '22px ' + F2;
+    x.strokeStyle = '#e1e6ec'; x.beginPath(); x.moveTo(40, yy + 14); x.lineTo(860, yy + 14); x.stroke();
+  });
+  x.fillStyle = '#5a6672'; x.font = '18px ' + F2; x.fillText(PAGE, 30, 540);
+  x.strokeStyle = '#1f3a5f'; x.lineWidth = 6; x.strokeRect(3, 3, 894, 554);
+  return cv;
+}
+function openCard(){
+  var c = cardData();
+  var rows = MISNAMES.map(function(m){ return '<tr><td>' + esc(m[1]) + '</td><td>' + (c.mis[m[0]] || 0) + '</td></tr>'; }).join('');
+  modal('<div class="card"><h3>🏆 Solving for a Variable: Completion Card</h3><div>' + esc(c.when) + '</div>' +
+    '<div class="row" style="margin:10px 0">' + [['Learn', c.learn], ['Guided', c.guided], ['Practice', c.prac]].map(function(r){ return '<span class="opt ' + (r[1] === 100 ? 'right' : '') + '">' + r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%') + '</span>'; }).join('') + '</div>' +
+    '<b>Mistakes by type</b><table>' + rows + '</table></div><div id="cardmsg" class="qhint" style="min-height:1.3em;margin-top:6px"></div>' +
+    '<div class="mbtns"><button class="big" data-act="cardcopy">📋 Copy</button><button class="big" data-act="cardpng">⬇ Save PNG</button><button class="big" data-act="cardmail">✉ Email using Google</button><button class="big ghost" data-act="close">Close</button></div>');
+}
+function cardMsg(t){ var el = document.getElementById('cardmsg'); if (el) el.textContent = t; }
+
+/* ===================================================================
+   PART 4: FREE FORM
+   =================================================================== */
+var UNITQ = {density:'g/mL', mass:'g', volume:'mL', molarity:'M', moles:'mol', heat:'J', sheat:'J/g·°C', dtemp:'°C', temp:'K', pressure:'atm', mm:'g/mol', count:'particles', dh:'J/g', pct:'%', ph:'', poh:'', conc:'M'};
+var PICK_P = ['boyle','gaylussac','combined'], PICK_V = ['boyle','charles','combined','dilution'];
+function unitFor(fid, sym){
+  var q = FORMULAS[fid].q[sym];
+  if (q === 'pressure') return fid === 'ideal' ? 'atm' : S.free.units.P;
+  if (q === 'volume'){ if (fid === 'ideal' || fid === 'molarity') return 'L'; if (PICK_V.indexOf(fid) >= 0) return S.free.units.V; return 'mL'; }
+  return UNITQ[q];
+}
+function freeReset(step){
+  var f = S.free;
+  if (step <= 1){ f.fid = null; f.U = null; f.vals = {}; }
+  if (step <= 2){ f.U = step <= 1 ? null : f.U; }
+  f.b = null; f.step = step;
+}
+var KP = null;
+function openKeypad(sym){
+  var f = S.free, g = f.vals[sym];
+  KP = {sym:sym, m:'', e:'', neg:false, eneg:false, em:false, err:''};
+  if (g && g.raw){ KP.m = g.raw.m; KP.e = g.raw.e; KP.neg = g.raw.neg; KP.eneg = g.raw.eneg; KP.em = g.raw.em; }
+  drawKeypad();
+}
+function kpStr(){ var s = (KP.neg ? '−' : '') + (KP.m || ''); if (KP.em) s += '×10' + sup((KP.eneg ? '-' : '') + (KP.e || '')) + (KP.e ? '' : '▯'); return s; }
+function drawKeypad(){
+  var u = unitFor(S.free.fid, KP.sym);
+  var keys = ['7','8','9','⌫','4','5','6','±','1','2','3','×10ⁿ','0','.','',''];
+  modal('<div class="kp"><h3>Enter ' + esc(sy(KP.sym)) + (u ? ' (' + esc(u) + ')' : '') + '</h3><div class="kpd">' + esc(kpStr() || ' ') + (u ? ' <small>' + esc(u) + '</small>' : '') + '</div>' +
+    '<div class="kpg">' + keys.map(function(k){ return k ? '<button data-act="kp" data-arg="' + k + '">' + k + '</button>' : ''; }).join('') +
+    '<button class="ok" data-act="kp" data-arg="OK" style="grid-column:span 2">OK</button></div><div class="kperr">' + esc(KP.err) + '</div>' +
+    '<div class="mbtns"><button class="big ghost" data-act="close">Cancel</button></div></div>');
+}
+function kpKey(k){
+  KP.err = '';
+  if (/^\d$/.test(k)){ if (KP.em){ if (KP.e.length < 3) KP.e += k; } else if (KP.m.replace('.', '').length < 10) KP.m += k; }
+  else if (k === '.'){ if (!KP.em && KP.m.indexOf('.') < 0) KP.m = (KP.m || '0') + '.'; }
+  else if (k === '±'){ if (KP.em) KP.eneg = !KP.eneg; else KP.neg = !KP.neg; }
+  else if (k === '×10ⁿ'){ if (!KP.em){ if (!KP.m) KP.m = '1'; KP.em = true; } }
+  else if (k === '⌫'){ if (KP.em){ if (KP.e) KP.e = KP.e.slice(0, -1); else if (KP.eneg) KP.eneg = false; else KP.em = false; } else if (KP.m) KP.m = KP.m.slice(0, -1); else KP.neg = false; }
+  else if (k === 'OK'){
+    var mv = parseFloat(KP.m);
+    if (!KP.m || isNaN(mv)){ KP.err = 'Type a number first.'; drawKeypad(); return; }
+    if (KP.em && !KP.e){ KP.err = 'Type the power of 10 (or tap ⌫).'; drawKeypad(); return; }
+    var val = (KP.neg ? -1 : 1) * mv * Math.pow(10, KP.em ? (KP.eneg ? -1 : 1) * parseInt(KP.e, 10) : 0);
+    var fid = S.free.fid, q = FORMULAS[fid].q[KP.sym];
+    if (val === 0 && fid !== 'phpoh'){ KP.err = 'This value can’t be 0 here.'; drawKeypad(); return; }
+    if (val < 0 && (q === 'conc' || q === 'temp' || q === 'mass' || q === 'volume' || q === 'pressure' || q === 'moles')){ KP.err = 'This value can’t be negative.'; drawKeypad(); return; }
+    var txt = (KP.neg ? '−' : '') + KP.m.replace(/\.$/, '.') + (KP.em ? '×10' + sup((KP.eneg ? '-' : '') + KP.e) : '');
+    S.free.vals[KP.sym] = {val:val, txt:txt, unit:unitFor(fid, KP.sym), raw:{m:KP.m, e:KP.e, neg:KP.neg, eneg:KP.eneg, em:KP.em}};
+    KP = null; closeModal(); save(); render(); return;
+  }
+  drawKeypad();
+}
+function freeKnowns(){ var f = S.free; return tmplSyms(f.fid).filter(function(s){ return s !== f.U; }); }
+function renderFree(){
+  var f = S.free, h = '';
+  var names = ['Formula','Solve for','Values','Solve'];
+  h += '<div class="pills"><span class="lbl">Step</span>' + names.map(function(n, k){
+    var st = k + 1, en = st < f.step;
+    return '<button class="pill' + (st === f.step ? ' cur' : '') + (st < f.step ? ' done' : '') + '" data-act="fstep" data-arg="' + st + '"' + (en ? '' : ' disabled') + '>' + (st < f.step ? '✓ ' : st + ' ') + n + '</button>';
+  }).join('') + '</div>';
+  var right = '';
+  if (f.step === 1){
+    var groups = {};
+    Object.keys(FORMULAS).forEach(function(id){ var g = FORMULAS[id].grp; (groups[g] = groups[g] || []).push(id); });
+    var ans = '<div class="fgrid">' + Object.keys(groups).map(function(g){ return '<div class="row"><span class="grpl">' + esc(g) + '</span>' + groups[g].map(function(id){ return '<button class="opt sm" data-act="fpick" data-arg="' + id + '">' + esc(FORMULAS[id].name) + '</button>'; }).join('') + '</div>'; }).join('') + '</div>';
+    h += qbox('STEP 1 OF 4 — FORMULA', 'Which <span class="kw">formula</span> do you need?', 'For homework or lab calculations: pick a formula, type your numbers, then solve it step by step.', ans, '');
+    right = '<div class="panel"><div class="boardt"><h2>Equation board</h2></div><div class="eqwrap"><div class="qhint" style="font-size:1.1rem">Pick a formula on the left.</div></div></div>';
+  } else {
+    var fx = FORMULAS[f.fid];
+    if (f.step > 1) h += '<div class="doneline">✓ ' + esc(fx.name) + ': <span class="mini">' + formulaHTML(f.fid) + '</span>' + (f.U && f.step > 2 ? ' · solve for ' + esc(sy(f.U)) : '') + '</div>';
+    if (f.step === 2){
+      var syms = tmplSyms(f.fid);
+      var a2 = '<div class="row">' + syms.map(function(s){ return '<button class="opt" data-act="fvar" data-arg="' + s + '"><span class="tile" style="font-size:1.05rem;height:1.6em">' + esc(sy(s)) + '</span></button>'; }).join('') + '</div>';
+      h += qbox('STEP 2 OF 4 — SOLVE FOR', 'Which variable are you <span class="kw">solving for</span>?', 'That’s the one you don’t have a number for.', a2, '');
+      right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(f.fid, freeUnits(f.fid))) + '</div><div class="eqwrap">' + formulaHTML(f.fid) + '</div>' + (fx.log || f.fid === 'ideal' || f.fid === 'particles' ? '<div class="qhint">' + (f.fid === 'ideal' ? 'R = 0.0821 L·atm/mol·K is filled in for you (use atm, L, mol, K).' : f.fid === 'particles' ? '6.02×10²³ is filled in for you.' : '[H⁺] and [OH⁻] are in M (mol/L).') + '</div>' : '') + '</div>';
+    } else if (f.step === 3){
+      var unitsH = '';
+      var hasP = PICK_P.indexOf(f.fid) >= 0, hasV = PICK_V.indexOf(f.fid) >= 0;
+      if (hasP) unitsH += '<div class="units">Pressure unit:' + ['atm','kPa','mmHg'].map(function(u){ return '<button class="opt' + (f.units.P === u ? ' sel' : '') + '" data-act="funit" data-arg="P:' + u + '">' + u + '</button>'; }).join('') + '</div>';
+      if (hasV) unitsH += '<div class="units">Volume unit:' + ['L','mL'].map(function(u){ return '<button class="opt' + (f.units.V === u ? ' sel' : '') + '" data-act="funit" data-arg="V:' + u + '">' + u + '</button>'; }).join('') + '</div>';
+      var kn = freeKnowns(), all = kn.every(function(s){ return f.vals[s]; });
+      var rows = '<div class="row">' + kn.map(function(s){
+        var g = f.vals[s], u = unitFor(f.fid, s);
+        return '<button class="opt" data-act="fslot" data-arg="' + s + '">' + esc(sy(s)) + ' = ' + (g ? '<b>' + esc(g.txt) + '</b>' : '<span style="color:#8a96a2">tap to type</span>') + (u ? ' <small style="color:#66727e">' + esc(u) + '</small>' : '') + '</button>';
+      }).join('') + '</div>';
+      h += qbox('STEP 3 OF 4 — VALUES', 'Type the <span class="kw">values you know</span>.', 'Tap a slot (here or in the formula), then type the number on the keypad.' + (hasP || hasV ? ' Pick units first: both sides must match.' : ''), unitsH + rows, '');
+      h += '<div class="nextrow"><button class="big" data-act="fgo"' + (all ? '' : ' disabled') + '>Next ▶</button></div>';
+      var ctx = {U:f.U, fills:{}, vals:f.vals, act:'fslot'};
+      kn.forEach(function(s){ if (f.vals[s]) ctx.fills[s] = s; }); ctx.fills[f.U] = 'U';
+      right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(f.fid, freeUnits(f.fid))) + '</div><div class="eqwrap">' + templateHTML(f.fid, ctx) + '</div><div class="status">Tap an empty slot to type its value.</div></div>';
+    } else {
+      var b = f.b;
+      h += boardLeft(b, '').replace(/STEP 2 OF 2/g, 'STEP 4 OF 4');
+      if (b.phase === 'done'){
+        h += '<div class="nextrow"><button class="big" data-act="fcopy">📋 Copy</button><button class="big" data-act="fmail">✉ Email using Google</button><button class="big" data-act="fprint">🖨 Print</button></div>' +
+          '<div class="nextrow"><button class="big ghost" data-act="fagain">↻ Same formula, new numbers</button><button class="big ghost" data-act="fnew">New formula</button></div><div id="fmsg" class="qhint"></div>';
+      }
+      right = boardRight(b);
+    }
+  }
+  LEFT.innerHTML = h;
+  RIGHT.innerHTML = right;
+}
+function freeSummary(){
+  var f = S.free, b = f.b, lines = [];
+  lines.push('Solving for a Variable — Free Form');
+  lines.push('Formula: ' + FORMULAS[f.fid].name + ':  ' + formulaText(f.fid) + '   (solve for ' + sy(f.U) + ')');
+  lines.push('Values: ' + freeKnowns().map(function(s){ var g = f.vals[s]; return sy(s) + ' = ' + g.txt + (g.unit ? ' ' + g.unit : ''); }).join(', '));
+  lines.push('Steps:');
+  lines.push('  1. Plug in:  ' + eqText(b.eq0));
+  b.moves.forEach(function(m, i){ lines.push('  ' + (i + 2) + '. ' + (m.op === 'p10' ? '10⁻ˣ' : m.op + ' ' + m.label) + ' on both sides:  ' + m.text); });
+  if (b.flipped) lines.push('     (flipped so ' + sy(f.U) + ' is on the left:  ' + eqText(b.eq) + ')');
+  lines.push('Rearranged formula:  ' + eqText(b.eq, true));
+  lines.push('Answer:  ' + ansText(b));
+  lines.push(''); lines.push(PAGE);
+  return lines.join('\n');
+}
+function freePrint(){
+  var f = S.free, b = f.b, P = document.getElementById('print');
+  var txt = freeSummary().split('\n');
+  P.innerHTML = '<h2>Solving for a Variable: Free Form</h2><p><b>' + esc(FORMULAS[f.fid].name) + '</b></p>' + formulaHTML(f.fid) +
+    '<p>' + txt.slice(2).map(esc).join('<br>').replace(/ {2}/g, '&nbsp;&nbsp;') + '</p><p><b>Rearranged formula:</b></p>' + eqHTML(b.eq, {sym:true}) +
+    '<p style="font-size:18pt"><b>Answer: ' + esc(ansText(b)) + '</b></p>';
+  window.print();
+}
+
+/* ===================================================================
+   RENDER + ACTIONS
+   =================================================================== */
+function render(){
+  if (!unlocked(S.tab)) S.tab = 'learn';
+  renderTabs();
+  if (S.tab === 'learn') renderLearn();
+  else if (S.tab === 'guided') renderGuided();
+  else if (S.tab === 'prac') renderPractice();
+  else renderFree();
+  fitEqs();
+}
+function goTab(t){
+  if (!unlocked(t)){ modal('<h3>🔒 ' + esc(LOCKMSG[t]) + '</h3><p>The parts unlock in order: Learn → Guided → Practice. Free Form is always open.</p><div class="mbtns"><button class="big" data-act="close">OK</button></div>'); return; }
+  S.tab = t; LV.pick = null; LV.wrong = null; save(); render();
+  if (t === 'learn') startStop();
+  LEFT.scrollTop = 0;
+}
+function startStop(){ LV.pick = null; LV.wrong = null; LV.bal = S.learn.done[S.learn.cur] && S.learn.cur === 2 ? 'level' : null; render(); playFrames(); }
+
+var ACT = {
+  tab:function(a){ goTab(a); },
+  close:function(){ closeModal(); KP = null; },
+  /* learn */
+  lstop:function(a){ S.learn.cur = +a; save(); startStop(); },
+  lopt:function(a){
+    var st = STOPS[S.learn.cur], o = st.opts[+a];
+    if (o.bal) LV.bal = o.bal;
+    if (o.ok){ LV.pick = +a; LV.wrong = null; S.learn.done[S.learn.cur] = 1; save(); }
+    else { LV.wrong = +a; }
+    render();
+  },
+  lnext:function(){ if (S.learn.cur < 5){ S.learn.cur++; save(); startStop(); } else goTab('guided'); },
+  /* board */
+  chip:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; b.sel = b.sel === a ? null : a; b.fb = null; render(); },
+  slot:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; if (!b.sel){ if (!b.fills[a]){ b.fb = {ok:false, title:'', why:'Tap a value first, then tap its slot.'}; render(); } return; } placeChip(b, b.sel, a); },
+  op:function(a){ var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return; if (a === 'p10'){ doMove(b, 'p10', []); return; } b.op = b.op === a ? null : a; b.fb = null; render(); },
+  schip:function(a){
+    var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return;
+    var c = solveChips(b.eq, b.p.U)[+a]; if (!c) return;
+    if (!b.op){ b.fb = {ok:false, title:'', why:'Tap an operation first (+ − × ÷), then a number.'}; render(); return; }
+    doMove(b, b.op, c.ids);
+  },
+  undo:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) undo(b); },
+  calc:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) calc(b); },
+  bview:function(a){ var b = curBoard(); if (!b) return; b.view = a || null; render(); },
+  showme:function(){ var b = curBoard(); if (b) showMe(b); },
+  /* guided */
+  gprob:function(a){ S.guided.cur = +a; S.guided.b = null; save(); render(); },
+  gnext:function(){ if (S.guided.cur < 2){ S.guided.cur++; S.guided.b = null; save(); render(); } else goTab('prac'); },
+  /* practice */
+  plvl:function(a){ S.prac.lvl = +a; S.prac.b = null; save(); render(); },
+  pnext:function(a){
+    var pr = S.prac;
+    if (a === 'lvl' && pr.lvl < 5) pr.lvl++;
+    newPracProblem(); save(); render();
+    if (cnt(pr.done) === 6 && !pr.cardShown){ pr.cardShown = 1; save(); openCard(); }
+  },
+  card:function(){ S.prac.cardShown = 1; save(); openCard(); },
+  cardcopy:function(){
+    var c = cardData(), text = cardText(c), cv = cardCanvas(c);
+    try {
+      if (navigator.clipboard && window.ClipboardItem){
+        cv.toBlob(function(blob){
+          navigator.clipboard.write([new ClipboardItem({'image/png':blob, 'text/plain':new Blob([text], {type:'text/plain'})})]).then(function(){ cardMsg('✓ Copied (picture + text). Paste it into Google Classroom or an email.'); },
+            function(){ copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text (this browser blocked the picture; use ⬇ Save PNG for it).' : 'Copy was blocked. Use ⬇ Save PNG instead.'); }); });
+        });
+        return;
+      }
+    } catch(e){}
+    copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text. Use ⬇ Save PNG for the picture.' : 'Copy was blocked. Use ⬇ Save PNG instead.'); });
+  },
+  cardpng:function(){
+    var cv = cardCanvas(cardData());
+    cv.toBlob(function(blob){ var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'solving-for-a-variable-card.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000); cardMsg('✓ Saved the PNG to your Downloads.'); });
+  },
+  cardmail:function(){ gmail('Solving for a Variable: Completion Card', cardText(cardData())); },
+  /* free */
+  fstep:function(a){ var st = +a; var f = S.free; if (st >= f.step) return; if (st === 1) freeReset(1); else if (st === 2){ f.U = null; f.vals = {}; f.b = null; f.step = 2; } else { f.b = null; f.step = 3; } save(); render(); },
+  fpick:function(a){ var f = S.free; f.fid = a; f.U = null; f.vals = {}; f.b = null; f.step = 2; save(); render(); },
+  fvar:function(a){ var f = S.free; f.U = a; f.vals = {}; f.b = null; f.step = 3; save(); render(); },
+  funit:function(a){ var p = a.split(':'), f = S.free; f.units[p[0]] = p[1]; Object.keys(f.vals).forEach(function(s){ f.vals[s].unit = unitFor(f.fid, s); }); save(); render(); },
+  fslot:function(a){ if (S.free.step !== 3 || a === S.free.U) return; openKeypad(a); },
+  kp:function(a){ if (KP) kpKey(a); },
+  fgo:function(){
+    var f = S.free; if (!freeKnowns().every(function(s){ return f.vals[s]; })) return;
+    var giv = {}; freeKnowns().forEach(function(s){ giv[s] = {val:f.vals[s].val, txt:f.vals[s].txt, unit:f.vals[s].unit}; });
+    f.b = newBoard('free', {fid:f.fid, U:f.U, givens:giv, aunit:unitFor(f.fid, f.U)}); f.step = 4; save(); render();
+  },
+  fagain:function(){ var f = S.free; f.vals = {}; f.b = null; f.step = 3; save(); render(); },
+  fnew:function(){ freeReset(1); save(); render(); },
+  fcopy:function(){ copyText(freeSummary(), function(ok){ var el = document.getElementById('fmsg'); if (el) el.textContent = ok ? '✓ Copied. Paste it into your lab or homework.' : 'Copy was blocked by this browser.'; }); },
+  fmail:function(){ gmail('Solving for a Variable: ' + FORMULAS[S.free.fid].name, freeSummary()); },
+  fprint:function(){ freePrint(); }
+};
+
+var suppressClick = false;
+document.addEventListener('click', function(e){
+  if (suppressClick) return;
+  var el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  var fn = ACT[el.dataset.act]; if (fn) fn(el.dataset.arg, el);
+});
+document.addEventListener('keydown', function(e){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.slot[data-act]')){ e.preventDefault(); e.target.click(); }
+  if (e.key === 'Escape') ACT.close();
+});
+/* drag a chip onto a slot */
+var drag = null;
+document.addEventListener('pointerdown', function(e){
+  var c = e.target.closest('.chip[data-act="chip"]'); if (!c || c.disabled) return;
+  drag = {el:c, sym:c.dataset.arg, x:e.clientX, y:e.clientY, ghost:null};
+});
+document.addEventListener('pointermove', function(e){
+  if (!drag) return;
+  if (!drag.ghost){
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 10) return;
+    var gh = drag.el.cloneNode(true); gh.classList.add('sel'); gh.classList.remove('glow');
+    gh.style.cssText = 'position:fixed;pointer-events:none;z-index:80;opacity:.92;margin:0';
+    document.body.appendChild(gh); drag.ghost = gh;
+  }
+  drag.ghost.style.left = (e.clientX - 30) + 'px'; drag.ghost.style.top = (e.clientY - 25) + 'px';
+});
+function endDrag(e, cancel){
+  if (!drag) return; var d = drag; drag = null;
+  if (!d.ghost) return;
+  d.ghost.remove(); suppressClick = true; setTimeout(function(){ suppressClick = false; }, 60);
+  if (cancel) return;
+  var el = document.elementFromPoint(e.clientX, e.clientY), s = el && el.closest('[data-act="slot"]'), b = curBoard();
+  if (s && b && b.phase === 'plug'){ b.sel = d.sym; placeChip(b, d.sym, s.dataset.arg); }
+}
+document.addEventListener('pointerup', function(e){ endDrag(e, false); });
+document.addEventListener('pointercancel', function(e){ endDrag(e, true); });
+window.addEventListener('resize', function(){ fitEqs(); });
+
+/* ---------- start ---------- */
+if (Q.get('mode') === 'free') S.tab = 'free';
+render();
+if (S.tab === 'learn') playFrames();
+var anyProgress = cnt(S.learn.done) || cnt(S.guided.done) || cnt(S.prac.done) || S.prac.count.some(function(x){ return x; }) || S.free.fid;
+if (hadSave && anyProgress) setTimeout(function(){ toast('Welcome back — you’re right where you left off'); }, 300);
+window.__S = function(){ return S; };
+})();
+
+</script>
+</body>
+</html>
