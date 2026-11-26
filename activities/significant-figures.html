@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Significant Figures &amp; Measurement</title>
+<meta name="description" content="Interactive significant figures activity: read graduated cylinders, burets and balances, count sig figs, round, and multiply/divide with the correct number of significant figures.">
+<style>
+:root{
+  --bg:#f4f6fa; --card:#fff; --ink:#0f172a; --muted:#475569; --line:#cbd5e1;
+  --accent:#1d4ed8; --accent-2:#1e3a8a; --sig:#065f46; --sigbg:#d1fae5; --non:#64748b;
+  --ok:#065f46; --okbg:#dcfce7; --bad:#9f1239; --badbg:#ffe4e6; --warn:#92400e; --warnbg:#fef3c7;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:18px;line-height:1.45;color:var(--ink);background:var(--bg);-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+sup{font-size:.7em;line-height:0;vertical-align:super}
+.topbar{position:sticky;top:0;z-index:20;background:#0f2747;color:#fff;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:8px 16px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.topbar h1{font-size:21px;margin:0;font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.tab{background:#1f3b66;border:2px solid #3b5b8c;color:#fff;border-radius:10px;padding:6px 14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;min-height:42px}
+.tab[aria-selected="true"]{background:#fff;color:#0f2747;border-color:#fff}
+.tab.locked{opacity:.85}
+.tab .lock{width:16px;height:16px}
+.tab .chk{font-weight:900;color:#4ade80}
+.tab[aria-selected="true"] .chk{color:#15803d}
+main{max-width:1280px;margin:0 auto;padding:12px 16px 40px}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+h2{font-size:24px;margin:2px 0 8px}
+h3{font-size:20px;margin:4px 0 6px}
+.btn{border:2px solid var(--accent);background:var(--accent);color:#fff;border-radius:10px;padding:8px 16px;font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation}
+.btn:hover{background:var(--accent-2)}
+.btn.sec{background:#fff;color:var(--accent)}
+.btn.sec:hover{background:#eef2ff}
+.btn.small{padding:4px 10px;min-height:36px;font-size:16px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sel{background:#0f2747;border-color:#0f2747;color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+input.ans{border:2px solid #64748b;border-radius:10px;padding:8px 10px;font-size:20px;width:220px;max-width:100%;background:#fff}
+input.ans.int{width:110px}
+input.ans:focus{outline:3px solid #93c5fd;border-color:var(--accent)}
+.fb{border-radius:10px;padding:8px 12px;margin-top:8px;font-weight:600}
+.fb.ok{background:var(--okbg);color:var(--ok);border:2px solid #86efac}
+.fb.bad{background:var(--badbg);color:var(--bad);border:2px solid #fda4af}
+.fb.info{background:#e0f2fe;color:#075985;border:2px solid #7dd3fc}
+.fb .tag{display:inline-block;background:#fff;border-radius:6px;padding:0 6px;margin-right:6px;font-weight:800}
+.alt{font-weight:400;color:var(--muted)}
+.key{font-weight:800}
+kbd{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:5px;padding:0 5px;font-family:inherit}
+
+/* numbers with digit classes */
+.num{display:inline-flex;align-items:baseline;gap:2px;font-variant-numeric:tabular-nums;font-size:30px;font-weight:600;letter-spacing:1px}
+.num.big{font-size:52px}
+.num .d{padding:0 2px;border-radius:6px;transition:background .3s,color .3s}
+.num .d.sig{color:var(--sig);font-weight:900;text-decoration:underline;text-decoration-thickness:4px;text-underline-offset:6px;background:var(--sigbg)}
+.num .d.non{color:var(--non);font-weight:400;text-decoration:line-through dotted;text-decoration-thickness:2px}
+.num .d.focus{outline:3px solid #f59e0b}
+.num .tens{color:var(--muted);font-size:.8em;margin-left:6px}
+.sigtxt{color:var(--sig);font-weight:900;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px}
+.legend{font-size:15px;color:var(--muted);margin-top:6px}
+
+/* learn */
+.lp{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.pbar{flex:1;min-width:160px;height:12px;background:#e2e8f0;border-radius:8px;overflow:hidden;border:1px solid #cbd5e1}
+.pbar span{display:block;height:100%;background:#16a34a;width:0;transition:width .3s}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid #94a3b8;background:#fff;font-weight:800;font-size:15px;cursor:pointer}
+.dot.seen{background:#dcfce7;border-color:#16a34a}
+.dot.cur{background:#0f2747;color:#fff;border-color:#0f2747}
+.stop{display:grid;grid-template-columns:minmax(280px,1fr) minmax(320px,1.2fr);gap:14px;align-items:start}
+.stop-text ul{margin:4px 0 0;padding-left:22px}
+.stop-text li{margin:6px 0}
+.stop-vis{min-height:330px}
+.lnav{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;position:sticky;bottom:0;background:#fff;padding:8px 0;border-top:1px solid #e2e8f0;z-index:5}
+.vis-ctrls{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.cap{font-size:16px;color:var(--muted);margin-top:4px}
+.callout{background:#fff7ed;border:2px solid #fdba74;border-radius:10px;padding:8px 12px;margin-top:8px}
+
+/* instruments */
+.inst{display:inline-block}
+.inst-views{display:flex;align-items:flex-start;gap:6px}
+svg.overview{width:76px;height:auto}
+svg.zoom{width:240px;max-width:62vw;height:auto;touch-action:manipulation}
+svg.balance{width:300px;max-width:100%;height:auto}
+svg.pipet{width:190px;height:auto}
+.inst-cap{font-size:15px;color:var(--muted);max-width:330px}
+.reading-line{font-size:26px;font-weight:700;margin-top:6px}
+.est{color:#b45309;text-decoration:underline wavy;text-decoration-thickness:2px;text-underline-offset:5px}
+.drop{opacity:0}
+.dripping .d1{animation:drip 1.2s linear infinite}
+.dripping .d2{animation:drip 1.2s linear .6s infinite}
+@keyframes drip{0%{transform:translateY(0);opacity:1}80%{transform:translateY(34px);opacity:1}100%{transform:translateY(40px);opacity:0}}
+
+/* practice */
+.seg{display:inline-flex;border:2px solid #0f2747;border-radius:12px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 16px;font-weight:800;cursor:pointer;min-height:44px}
+.seg button.on{background:#0f2747;color:#fff}
+.types{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.types .btn{font-size:16px;padding:4px 10px;min-height:38px}
+.pgrid{display:grid;grid-template-columns:minmax(280px,1.1fr) minmax(260px,1fr);gap:14px;align-items:start}
+.step{border-left:5px solid #cbd5e1;padding:6px 10px;margin:8px 0;background:#f8fafc;border-radius:0 10px 10px 0;animation:fadein .35s ease}
+.step.done{border-left-color:#16a34a}
+.step.shown{border-left-color:#f59e0b}
+.step .why{color:var(--muted);font-size:16px;margin-top:2px}
+.step .lab{font-weight:800}
+.step .stepans{font-weight:800;color:var(--sig)}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.mastery{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mbar{display:flex;gap:6px}
+.mbar span{width:44px;height:20px;border-radius:6px;border:2px solid #16a34a;background:#fff}
+.mbar span.on{background:#16a34a}
+.choice{display:flex;gap:6px;flex-wrap:wrap}
+.tapnum .d{cursor:pointer;border:2px solid #94a3b8;margin:0 2px;min-width:40px;text-align:center;background:#fff;padding:2px 6px}
+.tapnum .d.picked{background:var(--sigbg);color:var(--sig);font-weight:900;text-decoration:underline;text-decoration-thickness:4px;text-underline-offset:6px;border-color:#059669}
+.tapnum .d.wrong{outline:3px solid #e11d48}
+.prob{font-size:20px}
+.calc{display:inline-block;background:#1f2937;border-radius:16px;padding:12px;border:3px solid #111827}
+.calc .scr{background:#c7d9b7;font-family:'Courier New',monospace;font-size:30px;padding:8px 12px;border-radius:8px;text-align:right;min-width:260px;color:#111;font-weight:700}
+.calc .scr small{display:block;font-size:15px;text-align:left;font-weight:400}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.mcopts{display:grid;gap:8px;margin-top:8px}
+.mcopts button{text-align:left;border:2px solid #94a3b8;border-radius:10px;background:#fff;padding:10px 12px;cursor:pointer;font-size:18px;min-height:48px}
+.mcopts button.right{border-color:#16a34a;background:#dcfce7}
+.mcopts button.wrongpick{border-color:#e11d48;background:#ffe4e6}
+.wrongpick{border-color:#e11d48!important;background:#ffe4e6!important;color:#9f1239!important}
+.dcol svg.zoom{width:190px}
+.phase{display:inline-block;background:#0f2747;color:#fff;border-radius:8px;padding:2px 10px;font-weight:800;font-size:16px;letter-spacing:.5px;text-transform:uppercase}
+.pickone{font-size:15px;font-weight:700;color:var(--muted);margin:4px 0 2px}
+.opts{display:grid;gap:8px;max-width:640px;margin:4px 0}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;border:2px solid #94a3b8;border-radius:12px;background:#f8fafc;padding:10px 14px;font-size:18px;cursor:pointer;min-height:50px;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--accent);background:#eef2ff}
+.opt .dotr{flex:none;width:22px;height:22px;border-radius:50%;border:3px solid #64748b;background:#fff}
+.opt.picked .dotr{border-color:#0f2747;background:radial-gradient(circle,#0f2747 45%,#fff 50%)}
+.opt.rightpick{border-color:#16a34a!important;background:#dcfce7!important;color:#065f46!important;font-weight:700}
+.opt.rightpick .dotr{border-color:#16a34a;background:radial-gradient(circle,#16a34a 45%,#fff 50%)}
+.opt:disabled{cursor:default}
+.opt:disabled:not(.picked){opacity:.6}
+.btn.ghost{background:transparent;border:2px dashed #94a3b8;color:var(--muted);font-weight:600}
+.btn.ghost:hover{background:#f1f5f9;color:var(--ink)}
+.newrow{margin-top:14px;padding-top:10px;border-top:1px solid #e2e8f0}
+.pnext{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.seg button:disabled{opacity:.5;cursor:not-allowed}
+.seg button .lock,.types .lock{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.lockbox{display:flex;gap:12px;align-items:flex-start}
+.needs li{margin:6px 0}
+#scoreCanvas{max-width:100%;height:auto;border:1px solid #cbd5e1;border-radius:10px;background:#fff}
+
+@media (max-width:860px){
+  .stop,.pgrid{grid-template-columns:1fr}
+  .topbar h1{font-size:18px}
+  .tabs{margin-left:0}
+}
+@media (max-width:520px){
+  body{font-size:17px}
+  .num{font-size:26px}.num.big{font-size:38px}
+  .tab{padding:5px 9px}
+  main{padding:8px}
+  .types{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .types .btn{white-space:nowrap}
+  svg.zoom{width:200px}
+}
+@media (max-height:640px) and (min-width:861px){
+  .stop-vis{min-height:0}
+  svg.zoom{width:200px}
+  h2{font-size:22px}
+}
+body:has(#ct-bar.pos-tl) .topbar{padding-left:58px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>Significant Figures &amp; Measurement</h1>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" data-tab="learn" aria-selected="true">Learn</button>
+    <button class="tab" role="tab" data-tab="practice" aria-selected="false">Practice</button>
+    <button class="tab" role="tab" data-tab="quiz" aria-selected="false">Quiz</button>
+  </nav>
+</header>
+<main>
+  <section id="learn" class="panel active" aria-label="Learn"></section>
+  <section id="practice" class="panel" aria-label="Practice"></section>
+  <section id="quiz" class="panel" aria-label="Quiz"></section>
+</main>
+<script>
+"use strict";
+/* ===================== SIG FIG ENGINE ===================== */
+const SUPMAP = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+'};
+const TOSUP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':'⁺'};
+function supStr(n){ return String(n).split('').map(c=>TOSUP[c]||c).join(''); }
+
+/* seeded RNG (mulberry32) so I-do examples are stable */
+function makeRng(seed){ let a = seed>>>0; return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+let RNG = Math.random;
+function rnd(){ return RNG(); }
+function ri(a,b){ return a+Math.floor(rnd()*(b-a+1)); }
+function pick(arr){ return arr[Math.floor(rnd()*arr.length)]; }
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function withSeed(seed, fn){ const old=RNG; RNG=makeRng(seed); try{ return fn(); } finally { RNG=old; } }
+
+/* count sig figs in a mantissa string (no exponent) */
+function countSF(m){
+  m = String(m).replace(/^[+-]/,'');
+  if(m.indexOf('.')>=0){ return m.replace('.','').replace(/^0+/,'').length; }
+  return m.replace(/^0+/,'').replace(/0+$/,'').length;
+}
+function decimalsOf(m){ m=String(m); const i=m.indexOf('.'); return i<0?0:m.length-i-1; }
+
+/* classify each character of a mantissa string */
+function classify(m){
+  const ch=[...String(m)];
+  const hasPt = ch.indexOf('.')>=0;
+  const dig = ch.map((c,i)=>/\d/.test(c)?i:-1).filter(i=>i>=0);
+  const nz = dig.filter(i=>ch[i]!=='0');
+  const firstNZ = nz.length?nz[0]:Infinity, lastNZ = nz.length?nz[nz.length-1]:-1;
+  return ch.map((c,i)=>{
+    if(!/\d/.test(c)) return {ch:c, kind:'point', sig:false, digit:false};
+    if(c!=='0') return {ch:c, kind:'nonzero', sig:true, digit:true};
+    if(i<firstNZ) return {ch:c, kind:'leading', sig:false, digit:true};
+    if(i<lastNZ) return {ch:c, kind:'captive', sig:true, digit:true};
+    return hasPt ? {ch:c, kind:'trailing-dec', sig:true, digit:true} : {ch:c, kind:'trailing-nodec', sig:false, digit:true};
+  });
+}
+const KIND_TXT = {
+  'nonzero':'Nonzero digit — always measured, so it is significant.',
+  'captive':'Zero in the middle — it sits between measured digits, so it was measured too. Significant.',
+  'leading':'Zero in front — it only shows how SMALL the number is (a placeholder). Not significant.',
+  'trailing-dec':'Zero at the end after a decimal point — they didn\'t have to write it, so they wrote it because they measured it. Significant.',
+  'trailing-nodec':'Zero at the end with no decimal point — it is needed to show how BIG the number is (a placeholder). Not significant.'
+};
+const KIND_SHORT = {'nonzero':'measured','captive':'measured (middle)','leading':'size only','trailing-dec':'measured (end, decimal)','trailing-nodec':'size only (no decimal)'};
+
+/* parse a student answer. Accepts 2.50 × 10³, 2.50e3, 2.50E3, 2.50x10^3, 2.50*10^3, units after it */
+function parseNum(raw){
+  if(raw==null) return null;
+  let s=String(raw).trim();
+  if(!s) return null;
+  s=s.replace(/[−–—]/g,'-');
+  s=s.replace(/10\s*([⁻⁺]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/g,(_,e)=>'10^'+[...e].map(c=>SUPMAP[c]).join(''));
+  s=s.replace(/[\s,]/g,'');
+  const m=s.match(/^([+-]?(?:\d+\.?\d*|\.\d+))(?:(?:[x×X*·∙]|\*\*?)10(?:\^|\*\*)\(?([+-]?\d+)\)?|[eE]([+-]?\d+))?(.*)$/);
+  if(!m) return null;
+  const rest=m[4]||'';
+  if(rest && !/^[a-df-wyzA-DF-WYZµμ°%\/][^]*$/.test(rest)) return null; // allow units only
+  const mant=m[1].replace(/^\+/,'');
+  const sci = m[2]!==undefined || m[3]!==undefined;
+  const exp = sci ? parseInt(m[2]!==undefined?m[2]:m[3],10) : 0;
+  const value = Number(mant+'e'+exp);
+  if(!isFinite(value)) return null;
+  const coef = Math.abs(Number(mant));
+  return {raw:String(raw), mant, exp, sci, value, sf:countSF(mant), dec:decimalsOf(mant), hasPt:mant.indexOf('.')>=0, coefOk: !sci || (coef>=1 && coef<10)};
+}
+
+/* exact-ish decimal digits like a 12-digit calculator */
+function toDigits(x){ const s=Math.abs(x).toExponential(11); const p=s.split('e'); return {neg:x<0, d:p[0].replace('.',''), e:parseInt(p[1],10)}; }
+function roundSig(x,n){
+  if(x===0) return {neg:false,d:'0'.repeat(Math.max(1,n)),e:0};
+  const t=toDigits(x); let e=t.e;
+  const keep=t.d.slice(0,n).split('').map(Number);
+  while(keep.length<n) keep.push(0);
+  if(Number(t.d[n]||'0')>=5){ let i=n-1; while(i>=0){ keep[i]++; if(keep[i]<10) break; keep[i]=0; i--; } if(i<0){ keep.unshift(1); keep.pop(); e++; } }
+  return {neg:t.neg, d:keep.join(''), e};
+}
+function truncSig(x,n){ const t=toDigits(x); return {neg:t.neg, d:t.d.slice(0,n).padEnd(n,'0'), e:t.e}; }
+function rNum(r){ return Number((r.neg?'-':'')+r.d[0]+'.'+(r.d.slice(1)||'0')+'e'+r.e); }
+function roundDec(x,d){ if(x===0) return 0; const t=toDigits(x); const n=t.e+1+d; if(n<=0) return 0; return rNum(roundSig(x,n)); }
+function fmtPlain(r){
+  const n=r.d.length, e=r.e; let s;
+  if(e>=n-1){ s=r.d+'0'.repeat(e-n+1); if(countSF(s)!==n){ if(e===n-1) s+='.'; else return null; } }
+  else if(e>=0){ s=r.d.slice(0,e+1)+'.'+r.d.slice(e+1); }
+  else { s='0.'+'0'.repeat(-e-1)+r.d; }
+  return (r.neg?'-':'')+s;
+}
+function coefStr(r){ return (r.neg?'-':'')+r.d[0]+(r.d.length>1?'.'+r.d.slice(1):''); }
+function fmtSci(r){ return coefStr(r)+' × 10'+supStr(r.e); }
+function fmtSciHTML(r){ return coefStr(r)+' × 10<sup>'+r.e+'</sup>'; }
+function plainOK(r){ const p=fmtPlain(r); return p!==null && r.e>=-3 && r.e<=5 && r.e<=r.d.length-1; }
+function fmtBest(r){ return plainOK(r)?fmtPlain(r):fmtSci(r); }
+function fmtBestHTML(r){ return plainOK(r)?fmtPlain(r):fmtSciHTML(r); }
+function fmtAlt(r){ const p=fmtPlain(r); return (p!==null && !plainOK(r) && r.e<=7) ? p : null; }
+function sigStr(x,n){ return fmtBest(roundSig(x,n)); }
+/* plain string of a number exactly as given (for measured values we store strings) */
+function calcDisplay(x){ // what a 10-digit calculator shows
+  if(x===0) return '0';
+  const t=toDigits(x);
+  if(t.e>=10 || t.e<-5){ const r=roundSig(x,10); let c=coefStr(r).replace(/\.?0+$/,''); return c+' × 10'+supStr(r.e); }
+  const r=roundSig(x,10); let s=fmtPlain(r); if(s===null) s=String(rNum(r));
+  if(s.indexOf('.')>=0) s=s.replace(/0+$/,'').replace(/\.$/,'');
+  return s;
+}
+function qn(x){ return '"'+x+'"'; }
+function same(a,b){ return Math.abs(a-b) <= 1e-9*Math.max(Math.abs(a),Math.abs(b)) || (a===0&&b===0); }
+function placeName(dec){ return ({0:'ones',1:'tenths',2:'hundredths',3:'thousandths',4:'ten-thousandths'})[dec] || (dec<0?'tens':'small'); }
+function plural(n,w){ return n+' '+w+(n===1?'':'s'); }
+
+/* ---------- grade a calculated / rounded answer ---------- */
+function grade(input, raw, n, opts){
+  opts=opts||{};
+  const p=parseNum(input);
+  const r=roundSig(raw,n), exp=rNum(r);
+  const res={ok:false, p, r, expected:fmtBest(r), expectedHTML:fmtBestHTML(r), msg:'', mistake:null};
+  if(opts.requireSci){ res.expected=fmtSci(r); res.expectedHTML=fmtSciHTML(r); }
+  else { const a=fmtAlt(r); if(a){ res.expectedHTML+=' <span class="alt">(or '+a+')</span>'; } }
+  if(!p){ res.msg='I can\'t read that as a number. Examples: 2.50 or 0.0450 or 2.50 × 10³ (type 2.50e3 or 2.50x10^3).'; res.mistake='Unreadable answer'; return res; }
+  const valOk=same(p.value,exp);
+  if(opts.requireSci && !p.sci){
+    res.mistake='Not in scientific notation';
+    res.msg = valOk ? 'The value is right, but this question asks for scientific notation (coefficient × 10 to a power).' : 'Write your answer in scientific notation (coefficient × 10 to a power), e.g. 4.51 × 10⁻⁴ (type 4.51e-4).';
+    return res;
+  }
+  if(opts.requireSci && p.sci && !p.coefOk){
+    res.mistake='Coefficient not between 1 and 10';
+    res.msg='In scientific notation the coefficient must be at least 1 and less than 10 (one nonzero digit before the decimal point).';
+    return res;
+  }
+  if(valOk && p.sf===n){ res.ok=true; res.msg='Correct value and exactly '+plural(n,'sig fig')+'.'; return res; }
+  const plain=fmtPlain(r);
+  if(valOk && !p.sci && plain===null && p.sf<n){
+    res.mistake='Needs scientific notation';
+    res.msg='The value is right, but '+qn(p.mant)+' only shows '+plural(p.sf,'sig fig')+' — zeros at the end with no decimal point only show size. The only way to show exactly '+n+' is scientific notation: '+qn(fmtSci(r))+'.';
+    return res;
+  }
+  if(p.sf>n && same(p.value,raw)){ res.mistake = p.sf>=n+3 ? 'Gave the raw calculator value' : 'Too many sig figs'; res.msg = p.sf>=n+3 ? 'That is the calculator\'s answer. The calculator doesn\'t know about sig figs — round it to '+plural(n,'sig fig')+'.' : 'Right value, but you kept '+p.sf+' sig figs. The answer can only have '+n+'.'; return res; }
+  for(const m of (opts.mistakes||[])){ try{ if(m.test(p)){ res.mistake=m.name; res.msg=m.msg; return res; } }catch(e){} }
+  // generic diagnosis
+  if(p.sf<n && valOk){
+    res.mistake='Dropped a needed trailing zero';
+    res.msg='You dropped a needed zero at the end. '+qn(p.mant)+' has only '+plural(p.sf,'sig fig')+'; the answer needs '+n+', so the measured zero must stay: '+qn(res.expected)+'.';
+    return res;
+  }
+  if(p.sf!==n && p.sf>0 && same(p.value, rNum(roundSig(raw,p.sf)))){
+    if(p.sf>=n+3 || p.sf>=8){ res.mistake='Gave the raw calculator value'; res.msg='That is the calculator\'s answer. The calculator doesn\'t know about sig figs — round it to '+plural(n,'sig fig')+'.'; }
+    else if(p.sf>n){ res.mistake='Too many sig figs'; res.msg='Right value, but you kept '+p.sf+' sig figs. The answer can only have '+n+'.'; }
+    else { res.mistake='Too few sig figs'; res.msg='Right value, but you rounded to '+p.sf+' sig fig'+(p.sf===1?'':'s')+'. The answer should have '+n+'.'; }
+    return res;
+  }
+  if(p.sf===n){
+    const tr=truncSig(raw,n), trN=rNum(tr);
+    const up=rNum(roundSig(trN + Math.pow(10,tr.e-n+1)*(raw<0?-1:1), n));
+    const wrongDir = same(exp,trN) ? up : trN;
+    if(same(p.value,wrongDir)){
+      const nd=toDigits(raw).d[n]||'0';
+      res.mistake='Rounded the wrong direction';
+      res.msg='Rounded the wrong way. The next digit after the last one you keep is '+nd+': 5 or more rounds UP, 4 or less leaves it alone.';
+      return res;
+    }
+    for(let k=-6;k<=6;k++){ if(k!==0 && same(p.value, exp*Math.pow(10,k))){ res.mistake='Decimal point / exponent in the wrong place'; res.msg='Your digits are right but the decimal point (or the power of 10) is off by '+Math.abs(k)+' place'+(Math.abs(k)===1?'':'s')+'.'; return res; } }
+  }
+  res.mistake='Wrong value';
+  res.msg='The value isn\'t right. Re-check what you typed into the calculator.';
+  return res;
+}
+
+/* ---------- counting sig figs ---------- */
+function splitSci(str){ // "3.020 × 10⁴" -> {mant:"3.020", exp:4}
+  const p=parseNum(str); if(!p) return {mant:str, exp:null, sci:false};
+  return {mant:p.mant, exp:p.sci?p.exp:null, sci:p.sci};
+}
+function countDiag(str, ans){
+  const s=splitSci(str), cl=classify(s.mant);
+  const sf=cl.filter(c=>c.sig).length;
+  const n=parseInt(String(ans).trim(),10);
+  if(isNaN(n)) return {ok:false, sf, msg:'Type a whole number.', mistake:'Unreadable answer'};
+  if(n===sf) return {ok:true, sf, msg:'Correct — '+plural(sf,'sig fig')+'.'};
+  const lead=cl.filter(c=>c.kind==='leading').length, tdec=cl.filter(c=>c.kind==='trailing-dec').length,
+        tnd=cl.filter(c=>c.kind==='trailing-nodec').length, cap=cl.filter(c=>c.kind==='captive').length,
+        allDig=cl.filter(c=>c.digit).length;
+  const cands=[];
+  if(lead) cands.push([sf+lead,'Counted leading zeros','Zeros in front only show how small the number is — they were never measured.']);
+  if(lead>1) cands.push([sf+lead-1,'Counted leading zeros','Zeros after the decimal point but in front of the first nonzero digit are placeholders — they only show how small the number is.']);
+  if(tdec) cands.push([sf-tdec,'Didn\'t count trailing zeros after a decimal','Zeros at the end after a decimal point ARE significant — nobody has to write them, so they were measured.']);
+  if(tnd) cands.push([sf+tnd,'Counted trailing zeros with no decimal','Zeros at the end with no decimal point are placeholders that show how big the number is — not significant.']);
+  if(cap) cands.push([sf-cap,'Didn\'t count zeros in the middle','Zeros between nonzero digits are always significant — they were measured.']);
+  if(s.sci){ cands.push([sf+2,'Counted the × 10ⁿ part','Only the digits in the coefficient count. The × 10ⁿ part just shows size.']); cands.push([sf+2+String(Math.abs(s.exp)).length,'Counted the × 10ⁿ part','Only the digits in the coefficient count. The × 10ⁿ part just shows size.']); }
+  cands.push([allDig,'Counted every digit','Not every digit is significant — placeholder zeros only show size.']);
+  for(const c of cands){ if(c[0]===n && c[0]!==sf) return {ok:false, sf, mistake:c[1], msg:c[2]+' The correct count is '+sf+'.'}; }
+  return {ok:false, sf, mistake:'Miscounted', msg:'Not quite — there are '+plural(sf,'sig fig')+'. Check each zero: is it measured or does it just show size?'};
+}
+/* tapping digits: chosen = array of char indexes in the mantissa */
+function tapDiag(str, chosen){
+  const s=splitSci(str), cl=classify(s.mant);
+  const set=new Set(chosen);
+  const wrong=[];
+  cl.forEach((c,i)=>{ if(!c.digit) return; const sel=set.has(i); if(sel!==c.sig) wrong.push({i,c,sel}); });
+  if(!wrong.length) return {ok:true, msg:'Correct — '+plural(cl.filter(c=>c.sig).length,'sig fig')+'.', wrong};
+  const w=wrong[0];
+  const names={'leading':'Counted leading zeros','trailing-dec':'Didn\'t count trailing zeros after a decimal','trailing-nodec':'Counted trailing zeros with no decimal','captive':'Didn\'t count zeros in the middle','nonzero':'Missed a nonzero digit'};
+  return {ok:false, wrong, mistake:names[w.c.kind], msg:KIND_TXT[w.c.kind]};
+}
+
+/* ---------- reading an instrument scale ---------- */
+function gradeReading(input, inst, trueVal, topVal){
+  const p=parseNum(input);
+  const dec=inst.dec, tol=inst.minor*0.2+1e-9;
+  const correct=trueVal.toFixed(dec);
+  const out={ok:false, correct, msg:'', mistake:null};
+  if(!p||p.sci){ out.msg='Type the reading as a plain number, like '+(dec===1?'43.6':'6.27')+'.'; out.mistake='Unreadable answer'; return out; }
+  const v=p.value;
+  if(p.dec<dec){
+    out.mistake='Left off the estimated digit';
+    out.msg='Record every certain digit PLUS one estimated digit. Lines on this '+inst.short+' are '+inst.minor+' mL apart, so estimate to the '+placeName(dec)+' place ('+dec+' decimal place'+(dec===1?'':'s')+').';
+    return out;
+  }
+  if(p.dec>dec){
+    out.mistake='Too many digits';
+    out.msg='Only ONE estimated digit. With '+inst.minor+' mL lines, the estimate is in the '+placeName(dec)+' place — '+dec+' decimal place'+(dec===1?'':'s')+'.';
+    return out;
+  }
+  if(Math.abs(v-trueVal)<=tol){ out.ok=true; out.msg='Good reading — certain digits plus one estimated digit.'; return out; }
+  if(topVal!=null && Math.abs(v-topVal)<=tol && Math.abs(topVal-trueVal)>tol){ out.mistake='Read the top of the meniscus'; out.msg='You read the top edge of the meniscus. Read the BOTTOM of the curve, at eye level.'; return out; }
+  if(inst.kind==='buret' && Math.abs((Math.floor(trueVal)+ (Math.ceil(trueVal)-trueVal)) - v) <= tol*2){ out.mistake='Read the buret upside down'; out.msg='Buret numbers get BIGGER going DOWN (0.00 mL is at the top). Count downward from the labeled line above the meniscus.'; return out; }
+  if(Math.abs(Math.abs(v-trueVal)-inst.minor)<=tol){ out.mistake='Off by one line'; out.msg='You are one line off. Each line is '+inst.minor+' mL — count the lines again from the nearest labeled number.'; return out; }
+  if(inst.kind==='buret'){ out.mistake='Misread the scale'; out.msg='Not quite. On a buret the numbers increase going DOWN. Find the labeled line ABOVE the meniscus and count down.'; return out; }
+  out.mistake='Misread the scale'; out.msg='Not quite. Find the labeled line below the meniscus, count the small lines up to the bottom of the curve, then estimate between lines.';
+  return out;
+}
+function gradeDigital(input, shown){
+  const p=parseNum(input);
+  if(!p||p.sci) return {ok:false, mistake:'Unreadable answer', msg:'Type exactly what the display shows.'};
+  const want=parseNum(shown);
+  if(same(p.value,want.value) && p.dec===want.dec) return {ok:true, msg:'Exactly what the balance shows — every digit, including zeros at the end.'};
+  if(same(p.value,want.value) && p.dec<want.dec) return {ok:false, mistake:'Dropped a trailing zero', msg:'The balance measured those zeros at the end. '+qn(shown+' g')+' has '+want.sf+' sig figs; '+qn(p.mant+' g')+' has only '+p.sf+'. Record every digit shown.'};
+  if(p.dec>want.dec) return {ok:false, mistake:'Added a digit', msg:'A digital display already includes its estimated digit (the last one). Don\'t add digits — copy it exactly.'};
+  return {ok:false, mistake:'Copied wrong', msg:'Copy the display exactly: '+qn(shown+' g')+'.'};
+}
+
+/* ---------- random measured values ---------- */
+function genMeas(lo,hi,sf,opt){
+  opt=opt||{};
+  for(let t=0;t<80;t++){
+    let v=lo+rnd()*(hi-lo);
+    let r=roundSig(v,sf);
+    if(opt.zeroEnd && sf>1){ r={neg:false,d:r.d.slice(0,-1)+'0',e:r.e}; }
+    const s=fmtPlain(r);
+    if(s===null || /\.$/.test(s)) continue;
+    if(sf>1 && /^\d+$/.test(s) && /0$/.test(s)) continue;
+    if(rNum(r)<lo*0.9 || rNum(r)>hi*1.1) continue;
+    return {s, v:rNum(r), sf:countSF(s), dec:decimalsOf(s)};
+  }
+  const r=roundSig((lo+hi)/2,sf); let s=fmtPlain(r)||fmtSci(r); if(/^\d+$/.test(s)&&/0$/.test(s)&&sf>1) s+='.';
+  const pp=parseNum(s); return {s, v:rNum(r), sf:pp?pp.sf:sf, dec:decimalsOf(s)};
+}
+
+if(false) module.exports={fmtAlt,plainOK,parseNum,countSF,classify,roundSig,fmtPlain,fmtSci,fmtBest,grade,countDiag,tapDiag,gradeReading,gradeDigital,calcDisplay,genMeas,roundDec,withSeed,decimalsOf,sigStr,rNum,truncSig};
+
+/* ===================== INSTRUMENT GRAPHICS (SVG) ===================== */
+const INST = {
+  c10:  {id:'c10', kind:'cyl',  cap:10,  minor:0.1, label:1,  mid:0.5, dec:2, span:22, name:'10 mL graduated cylinder',  short:'10 mL cylinder'},
+  c50:  {id:'c50', kind:'cyl',  cap:50,  minor:1,   label:5,  mid:null,dec:1, span:14, name:'50 mL graduated cylinder',  short:'50 mL cylinder'},
+  c100: {id:'c100',kind:'cyl',  cap:100, minor:1,   label:10, mid:5,   dec:1, span:22, name:'100 mL graduated cylinder', short:'100 mL cylinder'},
+  bur:  {id:'bur', kind:'buret',cap:50,  minor:0.1, label:1,  mid:0.5, dec:2, span:22, name:'50 mL buret',               short:'buret'},
+  b1:   {id:'b1',  kind:'bal',  res:0.1,   dec:1, name:'0.1 g balance (low precision)',  short:'0.1 g balance'},
+  b3:   {id:'b3',  kind:'bal',  res:0.001, dec:3, name:'0.001 g balance (high precision)', short:'0.001 g balance'}
+};
+let SVGID=0;
+function fx(v){ return Math.round(v*100)/100; }
+function nearlyInt(v){ return Math.abs(v-Math.round(v))<1e-6; }
+/* geometry of zoom window */
+function zoomH(inst){ return Math.max(340, Math.min(460, Math.round(20*inst.span))); }
+function zoomGeom(inst, level, W, H){
+  H=zoomH(inst);
+  const ppu = H/(inst.span*inst.minor);
+  const mh = Math.max(6, Math.min(12, 0.35*ppu*inst.minor));
+  const yOf = v => inst.kind==='buret' ? H/2+(v-level)*ppu : H/2-(v-level)*ppu;
+  const topVal = inst.kind==='buret' ? level - mh/ppu : level + mh/ppu;
+  return {ppu, mh, yOf, topVal};
+}
+/* zoomed scale view (the "lens") */
+function zoomSVG(inst, level, opt){
+  opt=opt||{};
+  const W=opt.W||300, H=zoomH(inst), id='z'+(SVGID++);
+  const g=zoomGeom(inst, level, W, H);
+  const x0=34, x1=W-34, xc=(x0+x1)/2;
+  const lo=level-inst.span*inst.minor/2-inst.minor, hi=level+inst.span*inst.minor/2+inst.minor;
+  let ticks='';
+  const k0=Math.ceil(lo/inst.minor-1e-9), k1=Math.floor(hi/inst.minor+1e-9);
+  for(let k=k0;k<=k1;k++){
+    const v=k*inst.minor; if(v<-1e-9 || v>inst.cap+1e-9) continue;
+    const y=fx(g.yOf(v));
+    const isL=nearlyInt(v/inst.label), isM=inst.mid && nearlyInt(v/inst.mid);
+    const len=isL?78:isM?56:36;
+    ticks+=`<line x1="${x0}" y1="${y}" x2="${x0+len}" y2="${y}" stroke="#111" stroke-width="${isL?3:2}"/>`;
+    if(isL) ticks+=`<text x="${x0+88}" y="${y+8}" font-size="24" font-weight="700" fill="#111">${fx(v)}</text>`;
+  }
+  const yL=fx(g.yOf(level)), mh=g.mh;
+  const liquid = `<path d="M${x0},${fx(yL-mh)} Q${xc},${fx(yL+mh)} ${x1},${fx(yL-mh)} L${x1},${H+20} L${x0},${H+20} Z" fill="${opt.liquid||'#9cc9f5'}" fill-opacity="0.75"/>
+    <path d="M${x0},${fx(yL-mh)} Q${xc},${fx(yL+mh)} ${x1},${fx(yL-mh)}" fill="none" stroke="#1d4f91" stroke-width="3"/>`;
+  const eye = opt.eye ? `<line x1="4" y1="${yL}" x2="${W-4}" y2="${yL}" stroke="#b45309" stroke-width="2" stroke-dasharray="7 5"/><g transform="translate(${W-30},${yL-11})"><path d="M0,11 Q13,-3 26,11 Q13,25 0,11Z" fill="#fff" stroke="#b45309" stroke-width="2"/><circle cx="13" cy="11" r="5" fill="#b45309"/></g>` : '';
+  const mark = opt.mark!=null ? `<line x1="${x0}" y1="${fx(g.yOf(opt.mark))}" x2="${x1}" y2="${fx(g.yOf(opt.mark))}" stroke="#047857" stroke-width="3" stroke-dasharray="4 4"/>` : '';
+  return `<svg class="zoom" viewBox="0 0 ${W} ${H}" role="img" aria-label="Zoomed view of the ${inst.name} scale">
+   <defs><clipPath id="${id}"><rect x="2" y="2" width="${W-4}" height="${H-4}" rx="26"/></clipPath></defs>
+   <g clip-path="url(#${id})"><rect x="0" y="0" width="${W}" height="${H}" fill="#fbfdff"/>
+   <rect x="${x0}" y="-10" width="${x1-x0}" height="${H+20}" fill="#eef4fb"/>${liquid}${ticks}
+   <line x1="${x0}" y1="0" x2="${x0}" y2="${H}" stroke="#7b8ba1" stroke-width="3"/><line x1="${x1}" y1="0" x2="${x1}" y2="${H}" stroke="#7b8ba1" stroke-width="3"/>${mark}${eye}</g>
+   <rect x="2" y="2" width="${W-4}" height="${H-4}" rx="26" fill="none" stroke="#334155" stroke-width="5"/>
+  </svg>`;
+}
+/* small whole-instrument view with lens marker */
+function overviewSVG(inst, level, opt){
+  opt=opt||{};
+  const W=110, H=340;
+  let body='', y0, y1, xL, xR;
+  if(inst.kind==='cyl'){
+    xL=38; xR=72; y0=34; y1=300; // scale 0 at y1, cap at y0+12
+    const top=y0+14, ppu=(y1-top)/inst.cap;
+    const yOf=v=>y1-v*ppu;
+    let t='';
+    const step = inst.cap/10;
+    for(let i=0;i<=10;i++){ const y=fx(yOf(i*step)); t+=`<line x1="${xL}" y1="${y}" x2="${xL+(i%5===0?14:8)}" y2="${y}" stroke="#334155" stroke-width="1.5"/>`; }
+    const yl=fx(yOf(level));
+    const obj = opt.object ? `<rect x="${xL+8}" y="${y1-30}" width="${xR-xL-16}" height="26" rx="3" fill="${opt.object}" stroke="#333"/>` : '';
+    body=`<path d="M${xL-6},${y0} L${xR+6},${y0} M${xL},${y0} L${xL},${y1} Q${xL},${y1+6} ${xL+6},${y1+6} L${xR-6},${y1+6} Q${xR},${y1+6} ${xR},${y1} L${xR},${y0}" fill="none" stroke="#475569" stroke-width="2.5"/>
+      <rect x="${xL+1.5}" y="${yl}" width="${xR-xL-3}" height="${y1+4-yl}" fill="#9cc9f5" fill-opacity="0.8"/>${obj}${t}
+      <path d="M${xL-14},${y1+8} L${xR+14},${y1+8} L${xR+20},${y1+22} L${xL-20},${y1+22} Z" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>`;
+    body+=`<circle cx="${(xL+xR)/2}" cy="${yl}" r="22" fill="none" stroke="#b45309" stroke-width="3"/><line x1="${(xL+xR)/2+16}" y1="${yl+16}" x2="${(xL+xR)/2+32}" y2="${yl+32}" stroke="#b45309" stroke-width="5" stroke-linecap="round"/>`;
+  } else {
+    xL=48; xR=62; y0=14; y1=270;
+    const top=y0+16, ppu=(y1-top)/inst.cap; const yOf=v=>top+v*ppu;
+    let t=''; for(let i=0;i<=10;i++){ const y=fx(yOf(i*5)); t+=`<line x1="${xL}" y1="${y}" x2="${xL+(i%2===0?9:5)}" y2="${y}" stroke="#334155" stroke-width="1.2"/>`; }
+    const yl=fx(yOf(level));
+    body=`<rect x="${xL+1}" y="${yl}" width="${xR-xL-2}" height="${y1-yl}" fill="#9cc9f5" fill-opacity="0.85"/>
+      <path d="M${xL},${y0} L${xL},${y1} M${xR},${y0} L${xR},${y1}" stroke="#475569" stroke-width="2.5"/>${t}
+      <path d="M${xL},${y1} L${(xL+xR)/2-3},${y1+22} L${(xL+xR)/2-2},${y1+50} M${xR},${y1} L${(xL+xR)/2+3},${y1+22} L${(xL+xR)/2+2},${y1+50}" fill="none" stroke="#475569" stroke-width="2.5"/>
+      <rect x="${(xL+xR)/2-16}" y="${y1+18}" width="32" height="9" rx="3" fill="#64748b"/>`;
+    body+=`<circle cx="${(xL+xR)/2}" cy="${yl}" r="20" fill="none" stroke="#b45309" stroke-width="3"/><line x1="${(xL+xR)/2+14}" y1="${yl+14}" x2="${(xL+xR)/2+30}" y2="${yl+30}" stroke="#b45309" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  return `<svg class="overview" viewBox="0 0 ${W} ${H}" aria-hidden="true">${body}</svg>`;
+}
+/* random level: estimated digit 1–9 most of the time, exactly on a line ~8% */
+function randLevel(inst, loFrac, hiFrac){
+  const lines=Math.round(inst.cap/inst.minor);
+  const L=Math.floor(lines*loFrac)+Math.floor(rnd()*(Math.floor(lines*hiFrac)-Math.floor(lines*loFrac)+1));
+  const e = rnd()<0.08 ? 0 : 1+Math.floor(rnd()*9);
+  return Number(((L*10+e)*inst.minor/10).toFixed(inst.dec));
+}
+function instrumentHTML(inst, level, opt){
+  opt=opt||{};
+  if(opt.plain) return `<div class="inst"><div class="inst-views">${overviewSVG(inst, level, opt)}${zoomSVG(inst, level, {})}</div><div class="inst-cap">${inst.name}</div></div>`;
+  return `<div class="inst"><div class="inst-views">${overviewSVG(inst, level, opt)}${zoomSVG(inst, level, opt)}</div>
+   <div class="inst-cap">${inst.name} · lines every <b>${inst.minor} mL</b>${inst.kind==='buret'?' · numbers increase going <b>down</b>':''}</div></div>`;
+}
+
+/* objects for balances */
+function objectSVG(name, cx, by){
+  switch(name){
+    case 'paperclip': return `<g transform="translate(${cx-38},${by-18})" fill="none" stroke="#6b7280" stroke-width="3.5" stroke-linecap="round"><path d="M10,14 L66,14 Q76,14 76,7 Q76,0 66,0 L6,0 Q-2,0 -2,9 Q-2,18 6,18 L60,18 Q66,18 66,12 Q66,6 60,6 L16,6"/></g>`;
+    case 'pencil': return `<g transform="translate(${cx-60},${by-16})"><rect x="0" y="2" width="92" height="12" fill="#facc15" stroke="#92400e" stroke-width="1.5"/><rect x="-10" y="2" width="12" height="12" fill="#f9a8d4" stroke="#92400e"/><path d="M92,2 L112,8 L92,14Z" fill="#fde68a" stroke="#92400e"/><path d="M106,6.3 L112,8 L106,9.7Z" fill="#111"/></g>`;
+    case 'penny': return `<g><ellipse cx="${cx}" cy="${by-6}" rx="26" ry="8" fill="#b45309" stroke="#78350f" stroke-width="2"/><ellipse cx="${cx}" cy="${by-9}" rx="26" ry="8" fill="#d97706" stroke="#78350f" stroke-width="2"/></g>`;
+    case 'stopper': return `<g><path d="M${cx-30},${by-40} L${cx+30},${by-40} L${cx+22},${by} L${cx-22},${by} Z" fill="#7f1d1d" stroke="#450a0a" stroke-width="2"/><ellipse cx="${cx}" cy="${by-40}" rx="30" ry="6" fill="#991b1b" stroke="#450a0a" stroke-width="2"/></g>`;
+    case 'beaker': return `<g><path d="M${cx-34},${by-70} L${cx-30},${by} L${cx+30},${by} L${cx+34},${by-70}" fill="#eef6ff" stroke="#475569" stroke-width="2.5"/><path d="M${cx-32},${by-40} L${cx-30},${by-2} L${cx+30},${by-2} L${cx+32},${by-40}Z" fill="#9cc9f5"/><path d="M${cx-38},${by-72} L${cx-33},${by-68}" stroke="#475569" stroke-width="2.5"/></g>`;
+    case 'metal': return `<g><rect x="${cx-16}" y="${by-44}" width="32" height="44" fill="#94a3b8" stroke="#334155" stroke-width="2"/><ellipse cx="${cx}" cy="${by-44}" rx="16" ry="5" fill="#cbd5e1" stroke="#334155" stroke-width="2"/></g>`;
+    default: return '';
+  }
+}
+function balanceSVG(inst, shown, obj, opt){
+  opt=opt||{};
+  const W=320,H=230;
+  const objG = obj?objectSVG(obj, 160, 92):'';
+  return `<svg class="balance" viewBox="0 0 ${W} ${H}" role="img" aria-label="Digital balance reading ${shown||'0'} grams">
+   <rect x="128" y="94" width="64" height="20" fill="#94a3b8"/>
+   <ellipse cx="160" cy="96" rx="96" ry="10" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+   ${objG}
+   <path d="M30,114 L290,114 L304,214 L16,214 Z" fill="#e5e7eb" stroke="#475569" stroke-width="2.5"/>
+   <rect x="66" y="132" width="188" height="56" rx="8" fill="#0f2a1d" stroke="#334155" stroke-width="2"/>
+   <text class="lcd" x="238" y="173" text-anchor="end" font-size="34" font-weight="700" fill="#86efac" font-family="'Courier New',monospace">${opt.lcdHTML||shown||'0.000'.slice(0,inst.dec+2)}</text>
+   <text x="243" y="173" font-size="20" fill="#86efac" font-family="'Courier New',monospace">g</text>
+   <text x="160" y="206" text-anchor="middle" font-size="15" fill="#334155">readability ${inst.res} g</text>
+  </svg>`;
+}
+function pipetSVG(){
+  return `<svg viewBox="0 0 260 300" class="pipet" aria-label="Plastic pipet adding drops">
+   <path d="M118,20 Q90,20 90,60 Q90,92 116,100 L120,200 L126,236 L132,200 L136,100 Q162,92 162,60 Q162,20 134,20 Z" fill="#f1f5f9" stroke="#475569" stroke-width="2.5"/>
+   <path d="M121,150 L124,226 L128,226 L131,150Z" fill="#9cc9f5"/>
+   <g class="drops"><circle class="drop d1" cx="126" cy="246" r="6" fill="#3b82f6"/><circle class="drop d2" cx="126" cy="246" r="6" fill="#3b82f6"/></g>
+  </svg>`;
+}
+/* number rendered with digit classification */
+function digitsHTML(str, opt){
+  opt=opt||{};
+  const s=splitSci(str);
+  const cl=classify(s.mant);
+  let h='<span class="num'+(opt.big?' big':'')+'">';
+  cl.forEach((c,i)=>{
+    if(!c.digit){ h+=`<span class="pt">${c.ch}</span>`; return; }
+    const cls = opt.show ? (c.sig?'d sig':'d non') : 'd';
+    h+=`<span class="${cls}" data-i="${i}" data-kind="${c.kind}">${c.ch}</span>`;
+  });
+  if(s.sci) h+=`<span class="tens"> × 10<sup>${s.exp}</sup></span>`;
+  return h+'</span>';
+}
+
+/* ===================== STATE + HELPERS ===================== */
+const $ = (s,r)=> (r||document).querySelector(s);
+const $$ = (s,r)=> Array.from((r||document).querySelectorAll(s));
+function h(html){ const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstElementChild; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+const LEARN_N = 10;
+const S = {
+  viewed:[], mastered:false, streak:0, quizAttempts:0,
+  prac:{}, ui:{}, lastScore:null
+};
+const STORE='chemteacher_sigfigs_v1';
+let STORAGE_OK=true;
+function save(){
+  try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){ STORAGE_OK=false; }
+}
+function saveUI(k,v){ S.ui[k]=v; save(); }
+function load(){ try{ localStorage.setItem(STORE+'_t','1'); localStorage.removeItem(STORE+'_t'); }catch(e){ STORAGE_OK=false; }
+ try{ const d=JSON.parse(localStorage.getItem(STORE)||'null'); if(d){ ['readings','density','pipet','zero','traps','lab'].forEach(k=>delete d[k]); Object.assign(S, d); if(!S.ui||typeof S.ui!=='object') S.ui={}; if(!S.prac||typeof S.prac!=='object') S.prac={}; } }catch(e){} }
+function learnDone(){ return S.viewed.length>=LEARN_N; }
+function quizUnlocked(){ return learnDone() && S.mastered; }
+const LOCK_SVG='<svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="7" width="11" height="8" rx="1.5" fill="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+function refreshTabs(){
+  const t=$$('.tab');
+  t.forEach(b=>{
+    const k=b.dataset.tab; let label={learn:'Learn',practice:'Practice',lab:'Lab',quiz:'Quiz'}[k];
+    let extra='';
+    if(k==='learn' && learnDone()) extra=' <span class="chk" aria-label="done">✓</span>';
+    if(k==='practice' && S.mastered) extra=' <span class="chk" aria-label="mastered">✓</span>';
+    if(k==='quiz' && !quizUnlocked()){ b.classList.add('locked'); b.innerHTML=LOCK_SVG+label; b.title='Locked — '+quizNeeds().filter(n=>!n.ok).map(n=>n.txt).join('; '); return; }
+    b.classList.remove('locked'); b.title=''; b.innerHTML=label+extra;
+  });
+}
+function quizNeeds(){
+  return [
+    {ok:learnDone(), txt:`View every Learn stop (${S.viewed.length}/${LEARN_N})`},
+    {ok:S.mastered, txt:`Finish every Practice section — I do, We do, You do (${typeof practiceCount==='function'?practiceCount():0}/${typeof TYPES!=='undefined'?TYPES.length:5} sections)`}
+  ];
+}
+function fbHTML(ok, msg, tag){
+  return `<div class="fb ${ok?'ok':'bad'}" role="status">${ok?'✓':'✗'} ${tag?`<span class="tag">${esc(tag)}</span>`:''}${msg}</div>`;
+}
+function onEnter(input, fn){ input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); fn(); } }); }
+let TIMERS=[];
+function later(fn,ms){ const id=setTimeout(fn,ms); TIMERS.push(id); return id; }
+function clearTimers(){ TIMERS.forEach(clearTimeout); TIMERS=[]; }
+
+/* ===================== LEARN ===================== */
+function readingHTML(val, dec){ const s=val.toFixed(dec); return `<span>${s.slice(0,-1)}</span><span class="est">${s.slice(-1)}</span>`; }
+
+const STOPS = [
+{ t:'Why significant figures?',
+  b:`<ul>
+   <li>Every <b>measurement</b> has <b>uncertainty</b> — the last digit is always an <b>estimate</b>.</li>
+   <li><b>Significant figures (sig figs)</b> are the digits that were actually <b>measured</b>: all the <b>certain</b> digits plus <b>one estimated</b> digit.</li>
+   <li>A better instrument measures more digits → <b>more sig figs</b> → a more <b>precise</b> measurement.</li>
+   <li>Some zeros are <b>not measured</b>. They are <b>placeholders</b> that only show how <b>big or small</b> the number is.</li>
+   <li>A calculated answer can't be more precise than the measurements it came from — that's why sig figs matter.</li></ul>`,
+  v(box){
+    const objs=[['penny','penny',2.507],['paperclip','paperclip',0.982],['stopper','rubber stopper',10.386]];
+    let k=0;
+    box.innerHTML=`<div class="vis-ctrls"><button class="btn" id="w1">Weigh it</button><button class="btn sec" id="w2">Try another object</button></div>
+     <div class="row" style="align-items:flex-start;gap:14px"><div id="balL"></div><div id="balH"></div></div><div id="w3" class="cap"></div>`;
+    const draw=(shownL, shownH)=>{ const o=objs[k];
+      $('#balL',box).innerHTML=balanceSVG(INST.b1, shownL, o[0])+`<div class="cap"><b>0.1 g balance</b></div>`;
+      $('#balH',box).innerHTML=balanceSVG(INST.b3, shownH, o[0])+`<div class="cap"><b>0.001 g balance</b></div>`; };
+    const weigh=()=>{ const o=objs[k]; let f=0; $('#w3',box).innerHTML='';
+      const tick=()=>{ f++; const x=o[2]*Math.min(1,f/14)+(f<14?(Math.random()-.5)*0.3:0);
+        draw(Math.max(0,x).toFixed(1), Math.max(0,x).toFixed(3));
+        if(f<16) later(tick,60); else { const L=o[2].toFixed(1), H=o[2].toFixed(3);
+          $('#w3',box).innerHTML=`Same ${o[1]}, two balances:<br>${digitsHTML(L,{show:true})} g → <b>${countSF(L)} sig figs</b> &nbsp; ${digitsHTML(H,{show:true})} g → <b>${countSF(H)} sig figs</b><br>The high-precision balance measured more digits. In each reading, the <b>last digit</b> is the estimated one.`; } };
+      tick(); };
+    draw('0.0','0.000');
+    $('#w1',box).onclick=weigh;
+    $('#w2',box).onclick=()=>{ k=(k+1)%objs.length; draw('0.0','0.000'); weigh(); };
+    later(weigh,400);
+  }},
+{ t:'Reading a graduated cylinder',
+  b:`<ul>
+   <li>Read the <b>bottom of the meniscus</b> (the curve) with your <b>eye level</b> with it.</li>
+   <li>Record every <b>certain</b> digit plus <b>ONE estimated</b> digit.</li>
+   <li><b>Estimate to 1/10 of the smallest division</b>: lines every 1 mL → read to <b>0.1 mL</b>; lines every 0.1 mL → read to <b>0.01 mL</b>.</li>
+   <li>If the meniscus sits right on a line, the estimated digit is <b>0</b>: write <b>43.0 mL</b>, not 43 mL.</li>
+   <li>A small cylinder with finer lines gives <b>more sig figs</b> for a small volume.</li></ul>`,
+  v(box){
+    const cases=[[INST.c100,43.6,'100 mL cylinder'],[INST.c10,6.27,'10 mL cylinder'],[INST.c100,43.0,'On a line']];
+    let k=0;
+    box.innerHTML=`<div class="vis-ctrls">${cases.map((c,i)=>`<button class="btn small ${i?'sec':''}" data-k="${i}">${c[2]}</button>`).join('')}<button class="btn small sec" id="rd">Read it step by step</button></div><div id="iv"></div><div id="rs" class="reading-line"></div><div id="rw" class="cap"></div>`;
+    const show=(lvl, mark)=>{ $('#iv',box).innerHTML=instrumentHTML(cases[k][0], lvl, {eye:true, mark}); };
+    const fill=()=>{ const c=cases[k]; let f=0; $('#rs',box).innerHTML=''; $('#rw',box).innerHTML='';
+      const go=()=>{ f++; const lv=c[1]-c[0].minor*3*(1-f/12); show(lv); if(f<12) later(go,45); else steps(); }; go(); };
+    const steps=()=>{ const c=cases[k], inst=c[0], v=c[1]; const lower=Math.floor(v/inst.minor+1e-9)*inst.minor;
+      const s=[
+        ()=>{ show(v, lower); $('#rw',box).innerHTML=`Lines are <b>${inst.minor} mL</b> apart. The bottom of the curve is between two lines. The <b>lower line</b> is <b>${lower.toFixed(inst.dec-1)} mL</b> (green dashes) — you can see it, so those digits are <b>certain</b>.`; $('#rs',box).innerHTML=`${lower.toFixed(inst.dec-1)}<span class="est">?</span> mL`; },
+        ()=>{ $('#rw',box).innerHTML=`Now <b>estimate</b> how far the bottom of the curve is between lines — about <b>${Math.round((v-lower)/inst.minor*10)}/10</b> of the way. That is the <b>one estimated digit</b>.`; $('#rs',box).innerHTML=readingHTML(v,inst.dec)+' mL'; },
+        ()=>{ $('#rw',box).innerHTML=`Reading: <b>${v.toFixed(inst.dec)} mL</b> → ${countSF(v.toFixed(inst.dec))} sig figs. ${v===43?'The meniscus is ON the line, so the estimated digit is 0 — and it is significant!':'The wavy-underlined digit is the estimate.'}`; }
+      ]; let i=0; const nx=()=>{ s[i++](); if(i<s.length) later(nx,1700); }; nx(); };
+    $$('[data-k]',box).forEach(b=>b.onclick=()=>{ clearTimers(); k=+b.dataset.k; $$('[data-k]',box).forEach(x=>x.classList.toggle('sec',x!==b)); fill(); });
+    $('#rd',box).onclick=()=>{ clearTimers(); steps(); };
+    fill();
+  }},
+{ t:'Balances, burets & pipet drops',
+  b:`<ul>
+   <li><b>Digital balance</b>: record <b>exactly</b> what the display shows — <b>every digit, including zeros at the end</b>. 12.50 g has 4 sig figs; writing 12.5 g throws away a measured digit.</li>
+   <li>The <b>last digit on the display</b> is the estimated digit. Don't add more digits.</li>
+   <li><b>Buret</b> (titration): lines every <b>0.1 mL</b>, so read to <b>0.01 mL</b>. Numbers <b>increase going down</b> — 0.00 mL is at the top.</li>
+   <li><b>Plastic pipet</b>: the number of <b>drops</b> you count is <b>exact</b> (no one gets 23.4 drops). But the size of a drop is <b>not</b> exact — "about 20 drops per mL" is a measurement.</li></ul>`,
+  v(box){
+    box.innerHTML=`<div class="vis-ctrls"><button class="btn small" data-m="bal">Balance</button><button class="btn small sec" data-m="bur">Buret</button><button class="btn small sec" data-m="pip">Pipet drops</button></div><div id="mv"></div>`;
+    const mv=$('#mv',box);
+    const modes={
+      bal(){ mv.innerHTML=balanceSVG(INST.b3,'',null,{lcdHTML:'12.5<tspan fill="#fde047" text-decoration="underline">0</tspan>'}).replace('readability 0.001 g','readability 0.01 g')+
+        `<div class="cap">Display: 12.50 g. The last digit (0) is the estimated digit — the balance <b>measured</b> it.</div>
+         <div class="row" style="margin-top:6px"><span class="fb ok">✓ record 12.50 g (4 sig figs)</span><span class="fb bad">✗ 12.5 g (only 3)</span></div>`; },
+      bur(){ mv.innerHTML=instrumentHTML(INST.bur,12.35,{eye:true})+`<div class="reading-line">${readingHTML(12.35,2)} mL</div><div class="cap">Labeled 12 is ABOVE the meniscus; count down 3 small lines (12.3) and estimate 5/10 more → 12.35 mL.</div>`; },
+      pip(){ let n=0; mv.innerHTML=`<div class="row" style="align-items:center"><div class="dripping">${pipetSVG()}</div><div><div class="reading-line">Drops: <span id="dn">0</span></div><div class="cap">Counted → <b>exact</b>. A count never limits sig figs.</div><div class="callout small">But "1 drop ≈ 0.05 mL" is <b>measured</b> (drop size depends on the pipet and how you squeeze), so it is NOT exact.</div></div></div>`;
+        const go=()=>{ n++; const e=$('#dn',mv); if(!e) return; e.textContent=n; if(n<40) later(go,600); }; later(go,600); }
+    };
+    $$('[data-m]',box).forEach(b=>b.onclick=()=>{ clearTimers(); $$('[data-m]',box).forEach(x=>x.classList.toggle('sec',x!==b)); modes[b.dataset.m](); });
+    modes.bal();
+  }},
+{ t:'Measured digits vs. placeholder zeros',
+  b:`<ul>
+   <li><b>Significant = measured.</b> Non-significant zeros are <b>placeholders</b> — they only tell you <b>how big or small</b> the number is.</li>
+   <li><b>Nonzero digits</b> (1–9) are always measured → <b>significant</b>.</li>
+   <li><b>Zeros in the middle</b> (1<u>00</u>5) sit between measured digits → <b>significant</b>.</li>
+   <li><b>Zeros in front</b> (<u>0.00</u>450) only show how <b>small</b> → <b>not</b> significant.</li>
+   <li><b>Zeros at the end</b> — ask "<b>did they have to write it?</b>"<br>
+     2.5<u>0</u>: no (2.5 is the same value) → they wrote it because they <b>measured</b> it → <b>significant</b>.<br>
+     15<u>00</u>: yes, it shows the size (15 ≠ 1500) → placeholder → <b>not</b> significant.</li></ul>`,
+  v(box){
+    const nums=['0.00450','1005','2.50','1500','1500.','30.0','0.0102','6.000'];
+    box.innerHTML=`<div class="vis-ctrls">${nums.map((n,i)=>`<button class="btn small ${i?'sec':''}" data-n="${n}">${n}</button>`).join('')}</div>
+      <div style="margin:14px 0" id="nz"></div><div class="callout" id="nx" style="min-height:76px"></div><div class="reading-line" id="nc"></div>
+      <div class="legend"><span class="sigtxt">bold underlined</span> = significant (measured) · <span style="text-decoration:line-through dotted;color:#64748b">gray dotted</span> = placeholder (size only)</div>
+      <div class="vis-ctrls"><button class="btn small sec" id="nr">Replay</button></div>`;
+    let cur=nums[0];
+    const run=n=>{ clearTimers(); cur=n; $('#nz',box).innerHTML=digitsHTML(n,{big:true}); const ds=$$('.d',box); let i=0,c=0; $('#nc',box).textContent='Sig figs: 0'; $('#nx',box).textContent='';
+      const nx=()=>{ if(i>0) ds[i-1].classList.remove('focus'); if(i>=ds.length){ $('#nx',box).innerHTML=`<b>${n}</b> has <b>${c} significant figure${c===1?'':'s'}</b>.`; return; }
+        const d=ds[i], k=d.dataset.kind, sig=k==='nonzero'||k==='captive'||k==='trailing-dec';
+        d.classList.add('focus', sig?'sig':'non'); if(sig) c++;
+        $('#nx',box).innerHTML=`<b>${d.textContent}</b> — ${KIND_TXT[k]}`; $('#nc',box).textContent='Sig figs: '+c; i++; later(nx,1500); };
+      later(nx,500); };
+    $$('[data-n]',box).forEach(b=>b.onclick=()=>{ $$('[data-n]',box).forEach(x=>x.classList.toggle('sec',x!==b)); run(b.dataset.n); });
+    $('#nr',box).onclick=()=>run(cur);
+    run(cur);
+  }},
+{ t:'Atlantic–Pacific shortcut (a quick check)',
+  b:`<ul>
+   <li>A fast way to <b>check</b> your count. It gives the same answer as the measured-vs-placeholder rules.</li>
+   <li>Decimal point <b>P</b>resent → start on the <b>P</b>acific (<b>left</b>) side. Move right to the first <b>nonzero</b> digit. That digit and <b>everything after it</b> is significant.</li>
+   <li>Decimal point <b>A</b>bsent → start on the <b>A</b>tlantic (<b>right</b>) side. Move left to the first nonzero digit. That digit and everything after it (going left) is significant.</li>
+   <li>The zeros the arrow passes over first are the <b>placeholders</b>.</li></ul>`,
+  v(box){
+    const nums=['0.00450','1500','1005','7000.','0.0700','30400'];
+    box.innerHTML=`<div class="vis-ctrls">${nums.map((n,i)=>`<button class="btn small ${i?'sec':''}" data-n="${n}">${n}</button>`).join('')}</div>
+     <div style="position:relative;display:flex;align-items:stretch;border-radius:14px;overflow:hidden;border:2px solid #334155;margin-top:8px">
+      <div id="pac" style="background:#bfdbfe;padding:10px;width:24%;text-align:center;font-weight:800">PACIFIC<br><span class="small">decimal<br><b>P</b>resent</span></div>
+      <div style="background:#dcfce7;flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:40px 6px 18px"><div id="ap"></div>
+       <svg id="arw" viewBox="0 0 40 30" style="position:absolute;top:6px;left:0;width:40px;height:30px;transition:left .45s"><path id="arp" d="M2,15 L30,15 M22,6 L32,15 L22,24" stroke="#b45309" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+      <div id="atl" style="background:#bfdbfe;padding:10px;width:24%;text-align:center;font-weight:800">ATLANTIC<br><span class="small">decimal<br><b>A</b>bsent</span></div></div>
+     <div class="callout" id="apx" style="margin-top:10px;min-height:60px"></div>`;
+    const run=n=>{ clearTimers(); $('#ap',box).innerHTML=digitsHTML(n,{big:true}); const pres=n.indexOf('.')>=0;
+      $('#pac',box).style.background=pres?'#60a5fa':'#bfdbfe'; $('#atl',box).style.background=pres?'#bfdbfe':'#60a5fa';
+      const ds=$$('#ap .d',box); const order=pres?ds:ds.slice().reverse();
+      const arw=$('#arw',box), host=arw.parentElement; $('#arp',box).setAttribute('transform', pres?'':'translate(40,0) scale(-1,1)');
+      $('#apx',box).innerHTML=pres?'Decimal point <b>Present</b> → start at the <b>Pacific</b> (left).':'Decimal point <b>Absent</b> → start at the <b>Atlantic</b> (right).';
+      let i=0, found=false, c=0;
+      const pos=d=>{ const r=d.getBoundingClientRect(), hr=host.getBoundingClientRect(); arw.style.left=(r.left-hr.left+r.width/2-20)+'px'; };
+      arw.style.left = pres?'0px':(host.clientWidth-40)+'px';
+      const nx=()=>{ if(i>=order.length){ $('#apx',box).innerHTML+=` <b>${c} sig figs.</b>`; return; }
+        const d=order[i]; pos(d);
+        if(!found && d.textContent!=='0'){ found=true; $('#apx',box).innerHTML+=' First nonzero digit — start counting here.'; }
+        d.classList.add(found?'sig':'non'); if(found) c++; i++; later(nx,700); };
+      later(nx,700); };
+    $$('[data-n]',box).forEach(b=>b.onclick=()=>{ $$('[data-n]',box).forEach(x=>x.classList.toggle('sec',x!==b)); run(b.dataset.n); });
+    run(nums[0]);
+  }},
+{ t:'Zeros at the end & scientific notation',
+  b:`<ul>
+   <li><b>1500</b> → <b>2</b> sig figs (the zeros could just be placeholders).</li>
+   <li><b>1500.</b> → <b>4</b> sig figs (the decimal point says the zeros were measured).</li>
+   <li><b>1.50 × 10<sup>3</sup></b> → <b>3</b> sig figs. You can't show exactly 3 sig figs by writing 1500 the normal way!</li>
+   <li>In scientific notation the <b>× 10<sup>n</sup> does the size job</b>, so no placeholder zeros are needed — <b>every digit in the coefficient is significant</b>.</li>
+   <li>0.00450 = <b>4.50 × 10<sup>−3</sup></b> → still 3 sig figs.</li></ul>`,
+  v(box){
+    box.innerHTML=`<p class="prob">A volume was measured as <b>about 1500 mL</b>. How would you write it if it was measured to…</p>
+     <div class="vis-ctrls">${[2,3,4].map((n,i)=>`<button class="btn ${i?'sec':''}" data-s="${n}">${n} sig figs</button>`).join('')}</div>
+     <table class="cmp" id="st"></table><div class="callout" id="sx"></div>`;
+    const run=n=>{ const r=roundSig(1500,n), plain=fmtPlain(r);
+      $('#st',box).innerHTML=`<tr><th>Normal (standard) form</th><td>${plain?digitsHTML(plain,{show:true}):'<b style="color:#9f1239">✗ impossible</b> — 1500 shows 2, 1500. shows 4'}</td></tr>
+        <tr><th>Scientific notation</th><td>${digitsHTML(fmtSci(r),{show:true})}</td></tr>`;
+      $('#sx',box).innerHTML= n===3 ? 'Only scientific notation can show exactly 3 sig figs here. The coefficient 1.50 holds the measured digits; × 10³ shows the size.' : n===2 ? '1500 with no decimal point = 2 sig figs. In scientific notation: 1.5 × 10³.' : 'The decimal point in "1500." tells you all four digits were measured. In scientific notation: "1.500 × 10³".'; };
+    $$('[data-s]',box).forEach(b=>b.onclick=()=>{ $$('[data-s]',box).forEach(x=>x.classList.toggle('sec',x!==b)); run(+b.dataset.s); });
+    run(2);
+  }},
+{ t:'Exact numbers',
+  b:`<ul>
+   <li><b>Exact numbers</b> have <b>unlimited</b> sig figs — they were never measured, so there is no uncertainty.</li>
+   <li><b>Counted</b> items: 25 students, 40 drops, 3 beakers.</li>
+   <li><b>Defined</b> conversions: 1 L = 1000 mL, 1 kg = 1000 g, 1 m = 100 cm, 1 ft = 12 in, 1 in = 2.54 cm (exactly).</li>
+   <li>Exact numbers <b>never limit</b> the sig figs of an answer. Only <b>measurements</b> do.</li>
+   <li>Careful: "20 drops ≈ 1 mL" is <b>not</b> exact — drop size depends on the pipet, so it's a measurement.</li></ul>`,
+  v(box){
+    const items=[['25 students in class',1,'You counted them.'],['12.50 g on a balance',0,'A balance reading is a measurement.'],['1 L = 1000 mL',1,'Defined by the metric system.'],['40 drops from a pipet',1,'You counted the drops.'],['20 drops ≈ 1 mL',0,'Drop size varies with the pipet — it was measured.'],['1 in = 2.54 cm',1,'Defined exactly in 1959.'],['43.6 mL in a cylinder',0,'Read from a scale — measured.'],['1 ft = 12 in',1,'Defined.'],['3 beakers on the bench',1,'Counted.']];
+    box.innerHTML=`<p class="prob">Sort each number: <b>Exact</b> or <b>Measured</b>?</p><div id="ex"></div><div class="reading-line" id="exs"></div>`;
+    let right=0, done=0;
+    $('#ex',box).innerHTML=items.map((it,i)=>`<div class="row" style="margin:6px 0;justify-content:space-between;border-bottom:1px solid #e2e8f0;padding-bottom:6px"><span style="min-width:200px"><b>${it[0]}</b></span><span class="row"><button class="btn small sec" data-i="${i}" data-a="1">Exact</button><button class="btn small sec" data-i="${i}" data-a="0">Measured</button></span><span class="small" id="exr${i}" style="flex-basis:100%"></span></div>`).join('');
+    $$('[data-i]',box).forEach(b=>b.onclick=()=>{ const i=+b.dataset.i, it=items[i], ok=(+b.dataset.a)===it[1];
+      $$(`[data-i="${i}"]`,box).forEach(x=>x.disabled=true); b.classList.remove('sec'); b.classList.add('sel');
+      $('#exr'+i,box).innerHTML=(ok?'<span style="color:#065f46">✓ ':'<span style="color:#9f1239">✗ ')+(it[1]?'Exact':'Measured')+' — '+it[2]+'</span>';
+      done++; if(ok) right++; $('#exs',box).textContent=`${right}/${done} correct`; });
+  }},
+{ t:'Rounding to n sig figs',
+  b:`<ul>
+   <li>Underline the digits you <b>keep</b>. Look at the <b>next digit</b>.</li>
+   <li><b>5 or more → round up.</b> <b>4 or less → leave it.</b> (This app uses <b>round-half-up</b>: a 5 always rounds up.)</li>
+   <li><b>Keep needed zeros</b>: 2.499 to 3 sig figs → <b>2.50</b> (not 2.5).</li>
+   <li><b>Big numbers</b>: use <b>scientific notation</b>. 45 678 to 3 sig figs → <b>4.57 × 10<sup>4</sup></b> (not 457 — that changes the size!).</li>
+   <li>Small numbers keep their placeholder zeros: 0.0034567 → 3 sig figs → <b>0.00346</b>.</li></ul>`,
+  v(box){
+    const nums=['2.499','45678','0.0034567','9.996','1.2349','0.07051'];
+    box.innerHTML=`<div class="vis-ctrls">${nums.map((n,i)=>`<button class="btn small ${i?'sec':''}" data-n="${n}">${n}</button>`).join('')}</div>
+     <div class="vis-ctrls">Round to: ${[1,2,3,4].map(n=>`<button class="btn small ${n===3?'':'sec'}" data-r="${n}">${n}</button>`).join('')} sig figs <button class="btn small sec" id="rrp">Replay</button></div>
+     <div id="rz" style="margin:10px 0"></div><div id="rx"></div>`;
+    let num=nums[0], n=3;
+    const run=()=>{ clearTimers(); $('#rz',box).innerHTML=digitsHTML(num,{big:true}); const ds=$$('#rz .d',box), sigd=ds.filter(d=>d.dataset.kind!=='leading');
+      const rx=$('#rx',box); rx.innerHTML='';
+      const add=html=>rx.insertAdjacentHTML('beforeend',`<div class="step done">${html}</div>`);
+      if(n>=sigd.length){ add('It already has '+sigd.length+' sig figs — pick fewer.'); return; }
+      const kept=sigd.slice(0,n).map(d=>d.textContent), nxt=sigd[n].textContent, up=+nxt>=5;
+      const r=roundSig(Number(num),n), best=fmtBest(r), plain=fmtPlain(r), lead=ds.some(d=>d.dataset.kind==='leading');
+      const intDigits=num.split('.')[0].replace(/^0+/,'').length;
+      let carry=0; if(up){ for(let k=n-1;k>=0 && kept[k]==='9';k--) carry++; }
+      const lines=[];
+      lines.push(()=>{ ds.forEach(d=>{ if(d.dataset.kind==='leading') d.classList.add('non'); }); sigd.slice(0,n).forEach(d=>d.classList.add('sig'));
+        add(`<b>1. Keep ${n} sig fig${n>1?'s':''}:</b> ${kept.join(', ')}.${lead?' (Skip the zeros in front — they are placeholders.)':''}`); });
+      lines.push(()=>{ sigd[n].classList.add('focus'); add(`<b>2. Look at the next digit:</b> ${nxt} → ${up?'5 or more, so <b>round UP</b>.':'4 or less, so <b>leave it alone</b>.'}`); });
+      lines.push(()=>{ let t;
+        if(!up) t=`<b>3.</b> The kept digits stay ${kept.join('')}; drop everything after them.`;
+        else if(carry) t=`<b>3.</b> The last kept digit is 9, and 9 + 1 = 10: write <b>0</b> and <b>carry 1</b> to the left${carry>1?' (again and again, since those are 9s too)':''}. ${fmtPlain(truncSig(Number(num),n))||fmtSci(truncSig(Number(num),n))} becomes <b>${plain||fmtSci(r)}</b>${/\.$/.test(plain||'')?'':'.'}`;
+        else t=`<b>3.</b> The last kept digit goes up by one: ${kept[n-1]} → ${+kept[n-1]+1}. Drop everything after it.`;
+        add(t); });
+      lines.push(()=>{ let t='<b>4. Keep the size the same.</b> ';
+        if(plain===null || best!==plain) t+=`Dropped digits left of the decimal point must become placeholder zeros (${num} ≈ ${plain||fmtPlain({neg:false,d:r.d+'',e:r.e})||best}), so it's cleaner in scientific notation: <b>${fmtBestHTML(r)}</b>. ${num} → ${r.d.slice(0,n)} would change the size!`;
+        else if(/\.$/.test(plain)) t+=`Write <b>${plain}</b> with a decimal point so the zero at the end counts as measured — that makes ${n} sig figs.`;
+        else if(/\.\d*0$/.test(plain)) t+=`Keep the zero at the end! It is sig fig #${n}. Writing ${plain.replace(/0+$/,'').replace(/\.$/,'')} would show only ${countSF(plain.replace(/0+$/,'').replace(/\.$/,''))} sig fig${countSF(plain.replace(/0+$/,'').replace(/\.$/,''))===1?'':'s'}.`;
+        else if(lead) t+='The zeros in front stay — they keep the number small.';
+        else if(intDigits>n) t+='Dropped digits left of the decimal become placeholder zeros.';
+        else t+='Nothing else changes.';
+        add(t); });
+      lines.push(()=>{ add(`<div class="reading-line">${num} → ${digitsHTML(best,{show:true})} &nbsp;(${n} sig fig${n>1?'s':''})</div>${fmtAlt(r)?`<div class="small muted">Also correct: ${fmtAlt(r)}</div>`:''}`); });
+      let i=0; const nx=()=>{ lines[i++](); if(i<lines.length) later(nx,1300); }; later(nx,300); };
+    $$('[data-n]',box).forEach(b=>b.onclick=()=>{ $$('[data-n]',box).forEach(x=>x.classList.toggle('sec',x!==b)); num=b.dataset.n; run(); });
+    $$('[data-r]',box).forEach(b=>b.onclick=()=>{ $$('[data-r]',box).forEach(x=>x.classList.toggle('sec',x!==b)); n=+b.dataset.r; run(); });
+    $('#rrp',box).onclick=run;
+    run();
+  }},
+{ t:'Multiplying and dividing',
+  b:`<ul>
+   <li>For <b>× and ÷</b>, the answer gets the same number of sig figs as the measurement with the <b>FEWEST sig figs</b>.</li>
+   <li>Count the sig figs in each <b>measurement</b> (exact numbers don't count).</li>
+   <li>Do the math with <b>all</b> the calculator digits, then <b>round once</b> at the end.</li>
+   <li>Like a chain, the answer is only as strong as its <b>weakest link</b> — one imprecise measurement limits the answer.</li></ul>`,
+  v(box){
+    const ex=[{a:'12.50',au:'g',op:'÷',b:'4.6',bu:'mL',u:'g/mL',what:'density'},{a:'3.25',au:'cm',op:'×',b:'2.1',bu:'cm',u:'cm²',what:'area'},{a:'1.025',au:'g/mL',op:'×',b:'46.0',bu:'mL',u:'g',what:'mass'}];
+    let k=0;
+    box.innerHTML=`<div class="vis-ctrls"><button class="btn small" id="mr">Replay</button><button class="btn small sec" id="mn">Next example</button></div><div id="mx"></div>`;
+    const run=()=>{ clearTimers(); const e=ex[k], A=Number(e.a), B=Number(e.b), raw=e.op==='÷'?A/B:A*B, sa=countSF(e.a), sb=countSF(e.b), n=Math.min(sa,sb);
+      $('#mx',box).innerHTML=`<p class="prob">Find the ${e.what}: <b>${e.a} ${e.au} ${e.op} ${e.b} ${e.bu}</b></p><div id="ms"></div>`;
+      const lines=[
+        `${digitsHTML(e.a,{show:true})} ${e.au} → <b>${sa} sig figs</b>`,
+        `${digitsHTML(e.b,{show:true})} ${e.bu} → <b>${sb} sig figs</b>`,
+        `Fewest = <b>${n}</b>, so the answer gets <b>${n} sig figs</b>.`,
+        `<div class="calc"><div class="scr"><small>${e.a} ${e.op} ${e.b} =</small>${calcDisplay(raw)}</div></div>`,
+        `Round to ${n} sig figs → <span class="reading-line">${sigStr(raw,n)} ${e.u}</span>`];
+      let i=0; const nx=()=>{ $('#ms',box).insertAdjacentHTML('beforeend',`<div class="step done">${lines[i]}</div>`); i++; if(i<lines.length) later(nx,1300); }; later(nx,300); };
+    $('#mr',box).onclick=run; $('#mn',box).onclick=()=>{ k=(k+1)%ex.length; run(); };
+    run();
+  }},
+{ t:'Multi-step problems (× and ÷)',
+  b:`<ul>
+   <li><b>Keep every calculator digit</b> through each step. Don't round in the middle!</li>
+   <li><b>Track</b> the limiting sig figs at each step — <b>underline the last significant digit</b> so you remember where you will round.</li>
+   <li><b>Round ONLY at the end.</b></li>
+   <li>The calculator never knows about sig figs: 25.0 ÷ 3.00 = 8.333333333 → <b>8.33</b>.</li>
+   <li>Rounding in the middle can change your final answer — compare the two paths →</li></ul>`,
+  v(box){
+    box.innerHTML=`<p class="prob">A copper block measures <b>3.25 cm × 2.1 cm × 1.534 cm</b>. Copper's density is <b>8.96 g/cm³</b>. Find the mass.</p>
+     <div class="vis-ctrls"><button class="btn small" id="pr">Replay</button></div>
+     <div class="row" style="align-items:flex-start"><div style="flex:1;min-width:250px"><h3 style="color:#065f46">✓ Keep all digits</h3><div id="pa"></div></div>
+     <div style="flex:1;min-width:250px"><h3 style="color:#9f1239">✗ Rounded in the middle</h3><div id="pb"></div></div></div><div class="callout" id="pw" style="display:none"></div>`;
+    const A=[`V = 3.25 × 2.1 × 1.534<br>= 1<u style="text-decoration-thickness:3px">0</u>.46955 cm³ <span class="small muted">(2 sig figs so far — underline, keep going)</span>`,
+      `m = 10.46955 × 8.96<br>= 93.807168 g`, `Round once at the end (2 sig figs):<br><span class="reading-line">94 g</span>`];
+    const WHY=`<b>Why 2 sig figs?</b> Look at what went in: 3.25 cm (3) · <b>2.1 cm (2)</b> · 1.534 cm (4) · 8.96 g/cm³ (3). The fewest sig figs going in was <b>2</b> (the 2.1 cm measurement), so the final answer is rounded to <b>2 sig figs</b>: 93.807168 → <b>94 g</b>.`;
+    const B=[`V = 3.25 × 2.1 × 1.534 = 10.46955<br>rounded now → 10. cm³`, `m = 10. × 8.96 = 89.6 g`, `Round → <span class="reading-line">90. g</span> <span class="small">(off by 4 g!)</span>`];
+    const run=()=>{ clearTimers(); $('#pa',box).innerHTML=''; $('#pb',box).innerHTML=''; $('#pw',box).style.display='none'; let i=0;
+      const nx=()=>{ $('#pa',box).insertAdjacentHTML('beforeend',`<div class="step done">${A[i]}</div>`); $('#pb',box).insertAdjacentHTML('beforeend',`<div class="step shown">${B[i]}</div>`); i++; if(i<A.length) later(nx,1500); else later(()=>{ const w=$('#pw',box); w.innerHTML=WHY; w.style.display=''; },1200); };
+      later(nx,300); };
+    $('#pr',box).onclick=run; run();
+  }}
+];
+
+let curStop=0;
+function renderLearn(){
+  const L=$('#learn');
+  L.innerHTML=`<div class="card"><div class="lp"><strong>Stop <span id="sn"></span> of ${STOPS.length}</strong><div class="pbar" aria-label="Stops viewed"><span id="pb"></span></div><span class="small" id="pv"></span></div>
+    <div class="dots" id="dots">${STOPS.map((s,i)=>`<button class="dot" data-s="${i}" title="${esc(s.t)}" aria-label="Stop ${i+1}: ${esc(s.t)}">${i+1}</button>`).join('')}</div></div>
+    <div class="card" style="margin-top:10px"><div class="stop"><div class="stop-text"><h2 id="st"></h2><div id="sb"></div></div><div class="stop-vis" id="sv"></div></div>
+    <div class="lnav"><button class="btn sec" id="lb">◀ Back</button><span class="small muted" id="lh"></span><button class="btn" id="ln">Next ▶</button></div></div>`;
+  $$('#dots .dot').forEach(d=>d.onclick=()=>gotoStop(+d.dataset.s));
+  $('#lb').onclick=()=>gotoStop(curStop-1); $('#ln').onclick=()=>{ if(curStop<STOPS.length-1) gotoStop(curStop+1); else showTab('practice'); };
+  gotoStop(curStop);
+}
+function gotoStop(i){
+  if(i<0||i>=STOPS.length) return;
+  clearTimers(); curStop=i; const s=STOPS[i];
+  if(S.viewed.indexOf(i)<0){ S.viewed.push(i); refreshTabs(); }
+  saveUI('stop',i);
+  $('#sn').textContent=i+1; $('#st').textContent=(i+1)+'. '+s.t; $('#sb').innerHTML=s.b;
+  const sv=$('#sv'); sv.innerHTML=''; try{ s.v(sv); }catch(e){ console.error(e); }
+  $$('#dots .dot').forEach((d,k)=>{ d.classList.toggle('seen', S.viewed.indexOf(k)>=0); d.classList.toggle('cur',k===i); });
+  $('#pb').style.width=(100*S.viewed.length/STOPS.length)+'%'; $('#pv').textContent=`${S.viewed.length}/${STOPS.length} viewed`;
+  $('#lb').disabled=i===0; $('#ln').textContent= i===STOPS.length-1 ? 'Go to Practice ▶' : 'Next ▶';
+  $('#lh').textContent = learnDone() ? 'All stops viewed ✓' : '';
+}
+
+/* ===================== PROBLEM GENERATORS ===================== */
+const TYPES=[
+  {id:'cyl',   name:'Read a graduated cylinder'},
+  {id:'count', name:'Count sig figs'},
+  {id:'tap',   name:'Tap the significant digits'},
+  {id:'round', name:'Round to n sig figs'},
+  {id:'muldiv',name:'Multiply & divide'}
+];
+function intCheck(ans, hint){ return v=>{ const n=parseInt(String(v).trim(),10); return {ok:n===ans, hint}; }; }
+function numCheck(ans, hint, relTol){ return v=>{ const p=parseNum(v); if(!p) return {ok:false, hint:'Type a number.'}; return {ok: Math.abs(p.value-ans)<= (relTol||1e-9)*Math.max(Math.abs(ans),1e-12)+1e-12, hint}; }; }
+function calcCheck(raw, hint){ return v=>{ const p=parseNum(v); if(!p) return {ok:false,hint:'Type the number your calculator shows.'}; const ok=Math.abs(p.value-raw)<=0.0005*Math.abs(raw); return {ok, hint: ok?'':hint}; }; }
+function choiceCheck(i, hint){ return v=>({ok:+v===i, hint}); }
+function digitCheck(d, hint){ return v=>({ok:String(v).trim()===String(d), hint}); }
+
+/* number strings rich in zeros */
+function genZeroNumber(){
+  const nz=()=>String(ri(1,9));
+  const dg=()=>String(ri(0,9));
+  const t=pick(['small','small','captive','trailnd','trailpt','decz','decz','sci']);
+  let s;
+  if(t==='small'){ const z=ri(1,3); let d=nz(); const len=ri(1,3); for(let i=0;i<len;i++) d+=(rnd()<0.3?'0':dg()); if(rnd()<0.5) d+='0'; s='0.'+'0'.repeat(z)+d; }
+  else if(t==='captive'){ s=nz()+'0'.repeat(ri(1,2))+nz(); if(rnd()<0.4) s+=nz(); }
+  else if(t==='trailnd'){ s=nz()+(rnd()<0.5?nz():(rnd()<0.5?'0'+nz():''))+'0'.repeat(ri(1,3)); }
+  else if(t==='trailpt'){ s=nz()+(rnd()<0.5?nz():'')+'0'.repeat(ri(1,3))+'.'; }
+  else if(t==='decz'){ const ip=pick([nz(), nz()+'0', nz()+'00', '0']); let fp=(ip==='0'?nz():dg())+(rnd()<0.5?'0':''); if(rnd()<0.5) fp+='0'; s=ip+'.'+fp; if(!/0/.test(s.replace(/^0\./,''))) s+='0'; }
+  else { let c=nz()+'.'+(rnd()<0.5?'0':dg())+(rnd()<0.5?nz():'')+'0'; if(rnd()<0.3) c=c.slice(0,-1); let e=ri(-8,9); if(e>=-1&&e<=1) e=e<0?-4:5; s=c+' × 10'+supStr(e); }
+  return s;
+}
+function numHTML(s){ const sp=splitSci(s); return sp.sci? sp.mant+' × 10<sup>'+sp.exp+'</sup>' : esc(sp.mant); }
+function placeholderCount(str){ const cl=classify(splitSci(str).mant); return cl.filter(c=>c.kind==='leading'||c.kind==='trailing-nodec').length; }
+function sfOf(str){ return classify(splitSci(str).mant).filter(c=>c.sig).length; }
+
+const GEN={};
+GEN.cyl=function(){
+  const inst=pick([INST.c10,INST.c50,INST.c100]);
+  const level=randLevel(inst,0.15,0.88);
+  const lower=Number((Math.floor(level/inst.minor+1e-9)*inst.minor).toFixed(inst.dec-1));
+  const g=zoomGeom(inst, level, 300, 340);
+  const vis=instrumentHTML(inst, level, {eye:true});
+  const gr=v=>{ const r=gradeReading(v, inst, level, g.topVal); return {ok:r.ok, msg:r.msg, mistake:r.mistake, correctHTML:readingHTML(level,inst.dec)+' mL'}; };
+  return {type:'cyl', prompt:`Read the volume in this <b>${inst.name}</b>.`, visual:vis, visualPlain:instrumentHTML(inst, level, {plain:true}), unit:'mL', noHint:true,
+    steps:[
+      {q:'How many mL is each small line worth?', kind:'num', check:numCheck(inst.minor,'Pick two labeled numbers, subtract them, and divide by the number of spaces between them.'), ans:inst.minor+' mL', why:'Between two labeled lines, count the spaces: that tells you each line\'s value.'},
+      {q:'Your estimated digit goes in which place?', kind:'choice', opts:['ones','tenths','hundredths'], check:choiceCheck(inst.dec,'Estimate to 1/10 of a line: 1 mL lines → tenths, 0.1 mL lines → hundredths.'), ans:placeName(inst.dec), why:`Lines are ${inst.minor} mL apart, so you can estimate 1/10 of that: the ${placeName(inst.dec)} place.`},
+      {q:`The bottom of the curve is between two lines. What is the value of the <b>lower</b> line? <span class="muted">(If the curve sits exactly on a line, type that line.)</span>`, kind:'num', check:numCheck(lower,`Start at a labeled number and count the small lines (each is ${inst.minor} mL) up to the line just UNDER the bottom of the curve.`), ans:lower+' mL', why:`You can see this line, so ${lower} mL is certain. The curve is a little above it — next you estimate how much.`, visual:instrumentHTML(inst, level, {eye:true, mark:lower})},
+      {q:`Estimate how far the curve is above ${lower} mL (in tenths of a space) and write the full reading:`, kind:'final', ans:readingHTML(level,inst.dec)+' mL', why:`The curve is about ${Math.round((level-lower)/inst.minor*10)}/10 of the way from ${lower} to the next line, so add one estimated digit: ${level.toFixed(inst.dec)} mL.`}
+    ],
+    final:{kind:'text', grade:gr, hint:`Lines are ${inst.minor} mL apart. Record certain digits + ONE estimated digit (${inst.dec} decimal place${inst.dec>1?'s':''}). Read the bottom of the curve.`},
+    short:`Read ${inst.short}`};
+};
+GEN.count=function(){
+  const s=genZeroNumber(), sp=splitSci(s), sf=sfOf(s), ph=placeholderCount(s), pt=sp.mant.indexOf('.')>=0;
+  const gr=v=>{ const r=countDiag(s,v); return {ok:r.ok,msg:r.msg,mistake:r.mistake,correctHTML:sf+' sig figs: '+digitsHTML(s,{show:true})}; };
+  const steps = sp.sci ? [
+      {q:'It is in scientific notation. Which digits can be significant?', kind:'choice', opts:['Only the coefficient digits','Every digit, including the 10 and the exponent'], check:choiceCheck(0,'The × 10ⁿ part only shows size.'), ans:'Only the coefficient', why:'× 10ⁿ shows the size, so only the coefficient holds measured digits.'},
+      {q:'How many sig figs?', kind:'final', ans:String(sf), why:'Every digit in the coefficient is significant (except zeros in front, which never appear in correct scientific notation).'}]
+   : [
+      {q:'Is there a decimal point?', kind:'choice', opts:['Yes','No'], check:choiceCheck(pt?0:1,'Look carefully — a decimal point can be at the very end, like 7000.'), ans:pt?'Yes':'No', why: pt?'With a decimal point, zeros at the END were measured.':'No decimal point, so zeros at the END are placeholders.'},
+      {q:'How many sig figs?', kind:'final', ans:digitsHTML(s,{show:true})+` → <b>${sf}</b>`, why:'Count what was measured: nonzero digits, zeros in the middle, and end zeros after a decimal point. Zeros in front never count.'}];
+  return {type:'count', prompt:`How many significant figures are in <span class="num">${numHTML(s)}</span> ?`, steps,
+    final:{kind:'int', grade:gr, hint:'Measured digits count. Placeholder zeros (in front, or at the end with no decimal point) don\'t.'}, short:`Count sig figs in ${s}`};
+};
+GEN.tap=function(){
+  let s=genZeroNumber(); const sp=splitSci(s), pt=sp.mant.indexOf('.')>=0;
+  const cl=classify(sp.mant);
+  const gr=v=>{ const r=tapDiag(s,v||[]); return {ok:r.ok,msg:r.msg,mistake:r.mistake,wrong:r.wrong,correctHTML:digitsHTML(s,{show:true})}; };
+  const steps=[
+    {q:sp.sci?'Scientific notation — which part holds the measured digits?':'Is there a decimal point?', kind:'choice', opts:sp.sci?['The coefficient','The × 10ⁿ part']:['Yes','No'], check:choiceCheck(sp.sci?0:(pt?0:1), sp.sci?'× 10ⁿ only shows size.':'A decimal point can hide at the very end (like 7000.).'), ans:sp.sci?'The coefficient':(pt?'Yes':'No'), why:sp.sci?'Every coefficient digit is significant.':(pt?'End zeros were measured.':'End zeros are placeholders.')},
+    {q:'Tap every significant digit:', kind:'final', ans:digitsHTML(s,{show:true}), why:cl.filter(c=>c.digit&&c.ch==='0').map(c=>KIND_SHORT[c.kind]).length?'Each zero: '+[...new Set(cl.filter(c=>c.digit&&c.ch==='0').map(c=>KIND_SHORT[c.kind]))].join(', ')+'.':'All nonzero digits are significant.'}
+  ];
+  return {type:'tap', prompt:'Tap all the <b>significant</b> digits.', tapStr:s, steps, final:{kind:'tap', grade:gr, hint:'Nonzero digits and middle zeros always count. End zeros count only with a decimal point. Front zeros never count.'}, short:`Tap sig digits in ${s}`};
+};
+GEN.round=function(){
+  const cat=pick(['zero','big','small','normal','half','normal']);
+  let digits, e, n;
+  const nz=()=>String(ri(1,9)), dg=()=>String(ri(0,9));
+  if(cat==='zero'){ n=ri(2,3); digits=nz()+(n===3?String(ri(0,8)):'')+'9'+String(ri(5,9))+(rnd()<0.5?nz():''); e=ri(-2,1); }
+  else if(cat==='big'){ n=ri(2,3); digits=nz()+dg()+dg()+dg()+nz()+(rnd()<0.5?nz():''); e=digits.length-1; }
+  else if(cat==='small'){ n=ri(2,3); digits=nz()+dg()+dg()+nz()+(rnd()<0.5?nz():''); e=-ri(2,4); }
+  else if(cat==='half'){ n=ri(2,3); digits=nz()+dg()+(n===3?dg():'')+'5'; e=ri(-1,1); }
+  else { n=ri(1,4); digits=nz()+dg()+dg()+dg()+nz(); e=ri(-1,2); }
+  const r0={neg:false,d:digits,e}; const given=fmtPlain(r0); const v=rNum(r0);
+  const r=roundSig(v,n), keep=digits[n-1], next=digits[n], up=+next>=5;
+  const gr=v2=>{ const g=grade(v2,v,n); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML}; };
+  return {type:'round', prompt:`Round <b class="num">${given}</b> to <b>${n} significant figure${n>1?'s':''}</b>.`, steps:[
+    {q:`What is the last digit you KEEP (sig fig #${n})?`, kind:'digit', check:digitCheck(keep,'Skip any zeros in front. Count significant digits from the first nonzero digit.'), ans:keep, why:`Start at the first nonzero digit and count ${n}.`},
+    {q:'What is the NEXT digit (the one that decides)?', kind:'digit', check:digitCheck(next,'It is the digit right after the last one you keep.'), ans:next, why:'Only this digit decides up or down.'},
+    {q:'Round up or leave it?', kind:'choice', opts:['Round up (next digit 5–9)','Leave it (next digit 0–4)'], check:choiceCheck(up?0:1,'5 or more rounds up; 4 or less leaves it alone.'), ans:up?'Round up':'Leave it', why:up?`${next} ≥ 5, so the kept digit goes up by 1${keep==='9'?' (9 becomes 10 — carry it left)':''}.`:`${next} ≤ 4, so the kept digit stays.`},
+    {q:`Round <b>${given}</b> to <b>${n} sig fig${n>1?'s':''}</b>:`, kind:'final', ans:fmtBestHTML(r)+(fmtAlt(r)?` <span class="alt">(or ${fmtAlt(r)})</span>`:''), why:(fmtPlain(r)===null?'Normal form can\'t show this many sig figs, so use scientific notation. ':'')+'Keep the size of the number the same and keep any needed zeros at the end.'}],
+    final:{kind:'text', grade:gr, hint:`Keep ${n} sig figs, look at the next digit: 5 or more rounds up. Keep the number the same size; keep needed zeros.`}, short:`Round ${given} to ${n} sf`};
+};
+GEN.sci=function(){
+  const nz=()=>String(ri(1,9)), dg=()=>String(ri(0,9));
+  let e=pick([ri(-7,-3),ri(3,7)]); let digits;
+  if(e>0){ digits=nz(); for(let i=0;i<e-1;i++) digits+=dg(); digits+=nz(); }
+  else { digits=nz()+dg()+dg()+dg()+nz(); }
+  const r0={neg:false,d:digits,e}; const given=fmtPlain(r0); const v=rNum(r0);
+  const n=ri(2,Math.min(4,digits.length-1)); const r=roundSig(v,n);
+  const gr=v2=>{ const g=grade(v2,v,n,{requireSci:true}); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML}; };
+  return {type:'sci', prompt:`Write <b class="num">${given}</b> in <b>scientific notation</b> with <b>${n} sig figs</b>.`, steps:[
+    {q:`Coefficient (one nonzero digit before the decimal, rounded to ${n} sig figs):`, kind:'num', check:v2=>{ const p=parseNum(v2); return {ok:!!p && !p.sci && same(p.value,rNum({neg:false,d:r.d,e:0})) && p.sf===n, hint:'Put the decimal point after the first nonzero digit, then round to '+n+' sig figs (keep needed zeros).'}; }, ans:coefStr(r), why:'The coefficient must be at least 1 and less than 10.'},
+    {q:'Exponent (power of 10):', kind:'int', check:intCheck(r.e,'Count how many places the decimal point moved. Big number → positive exponent; less than 1 → negative.'), ans:String(r.e), why:e>0?'The decimal moved left, so the exponent is positive.':'The number is less than 1, so the exponent is negative.'},
+    {q:'Full answer (type like 4.51e-4 or 4.51x10^-4):', kind:'final', ans:fmtSciHTML(r), why:'Every digit in the coefficient is significant.'}],
+    final:{kind:'text', grade:gr, hint:`Move the decimal so there's one nonzero digit in front, round the coefficient to ${n} sig figs, and count the places moved for the exponent.`}, short:`${given} → sci, ${n} sf`};
+};
+function mdMistakes(A,B,raw,n,opDec){
+  const dp=Math.min(A.dec,B.dec), vdp=roundDec(raw,dp), exp=rNum(roundSig(raw,n));
+  const mx=Math.max(A.sf,B.sf);
+  return [
+    {name:'Rounded to decimal places instead of sig figs', test:p=>!same(vdp,exp) && same(p.value,vdp), msg:`You rounded to the fewest decimal places. For × and ÷ count SIG FIGS, not decimal places — the answer gets ${n}.`},
+    {name:'Used the MOST sig figs instead of the fewest', test:p=>mx!==n && p.sf===mx && same(p.value,rNum(roundSig(raw,mx))), msg:`You used the measurement with the MOST sig figs (${mx}). For × and ÷ the FEWEST wins: ${n}.`}
+  ];
+}
+GEN.muldiv=function(){
+  const ctx=pick(['density','mass','area','rate','density']);
+  let a=ri(2,4), b=ri(2,4); while(b===a) b=ri(2,4);
+  const z1=rnd()<0.2, z2=rnd()<0.2;
+  let A,B,raw,text,unit,opTxt;
+  if(ctx==='density'){ A=genMeas(5,150,a,{zeroEnd:z1}); B=genMeas(2,60,b,{zeroEnd:z2}); raw=A.v/B.v; unit='g/mL'; opTxt=`${A.s} g ÷ ${B.s} mL`; text=`A sample has a mass of <b>${A.s} g</b> and a volume of <b>${B.s} mL</b>. Find its density (mass ÷ volume).`; }
+  else if(ctx==='mass'){ A=genMeas(0.70,1.60,Math.max(3,a),{zeroEnd:z1}); B=genMeas(10,90,b,{zeroEnd:z2}); raw=A.v*B.v; unit='g'; opTxt=`${A.s} g/mL × ${B.s} mL`; text=`A liquid has a density of <b>${A.s} g/mL</b>. What is the mass of <b>${B.s} mL</b> of it? (density × volume)`; }
+  else if(ctx==='area'){ A=genMeas(2,30,a,{zeroEnd:z1}); B=genMeas(1,20,b,{zeroEnd:z2}); raw=A.v*B.v; unit='cm²'; opTxt=`${A.s} cm × ${B.s} cm`; text=`A sheet of foil is <b>${A.s} cm</b> long and <b>${B.s} cm</b> wide. Find its area (length × width).`; }
+  else { A=genMeas(10,45,Math.max(3,a),{zeroEnd:z1}); B=genMeas(20,120,b,{zeroEnd:z2}); raw=A.v/B.v; unit='mL/s'; opTxt=`${A.s} mL ÷ ${B.s} s`; text=`A buret delivered <b>${A.s} mL</b> in <b>${B.s} s</b>. Find the flow rate (volume ÷ time).`; }
+  const n=Math.min(A.sf,B.sf);
+  text+=calcRow([[opTxt,raw]]);
+  const ms=mdMistakes(A,B,raw,n);
+  const gr=v=>{ const g=grade(v,raw,n,{mistakes:ms}); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML+' '+unit}; };
+  return {type:'muldiv', prompt:text, unit, raw, n, calc:opTxt, steps:[
+    {q:`Sig figs in ${A.s}?`, kind:'int', check:intCheck(A.sf,'Count the measured digits (watch the zeros).'), ans:String(A.sf), why:digitsHTML(A.s,{show:true})},
+    {q:`Sig figs in ${B.s}?`, kind:'int', check:intCheck(B.sf,'Count the measured digits (watch the zeros).'), ans:String(B.sf), why:digitsHTML(B.s,{show:true})},
+    {q:'Which rule applies for × and ÷?', kind:'choice', opts:['Answer gets the FEWEST sig figs of the measurements','Answer gets the MOST sig figs of the measurements','Keep all the calculator digits'], check:choiceCheck(0,'The least precise measurement limits the answer.'), ans:'Fewest sig figs', why:'The weakest link limits the answer.'},
+    {q:'So the answer gets how many sig figs?', kind:'int', check:intCheck(n,'Pick the smaller of your two counts.'), ans:String(n), why:`Fewest of ${A.sf} and ${B.sf}.`},
+    {q:`Round the calculator answer to <b>${n} sig figs</b>:<div style="margin:6px 0">${calcHTML(opTxt,raw)}</div>`, kind:'final', ans:gr('').correctHTML, why:`Round ${calcDisplay(raw)} to ${n} sig figs.`}],
+    final:{kind:'text', grade:gr, hint:`Count sig figs in each measurement; the answer gets the FEWEST. Then round the calculator answer.`}, short:`${opTxt}`};
+};
+GEN.multi=function(){
+  if(rnd()<0.5){
+    const metal=pick([['aluminum',2.70],['iron',7.87],['copper',8.96]]);
+    const L=genMeas(2,6,ri(3,4)), W=genMeas(1,4,ri(2,3)), H=genMeas(0.5,3,ri(3,4));
+    const V=L.v*W.v*H.v; const mS=ri(2,4); let M=genMeas(V*metal[1]*0.99,V*metal[1]*1.01,mS);
+    const raw=M.v/V; const n=Math.min(L.sf,W.sf,H.sf,M.sf); const nV=Math.min(L.sf,W.sf,H.sf);
+    const Vr=rNum(roundSig(V,nV)); const mid=rNum(roundSig(M.v/Vr,n)); const mid2=rNum(roundSig(M.v/rNum(roundSig(V,n)),n));
+    const exp=rNum(roundSig(raw,n));
+    const ms=[{name:'Rounded in the middle', test:p=>(!same(mid,exp)&&same(p.value,mid))||(!same(mid2,exp)&&same(p.value,mid2)), msg:'You rounded the volume before dividing. Keep ALL the calculator digits until the very end, then round once.'}];
+    const gr=v=>{ const g=grade(v,raw,n,{mistakes:ms}); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML+' g/cm³'}; };
+    const meas=[L,W,H,M];
+    return {type:'multi', prompt:`A ${metal[0]} block measures <b>${L.s} cm × ${W.s} cm × ${H.s} cm</b> and has a mass of <b>${M.s} g</b>. Find its density. (V = L × W × H, then density = mass ÷ V)`+calcRow([[`Step 1: ${L.s} × ${W.s} × ${H.s}`,V],[`Step 2: ${M.s} ÷ ${calcDisplay(V)}`,raw]]), steps:[
+      {q:'Which measurement has the FEWEST sig figs?', kind:'choice', opts:meas.map((x,i)=>x.s+[' cm',' cm',' cm',' g'][i]), check:v=>({ok:meas[+v].sf===n, hint:'Count the sig figs in all four measurements.'}), ans:meas.filter(x=>x.sf===n).map(x=>x.s).join(' or '), why:meas.map(x=>`${x.s} → ${x.sf}`).join(', ')},
+      {q:'So the final answer gets how many sig figs?', kind:'int', check:intCheck(n,'The fewest of all four.'), ans:String(n), why:'Remember this — but DON\'T round yet.'},
+      {q:`Should you round the volume (${calcDisplay(V)}) before step 2?`, kind:'choice', opts:['No — keep every digit until the end','Yes — round it to '+nV+' sig figs first'], check:choiceCheck(0,'Rounding in the middle adds error. Keep every digit, round once at the end.'), ans:'No — keep every digit', why:'Step 2 used the full 10-digit volume, so only the final answer gets rounded.'},
+      {q:`Round the final calculator answer to <b>${n} sig figs</b>:<div style="margin:6px 0">${calcHTML(`${M.s} ÷ ${calcDisplay(V)}`,raw)}</div>`, kind:'final', ans:gr('').correctHTML, why:`Round to ${n} sig figs only at the very end.`}],
+      raw, n, calc:`${M.s} ÷ (${L.s} × ${W.s} × ${H.s})`, final:{kind:'text', grade:gr, hint:'Find V with all digits, divide, then round ONCE to the fewest sig figs of all four measurements.'}, short:`Block density (${n} sf)`};
+  }
+  let sf=[ri(2,4),ri(2,4),ri(2,4)]; if(sf[0]===sf[1]&&sf[1]===sf[2]) sf[ri(0,2)]=sf[0]===4?3:4;
+  const A=genMeas(1,60,sf[0]), B=genMeas(1,20,sf[1]), C=genMeas(1,15,sf[2]);
+  const P=A.v*B.v, raw=P/C.v, n=Math.min(A.sf,B.sf,C.sf), nP=Math.min(A.sf,B.sf);
+  const mid=rNum(roundSig(rNum(roundSig(P,nP))/C.v,n)), exp=rNum(roundSig(raw,n));
+  const ms=[{name:'Rounded in the middle', test:p=>!same(mid,exp)&&same(p.value,mid), msg:'You rounded A × B before dividing. Keep ALL the digits until the end, then round once.'}];
+  const gr=v=>{ const g=grade(v,raw,n,{mistakes:ms}); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML}; };
+  return {type:'multi', prompt:`All three are measurements. Calculate <b>(${A.s} × ${B.s}) ÷ ${C.s}</b> with the correct sig figs.`+calcRow([[`Step 1: ${A.s} × ${B.s}`,P],[`Step 2: ${calcDisplay(P)} ÷ ${C.s}`,raw]]), steps:[
+    {q:'Fewest sig figs among the three measurements?', kind:'int', check:intCheck(n,'Count each one: '+[A,B,C].map(x=>x.s).join(', ')+'.'), ans:String(n), why:[A,B,C].map(x=>`${x.s} → ${x.sf}`).join(', ')},
+    {q:`Should you round step 1 (${calcDisplay(P)}) before dividing?`, kind:'choice', opts:['No — keep every digit until the end','Yes — round it first'], check:choiceCheck(0,'Rounding in the middle adds error.'), ans:'No — keep every digit', why:'Round only once, at the end.'},
+    {q:`Round the final calculator answer to <b>${n} sig figs</b>:<div style="margin:6px 0">${calcHTML(`${calcDisplay(P)} ÷ ${C.s}`,raw)}</div>`, kind:'final', ans:gr('').correctHTML, why:`Fewest sig figs = ${n}.`}],
+    raw, n, calc:`${A.s} × ${B.s} ÷ ${C.s}`, final:{kind:'text', grade:gr, hint:'Do all the math with every digit, then round once to the fewest sig figs.'}, short:`(${A.s}×${B.s})÷${C.s}`};
+};
+const FACTORS=[
+  {from:'in',to:'cm',m:2.54,fs:'2.54',t:'1 in = 2.54 cm',lo:1,hi:40,sfs:[4,5]},
+  {from:'ft',to:'in',m:12,fs:'12',t:'1 ft = 12 in',lo:1,hi:9,sfs:[3,4]},
+  {from:'L',to:'mL',m:1000,fs:'1000',t:'1 L = 1000 mL',lo:0.1,hi:5,sfs:[2,3,4]},
+  {from:'mL',to:'L',d:1000,fs:'1000',t:'1 L = 1000 mL',lo:5,hi:900,sfs:[2,3,4]},
+  {from:'kg',to:'g',m:1000,fs:'1000',t:'1 kg = 1000 g',lo:0.1,hi:4,sfs:[2,3,4]},
+  {from:'g',to:'kg',d:1000,fs:'1000',t:'1 kg = 1000 g',lo:5,hi:900,sfs:[2,3,4]},
+  {from:'min',to:'s',m:60,fs:'60',t:'1 min = 60 s',lo:1.5,hi:30,sfs:[2,3]},
+  {from:'m',to:'cm',m:100,fs:'100',t:'1 m = 100 cm',lo:0.2,hi:9,sfs:[2,3,4]}
+];
+GEN.conv=function(){
+  const f=pick(FACTORS); const M=genMeas(f.lo,f.hi,pick(f.sfs),{zeroEnd:rnd()<0.35});
+  const raw=f.m?M.v*f.m:M.v/f.d, flip=f.m?M.v/f.m:M.v*f.d, n=M.sf, nf=countSF(f.fs), exp=rNum(roundSig(raw,n));
+  const ms=[
+    {name:'Let an exact number limit the answer', test:p=>nf<n && p.sf===nf && same(p.value,rNum(roundSig(raw,nf))), msg:`${f.t} is EXACT (defined), so it has unlimited sig figs. Only the measurement (${n} sig figs) limits the answer.`},
+    {name:'Used the conversion factor upside down', test:p=>{ const k=Math.max(1,Math.min(8,p.sf)); return same(p.value,rNum(roundSig(flip,k))); }, msg:`Factor upside down. Set it up so ${f.from} cancels: multiply by (${f.t.split(' = ')[1]} / ${f.t.split(' = ')[0]})${f.m?'':' — that means divide by '+f.d}.`}
+  ];
+  const gr=v=>{ const g=grade(v,raw,n,{mistakes:ms}); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML+' '+f.to}; };
+  const op=f.m?`${M.s} × ${f.m}`:`${M.s} ÷ ${f.d}`;
+  return {type:'conv', prompt:`Convert <b>${M.s} ${f.from}</b> to <b>${f.to}</b>. (${f.t} exactly)`+calcRow([[op,raw]]), steps:[
+    {q:`Sig figs in the measurement ${M.s} ${f.from}?`, kind:'int', check:intCheck(M.sf,'Count the measured digits.'), ans:String(M.sf), why:digitsHTML(M.s,{show:true})},
+    {q:`Is "${f.t}" exact?`, kind:'choice', opts:['Yes — it\'s defined, unlimited sig figs','No — it limits the answer'], check:choiceCheck(0,'Defined conversions were never measured.'), ans:'Yes, exact', why:'Exact numbers never limit sig figs.'},
+    {q:'So the answer gets how many sig figs?', kind:'int', check:intCheck(n,'Only the measurement counts.'), ans:String(n), why:'Same as the measurement.'},
+    {q:`Round the calculator answer to <b>${n} sig figs</b>:<div style="margin:6px 0">${calcHTML(op,raw)}</div>`, kind:'final', ans:gr('').correctHTML, why:fmtPlain(roundSig(raw,n))===null?'Normal form can\'t show this many sig figs, so use scientific notation.':`Round to ${n} sig figs.`}],
+    raw, n, calc:op, final:{kind:'text', grade:gr, hint:'The conversion factor is exact, so only the measurement\'s sig figs count. Watch for needed zeros (use scientific notation if needed).'}, short:`${M.s} ${f.from} → ${f.to}`};
+};
+GEN.drops=function(){
+  const per=genMeas(0.040,0.060,3,{zeroEnd:rnd()<0.3}); let d=ri(21,59); if(d%10===0) d++;
+  const raw=per.v*d, n=per.sf, nd=countSF(String(d));
+  const ms=[{name:'Let an exact number limit the answer', test:p=>nd<n && p.sf===nd && same(p.value,rNum(roundSig(raw,nd))), msg:`${d} drops is a COUNT — exact, unlimited sig figs. Only ${per.s} mL/drop (${n} sig figs) limits the answer.`}];
+  const gr=v=>{ const g=grade(v,raw,n,{mistakes:ms}); return {ok:g.ok,msg:g.msg,mistake:g.mistake,correctHTML:g.expectedHTML+' mL'}; };
+  return {type:'drops', prompt:`A plastic pipet was calibrated at <b>${per.s} mL per drop</b>. What volume do <b>${d} drops</b> deliver?`+calcRow([[`${per.s} × ${d}`,per.v*d]]), raw, n, calc:`${per.s} × ${d}`, unit:'mL',
+    steps:[], final:{kind:'text', grade:gr, hint:'The number of drops is counted (exact). Only the measured drop size limits sig figs.'}, short:`${d} drops × ${per.s} mL`};
+};
+function calcHTML(expr,val){ return `<div class="calc"><div class="scr"><small>${expr} =</small>${calcDisplay(val)}</div></div>`; }
+function calcRow(items){ return `<div class="row" style="margin-top:8px;align-items:flex-start">${items.map(i=>calcHTML(i[0],i[1])).join('')}</div><div class="small muted" style="margin-top:4px">No calculator needed — the screen above shows the math. Your job is the sig figs.</div>`; }
+function genProblem(type){ return GEN[type](); }
+
+/* ===================== PRACTICE UI (sequenced) ===================== */
+const PHASES=['ido','wedo','youdo'], PHN={ido:'I do',wedo:'We do',youdo:'You do'};
+const P={ti:0, phase:'ido', idoK:0, prob:null, step:0, miss:0, hintUsed:false, answered:false};
+function pr_(){ if(!S.prac) S.prac={}; TYPES.forEach(t=>{ if(!S.prac[t.id]) S.prac[t.id]={ido:false,wedo:false,youdo:false,streak:0}; }); return S.prac; }
+function validTi(ti){ return Number.isInteger(ti) && ti>=0 && ti<TYPES.length; }
+function secDone(ti){ return validTi(ti) && pr_()[TYPES[ti].id].youdo; }
+function secOpen(ti){ for(let k=0;k<ti;k++) if(!secDone(k)) return false; return true; }
+function phaseOpen(ti,ph){ if(!validTi(ti) || PHASES.indexOf(ph)<0) return false; const d=pr_()[TYPES[ti].id]; if(!secOpen(ti)) return false; if(ph==='ido') return true; if(ph==='wedo') return d.ido; return d.wedo; }
+function practiceCount(){ return TYPES.filter((t,i)=>secDone(i)).length; }
+function markPhase(ph){ const d=pr_()[TYPES[P.ti].id]; if(d[ph]) return; d[ph]=true; S.mastered = practiceCount()===TYPES.length; save(); refreshTabs(); drawPracticeNav(); }
+function renderPractice(){
+  pr_();
+  // start at first unfinished section
+  if(!rendered.practiceInit && S.ui.phase!=null && phaseOpen(S.ui.ti,S.ui.phase)){ P.ti=S.ui.ti; P.phase=S.ui.phase; rendered.practiceInit=true; }
+  if(!validTi(P.ti)) P.ti=0;
+  if(!rendered.practiceInit){ let k=TYPES.findIndex((t,i)=>!secDone(i)); P.ti=k<0?0:k; const d=pr_()[TYPES[P.ti].id]; P.phase=!d.ido?'ido':!d.wedo?'wedo':'youdo'; rendered.practiceInit=true; }
+  const el=$('#practice');
+  el.innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><b>Practice — work through each section in order: I do → We do → You do</b>
+    <div class="mastery"><b>Sections done:</b> <span id="mtxt"></span></div></div>
+    <div id="secs" class="types"></div><div class="row" style="margin-top:4px"><div class="seg" id="phs"></div><span class="small muted" id="pmodehelp"></span></div></div>
+    <div class="card" style="margin-top:10px" id="pbody"></div>
+    <div class="card pnext" style="margin-top:10px"><span id="pnexttxt" class="small muted"></span><button class="btn" id="pnext">Next ▶</button></div>`;
+  $('#pnext').onclick=goNextPhase;
+  openPhase(P.ti,P.phase);
+}
+function drawPracticeNav(){
+  const secs=$('#secs'); if(!secs) return;
+  secs.innerHTML=TYPES.map((t,i)=>{ const open=secOpen(i), done=secDone(i);
+    return `<button class="btn small ${i===P.ti?'sel':'sec'}" data-sec="${i}" ${open?'':'disabled'} title="${open?'':'Finish the earlier sections first'}">${open?'':LOCK_SVG}${String.fromCharCode(65+i)}. ${t.name}${done?' ✓':''}</button>`; }).join('');
+  $$('[data-sec]',secs).forEach(b=>b.onclick=()=>{ const k=+b.dataset.sec; const d=pr_()[TYPES[k].id]; openPhase(k, d.youdo?'ido':(!d.ido?'ido':!d.wedo?'wedo':'youdo')); });
+  const d=pr_()[TYPES[P.ti].id];
+  $('#phs').innerHTML=PHASES.map(ph=>{ const open=phaseOpen(P.ti,ph); return `<button data-ph="${ph}" class="${ph===P.phase?'on':''}" ${open?'':'disabled'}>${open?'':LOCK_SVG}${PHN[ph]}${d[ph]?' ✓':''}</button>`; }).join('');
+  $$('[data-ph]',$('#phs')).forEach(b=>b.onclick=()=>openPhase(P.ti,b.dataset.ph));
+  $('#mtxt').innerHTML=`<span class="mbar" style="display:inline-flex">${TYPES.map((t,i)=>`<span class="${secDone(i)?'on':''}" style="width:22px"></span>`).join('')}</span> ${practiceCount()}/${TYPES.length}`;
+  // next button
+  const nb=$('#pnext'), nt=$('#pnexttxt'); const cur=d[P.phase];
+  const last=P.ti===TYPES.length-1;
+  let label, need;
+  if(P.phase==='ido'){ label='Next: We do ▶'; need='Reveal every step of a worked example to continue.'; }
+  else if(P.phase==='wedo'){ label='Next: You do ▶'; need='Finish one We do problem to continue.'; }
+  else { label= last?'All practice done — go to the Quiz ▶':`Next section: ${String.fromCharCode(66+P.ti)}. ${TYPES[P.ti+1].name} ▶`; need='Get 3 correct in a row (no hints) to finish this section.'; }
+  nb.textContent=label; nb.disabled=!cur; nt.innerHTML=cur?'<b style="color:#065f46">✓ Done — continue when ready.</b>':need;
+  if(P.phase==='youdo'){ const st=d.streak||0; $('#pmodehelp').innerHTML=`<span class="mbar" style="display:inline-flex">${[0,1,2].map(k=>`<span class="${d.youdo||k<st?'on':''}"></span>`).join('')}</span> ${d.youdo?'Section complete ✓':st+'/3 in a row'}${TYPES[P.ti].id==='cyl'?'':' · Hint resets the streak'}`; }
+  else $('#pmodehelp').textContent = P.phase==='ido' ? 'Watch a worked example one step at a time. Each step shows WHY.' : 'Solve it one step at a time. If a step is wrong, the answer is shown and you keep going.';
+}
+function goNextPhase(){
+  const i=PHASES.indexOf(P.phase);
+  if(i<2){ openPhase(P.ti,PHASES[i+1]); return; }
+  if(P.ti<TYPES.length-1){ openPhase(P.ti+1,'ido'); return; }
+  showTab('quiz');
+}
+function openPhase(ti,ph){
+  if(!phaseOpen(ti,ph)) return;
+  P.ti=ti; P.phase=ph; P.idoK=0; S.ui.ti=ti; saveUI('phase',ph);
+  drawPracticeNav();
+  if(ph==='ido') renderIdo(); else if(ph==='wedo') renderWedo(); else renderYoudo();
+  try{ $('#practice').scrollIntoView({block:'start'}); window.scrollTo({top:0}); }catch(e){}
+}
+function updMastery(){ drawPracticeNav(); }
+function phaseHead(label){ return `<div class="row" style="gap:8px;margin-bottom:4px"><span class="phase">${PHN[P.phase]}</span><h3 style="margin:0">${String.fromCharCode(65+P.ti)}. ${TYPES[P.ti].name}</h3>${label?`<span class="muted">· ${label}</span>`:''}</div>`; }
+function probHead(pr){ return `<div class="prob">${pr.prompt}</div>`; }
+function visualBox(pr){ return pr.visual ? `<div id="pvis">${pr.visual}</div>` : ''; }
+/* I do */
+function renderIdo(){
+  const ti=P.ti, type=TYPES[ti].id;
+  const pr=withSeed(1000+ti*37+P.idoK*7919, ()=>genProblem(type));
+  P.prob=pr; let shown=0;
+  const body=$('#pbody');
+  body.innerHTML=`${phaseHead('Worked example '+(P.idoK%3+1)+' of 3')}<div class="${pr.visual?'pgrid':''}"><div>${probHead(pr)}${pr.tapStr?`<div style="margin:10px 0">${digitsHTML(pr.tapStr,{big:true})}</div>`:''}<div id="isteps"></div>
+   <div class="row" style="margin-top:8px"><button class="btn" id="inext">Show step 1 ▶</button><button class="btn sec" id="iall">Show all</button><button class="btn ghost" id="ianother">↻ Another example</button></div></div><div>${visualBox(pr)}</div></div>`;
+  const reveal=()=>{ if(shown>=pr.steps.length) return; const st=pr.steps[shown];
+    $('#isteps').insertAdjacentHTML('beforeend',`<div class="step done"><div class="lab">Step ${shown+1}: ${st.q}</div><div class="stepans">→ ${st.ans}</div><div class="why">Why: ${st.why}</div></div>`);
+    if(st.visual && $('#pvis')) $('#pvis').innerHTML=st.visual;
+    if(st.kind==='final' && pr.tapStr){ const n=$('.num.big',body); if(n) n.outerHTML=digitsHTML(pr.tapStr,{big:true,show:true}); }
+    shown++; $('#inext').textContent= shown<pr.steps.length?`Show step ${shown+1} ▶`:'Done ✓'; $('#inext').disabled=shown>=pr.steps.length;
+    if(shown>=pr.steps.length) markPhase('ido'); };
+  $('#inext').onclick=reveal; $('#iall').onclick=()=>{ while(shown<pr.steps.length) reveal(); };
+  $('#ianother').onclick=()=>{ P.idoK=(P.idoK+1)%3; renderIdo(); };
+}
+/* input widget for a step / final */
+function inputWidget(kind, opts, tapStr){
+  if(kind==='choice') return `<div class="pickone">Pick one:</div><div class="opts" role="radiogroup">${opts.map((o,i)=>`<button class="opt" role="radio" aria-checked="false" data-c="${i}"><span class="dotr" aria-hidden="true"></span><span>${o}</span></button>`).join('')}</div>`;
+  if(kind==='tap') return `<div class="tapnum" style="margin:6px 0">${digitsHTML(tapStr,{big:true})}</div><button class="btn" data-go>Check</button>`;
+  const cls = (kind==='int'||kind==='digit')?'ans int':'ans';
+  const im = (kind==='int'||kind==='digit')?'numeric':'text';
+  return `<span class="row"><input class="${cls}" inputmode="${im}" autocomplete="off" aria-label="answer"><button class="btn" data-go>Check</button></span>`;
+}
+function wireInput(box, kind, onSubmit){
+  if(kind==='choice'){ $$('[data-c]',box).forEach(b=>b.onclick=()=>{ $$('[data-c]',box).forEach(x=>x.setAttribute('aria-checked','false')); b.setAttribute('aria-checked','true'); b.classList.add('picked'); onSubmit(b.dataset.c,b); }); return; }
+  if(kind==='tap'){ $$('.tapnum .d',box).forEach(d=>d.onclick=()=>d.classList.toggle('picked')); $('[data-go]',box).onclick=()=>onSubmit($$('.tapnum .d.picked',box).map(d=>+d.dataset.i)); return; }
+  const inp=$('input',box); const go=()=>onSubmit(inp.value); $('[data-go]',box).onclick=go; onEnter(inp,go); setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(e){} },30);
+}
+function markTapWrong(box, wrong){ (wrong||[]).forEach(w=>{ const d=$(`.tapnum .d[data-i="${w.i}"]`,box); if(d) d.classList.add('wrong'); }); }
+/* We do */
+function renderWedo(){
+  const pr=genProblem(TYPES[P.ti].id); P.prob=pr; P.step=0; P.miss=0;
+  const body=$('#pbody');
+  body.innerHTML=`${phaseHead('')}<div class="${pr.visual?'pgrid':''}"><div>${probHead(pr)}${pr.tapStr?`<div style="margin:10px 0">${digitsHTML(pr.tapStr,{big:true})}</div>`:''}<div id="wsteps"></div><div class="newrow"><button class="btn ghost" id="wnew">↻ New problem</button></div></div><div>${visualBox(pr)}</div></div>`;
+  $('#wnew').onclick=renderWedo;
+  wedoStep();
+}
+function wedoStep(){
+  const pr=P.prob, i=P.step; const st=pr.steps[i]; if(!st) return;
+  const isFinal=st.kind==='final'; const kind=isFinal?pr.final.kind:st.kind;
+  const box=h(`<div class="step"><div class="lab">Step ${i+1} of ${pr.steps.length}: ${st.q}</div><div class="w-in">${inputWidget(isFinal&&kind==='tap'?'tap':kind, st.opts, pr.tapStr)}</div><div class="w-fb"></div></div>`);
+  $('#wsteps').appendChild(box); P.miss=0; try{ if(i>0) box.scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){}
+  const done=(how)=>{ box.classList.add(how==='ok'?'done':'shown'); $('.w-in',box).querySelectorAll('input,button').forEach(x=>x.disabled=true);
+    $('.w-fb',box).insertAdjacentHTML('beforeend',`<div class="stepans">${how==='ok'?'✓':'Answer:'} ${st.ans}</div><div class="why">Why: ${st.why}</div>`);
+    if(st.visual && $('#pvis')) $('#pvis').innerHTML=st.visual;
+    if(isFinal && pr.tapStr){ const n=$('.tapnum .num',box); if(n) n.outerHTML=digitsHTML(pr.tapStr,{big:true,show:true}); }
+    P.step++; if(P.step<pr.steps.length) wedoStep(); else { $('#wsteps').insertAdjacentHTML('beforeend',`<div class="fb ok">✓ Problem complete! Do another with <b>New problem</b>, or press <b>Next: You do</b> below.</div>`); markPhase('wedo'); } };
+  wireInput(box, isFinal&&kind==='tap'?'tap':kind, (val,btn)=>{
+    let r; if(isFinal){ r=pr.final.grade(val); r.hint=r.msg; } else r=st.check(val);
+    const fb=$('.w-fb',box);
+    if(r.ok){ fb.innerHTML=''; if(btn&&btn.classList) btn.classList.add('rightpick'); done('ok'); return; }
+    if(btn&&btn.classList) { btn.classList.add('wrongpick'); }
+    if(isFinal && kind==='tap') markTapWrong(box, r.wrong);
+    fb.innerHTML=fbHTML(false, isFinal&&r.mistake ? r.hint : 'Not quite.', isFinal?r.mistake:null); done('shown');
+  });
+}
+/* You do */
+function renderYoudo(){
+  const t=TYPES[P.ti].id, d=pr_()[t];
+  const pr=genProblem(t); P.prob=pr; P.hintUsed=false; P.answered=false;
+  if(pr.visualPlain) pr.visual=pr.visualPlain;
+  const body=$('#pbody'); const kind=pr.final.kind;
+  body.innerHTML=`${phaseHead('')}<div class="${pr.visual?'pgrid':''}"><div>${probHead(pr)}
+    <div class="step" id="yin">${inputWidget(kind,null,pr.tapStr)}${pr.unit&&kind!=='tap'?` <span class="muted">${pr.unit} (units are not graded)</span>`:''}</div>
+    <div class="row"><button class="btn sec" id="yhint" ${pr.noHint?'style="display:none"':''}>Hint (resets streak)</button><button class="btn sec" id="ynext" style="display:none">Next problem ▶</button></div><div id="yfb"></div></div><div>${visualBox(pr)}</div></div>`;
+  $('#yhint').onclick=()=>{ P.hintUsed=true; if(!d.youdo){ d.streak=0; save(); drawPracticeNav(); } $('#yfb').innerHTML=`<div class="fb info">Hint: ${pr.final.hint}</div>`; };
+  $('#ynext').onclick=renderYoudo;
+  wireInput($('#yin'), kind, val=>{
+    if(P.answered) return; P.answered=true;
+    const r=pr.final.grade(val); $('#yin').querySelectorAll('input,button').forEach(x=>x.disabled=true);
+    if(kind==='tap'){ markTapWrong($('#yin'), r.wrong); }
+    let justDone=false;
+    if(r.ok && !P.hintUsed){ d.streak=(d.streak||0)+1; if(d.streak>=3 && !d.youdo){ justDone=true; } }
+    else if(!r.ok){ d.streak=0; }
+    save(); if(justDone) markPhase('youdo'); else drawPracticeNav();
+    let html;
+    if(pr.noHint) html = r.ok ? fbHTML(true,'Correct!') : fbHTML(false,`Correct reading: <b>${r.correctHTML}</b>`, r.mistake);
+    else { html=fbHTML(r.ok, r.ok?(P.hintUsed?'Correct! (Hint used, so the streak doesn\'t grow.)':'Correct!'):r.msg, r.ok?null:r.mistake);
+      if(!r.ok) html+=`<div class="fb info">Correct answer: ${r.correctHTML}</div>`; }
+    if(justDone) html+=`<div class="fb ok">🎉 3 in a row — section ${String.fromCharCode(65+P.ti)} complete! ${P.ti<TYPES.length-1?'Press <b>Next section</b> below.':(quizUnlocked()?'All practice done — the Quiz is unlocked.':'All practice done! View every Learn stop to unlock the Quiz.')}</div>`;
+    $('#yfb').innerHTML=html; $('#ynext').style.display=''; $('#yhint').style.display='none'; (justDone?$('#pnext'):$('#ynext')).focus();
+  });
+}
+
+/* ===================== QUIZ ===================== */
+function rangeVal(lo,hi,dec){ const f=Math.pow(10,dec); return Math.round((lo+rnd()*(hi-lo))*f)/f; }
+const OBJECTS={paperclip:['paperclip',0.90,1.10],pencil:['pencil',5.6,6.8],penny:['penny',2.48,2.53],stopper:['rubber stopper',9.5,12.5],beaker:['beaker of water',92,108]};
+const ZD_FIRST=['0.00450','1005','3.020 × 10⁴','7000','7000.','0.0700'];
+const ZD_MORE=['50.0','0.0102','2040','100.0','6.000','30400','1.0060','0.000801','9.10 × 10⁻³','800','80.0','4005.0','0.010','2.50 × 10²','600.','0.5050'];
+function mc(short, prompt, correct, wrongs, expl){
+  const opts=shuffle([correct].concat(wrongs)); const ci=opts.indexOf(correct);
+  return {kind:'mc', short, prompt, opts, ci, grade:v=>{ const ok=+v===ci; return {ok, msg:expl}; }};
+}
+function fromGen(pr, short){
+  return {kind:pr.final.kind, short:short||pr.short, prompt:pr.prompt+(pr.visual?`<div style="margin-top:8px">${pr.visual}</div>`:'')+(pr.tapStr?'':''), tapStr:pr.tapStr, unit:pr.unit,
+    grade:v=>{ const r=pr.final.grade(v); return {ok:r.ok, msg:(r.ok?'':(r.mistake?`<b>${r.mistake}.</b> `:''))+(r.ok?r.msg:r.msg+' Correct answer: '+r.correctHTML), wrong:r.wrong}; }};
+}
+function readQ(instKey){
+  const inst=INST[instKey]; const level=randLevel(inst, inst.kind==='buret'?0.02:0.15, 0.9); const top=zoomGeom(inst,level,300,340).topVal;
+  return {kind:'text', unit:'mL', short:`Read the ${inst.short}`, prompt:`Read the volume (zoomed view of the ${inst.name}).<div style="margin-top:8px">${instrumentHTML(inst,level,{plain:true})}</div>`,
+    grade:v=>{ const r=gradeReading(v,inst,level,top); return {ok:r.ok, msg:r.ok?`Correct — ${level.toFixed(inst.dec)} mL (certain digits + one estimated digit).`:r.msg+` Correct reading: ${level.toFixed(inst.dec)} mL.`}; }};
+}
+const QBANK=[
+  /* numeric (graded for sig figs) */
+  {cat:'num', f:()=>fromGen(GEN.muldiv())},
+  {cat:'num', f:()=>fromGen(GEN.round())},
+  {cat:'num', f:()=>{ const pr=GEN.muldiv(); const q=fromGen(pr,'Calculator trap: '+pr.short); q.prompt+=`<p>Enter the properly rounded answer.</p>`; return q; }},
+  /* count / tap */
+  {cat:'zero', f:()=>fromGen(GEN.count())},
+  {cat:'zero', f:()=>{ const s=pick(['3.020 × 10⁴','7000.','0.0700','1.0060','30400','9.10 × 10⁻³','100.0','0.000801','2040']); const sf=sfOf(s);
+     return {kind:'int', short:`Count sig figs in ${s}`, prompt:`How many significant figures are in <span class="num">${numHTML(s)}</span> ?`, grade:v=>{ const r=countDiag(s,v); return {ok:r.ok, msg:r.ok?`Correct — ${sf}.`:r.msg}; }}; }},
+  {cat:'zero', f:()=>fromGen(GEN.tap())},
+  {cat:'zero', f:()=>{ const s=pick(ZD_FIRST.concat(ZD_MORE)); return {kind:'tap', tapStr:s, short:`Tap sig digits in ${s}`, prompt:'Tap all the <b>significant</b> digits.', grade:v=>{ const r=tapDiag(s,v||[]); return {ok:r.ok, msg:r.ok?r.msg:r.msg+` (${s} has ${sfOf(s)} sig figs.)`, wrong:r.wrong}; }}; }},
+  /* read the instrument */
+  {cat:'read', f:()=>readQ('c10')},
+  {cat:'read', f:()=>readQ(pick(['c100','c50']))},
+  {cat:'read', f:()=>readQ('bur')},
+  /* multiple choice */
+  {cat:'mc', f:()=>{ const c=pick([['45678',3,'4.57 × 10⁴',['457','4.56 × 10⁴','45 600']],['72350',2,'7.2 × 10⁴',['72','7.3','7.24 × 10⁴']],['186282',3,'1.86 × 10⁵',['186','1.87 × 10⁵','18 600']]]);
+     return mc('Round a big number',`Round <b>${c[0]}</b> to <b>${c[1]} sig figs</b>.`,c[2],c[3],'Keep the size the same — the dropped digits become placeholders, so scientific notation shows it cleanly.'); }},
+  {cat:'mc', f:()=>{ const c=pick([['2.499','2.50',['2.5','2.49','3']],['0.07996','0.0800',['0.08','0.0799','0.080']],['19.97','20.0',['20','19.9','20.']]]);
+     return mc('Keep the needed zero',`Round <b>${c[0]}</b> to <b>3 sig figs</b>.`,c[1],c[2],`The carry makes a zero that is the 3rd sig fig, so it must be written: "${c[1]}".`); }},
+  {cat:'mc', f:()=>mc('Which zeros in 0.0500 g count?','Which zeros in <b>0.0500 g</b> are significant?','Only the two zeros after the 5',['All of the zeros','None of the zeros','Only the zeros in front of the 5'],'The zeros in front only show how small; the two end zeros come after a decimal point, so they were measured.')},
+  {cat:'mc', f:()=>mc('Rule for × and ÷','When you <b>multiply or divide</b> measurements, the answer has…','the same number of sig figs as the measurement with the FEWEST sig figs',['the same number of sig figs as the measurement with the MOST sig figs','all the digits the calculator shows','one more sig fig than the least precise measurement'],'The least precise measurement limits a product or quotient.')},
+  {cat:'mc', f:()=>mc('1500 mL to 3 sig figs','A volume of about 1500 mL was measured to <b>3</b> sig figs. How should it be written?','1.50 × 10³ mL',['1500 mL','1500. mL','1.5 × 10³ mL'],'"1500" shows only 2 sig figs and "1500." shows 4; only scientific notation ("1.50 × 10³") shows exactly 3.')},
+  {cat:'mc', f:()=>mc('Reading a meniscus','How do you read the volume of water in a graduated cylinder?','At eye level, at the bottom of the meniscus',['At eye level, at the top edge of the meniscus','From above, at the bottom of the meniscus','At the highest point the water touches the glass'],'Water curves up at the glass, so read the bottom of the curve with your eye level with it.')},
+  {cat:'mc', f:()=>{ const c=pick([['3.45',2,'3.5','3.4'],['0.01265',3,'0.0127','0.0126'],['82.5',2,'83','82'],['1.235',3,'1.24','1.23']]);
+     return mc('Round-half-up',`Round <b>${c[0]}</b> to <b>${c[1]} sig figs</b> (round-half-up).`,c[2],[c[3],c[0],String(Number(c[2])*10)],'The next digit is 5, and with round-half-up a 5 always rounds up.'); }},
+  {cat:'mc', f:()=>mc('When to round (multi-step)','In a multi-step calculation, when should you round to the correct sig figs?','Only once, at the very end',['After every step','Before you start, round each measurement','Never — report every calculator digit'],'Rounding in the middle adds error; keep all digits and round once at the end.')},
+  {cat:'mc', f:()=>{ const n=pick(['0.00720','0.0403','1500','20300','6.010','80.0']); const pres=n.indexOf('.')>=0;
+     return mc('Atlantic–Pacific',`Using the Atlantic–Pacific rule on <b>${n}</b>, where do you start?`,pres?'Pacific (left) side — the decimal point is Present':'Atlantic (right) side — the decimal point is Absent',[pres?'Atlantic (right) side — the decimal point is Present':'Pacific (left) side — the decimal point is Absent','At the decimal point','At the first zero'],'Decimal Present → Pacific (left); decimal Absent → Atlantic (right); start counting at the first nonzero digit.'); }},
+  {cat:'mc', f:()=>{ const pool=[['0.0040',2],['1.050',4],['300',1],['25.0',3],['0.00807',3],['4002',4],['70.',2],['6.0200',5],['0.5',1],['12.30',4]];
+     let pk; do{ pk=shuffle(pool).slice(0,4); }while(new Set(pk.map(p=>p[1])).size<4);
+     const best=pk.reduce((a,b)=>b[1]>a[1]?b:a); return mc('Most sig figs','Which measurement has the <b>most</b> significant figures?',best[0],pk.filter(p=>p!==best).map(p=>p[0]),`${best[0]} has ${best[1]} sig figs — more than any other choice.`); }},
+  {cat:'mc', f:()=>mc('Better instrument for 6 mL','You need to measure about 6 mL of water as precisely as possible. Which should you use?','10 mL cylinder with 0.1 mL lines (read to 0.01 mL)',['100 mL cylinder with 1 mL lines (read to 0.1 mL)','A 250 mL beaker','Count drops and assume 20 drops = 1 mL'],'Finer lines let you estimate one more digit, so the 10 mL cylinder gives more sig figs.')},
+  {cat:'mc', f:()=>mc('Estimated digits','A properly recorded measurement has how many <b>estimated</b> digits?','Exactly one — the last digit',['None — every digit is certain','Two — the last two digits','As many as you want'],'Record every certain digit plus one (and only one) estimated digit.')},
+  {cat:'mc', f:()=>mc('Why is 2.50 g three sig figs?','Why does <b>2.50 g</b> have 3 sig figs?','The writer didn\'t have to write the 0 — it is there because it was measured',['All zeros are significant','Zeros at the end are always placeholders','The decimal point counts as a digit'],'2.5 is the same value, so the end zero is only written because it was measured.')},
+  {cat:'mc', f:()=>mc('Estimated place, 1 mL lines','A 100 mL graduated cylinder has lines every 1 mL. To which place should you read it?','The tenths place (0.1 mL)',['The ones place (1 mL)','The hundredths place (0.01 mL)','The tens place (10 mL)'],'Estimate one tenth of the smallest division: 1 mL lines → tenths.')},
+  {cat:'mc', f:()=>mc('Placeholder zeros','Which number has <b>only</b> placeholder zeros (none of its zeros are significant)?','0.0045',['4.050','40.0','4005'],'In 0.0045 the zeros only show how small the number is; the others have measured zeros.')}
+];
+const Q={list:[], i:0, score:0, results:[], answered:false, started:null};
+function buildQuiz(){
+  const by=c=>QBANK.filter(q=>q.cat===c);
+  const pickN=(arr,n)=>shuffle(arr).slice(0,n);
+  const chosen=shuffle([].concat(pickN(by('num'),3),pickN(by('zero'),2),pickN(by('read'),2),pickN(by('mc'),3)));
+  Q.list=chosen.map(q=>q.f()); Q.i=0; Q.score=0; Q.results=[]; Q.answered=false;
+}
+function renderQuiz(){
+  const el=$('#quiz');
+  if(!quizUnlocked()){
+    el.innerHTML=`<div class="card"><div class="lockbox"><div style="width:44px;color:#0f2747">${LOCK_SVG.replace('class="lock"','width="44" height="44"')}</div><div><h2>Quiz locked</h2><p>To unlock the Quiz you still need to:</p>
+      <ul class="needs">${quizNeeds().map(n=>`<li>${n.ok?'✅':'⬜'} ${n.txt}</li>`).join('')}</ul>
+      <div class="row"><button class="btn sec" data-go="learn">Go to Learn</button><button class="btn sec" data-go="practice">Go to Practice</button></div></div></div></div>`;
+    $$('[data-go]',el).forEach(b=>b.onclick=()=>showTab(b.dataset.go)); return;
+  }
+  if(!Q.list.length || Q.done){
+    el.innerHTML=`<div class="card"><h2>Quiz</h2><p>10 questions drawn at random from a bank of ${QBANK.length}. Numeric answers are graded on value <b>and</b> sig figs (units are not graded). Unlimited retakes.</p>
+     <p>Attempts so far: <b>${S.quizAttempts}</b>${S.lastScore?` · Last score: <b>${S.lastScore.score}/10</b> (attempt #${S.lastScore.attempt})`:''}</p><div class="row"><button class="btn" id="qstart">Start attempt #${S.quizAttempts+1}</button>${S.lastScore?'<button class="btn sec" id="qlast">View last score card</button>':''}</div>
+     <p class="small muted">A quiz attempt in progress is not saved — finish it in one sitting. Your score card is saved.</p></div>`;
+    if($('#qlast')) $('#qlast').onclick=()=>{ const L=S.lastScore; Object.assign(Q,{score:L.score, attempt:L.attempt, results:L.results, finished:new Date(L.finished), done:true}); renderScore(); };
+    $('#qstart').onclick=()=>{ S.quizAttempts++; save(); buildQuiz(); Q.done=false; Q.attempt=S.quizAttempts; renderQuiz(); }; return;
+  }
+  const q=Q.list[Q.i];
+  el.innerHTML=`<div class="card"><div class="qhead"><b>Attempt #${Q.attempt} · Question ${Q.i+1} of 10</b><span>Score: <b>${Q.score}</b></span></div>
+    <div class="pbar" style="margin:6px 0"><span style="width:${Q.i*10}%"></span></div>
+    <div class="prob" style="margin-top:8px">${q.prompt}</div><div id="qin" style="margin-top:8px"></div><div id="qfb"></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="qnext" style="display:none">${Q.i<9?'Next question ▶':'See score card ▶'}</button></div></div>`;
+  const qin=$('#qin',el);
+  const submit=(v,btn)=>{ if(Q.answered) return; Q.answered=true; const r=q.grade(v); if(r.ok) Q.score++;
+    Q.results.push({short:q.short, ok:r.ok});
+    if(q.kind==='mc'){ $$('.mcopts button',qin).forEach((b,i)=>{ b.disabled=true; if(i===q.ci) b.classList.add('right'); }); if(!r.ok && btn) btn.classList.add('wrongpick'); }
+    else { qin.querySelectorAll('input,button').forEach(x=>x.disabled=true); if(q.kind==='tap'){ markTapWrong(qin,r.wrong); $$('.tapnum .d',qin).forEach(d=>d.onclick=null); } }
+    $('#qfb',el).innerHTML=fbHTML(r.ok,(r.ok?'Correct. ':'')+r.msg); $('.qhead span',el).innerHTML=`Score: <b>${Q.score}</b>`; $('#qnext',el).style.display=''; $('#qnext',el).focus(); };
+  if(q.kind==='mc'){ qin.innerHTML=`<div class="mcopts">${q.opts.map((o,i)=>`<button data-c="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>`; $$('[data-c]',qin).forEach(b=>b.onclick=()=>submit(b.dataset.c,b)); }
+  else { qin.innerHTML=inputWidget(q.kind==='tap'?'tap':(q.kind==='int'?'int':'text'),null,q.tapStr)+(q.unit&&q.kind!=='tap'?` <span class="muted small">${q.unit} (units not graded)</span>`:''); wireInput(qin, q.kind==='tap'?'tap':'text', v=>submit(v)); }
+  $('#qnext',el).onclick=()=>{ Q.i++; Q.answered=false; if(Q.i>=10){ Q.done=true; Q.finished=new Date(); renderScore(); } else renderQuiz(); };
+}
+/* ---------- score card ---------- */
+function drawScoreCard(){
+  const W=900, rowH=40, H=250+Q.results.length*rowH+60;
+  const c=document.createElement('canvas'); c.width=W; c.height=H; c.id='scoreCanvas';
+  const x=c.getContext('2d'); const F='"Atkinson Hyperlegible", system-ui, sans-serif';
+  x.fillStyle='#ffffff'; x.fillRect(0,0,W,H);
+  x.fillStyle='#0f2747'; x.fillRect(0,0,W,96);
+  x.fillStyle='#fff'; x.font='bold 34px '+F; x.fillText('Significant Figures & Measurement',30,48);
+  x.font='20px '+F; x.fillText('chemistryteacher.net/significant-figures',30,80);
+  const d=Q.finished||new Date();
+  x.fillStyle='#0f172a'; x.font='20px '+F;
+  x.fillText('Date: '+d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})+'   Time: '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),30,134);
+  x.fillText('Attempt #'+Q.attempt,30,166);
+  x.font='bold 56px '+F; x.fillStyle=Q.score>=8?'#065f46':Q.score>=6?'#92400e':'#9f1239';
+  x.fillText(Q.score+' / 10',W-230,170);
+  x.fillStyle='#cbd5e1'; x.fillRect(30,196,W-60,2);
+  Q.results.forEach((r,i)=>{ const y=236+i*rowH;
+    x.fillStyle=i%2?'#f8fafc':'#ffffff'; x.fillRect(30,y-28,W-60,rowH);
+    x.font='bold 24px '+F; x.fillStyle=r.ok?'#065f46':'#9f1239'; x.fillText(r.ok?'✓':'✗',44,y);
+    x.font='20px '+F; x.fillStyle='#0f172a'; let t=(i+1)+'. '+r.short; if(t.length>70) t=t.slice(0,68)+'…'; x.fillText(t,84,y); });
+  x.font='16px '+F; x.fillStyle='#475569'; x.fillText('Sig figs are graded in this activity.',30,H-24);
+  return c;
+}
+function renderScore(){
+  const el=$('#quiz');
+  el.innerHTML=`<div class="card"><h2>Score card</h2><div id="sc"></div>
+   <div class="row" style="margin-top:10px"><button class="btn" id="dl">Download PNG</button><button class="btn sec" id="cp">Copy image to clipboard</button><button class="btn sec" id="gm">Email via Gmail</button><button class="btn sec" id="rt">Retake quiz</button></div>
+   <div id="scmsg"></div><p class="small muted">To turn it in: download the PNG (or copy it), then attach it to your email or assignment.</p></div>`;
+  S.lastScore={score:Q.score, attempt:Q.attempt, results:Q.results, finished:(Q.finished||new Date()).toISOString()}; save();
+  const cv=drawScoreCard(); $('#sc',el).appendChild(cv);
+  $('#dl',el).onclick=()=>{ try{ const a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download='significant-figures-score-card.png'; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ $('#scmsg').innerHTML=fbHTML(false,'Download failed — try right-clicking the image and choosing "Save image as".'); } };
+  $('#cp',el).onclick=()=>{ try{ cv.toBlob(b=>{ if(navigator.clipboard && window.ClipboardItem){ navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(()=>{ $('#scmsg').innerHTML=fbHTML(true,'Copied! Paste it into your email or assignment.'); }).catch(()=>{ $('#scmsg').innerHTML=fbHTML(false,'Copy was blocked by this browser — use Download PNG instead.'); }); } else $('#scmsg').innerHTML=fbHTML(false,'This browser can\'t copy images — use Download PNG instead.'); }); }catch(e){ $('#scmsg').innerHTML=fbHTML(false,'Copy failed — use Download PNG instead.'); } };
+  $('#gm',el).onclick=()=>{ const d=Q.finished||new Date();
+    const body=`Significant Figures & Measurement — Score Card\nchemistryteacher.net/significant-figures\nDate: ${d.toLocaleString('en-US')}\nAttempt #${Q.attempt}\nScore: ${Q.score}/10\n\n`+Q.results.map((r,i)=>`${r.ok?'✓':'✗'} ${i+1}. ${r.short}`).join('\n')+`\n\n(Score card PNG attached.)`;
+    const url='https://mail.google.com/mail/?view=cm&fs=1&to=&su='+encodeURIComponent('Significant Figures – Score Card')+'&body='+encodeURIComponent(body);
+    window.open(url,'_blank','noopener'); };
+  $('#rt',el).onclick=()=>{ Q.list=[]; Q.done=true; renderQuiz(); };
+}
+
+/* ===================== APP ===================== */
+let curTab='learn';
+const RENDER={learn:renderLearn, practice:renderPractice, quiz:renderQuiz};
+const rendered={};
+function showTab(t){
+  if(t!=='learn') clearTimers();
+  curTab=t; saveUI('tab',t);
+  $$('.tab').forEach(b=>b.setAttribute('aria-selected', b.dataset.tab===t?'true':'false'));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.id===t));
+  if(!RENDER[t]) t='learn';
+  if(t==='quiz' || !rendered[t]){ RENDER[t](); rendered[t]=true; }
+  if(t==='learn') gotoStop(curStop);
+  try{ window.scrollTo({top:0}); }catch(e){}
+}
+function init(){
+  load();
+  delete S.lab;
+  if(/[?&]unlock\b/.test(location.search)){ for(let i=0;i<LEARN_N;i++) if(S.viewed.indexOf(i)<0) S.viewed.push(i); S.mastered=true; TYPES.forEach(t=>{ S.prac[t.id]={ido:true,wedo:true,youdo:true,streak:3}; }); save(); }
+  S.mastered = TYPES.every(t=>S.prac&&S.prac[t.id]&&S.prac[t.id].youdo); save();
+  if(!(Number.isInteger(S.ui.ti) && S.ui.ti>=0 && S.ui.ti<TYPES.length)){ delete S.ui.ti; delete S.ui.phase; }
+  if(typeof S.ui.stop==='number' && S.ui.stop<STOPS.length) curStop=S.ui.stop;
+  $$('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+  refreshTabs();
+  const ft=h(`<footer style="max-width:1280px;margin:0 auto;padding:0 16px 24px" class="small muted">${STORAGE_OK?'Your progress is saved in this browser automatically.':'<b style="color:#9f1239">This browser is blocking saved progress (private window?) — your work will be lost if you close it.</b>'} <button class="btn small sec" id="reset">Reset my progress</button></footer>`);
+  document.body.appendChild(ft);
+  let armed=false; $('#reset').onclick=()=>{ if(!armed){ armed=true; $('#reset').textContent='Click again to erase ALL progress'; setTimeout(()=>{ armed=false; const r=$('#reset'); if(r) r.textContent='Reset my progress'; },4000); return; }
+    try{ localStorage.removeItem(STORE); }catch(e){} location.href=location.pathname; };
+  let t=S.ui.tab||'learn'; if(!RENDER[t] || (t==='quiz' && !quizUnlocked())) t='learn';
+  showTab(t);
+}
+init();
+
+</script>
+</body>
+</html>
