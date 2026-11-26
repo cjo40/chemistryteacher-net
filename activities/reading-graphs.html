@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph of the Day: Reading &amp; Interpreting Graphs</title>
+<style>
+:root{--ink:#1d2731;--muted:#5b6875;--paper:#f6f8fa;--card:#fff;--line:#d5dde5;--acc:#1758b8;--acc2:#e8f0fb;--ok:#17723a;--okbg:#e5f5ea;--bad:#b3261e;--badbg:#fdecea;--hl:#f2a900;--hlbg:#fff4d6;--red:#c62828}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;min-height:44px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:3px solid #8ab4f8;outline-offset:2px}
+.hide{display:none!important}
+
+/* header */
+#top{flex:none;display:flex;align-items:center;gap:12px 16px;padding:6px 10px 6px 64px;background:#fff;border-bottom:1px solid var(--line);min-height:64px;flex-wrap:wrap}
+#ttl{font-weight:800;font-size:24px;line-height:1.15}
+#ttl .dt{font-weight:700;color:var(--muted);white-space:nowrap}
+#ttl .rnd{display:inline-block;font-size:13px;font-weight:800;background:#efe4ff;color:#5a2ca0;border-radius:999px;padding:2px 9px;vertical-align:middle;margin-left:4px}
+#badge{display:flex;align-items:center;gap:8px;background:var(--acc2);border:2px solid #b8cdf0;border-radius:14px;padding:2px 6px 2px 14px;transition:background .3s}
+#badge .sc{font-size:28px;font-weight:800;color:#123c78;white-space:nowrap}
+#badge.done{background:var(--ok);border-color:var(--ok)}
+#badge.done .sc{color:#fff}
+.dots{display:flex}
+.dots button{width:44px;height:48px;min-height:0;padding:0;border:none;background:none;border-radius:50%;display:grid;place-items:center}
+.dots button i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:15px;border:2px solid #9fb0c2;background:#fff;color:#9aa6b2}
+.dots button.y i{background:var(--ok);border-color:var(--ok);color:#fff}
+.dots button.n i{background:var(--bad);border-color:var(--bad);color:#fff}
+.dots button.cur i{box-shadow:0 0 0 3px var(--hl)}
+.dots button:disabled{cursor:default}
+#badge.done .dots button i{border-color:#fff}
+#top{position:relative;padding-right:66px}
+#gear{position:absolute;right:10px;top:8px;font-size:22px;width:48px;padding:0}
+
+/* layout */
+#app{flex:1;min-height:0;display:grid;grid-template-columns:minmax(360px,470px) 1fr;gap:12px;padding:10px 12px 12px}
+#left{display:flex;flex-direction:column;gap:10px;min-height:0;overflow:auto}
+#right{background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;min-height:0;min-width:0;display:flex}
+#gwrap{flex:1;min-width:0;min-height:0;position:relative}
+#gwrap svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+.about{flex:none;background:#f1f4f8;border:1px solid #cfd8e2;border-left:5px solid #8a9aab;border-radius:10px;padding:4px 12px 8px;font-size:16px}
+.lt{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#5b6875}
+.spk{width:44px;height:40px;min-height:0;padding:0;font-size:20px;border:none;background:transparent;border-radius:8px}
+.spk.on{background:#ffe7a3}
+
+/* question box */
+.ask{flex:none;border:3px solid #f2a900;background:#fffaeb;border-radius:14px;padding:0 0 10px;box-shadow:0 2px 0 #e9c46a}
+.ask-tag{display:flex;align-items:center;justify-content:space-between;background:#f2a900;color:#3d2a00;font-weight:800;font-size:14px;letter-spacing:.05em;text-transform:uppercase;padding:0 2px 0 12px;border-radius:10px 10px 0 0;min-height:40px}
+.ask-tag .rv{background:#3d2a00;color:#ffd666;border-radius:999px;padding:1px 8px;font-size:12px;margin-left:6px}
+.ask-q{font-size:20px;font-weight:800;line-height:1.3;padding:8px 12px 2px}
+.kw{color:#b3261e;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.ask-a{margin:8px 10px 0;background:#fff;border:2px dashed #c9a227;border-radius:10px;padding:5px 8px 8px}
+.ask-al{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#8a6d00;margin-bottom:5px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ch{display:flex;align-items:center;gap:9px;text-align:left;min-height:54px;padding:5px 9px;font-size:17px;font-weight:650;border:2px solid #b9c7d6;border-radius:10px;background:#fff;line-height:1.2;transition:background .15s,border-color .15s}
+.ch .L{flex:none;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px}
+.ch:hover:not(:disabled){border-color:var(--acc);background:#f4f8fe}
+.ch:disabled{cursor:default;color:inherit}
+.ch.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)} .ch.bad .L{background:var(--bad)}
+.ch.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)} .ch.ok .L{background:var(--ok)}
+.ch.dim{opacity:.5}
+.fbrow{display:flex;gap:8px;align-items:stretch;margin:8px 10px 0}
+.fb{flex:1;padding:7px 10px;border-radius:10px;font-size:16px;line-height:1.3;animation:pop .25s ease-out}
+.fb.ok{background:var(--okbg);color:#0f5229;border:2px solid #9fd3b0}
+.fb.bad{background:var(--badbg);color:#8c1d18;border:2px solid #f0b4ae}
+.fb .big{font-weight:800;font-size:18px;margin-right:4px}
+.fb .ans{color:#0f5229;margin-top:3px}
+.next{flex:none;background:var(--acc);border-color:var(--acc);color:#fff;font-weight:800;font-size:20px;min-height:52px;padding:6px 20px;border-radius:12px}
+.next:hover{filter:brightness(1.08)}
+.donebox{flex:none;border:3px solid var(--ok);background:var(--okbg);border-radius:14px;padding:16px 14px;text-align:center;color:#0f5229;animation:pop .3s ease-out}
+.donebox .big{font-size:28px;font-weight:800;line-height:1.2}
+.donebox p{margin:8px 0;font-size:18px}
+.donebox .rev{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.donebox .rev button{min-width:56px;font-weight:800}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.mk{animation:fadein .35s ease-out}
+@media (prefers-reduced-motion:reduce){.fb,.donebox,.mk{animation:none}}
+
+#app.alldone{grid-template-columns:1fr} #app.alldone #right,#app.alldone .about{display:none}
+#app.alldone #left{max-width:640px;width:100%;margin:30px auto 0}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(20,30,40,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:12px}
+.modal[hidden]{display:none}
+.mbox{background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:94vh;overflow:auto;padding:16px 18px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.mbox h2{margin:0 0 8px;font-size:22px}
+.mbox h3{margin:14px 0 4px;font-size:16px}
+.mbox p{margin:6px 0}
+.mbox table{border-collapse:collapse;font-size:15px}
+.mbox td{padding:2px 10px 2px 0;vertical-align:top}
+.mbox code,.linkout{font-family:ui-monospace,Consolas,monospace;font-size:13px;background:#f1f4f8;border-radius:6px;padding:1px 5px;word-break:break-all}
+.linkout{display:block;padding:8px;margin:6px 0;border:1px solid var(--line)}
+.mbox label{display:block;font-weight:700;font-size:14px;margin:8px 0 2px}
+.mbox input{font:inherit;min-height:44px;border:1px solid #aab6c2;border-radius:8px;padding:6px 9px;width:100%}
+.warn{background:#fff1d6;color:#6b3d00;border:1px solid #f0c36d;border-radius:8px;padding:8px 10px;margin:8px 0;font-size:15px}
+.mrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.danger{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700}
+.small{font-size:14px;color:var(--muted)}
+
+/* narrow / portrait: graph on top, page scrolls */
+@media (max-width:900px), (orientation:portrait) and (max-width:1100px){
+  body{height:auto;overflow:auto}
+  #app{display:flex;flex-direction:column;height:auto}
+  #right{order:-1;height:56vh;min-height:300px;flex:none}
+  #left{overflow:visible}
+  #ttl{font-size:19px}
+  #badge .sc{font-size:21px}
+}
+@media (max-height:720px) and (min-width:901px){
+  #top{min-height:58px;padding-top:3px;padding-bottom:3px}
+  #app{padding-top:8px;gap:10px} #left{gap:8px}
+  .about{font-size:15px;padding:2px 10px 6px} .lt .spk{height:34px}
+  .ask-tag{min-height:36px} .ask-q{font-size:19px;padding-top:6px}
+  .ask-a{margin-top:6px} .ch{min-height:50px;font-size:16px} .choices{gap:7px}
+  .fbrow{margin-top:7px} .fb{font-size:15px;padding:6px 9px} .fb .big{font-size:17px}
+}
+@media (max-width:520px){ .choices{grid-template-columns:1fr} #top{padding-left:60px} }
+
+/* check + gallery pages */
+.page{padding:14px 14px 14px 64px;overflow:auto;height:100%}
+.page table{border-collapse:collapse;font-size:14px;background:#fff}
+.page td,.page th{border:1px solid #c5d0db;padding:3px 7px;vertical-align:top;text-align:left}
+.page .ok{color:var(--ok);font-weight:700}
+.page .bad{color:var(--bad);font-weight:700}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:12px}
+.gal figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px}
+.gal figcaption{font-weight:700;padding:2px 4px}
+.gal svg{width:100%;height:auto;display:block}
+</style>
+</head>
+<body>
+<header id="top">
+  <div id="ttl"></div>
+  <div id="badge"><span class="sc" id="sc"></span><div class="dots" id="dots"></div></div>
+  <button id="gear" aria-label="Settings" title="Settings">⚙</button>
+</header>
+<main id="app">
+  <section id="left">
+    <div class="about">
+      <div class="lt"><span>About this graph</span><button class="spk" id="spkDesc" aria-label="Read the description aloud">🔊</button></div>
+      <div id="desc"></div>
+    </div>
+    <div id="qhost"></div>
+  </section>
+  <section id="right"><div id="gwrap"></div></section>
+</main>
+<div class="modal" id="modal" hidden><div class="mbox" id="mbox" role="dialog" aria-modal="true"></div></div>
+
+<script>
+(function(){
+'use strict';
+/* ================= helpers ================= */
+var $ = function(s,r){ return (r||document).querySelector(s); };
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function kw(s){ return esc(s).replace(/\[\[(.+?)\]\]/g,'<span class="kw">$1</span>'); }
+function plain(s){ return String(s).replace(/\[\[(.+?)\]\]/g,'$1'); }
+function pad(n){ return (n<10?'0':'')+n; }
+function ymd(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function parseYMD(s){ var m=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(String(s||'').trim()); if(!m) return null; var d=new Date(+m[1],+m[2]-1,+m[3]); return isNaN(d)?null:d; }
+function addDays(d,n){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+n); return x; }
+var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function nice(d){ return DOW[d.getDay()]+', '+MON[d.getMonth()]+' '+d.getDate(); }
+function niceY(d){ return nice(d)+', '+d.getFullYear(); }
+function decs(v){ var s=String(+(+v).toFixed(6)); var i=s.indexOf('.'); return i<0?0:s.length-i-1; }
+function fmt(v,dec){ if(dec===undefined) dec=Math.min(2,decs(v)); var a=Math.abs(v); if(a>=1000) return v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec}); return (+v).toFixed(dec).replace('-','−'); }
+function hash(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ var a=seed>>>0; return function(){ a=(a+0x6D2B79F5)>>>0; var t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+var LS = { get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del:function(k){ try{ localStorage.removeItem(k); }catch(e){} } };
+var Q = new URLSearchParams(location.search);
+
+/* ================= data ================= */
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var WEEK=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+function bounce(){ // height of a dropped ball, one point every 0.1 s
+  var segs=[[0,0.6,0,200,0.6],[0.6,1.6,1.1,120,0.5],[1.6,2.4,2.0,70,0.4],[2.4,3.0,2.7,40,0.3],[3.0,3.4,3.2,15,0.2]], pts=[];
+  for(var k=0;k<=40;k++){ var t=k/10, h=0;
+    for(var j=0;j<segs.length;j++){ var s=segs[j]; if(t>=s[0]-1e-9 && t<=s[1]+1e-9){ var u=(t-s[2])/s[4]; h=Math.max(0,s[3]*(1-u*u)); break; } }
+    pts.push([t,Math.round(h*10)/10]); }
+  return pts;
+}
+var SETS=[
+/* ---------- 1 ---------- */
+{n:1, topic:'Birds at a backyard feeder',
+ title:'Number of Birds vs. Month',
+ desc:'A student counted the birds at a backyard feeder on the first Saturday of every month for one year. Each dot is one count.',
+ x:{l:'Month',cats:MONTHS}, y:{l:'Number of birds',min:10,max:50,st:2,ev:5},
+ series:[{pts:[[0,34],[1,38],[2,44],[3,40],[4,30],[5,18],[6,12],[7,14],[8,22],[9,32],[10,40],[11,36]]}],
+ qs:[
+  {t:1, q:'How many birds were at the feeder in [[March]]?',
+   c:[['44 birds','Go up from March to the dot, then across to the y-axis: 44.'],
+      ['38 birds','That is February, one month too early.'],
+      ['40 birds','That is April, one month too late.'],
+      ['46 birds','That is one box too high. Each box is 2 birds.']],
+   s:{pt:[[2,44]]}},
+  {t:2, q:'In which month were there [[12]] birds?',
+   c:[['July','Go across from 12 on the y-axis to the dot, then down: July.'],
+      ['August','August had 14 birds, one box higher.'],
+      ['December','December is month 12, but the question asks for 12 BIRDS on the y-axis.'],
+      ['June','June had 18 birds.']],
+   s:{hy:[12],pt:[[6,12]]}},
+  {t:3, q:'Which month had the [[MOST]] birds?',
+   c:[['March','March has the highest dot on the graph: 44 birds.'],
+      ['January','January is the FIRST month, not the highest dot.'],
+      ['November','November is high (40), but March is higher.'],
+      ['July','July is the LOWEST point, not the highest.']],
+   s:{ring:[[2,44]]}},
+  {t:6, q:'Between which two [[NEIGHBORING]] months did the number of birds [[DROP]] the most?',
+   c:[['May to June','From 30 down to 18 is a drop of 12, the biggest drop.'],
+      ['April to May','That drop is 10 (40 to 30). May to June dropped 12.'],
+      ['September to October','That is a big RISE, not a drop.'],
+      ['March to July','Those months are not neighbors.']],
+   s:{band:[4,5],seg:[[4,30,5,18]],brk:[[5,18,30,'−12']]}},
+  {t:9, q:'What is the [[DEPENDENT]] variable on this graph?',
+   c:[['The number of birds','The dependent variable is what was measured. It goes on the y-axis.'],
+      ['The month','The month is the independent variable on the x-axis.'],
+      ['The type of bird','The graph does not show types of birds.'],
+      ['The year','The year never changes on this graph.']],
+   s:{axis:'y'}}
+ ]},
+/* ---------- 2 ---------- */
+{n:2, topic:'Cooling hot chocolate',
+ title:'Temperature vs. Time',
+ desc:'A cup of hot chocolate was left on a table to cool. Its temperature was measured with a thermometer every 5 minutes.',
+ x:{l:'Time (min)',min:0,max:30,st:1,ev:5}, y:{l:'Temperature (°C)',min:30,max:90,st:2,ev:5},
+ series:[{pts:[[0,80],[5,64],[10,52],[15,44],[20,38],[25,34],[30,32]]}],
+ qs:[
+  {t:1, q:'What was the temperature at [[10 minutes]]?',
+   c:[['52 °C','Go up from 10 minutes to the dot, then across: 52 °C.'],
+      ['10 °C','10 is the time on the x-axis, not the temperature.'],
+      ['64 °C','That is the temperature at 5 minutes.'],
+      ['54 °C','That is one box too high. Each box is 2 °C.']],
+   s:{pt:[[10,52]]}},
+  {t:2, q:'At what time was the hot chocolate [[38 °C]]?',
+   c:[['20 minutes','Go across from 38 °C to the dot, then down: 20 minutes.'],
+      ['25 minutes','At 25 minutes it was 34 °C.'],
+      ['15 minutes','At 15 minutes it was 44 °C.'],
+      ['38 minutes','38 is the temperature. Read the time on the x-axis below the dot.']],
+   s:{hy:[38],pt:[[20,38]]}},
+  {t:5, q:'How much did the temperature [[DROP]] from 0 to 10 minutes?',
+   c:[['28 °C','80 °C − 52 °C = 28 °C.'],
+      ['132 °C','You added 80 + 52. A drop means subtract.'],
+      ['52 °C','52 °C is the temperature AT 10 minutes, not the drop.'],
+      ['16 °C','That is the drop from 0 to 5 minutes only.']],
+   s:{pt:[[0,80],[10,52]],brk:[[10,52,80,'−28']]}},
+  {t:4, q:'Which [[BEST]] describes how the temperature changed?',
+   c:[['It dropped fast at first, then more slowly.','The line is steep at the start and flatter at the end.'],
+      ['It dropped at the same rate the whole time.','The drops get smaller: 16°, then 12°, then 8°, and so on.'],
+      ['It went up, then down.','The line only goes down.'],
+      ['It dropped slowly at first, then fast.','That is backwards. The steepest part is at the start.']],
+   s:{seg:[[0,80,5,64],[25,34,30,32]]}},
+  {t:12, q:'Why does the line get [[FLATTER]] near the end?',
+   c:[['It is near room temperature, so it cools more slowly.','A flatter line means slower change. Things cool slowly as they near room temperature.'],
+      ['The drink started heating up.','The line never goes up.'],
+      ['Someone added more hot chocolate.','That would make the temperature go up.'],
+      ['The thermometer stopped working.','The thermometer still gave readings every 5 minutes.']],
+   s:{seg:[[20,38,30,32]]}}
+ ]},
+/* ---------- 3 ---------- */
+{n:3, topic:'Daily high temperature in Chandler, AZ',
+ title:'High Temperature vs. Day',
+ desc:'This graph shows the highest temperature each day in Chandler, Arizona, for two weeks in late September.',
+ x:{l:'Day',min:0,max:14,st:1,ev:1}, y:{l:'High temperature (°F)',min:90,max:110,st:1,ev:2},
+ series:[{pts:[[1,104],[2,106],[3,105],[4,102],[5,99],[6,96],[7,94],[8,95],[9,98],[10,101],[11,103],[12,100],[13,97],[14,96]]}],
+ qs:[
+  {t:1, q:'What was the high temperature on [[Day 4]]?',
+   c:[['102 °F','Go up from Day 4 to the dot, then across: 102 °F.'],
+      ['105 °F','That is Day 3.'],
+      ['4 °F','4 is the day number on the x-axis, not the temperature.'],
+      ['103 °F','That is one box too high. Each box is 1 °F.']],
+   s:{pt:[[4,102]]}},
+  {t:3, q:'What was the [[LOWEST]] high temperature?',
+   c:[['94 °F','The lowest dot is on Day 7 at 94 °F.'],
+      ['96 °F','96 °F is the LAST day, not the lowest.'],
+      ['7 °F','7 is the day number, not the temperature.'],
+      ['106 °F','That is the HIGHEST temperature, not the lowest.']],
+   s:{ring:[[7,94]]}},
+  {t:7, q:'What is the [[RANGE]] of the high temperatures (highest − lowest)?',
+   c:[['12 °F','Highest 106 °F − lowest 94 °F = 12 °F.'],
+      ['200 °F','You added 106 + 94. Range means subtract.'],
+      ['8 °F','104 − 96 uses the first and last days, not the highest and lowest.'],
+      ['106 °F','106 °F is just the highest value.']],
+   s:{ring:[[2,106],[7,94]],hy:[106,94]}},
+  {t:2, q:'On which day was the high temperature [[98 °F]]?',
+   c:[['Day 9','Go across from 98 °F to the dot, then down: Day 9.'],
+      ['Day 5','Day 5 was 99 °F, one box higher.'],
+      ['Day 13','Day 13 was 97 °F, one box lower.'],
+      ['Day 8','Day 8 was 95 °F.']],
+   s:{hy:[98],pt:[[9,98]]}},
+  {t:12, q:'From Day 2 to Day 7, the line goes [[DOWN]]. What does that mean?',
+   c:[['The days were getting cooler.','A line going down means the high temperature was dropping each day.'],
+      ['The days were getting hotter.','Hotter days would make the line go UP.'],
+      ['The temperature stayed the same.','That would be a flat line.'],
+      ['There were fewer days.','Each day still has one dot. The x-axis keeps counting up.']],
+   s:{band:[2,7],seg:[[2,106,7,94]]}}
+ ]},
+/* ---------- 4 ---------- */
+{n:4, topic:'Fizzing Alka-Seltzer tablet',
+ title:'Mass vs. Time',
+ desc:'An Alka-Seltzer tablet was dropped into a cup of water sitting on a balance. The balance shows the mass of the cup, water and tablet as it fizzes.',
+ x:{l:'Time (s)',min:0,max:60,st:2,ev:5}, y:{l:'Mass (g)',min:152,max:153.6,st:0.1,ev:2},
+ series:[{pts:[[0,153.4],[10,152.9],[20,152.6],[30,152.4],[40,152.3],[50,152.2],[60,152.2]]}],
+ qs:[
+  {t:1, q:'What was the mass at [[20 seconds]]?',
+   c:[['152.6 g','Go up from 20 s to the dot, then across: 152.6 g.'],
+      ['152.9 g','That is the mass at 10 seconds.'],
+      ['152.7 g','That is one box too high. Each box is 0.1 g.'],
+      ['20 g','20 is the time on the x-axis, not the mass.']],
+   s:{pt:[[20,152.6]]}},
+  {t:4, q:'What happened to the mass [[AFTER]] 50 seconds?',
+   c:[['It stayed the same.','The line is flat from 50 to 60 seconds, so the mass did not change.'],
+      ['It kept dropping fast.','A fast drop would be a steep line going down.'],
+      ['It went up.','The line never goes up.'],
+      ['It dropped to zero.','The mass stayed at 152.2 g, not 0 g.']],
+   s:{seg:[[50,152.2,60,152.2]]}},
+  {t:5, q:'How much mass was [[LOST]] from 0 to 60 seconds?',
+   c:[['1.2 g','153.4 g − 152.2 g = 1.2 g.'],
+      ['305.6 g','You added the two masses. Lost means subtract.'],
+      ['152.2 g','152.2 g is the mass at the END, not the amount lost.'],
+      ['0.5 g','That is only the loss from 0 to 10 seconds.']],
+   s:{pt:[[0,153.4],[60,152.2]],brk:[[60,152.2,153.4,'−1.2 g']]}},
+  {t:12, q:'[[WHY]] did the mass go down?',
+   c:[['Carbon dioxide gas bubbled out of the cup.','The fizz is CO₂ gas. When it escapes into the air, the balance reads less.'],
+      ['Matter was destroyed in the reaction.','Matter is never destroyed. The gas just left the cup.'],
+      ['The water got heavier.','Heavier water would make the mass go up.'],
+      ['The balance was not zeroed.','That would shift every reading, not make them drop over time.']],
+   s:{seg:[[0,153.4,30,152.4]]}},
+  {t:2, q:'At what time was the mass [[152.4 g]]?',
+   c:[['30 seconds','Go across from 152.4 g to the dot, then down: 30 s.'],
+      ['40 seconds','At 40 s the mass was 152.3 g, one box lower.'],
+      ['20 seconds','At 20 s the mass was 152.6 g.'],
+      ['10 seconds','At 10 s the mass was 152.9 g.']],
+   s:{hy:[152.4],pt:[[30,152.4]]}}
+ ]},
+/* ---------- 5 ---------- */
+{n:5, topic:'Phone battery during a school day',
+ title:'Battery vs. Time of Day',
+ desc:'A student checked their phone battery every hour from 7 AM to 4 PM. At one point in the day, they plugged it in to charge.',
+ x:{l:'Time of day',cats:['7 AM','8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM']}, y:{l:'Battery (%)',min:0,max:100,st:5,ev:2},
+ series:[{pts:[[0,100],[1,90],[2,80],[3,60],[4,50],[5,40],[6,75],[7,70],[8,60],[9,50]]}],
+ qs:[
+  {t:1, q:'What was the battery at [[10 AM]]?',
+   c:[['60%','Go up from 10 AM to the dot, then across: 60%.'],
+      ['80%','That is the battery at 9 AM.'],
+      ['65%','That is one box too high. Each box is 5%.'],
+      ['10%','10 is the time, not the battery level.']],
+   s:{pt:[[3,60]]}},
+  {t:12, q:'During which hour was the phone [[CHARGING]]?',
+   c:[['12 PM to 1 PM','The line goes UP only between 12 PM and 1 PM. Charging adds battery.'],
+      ['7 AM to 8 AM','The battery dropped from 100% to 90% then.'],
+      ['3 PM to 4 PM','The battery dropped from 60% to 50% then.'],
+      ['11 AM to 12 PM','The battery dropped from 50% to 40% then.']],
+   s:{band:[5,6],seg:[[5,40,6,75]]}},
+  {t:3, q:'What was the [[LOWEST]] battery level?',
+   c:[['40%','The lowest dot is at 12 PM: 40%.'],
+      ['50%','50% is the LAST value, not the lowest.'],
+      ['0%','The battery never reached 0%.'],
+      ['60%','60% happened at 10 AM and 3 PM, but 40% is lower.']],
+   s:{ring:[[5,40]]}},
+  {t:6, q:'During which hour did the battery [[DROP]] the most?',
+   c:[['9 AM to 10 AM','From 80% to 60% is a 20% drop, the biggest.'],
+      ['12 PM to 1 PM','That is the biggest change, but it went UP (charging).'],
+      ['7 AM to 8 AM','That drop was only 10%.'],
+      ['3 PM to 4 PM','That drop was only 10%.']],
+   s:{band:[2,3],seg:[[2,80,3,60]],brk:[[3,60,80,'−20%']]}},
+  {t:2, q:'At what time was the battery at [[75%]]?',
+   c:[['1 PM','Go across from 75% to the dot, then down: 1 PM.'],
+      ['2 PM','At 2 PM it was 70%, one box lower.'],
+      ['12 PM','At 12 PM it was 40%.'],
+      ['9 AM','At 9 AM it was 80%.']],
+   s:{hy:[75],pt:[[6,75]]}}
+ ]},
+/* ---------- 6 ---------- */
+{n:6, topic:'Heating curve of water',
+ title:'Temperature vs. Time',
+ desc:'A beaker of ice at −20 °C was heated on a hot plate until the water boiled. The hot plate stayed on the whole time.',
+ x:{l:'Time (min)',min:0,max:20,st:1,ev:2}, y:{l:'Temperature (°C)',min:-20,max:120,st:5,ev:4},
+ series:[{pts:[[0,-20],[1,-10],[2,0],[3,0],[4,0],[5,0],[6,0],[7,10],[8,20],[9,30],[10,40],[11,50],[12,60],[13,70],[14,80],[15,90],[16,100],[17,100],[18,100],[19,100],[20,100]]}],
+ qs:[
+  {t:12, q:'What is happening during the [[FIRST]] flat part (2 to 6 minutes)?',
+   c:[['The ice is melting.','At 0 °C the heat goes into melting the ice, so the temperature stays flat.'],
+      ['The water is boiling.','Boiling is the SECOND flat part, at 100 °C.'],
+      ['The hot plate was turned off.','The hot plate stayed on the whole time.'],
+      ['The water is cooling.','The temperature never goes down.']],
+   s:{seg:[[2,0,6,0]],band:[2,6]}},
+  {t:1, q:'What was the temperature at [[10 minutes]]?',
+   c:[['40 °C','Go up from 10 minutes to the dot, then across: 40 °C.'],
+      ['10 °C','10 is the time on the x-axis, not the temperature.'],
+      ['50 °C','That is the temperature at 11 minutes.'],
+      ['45 °C','That is one box too high. Each box is 5 °C.']],
+   s:{pt:[[10,40]]}},
+  {t:2, q:'At what time did the water [[FIRST]] reach 100 °C?',
+   c:[['16 minutes','Go across from 100 °C to the first dot on that line, then down: 16 minutes.'],
+      ['20 minutes','That is when the measuring stopped, not when it first hit 100 °C.'],
+      ['15 minutes','At 15 minutes it was 90 °C.'],
+      ['100 minutes','100 is the temperature. Read the time on the x-axis.']],
+   s:{hy:[100],pt:[[16,100]]}},
+  {t:5, q:'How much did the temperature [[RISE]] from 6 to 11 minutes?',
+   c:[['50 °C','It went from 0 °C to 50 °C: 50 − 0 = 50 °C.'],
+      ['5 °C','That is the TIME that passed: 11 − 6 = 5 minutes.'],
+      ['40 °C','That is 6 to 10 minutes. Check the end point.'],
+      ['100 °C','That is the boiling temperature, not this rise.']],
+   s:{pt:[[6,0],[11,50]],brk:[[11,0,50,'+50 °C']]}},
+  {t:4, q:'What happens to the temperature [[WHILE]] the water is boiling?',
+   c:[['It stays the same at 100 °C.','The line is flat at 100 °C from 16 to 20 minutes.'],
+      ['It keeps rising.','A rising line would go up. This part is flat.'],
+      ['It drops.','The line never goes down.'],
+      ['It rises faster.','That would be a steeper line, not a flat one.']],
+   s:{seg:[[16,100,20,100]]}}
+ ]},
+/* ---------- 7 ---------- */
+{n:7, topic:'Bean plant growth',
+ title:'Height vs. Time',
+ desc:'A student measured the height of a bean plant once a week for 7 weeks. The magenta dashed line is the best-fit line.',
+ x:{l:'Time (weeks)',min:0,max:10,st:0.5,ev:2}, y:{l:'Height (cm)',min:0,max:30,st:1,ev:5},
+ series:[{name:'measured',line:false,pts:[[1,3],[2,5],[3,7],[4,10],[5,13],[6,15],[7,17]]}],
+ fit:{m:2.5,b:0,x0:0,x1:10},
+ qs:[
+  {t:11, q:'Use the best-fit line to [[PREDICT]] the height at [[week 10]].',
+   c:[['About 25 cm','Go up from week 10 to the best-fit line, then across: about 25 cm.'],
+      ['About 17 cm','17 cm is the last measured point, at week 7.'],
+      ['About 10 cm','10 cm is the height at week 4.'],
+      ['About 35 cm','Too high. Follow the line up from week 10, then across.']],
+   s:{pt:[[10,'fit']]}},
+  {t:1, q:'How tall was the plant at [[week 4]]?',
+   c:[['10 cm','Go up from week 4 to the dot, then across: 10 cm.'],
+      ['4 cm','4 is the week on the x-axis, not the height.'],
+      ['13 cm','13 cm is the height at week 5.'],
+      ['11 cm','That is one box too high. Each box is 1 cm.']],
+   s:{pt:[[4,10]]}},
+  {t:2, q:'In which week was the plant [[15 cm]] tall?',
+   c:[['Week 6','Go across from 15 cm to the dot, then down: week 6.'],
+      ['Week 5','At week 5 it was 13 cm.'],
+      ['Week 7','At week 7 it was 17 cm.'],
+      ['Week 15','15 is the height. Read the week on the x-axis.']],
+   s:{hy:[15],pt:[[6,15]]}},
+  {t:4, q:'Which [[BEST]] describes the trend?',
+   c:[['The height goes up at a steady rate.','The dots follow a straight line that keeps rising.'],
+      ['The height goes up, then levels off.','The dots never flatten out.'],
+      ['The height goes down.','Each dot is higher than the one before.'],
+      ['The height stays the same.','That would be a flat line.']],
+   s:{seg:[[1,2.5,7,17.5]]}},
+  {t:5, q:'How much did the plant grow from [[week 2 to week 6]]?',
+   c:[['10 cm','15 cm − 5 cm = 10 cm.'],
+      ['20 cm','You added 15 + 5. Growth means subtract.'],
+      ['4 cm','4 is the number of WEEKS, not the growth.'],
+      ['15 cm','15 cm is the height at week 6, not the growth.']],
+   s:{pt:[[2,5],[6,15]],brk:[[6,5,15,'+10 cm']]}}
+ ]},
+/* ---------- 8 ---------- */
+{n:8, topic:"Gas volume vs. temperature (Charles's law)",
+ title:'Volume vs. Temperature',
+ desc:'A syringe of air was warmed in a water bath, and its volume was measured. Temperature is in kelvins (K). The magenta dashed line is the best-fit line.',
+ x:{l:'Temperature (K)',min:0,max:400,st:10,ev:5}, y:{l:'Volume (mL)',min:0,max:45,st:1,ev:5},
+ series:[{name:'measured',line:false,pts:[[250,25],[275,28],[300,30],[325,32],[350,35]]}],
+ fit:{m:0.1,b:0,x0:0,x1:400},
+ qs:[
+  {t:11, q:'Use the best-fit line to [[PREDICT]] the volume at [[400 K]].',
+   c:[['About 40 mL','Go up from 400 K to the line, then across: about 40 mL.'],
+      ['About 35 mL','35 mL is the last measured point, at 350 K.'],
+      ['About 400 mL','400 is the temperature, not the volume.'],
+      ['About 50 mL','Too high. Follow the line at 400 K.']],
+   s:{pt:[[400,'fit']]}},
+  {t:1, q:'What was the volume at [[300 K]]?',
+   c:[['30 mL','Go up from 300 K to the dot, then across: 30 mL.'],
+      ['28 mL','28 mL is the volume at 275 K.'],
+      ['32 mL','32 mL is the volume at 325 K.'],
+      ['300 mL','300 is the temperature, not the volume.']],
+   s:{pt:[[300,30]]}},
+  {t:2, q:'At what temperature was the volume [[32 mL]]?',
+   c:[['325 K','Go across from 32 mL to the dot, then down: 325 K.'],
+      ['300 K','At 300 K the volume was 30 mL.'],
+      ['350 K','At 350 K the volume was 35 mL.'],
+      ['32 K','32 is the volume. Read the temperature on the x-axis.']],
+   s:{hy:[32],pt:[[325,32]]}},
+  {t:4, q:'As the temperature goes up, what happens to the volume?',
+   c:[['It goes up in a straight line.','The dots follow a straight rising line: hotter gas takes up more space.'],
+      ['It goes down.','The line rises from left to right.'],
+      ['It stays the same.','That would be a flat line.'],
+      ['It goes up, then levels off.','The line never flattens out.']],
+   s:{seg:[[250,25,350,35]]}},
+  {t:5, q:'How much did the volume [[INCREASE]] from 250 K to 350 K?',
+   c:[['10 mL','35 mL − 25 mL = 10 mL.'],
+      ['100 mL','100 is the change in TEMPERATURE (350 − 250), not volume.'],
+      ['60 mL','You added 25 + 35. Increase means subtract.'],
+      ['35 mL','35 mL is the volume at 350 K, not the increase.']],
+   s:{pt:[[250,25],[350,35]],brk:[[350,25,35,'+10 mL']]}}
+ ]},
+/* ---------- 9 ---------- */
+{n:9, topic:'Cafeteria line during lunch',
+ title:'Students in Line vs. Minute of Lunch',
+ desc:'A student counted how many people were waiting in the cafeteria line every 2 minutes during a 30-minute lunch.',
+ x:{l:'Minute of lunch',min:0,max:30,st:1,ev:2}, y:{l:'Students in line',min:0,max:50,st:2,ev:5},
+ series:[{pts:[[0,4],[2,30],[4,42],[6,38],[8,30],[10,22],[12,16],[14,12],[16,8],[18,6],[20,4],[22,4],[24,2],[26,2],[28,0],[30,0]]}],
+ qs:[
+  {t:1, q:'How many students were in line at [[minute 10]]?',
+   c:[['22 students','Go up from minute 10 to the dot, then across: 22.'],
+      ['10 students','10 is the minute on the x-axis, not the number of students.'],
+      ['30 students','30 students were in line at minute 8.'],
+      ['24 students','That is one box too high. Each box is 2 students.']],
+   s:{pt:[[10,22]]}},
+  {t:3, q:'At what minute was the line the [[LONGEST]]?',
+   c:[['Minute 4','The highest dot is at minute 4, with 42 students.'],
+      ['Minute 42','42 is the number of students, not the minute.'],
+      ['Minute 0','Minute 0 is the FIRST point, not the highest.'],
+      ['Minute 2','At minute 2 there were 30 students, fewer than 42.']],
+   s:{ring:[[4,42]]}},
+  {t:6, q:'Between which two [[NEIGHBORING]] times did the line grow the [[MOST]]?',
+   c:[['Minute 0 to 2','The line jumped from 4 to 30 students: up 26.'],
+      ['Minute 2 to 4','It grew 12 then (30 to 42). 0 to 2 grew 26.'],
+      ['Minute 4 to 6','The line got SHORTER then (42 to 38).'],
+      ['Minute 28 to 30','Nothing changed. It stayed at 0.']],
+   s:{band:[0,2],seg:[[0,4,2,30]],brk:[[2,4,30,'+26']]}},
+  {t:2, q:'At what minute were there [[12]] students in line?',
+   c:[['Minute 14','Go across from 12 to the dot, then down: minute 14.'],
+      ['Minute 12','12 is the number of students. At minute 12 there were 16.'],
+      ['Minute 16','At minute 16 there were 8 students.'],
+      ['Minute 10','At minute 10 there were 22 students.']],
+   s:{hy:[12],pt:[[14,12]]}},
+  {t:12, q:'What does the [[FLAT]] part at 0 (minutes 28 to 30) mean?',
+   c:[['No one was in line.','The line is flat at 0, so the count stayed at zero students.'],
+      ['The line was the longest then.','A long line would be a HIGH point. This is at 0.'],
+      ['The line was growing fast.','A growing line would go up.'],
+      ['The number of students was changing fast.','A flat part means NO change.']],
+   s:{seg:[[28,0,30,0]]}}
+ ]},
+/* ---------- 10 ---------- */
+{n:10, topic:'Sugar solubility vs. temperature',
+ title:'Sugar Dissolved vs. Water Temperature',
+ desc:'A class found the most sugar that would dissolve in 100 g of water at different temperatures. This kind of graph is called a solubility curve.',
+ x:{l:'Water temperature (°C)',min:0,max:100,st:5,ev:2}, y:{l:'Sugar dissolved (g)',min:150,max:500,st:10,ev:5},
+ series:[{pts:[[0,180],[20,200],[40,240],[60,290],[80,360],[100,490]]}],
+ qs:[
+  {t:1, q:'How much sugar dissolves at [[60 °C]]?',
+   c:[['290 g','Go up from 60 °C to the dot, then across: 290 g.'],
+      ['240 g','240 g is how much dissolves at 40 °C.'],
+      ['60 g','60 is the temperature on the x-axis, not the sugar.'],
+      ['300 g','That is one box too high. Each box is 10 g.']],
+   s:{pt:[[60,290]]}},
+  {t:2, q:'At what temperature do [[360 g]] of sugar dissolve?',
+   c:[['80 °C','Go across from 360 g to the dot, then down: 80 °C.'],
+      ['60 °C','At 60 °C, 290 g dissolve.'],
+      ['100 °C','At 100 °C, 490 g dissolve.'],
+      ['360 °C','360 is the grams of sugar. Read the temperature on the x-axis.']],
+   s:{hy:[360],pt:[[80,360]]}},
+  {t:4, q:'As the water gets hotter, what happens to the amount of sugar that dissolves?',
+   c:[['It goes up, and faster at high temperatures.','The curve rises and gets steeper toward the right.'],
+      ['It goes down.','The curve rises from left to right.'],
+      ['It goes up at a steady rate.','A steady rate would be a straight line. This curve gets steeper.'],
+      ['It stays the same.','That would be a flat line.']],
+   s:{seg:[[0,180,40,240],[80,360,100,490]]}},
+  {t:5, q:'How much [[MORE]] sugar dissolves at 100 °C than at 20 °C?',
+   c:[['290 g','490 g − 200 g = 290 g.'],
+      ['690 g','You added 490 + 200. "How much more" means subtract.'],
+      ['80 g','80 is the change in TEMPERATURE (100 − 20), not sugar.'],
+      ['490 g','490 g is the amount at 100 °C, not the difference.']],
+   s:{pt:[[20,200],[100,490]],brk:[[100,200,490,'+290 g']]}},
+  {t:9, q:'What is the [[INDEPENDENT]] variable?',
+   c:[['The water temperature','The independent variable is what the scientist changed. It goes on the x-axis.'],
+      ['The amount of sugar that dissolves','That is the dependent variable, on the y-axis.'],
+      ['The amount of water','The water was kept at 100 g every time. That is a constant.'],
+      ['The type of sugar','The same sugar was used every time.']],
+   s:{axis:'x'}}
+ ]},
+/* ---------- 11 ---------- */
+{n:11, topic:'Steps walked each day',
+ title:'Steps Walked vs. Day',
+ desc:'A student wore a fitness tracker for one week. The graph shows how many steps they walked each day.',
+ x:{l:'Day of the week',cats:WEEK}, y:{l:'Steps walked',min:2000,max:14000,st:500,ev:2},
+ series:[{pts:[[0,8000],[1,10500],[2,7500],[3,9000],[4,11000],[5,13500],[6,4000]]}],
+ qs:[
+  {t:1, q:'How many steps did the student walk on [[Thursday]]?',
+   c:[['9,000 steps','Go up from Thursday to the dot, then across: 9,000.'],
+      ['7,500 steps','That is Wednesday.'],
+      ['11,000 steps','That is Friday.'],
+      ['9,500 steps','That is one box too high. Each box is 500 steps.']],
+   s:{pt:[[3,9000]]}},
+  {t:3, q:'Which day had the [[FEWEST]] steps?',
+   c:[['Sunday','Sunday has the lowest dot: 4,000 steps.'],
+      ['Monday','Monday is the FIRST day, not the lowest.'],
+      ['Wednesday','Wednesday is low (7,500), but Sunday is lower.'],
+      ['Saturday','Saturday has the MOST steps.']],
+   s:{ring:[[6,4000]]}},
+  {t:5, q:'How many [[MORE]] steps were walked on Saturday than on Friday?',
+   c:[['2,500 steps','13,500 − 11,000 = 2,500.'],
+      ['24,500 steps','You added the two days. "How many more" means subtract.'],
+      ['13,500 steps','13,500 is Saturday alone, not the difference.'],
+      ['3,000 steps','Off by one box. Saturday is 13,500, not 14,000.']],
+   s:{pt:[[4,11000],[5,13500]],brk:[[5,11000,13500,'+2,500']]}},
+  {t:2, q:'Which day had [[10,500]] steps?',
+   c:[['Tuesday','Go across from 10,500 to the dot, then down: Tuesday.'],
+      ['Friday','Friday had 11,000, one box higher.'],
+      ['Thursday','Thursday had 9,000.'],
+      ['Monday','Monday had 8,000.']],
+   s:{hy:[10500],pt:[[1,10500]]}},
+  {t:9, q:'What does the [[x-axis]] show?',
+   c:[['The day of the week','Look at the label under the x-axis: Day of the week.'],
+      ['The number of steps','The steps are on the y-axis (up and down).'],
+      ['The time of day','The graph shows one total per day, not times.'],
+      ['How many miles were walked','The graph counts steps, not miles.']],
+   s:{axis:'x'}}
+ ]},
+/* ---------- 12 ---------- */
+{n:12, topic:'Radioactive decay and half-life',
+ title:'Counts per Minute vs. Time',
+ desc:'A Geiger counter measured a radioactive sample. The counts per minute show how much radiation it gives off. The half-life is the time for the count to drop to half.',
+ x:{l:'Time (min)',min:0,max:40,st:1,ev:5}, y:{l:'Counts per minute',min:0,max:800,st:20,ev:5},
+ series:[{pts:[[0,800],[5,560],[10,400],[15,280],[20,200],[25,140],[30,100],[35,70],[40,50]]}],
+ qs:[
+  {t:12, q:'The count started at 800. What is the [[HALF-LIFE]] (time to drop to 400)?',
+   c:[['10 minutes','Go across from 400 (half of 800) to the curve, then down: 10 minutes.'],
+      ['400 minutes','400 is the count, not a time.'],
+      ['20 minutes','At 20 minutes the count is 200. That is two half-lives.'],
+      ['5 minutes','At 5 minutes the count is 560, not yet half.']],
+   s:{hy:[400],pt:[[10,400]]}},
+  {t:1, q:'What was the count at [[20 minutes]]?',
+   c:[['200 counts per minute','Go up from 20 minutes to the dot, then across: 200.'],
+      ['400 counts per minute','That is the count at 10 minutes.'],
+      ['20 counts per minute','20 is the time, not the count.'],
+      ['100 counts per minute','That is the count at 30 minutes.']],
+   s:{pt:[[20,200]]}},
+  {t:2, q:'At what time was the count [[100]] counts per minute?',
+   c:[['30 minutes','Go across from 100 to the dot, then down: 30 minutes.'],
+      ['40 minutes','At 40 minutes the count was 50.'],
+      ['25 minutes','At 25 minutes the count was 140.'],
+      ['100 minutes','100 is the count. Read the time on the x-axis.']],
+   s:{hy:[100],pt:[[30,100]]}},
+  {t:4, q:'Which [[BEST]] describes how the count changes?',
+   c:[['It drops fast at first, then more slowly.','The curve is steep at the start and flattens out later.'],
+      ['It drops at a steady rate.','A steady drop would be a straight line.'],
+      ['It goes up over time.','The curve goes down.'],
+      ['It drops to zero at 40 minutes.','At 40 minutes the count is still 50.']],
+   s:{seg:[[0,800,5,560],[35,70,40,50]]}},
+  {t:5, q:'How much did the count [[DROP]] from 0 to 10 minutes?',
+   c:[['400 counts per minute','800 − 400 = 400.'],
+      ['1,200 counts per minute','You added 800 + 400. A drop means subtract.'],
+      ['600 counts per minute','800 − 200 is the drop from 0 to 20 minutes.'],
+      ['10 counts per minute','10 is the time that passed, not the drop.']],
+   s:{pt:[[0,800],[10,400]],brk:[[10,400,800,'−400']]}}
+ ]},
+/* ---------- 13 ---------- */
+{n:13, topic:'Money saved each week',
+ title:'Money Saved vs. Time',
+ desc:'A student saved part of their allowance every week. They recorded their total savings for 8 weeks. The magenta dashed line is the best-fit line.',
+ x:{l:'Time (weeks)',min:0,max:12,st:0.5,ev:2}, y:{l:'Money saved ($)',min:0,max:150,st:5,ev:2},
+ series:[{name:'total saved',line:false,pts:[[1,10],[2,25],[3,30],[4,45],[5,50],[6,60],[7,75],[8,80]]}],
+ fit:{m:10,b:0,x0:0,x1:12},
+ qs:[
+  {t:11, q:'Use the best-fit line to [[PREDICT]] the total saved at [[week 12]].',
+   c:[['About $120','Go up from week 12 to the line, then across: about $120.'],
+      ['About $80','$80 is the last measured point, at week 8.'],
+      ['About $12','12 is the week, not the money.'],
+      ['About $160','Too high. Follow the line at week 12.']],
+   s:{pt:[[12,'fit']]}},
+  {t:1, q:'How much had been saved at [[week 4]]?',
+   c:[['$45','Go up from week 4 to the dot, then across: $45.'],
+      ['$4','4 is the week on the x-axis, not the money.'],
+      ['$50','$50 is the total at week 5.'],
+      ['$30','$30 is the total at week 3.']],
+   s:{pt:[[4,45]]}},
+  {t:2, q:'In which week did the total reach [[$60]]?',
+   c:[['Week 6','Go across from $60 to the dot, then down: week 6.'],
+      ['Week 5','At week 5 the total was $50.'],
+      ['Week 7','At week 7 the total was $75.'],
+      ['Week 4','At week 4 the total was $45.']],
+   s:{hy:[60],pt:[[6,60]]}},
+  {t:5, q:'How much was saved [[BETWEEN]] week 2 and week 6?',
+   c:[['$35','$60 − $25 = $35.'],
+      ['$85','You added $60 + $25. "Between" means subtract.'],
+      ['$4','4 is the number of WEEKS, not dollars.'],
+      ['$60','$60 is the total at week 6, not the amount saved in between.']],
+   s:{pt:[[2,25],[6,60]],brk:[[6,25,60,'+$35']]}},
+  {t:4, q:'Which [[BEST]] describes the trend?',
+   c:[['The savings go up at a steady rate.','The dots follow a straight line that keeps rising.'],
+      ['The savings go up, then level off.','The dots never flatten out.'],
+      ['The savings go down.','Each total is higher than the week before.'],
+      ['The savings stay the same.','That would be a flat line.']],
+   s:{seg:[[1,10,8,80]]}}
+ ]},
+/* ---------- 14 ---------- */
+{n:14, topic:'Titration: pH vs. base added',
+ title:'pH vs. Base Added',
+ desc:'A base (NaOH) was slowly added to an acid from a buret. The pH was measured after each addition. A pH of 7 is neutral.',
+ x:{l:'Base added (mL)',min:0,max:50,st:1,ev:5}, y:{l:'pH',min:0,max:14,st:0.5,ev:2},
+ series:[{pts:[[0,1],[5,1],[10,1.5],[15,1.5],[20,2],[23,3],[24,4],[25,7],[26,11],[28,11.5],[30,12],[40,12.5],[50,12.5]]}],
+ qs:[
+  {t:1, q:'What was the pH after [[30 mL]] of base was added?',
+   c:[['12','Go up from 30 mL to the dot, then across: pH 12.'],
+      ['11.5','pH 11.5 was at 28 mL.'],
+      ['30','30 is the mL of base, not the pH.'],
+      ['12.5','pH 12.5 was at 40 mL.']],
+   s:{pt:[[30,12]]}},
+  {t:2, q:'How much base had been added when the pH reached [[7]] (neutral)?',
+   c:[['25 mL','Go across from pH 7 to the dot, then down: 25 mL.'],
+      ['7 mL','7 is the pH. Read the mL on the x-axis.'],
+      ['24 mL','At 24 mL the pH was 4.'],
+      ['30 mL','At 30 mL the pH was 12.']],
+   s:{hy:[7],pt:[[25,7]]}},
+  {t:6, q:'Between which two [[NEIGHBORING]] points did the pH change the [[MOST]]?',
+   c:[['25 to 26 mL','The pH jumped from 7 to 11, up 4. That is the biggest change.'],
+      ['24 to 25 mL','That jump is 3 (4 to 7). 25 to 26 mL jumped 4.'],
+      ['0 to 5 mL','The pH did not change there.'],
+      ['30 to 40 mL','The pH only went up 0.5 there.']],
+   s:{band:[25,26],seg:[[25,7,26,11]],brk:[[26,7,11,'+4']]}},
+  {t:4, q:'Which [[BEST]] describes the shape of the graph?',
+   c:[['The pH rises slowly, jumps, then levels off.','That is an S-shape: flat, a steep jump near 25 mL, then flat again.'],
+      ['The pH rises at a steady rate.','A steady rise would be a straight line.'],
+      ['The pH goes down.','The pH goes up as base is added.'],
+      ['The pH jumps up at the very start.','The pH barely changes at the start.']],
+   s:{seg:[[0,1,20,2],[23,3,26,11],[30,12,50,12.5]]}},
+  {t:9, q:'What is the [[INDEPENDENT]] variable?',
+   c:[['The amount of base added','That is what the student changed. It is on the x-axis.'],
+      ['The pH','pH is what was measured. It is the dependent variable.'],
+      ['The time','There is no time on this graph.'],
+      ['The temperature','Temperature is not shown on this graph.']],
+   s:{axis:'x'}}
+ ]},
+/* ---------- 15 ---------- */
+{n:15, topic:'Movie theater ticket sales',
+ title:'Tickets Sold vs. Day of the Week',
+ desc:'A movie theater counted how many tickets it sold each day for one week.',
+ x:{l:'Day of the week',cats:WEEK}, y:{l:'Tickets sold',min:100,max:900,st:25,ev:4},
+ series:[{pts:[[0,150],[1,300],[2,200],[3,250],[4,600],[5,800],[6,550]]}],
+ qs:[
+  {t:1, q:'How many tickets were sold on [[Thursday]]?',
+   c:[['250 tickets','Go up from Thursday to the dot, then across: 250.'],
+      ['200 tickets','That is Wednesday.'],
+      ['600 tickets','That is Friday.'],
+      ['275 tickets','That is one box too high. Each box is 25 tickets.']],
+   s:{pt:[[3,250]]}},
+  {t:3, q:'Which day had the [[MOST]] ticket sales?',
+   c:[['Saturday','Saturday has the highest dot: 800 tickets.'],
+      ['Friday','Friday is high (600), but Saturday is higher.'],
+      ['Sunday','Sunday is the LAST day, not the highest.'],
+      ['Tuesday','Tuesday is higher than its neighbors, but not the highest.']],
+   s:{ring:[[5,800]]}},
+  {t:5, q:'How many [[MORE]] tickets were sold on Saturday than on Monday?',
+   c:[['650 tickets','800 − 150 = 650.'],
+      ['950 tickets','You added 800 + 150. "How many more" means subtract.'],
+      ['800 tickets','800 is Saturday alone, not the difference.'],
+      ['150 tickets','150 is Monday alone, not the difference.']],
+   s:{pt:[[0,150],[5,800]],brk:[[5,150,800,'+650']]}},
+  {t:2, q:'Which day sold [[550]] tickets?',
+   c:[['Sunday','Go across from 550 to the dot, then down: Sunday.'],
+      ['Friday','Friday sold 600, two boxes higher.'],
+      ['Thursday','Thursday sold 250.'],
+      ['Saturday','Saturday sold 800.']],
+   s:{hy:[550],pt:[[6,550]]}},
+  {t:12, q:'Tuesday is [[HIGHER]] than Monday and Wednesday. What is the [[BEST]] explanation?',
+   c:[['Tickets might cost less on Tuesdays.','Lower prices can bring in more people. The graph shows a jump only on Tuesday.'],
+      ['Tuesday is part of the weekend.','Tuesday is a weekday.'],
+      ['Fewer people go to movies on Tuesday.','Fewer people would make Tuesday LOWER, not higher.'],
+      ['The theater was closed on Tuesday.','A closed theater would sell 0 tickets.']],
+   s:{ring:[[1,300]]}}
+ ]},
+/* ---------- 16 ---------- */
+{n:16, topic:"Pressure vs. volume (Boyle's law)",
+ title:'Pressure vs. Volume',
+ desc:'A student pushed in the plunger of a sealed syringe of air and measured the pressure at different volumes. The temperature stayed the same.',
+ x:{l:'Volume (mL)',min:0,max:60,st:2,ev:5}, y:{l:'Pressure (kPa)',min:0,max:700,st:25,ev:4},
+ series:[{pts:[[10,600],[12,500],[15,400],[20,300],[30,200],[40,150],[60,100]]}],
+ qs:[
+  {t:1, q:'What was the pressure at [[20 mL]]?',
+   c:[['300 kPa','Go up from 20 mL to the dot, then across: 300 kPa.'],
+      ['400 kPa','400 kPa was the pressure at 15 mL.'],
+      ['20 kPa','20 is the volume, not the pressure.'],
+      ['325 kPa','That is one box too high. Each box is 25 kPa.']],
+   s:{pt:[[20,300]]}},
+  {t:2, q:'At what volume was the pressure [[150 kPa]]?',
+   c:[['40 mL','Go across from 150 kPa to the dot, then down: 40 mL.'],
+      ['30 mL','At 30 mL the pressure was 200 kPa.'],
+      ['60 mL','At 60 mL the pressure was 100 kPa.'],
+      ['150 mL','150 is the pressure. Read the volume on the x-axis.']],
+   s:{hy:[150],pt:[[40,150]]}},
+  {t:4, q:'As the volume gets [[BIGGER]], what happens to the pressure?',
+   c:[['It goes down, fast at first, then more slowly.','The curve drops steeply on the left and flattens on the right.'],
+      ['It goes up.','The curve goes down from left to right.'],
+      ['It goes down in a straight line.','This is a curve. It flattens out.'],
+      ['It stays the same.','That would be a flat line.']],
+   s:{seg:[[10,600,15,400],[40,150,60,100]]}},
+  {t:5, q:'How much did the pressure [[DROP]] when the volume went from 10 mL to 20 mL?',
+   c:[['300 kPa','600 − 300 = 300 kPa.'],
+      ['900 kPa','You added 600 + 300. A drop means subtract.'],
+      ['10 kPa','10 mL is the change in VOLUME, not pressure.'],
+      ['600 kPa','600 kPa is the pressure at 10 mL, not the drop.']],
+   s:{pt:[[10,600],[20,300]],brk:[[20,300,600,'−300 kPa']]}},
+  {t:12, q:'What happens to the pressure when the volume [[DOUBLES]] from 20 mL to 40 mL?',
+   c:[['It is cut in half (300 to 150 kPa).','Double the volume, half the pressure. That is Boyle’s law.'],
+      ['It doubles (300 to 600 kPa).','600 kPa is at 10 mL, a SMALLER volume.'],
+      ['It stays the same.','The pressure dropped from 300 to 150 kPa.'],
+      ['It drops to zero.','At 40 mL the pressure is 150 kPa, not 0.']],
+   s:{pt:[[20,300],[40,150]]}}
+ ]},
+/* ---------- 17 ---------- */
+{n:17, topic:'Toy car distance vs. time',
+ title:'Distance vs. Time',
+ desc:'A toy car rolled across the floor. A student marked how far it had gone every second. The magenta dashed line is the best-fit line.',
+ x:{l:'Time (s)',min:0,max:10,st:0.5,ev:2}, y:{l:'Distance (cm)',min:0,max:350,st:10,ev:5},
+ series:[{name:'measured',line:false,pts:[[1,30],[2,55],[3,90],[4,125],[5,150],[6,180],[7,205],[8,240]]}],
+ fit:{m:30,b:0,x0:0,x1:10},
+ qs:[
+  {t:12, q:'Use the best-fit line. [[ABOUT]] how many cm does the car travel each second?',
+   c:[['About 30 cm per second','Each second, the line goes up about 30 cm (30, 60, 90…).'],
+      ['About 240 cm per second','240 cm is the total distance at 8 seconds.'],
+      ['About 8 cm per second','8 is the time of the last point, not the speed.'],
+      ['About 3 cm per second','Too small. In 1 second the line rises 30 cm.']],
+   s:{pt:[[1,'fit'],[2,'fit']],brk:[[2,30,60,'+30 cm']]}},
+  {t:10, q:'Use the best-fit line to find the distance at [[3.5 seconds]].',
+   c:[['About 105 cm','Go up from 3.5 s to the line, then across: about 105 cm.'],
+      ['About 90 cm','90 cm is the point at 3 seconds.'],
+      ['About 125 cm','125 cm is the point at 4 seconds.'],
+      ['About 3.5 cm','3.5 is the time, not the distance.']],
+   s:{pt:[[3.5,'fit']]}},
+  {t:2, q:'At what time had the car gone [[90 cm]]?',
+   c:[['3 seconds','Go across from 90 cm to the dot, then down: 3 s.'],
+      ['4 seconds','At 4 s the car had gone 125 cm.'],
+      ['2 seconds','At 2 s the car had gone 55 cm.'],
+      ['90 seconds','90 is the distance. Read the time on the x-axis.']],
+   s:{hy:[90],pt:[[3,90]]}},
+  {t:5, q:'How far did the car travel [[BETWEEN]] 2 s and 6 s?',
+   c:[['125 cm','180 cm − 55 cm = 125 cm.'],
+      ['235 cm','You added 180 + 55. "Between" means subtract.'],
+      ['4 cm','4 is the number of SECONDS, not centimeters.'],
+      ['180 cm','180 cm is the total at 6 s, not the distance in between.']],
+   s:{pt:[[2,55],[6,180]],brk:[[6,55,180,'+125 cm']]}},
+  {t:4, q:'Which [[BEST]] describes the motion of the car?',
+   c:[['It moved at a steady speed.','The dots follow a straight line: the same distance each second.'],
+      ['It was speeding up.','A speeding-up car makes a curve that bends upward.'],
+      ['It was slowing down.','A slowing car makes a curve that flattens out.'],
+      ['It was not moving.','A car that is not moving makes a flat line.']],
+   s:{seg:[[1,30,8,240]]}}
+ ]},
+/* ---------- 18 ---------- */
+{n:18, topic:'Ice cream sales vs. temperature',
+ title:'Ice Cream Sales vs. Outdoor Temperature',
+ desc:'An ice cream shop recorded its sales and the outdoor temperature on 9 different days. The magenta dashed line is the best-fit line.',
+ x:{l:'Outdoor temperature (°F)',min:60,max:110,st:1,ev:5}, y:{l:'Ice cream sales ($)',min:100,max:500,st:10,ev:5},
+ series:[{name:'one day',line:false,pts:[[65,120],[70,150],[75,200],[80,240],[85,270],[90,320],[95,360],[100,400],[105,430]]}],
+ fit:{m:8,b:-400,x0:65,x1:110},
+ qs:[
+  {t:1, q:'What were the sales on the [[80 °F]] day?',
+   c:[['$240','Go up from 80 °F to the dot, then across: $240.'],
+      ['$80','80 is the temperature, not the sales.'],
+      ['$270','$270 was on the 85 °F day.'],
+      ['$250','That is one box too high. Each box is $10.']],
+   s:{pt:[[80,240]]}},
+  {t:2, q:'On the day with [[$320]] in sales, what was the temperature?',
+   c:[['90 °F','Go across from $320 to the dot, then down: 90 °F.'],
+      ['95 °F','On the 95 °F day, sales were $360.'],
+      ['85 °F','On the 85 °F day, sales were $270.'],
+      ['320 °F','320 is the sales. Read the temperature on the x-axis.']],
+   s:{hy:[320],pt:[[90,320]]}},
+  {t:4, q:'What is the [[TREND]] in this graph?',
+   c:[['On hotter days, sales are higher.','The dots rise from left to right.'],
+      ['On hotter days, sales are lower.','That would make the dots go DOWN to the right.'],
+      ['There is no pattern.','The dots clearly line up and rise.'],
+      ['Sales are the same every day.','That would be a flat line.']],
+   s:{seg:[[65,120,105,440]]}},
+  {t:5, q:'How much [[MORE]] in sales on the 100 °F day than on the 70 °F day?',
+   c:[['$250','$400 − $150 = $250.'],
+      ['$550','You added $400 + $150. "How much more" means subtract.'],
+      ['$30','30 is the change in TEMPERATURE (100 − 70), not dollars.'],
+      ['$400','$400 is the sales at 100 °F, not the difference.']],
+   s:{pt:[[70,150],[100,400]],brk:[[100,150,400,'+$250']]}},
+  {t:11, q:'Use the best-fit line to [[PREDICT]] sales on a [[110 °F]] day.',
+   c:[['About $480','Go up from 110 °F to the line, then across: about $480.'],
+      ['About $430','$430 is the last point, at 105 °F.'],
+      ['About $110','110 is the temperature, not the sales.'],
+      ['About $600','Too high. Follow the line at 110 °F.']],
+   s:{pt:[[110,'fit']]}}
+ ]},
+/* ---------- 19 ---------- */
+{n:19, topic:'Lake reservoir water level',
+ title:'Water Level vs. Month',
+ desc:'This graph shows how full an Arizona lake was at the start of each month. Spring and early summer were very dry. The monsoon rains came later.',
+ x:{l:'Month',cats:MONTHS}, y:{l:'Water level (% full)',min:40,max:80,st:2,ev:5},
+ series:[{pts:[[0,72],[1,70],[2,68],[3,64],[4,58],[5,50],[6,46],[7,56],[8,62],[9,62],[10,60],[11,60]]}],
+ qs:[
+  {t:1, q:'How full was the lake in [[May]]?',
+   c:[['58% full','Go up from May to the dot, then across: 58%.'],
+      ['50% full','That is June.'],
+      ['64% full','That is April.'],
+      ['60% full','That is one box too high. Each box is 2%.']],
+   s:{pt:[[4,58]]}},
+  {t:3, q:'In which month was the lake the [[LOWEST]]?',
+   c:[['July','July has the lowest dot: 46%.'],
+      ['December','December is the LAST month, not the lowest.'],
+      ['June','June is low (50%), but July is lower.'],
+      ['January','January is the HIGHEST point.']],
+   s:{ring:[[6,46]]}},
+  {t:6, q:'Between which two [[NEIGHBORING]] months did the level [[RISE]] the most?',
+   c:[['July to August','From 46% to 56%: up 10%, the biggest rise.'],
+      ['August to September','That rise is 6% (56 to 62).'],
+      ['May to June','That is a DROP, not a rise.'],
+      ['January to February','That is a small drop.']],
+   s:{band:[6,7],seg:[[6,46,7,56]],brk:[[7,46,56,'+10%']]}},
+  {t:2, q:'In which month was the lake [[64%]] full?',
+   c:[['April','Go across from 64% to the dot, then down: April.'],
+      ['May','May was 58%.'],
+      ['March','March was 68%.'],
+      ['September','September was 62%, one box lower.']],
+   s:{hy:[64],pt:[[3,64]]}},
+  {t:12, q:'[[WHY]] might the lake level rise in July and August?',
+   c:[['Monsoon rains filled the lake.','Arizona’s monsoon brings heavy summer rain, and the line goes up then.'],
+      ['People used more water.','Using more water would make the level go DOWN.'],
+      ['Those are the coldest months.','July and August are the hottest months in Arizona.'],
+      ['More water evaporated.','Evaporation makes the level go down, not up.']],
+   s:{band:[6,8],seg:[[6,46,8,62]]}}
+ ]},
+/* ---------- 20 ---------- */
+{n:20, topic:'Gas produced at two temperatures',
+ title:'Gas Produced vs. Time',
+ desc:'The same reaction was run in two beakers, one at 20 °C and one at 40 °C. The gas made was collected and measured every 10 seconds.',
+ x:{l:'Time (s)',min:0,max:60,st:2,ev:5}, y:{l:'Gas produced (mL)',min:0,max:60,st:2,ev:5},
+ series:[{name:'20 °C',pts:[[0,0],[10,8],[20,16],[30,24],[40,32],[50,40],[60,46]]},
+         {name:'40 °C',pts:[[0,0],[10,20],[20,36],[30,46],[40,50],[50,50],[60,50]]}],
+ qs:[
+  {t:8, q:'At [[30 s]], which reaction had made [[MORE]] gas, and by about how much?',
+   c:[['40 °C, by about 22 mL','At 30 s: 46 mL (40 °C) − 24 mL (20 °C) = 22 mL.'],
+      ['20 °C, by about 22 mL','Wrong line. The 20 °C line is lower at 30 s.'],
+      ['40 °C, by about 46 mL','46 mL is the 40 °C total, not the difference.'],
+      ['40 °C, by about 70 mL','You added 46 + 24. "By how much" means subtract.']],
+   s:{vx:[30],pt:[[30,46],[30,24]],brk:[[30,24,46,'22 mL']]}},
+  {t:1, q:'How much gas had the [[20 °C]] reaction made at 40 s?',
+   c:[['32 mL','Use the blue 20 °C line: up from 40 s, then across: 32 mL.'],
+      ['50 mL','50 mL is the orange 40 °C line. Check the legend.'],
+      ['40 mL','40 mL is the 20 °C line at 50 s.'],
+      ['34 mL','That is one box too high. Each box is 2 mL.']],
+   s:{pt:[[40,32]]}},
+  {t:2, q:'When did the [[40 °C]] reaction reach 36 mL?',
+   c:[['20 s','Use the orange line: across from 36 mL, then down: 20 s.'],
+      ['30 s','At 30 s the 40 °C reaction had made 46 mL.'],
+      ['10 s','At 10 s the 40 °C reaction had made 20 mL.'],
+      ['36 s','36 is the mL of gas. Read the time on the x-axis.']],
+   s:{hy:[36],pt:[[20,36]]}},
+  {t:4, q:'What happens to the [[40 °C]] line after 40 s?',
+   c:[['It levels off. No more gas is made.','The orange line is flat at 50 mL from 40 to 60 s.'],
+      ['It rises faster.','A faster rise would be steeper. The line is flat.'],
+      ['It goes down.','The line never goes down. Gas was not lost.'],
+      ['It rises at the same speed as before.','Before 40 s it rose. After 40 s it is flat.']],
+   s:{seg:[[40,50,60,50]]}},
+  {t:12, q:'Which reaction was [[FASTER]], and how can you tell?',
+   c:[['40 °C, because its line is steeper.','A steeper line means more gas each second.'],
+      ['20 °C, because its line is longer.','Both lines cover the same 60 seconds.'],
+      ['Both were the same, because both start at 0.','Both start at 0, but the orange line climbs faster.'],
+      ['40 °C, because its line is lower.','The 40 °C line is HIGHER, not lower.']],
+   s:{seg:[[0,0,20,36]]}}
+ ]},
+/* ---------- 21 ---------- */
+{n:21, topic:'Bouncing ball',
+ title:'Height vs. Time',
+ desc:'A ball was dropped from 200 cm and bounced on the floor. A video was used to find its height every 0.1 seconds.',
+ x:{l:'Time (s)',min:0,max:4,st:0.1,ev:5}, y:{l:'Height (cm)',min:0,max:220,st:5,ev:4},
+ r:3,
+ series:[{pts:bounce()}],
+ qs:[
+  {t:3, q:'What was the [[MAXIMUM]] height after the [[FIRST]] bounce?',
+   c:[['120 cm','The top of the first bounce is at 1.1 s: 120 cm.'],
+      ['200 cm','200 cm is the drop height, before any bounce.'],
+      ['70 cm','70 cm is the top of the SECOND bounce.'],
+      ['1.1 cm','1.1 is the time of the peak, not the height.']],
+   s:{ring:[[1.1,120]],hy:[120]}},
+  {t:2, q:'At what time did the ball [[FIRST]] hit the floor?',
+   c:[['0.6 s','The curve first touches 0 cm at 0.6 s.'],
+      ['0 s','At 0 s the ball was let go at 200 cm.'],
+      ['1.1 s','At 1.1 s the ball was at the top of its first bounce.'],
+      ['1.6 s','1.6 s is the SECOND time it hit the floor.']],
+   s:{pt:[[0.6,0]],ring:[[0.6,0]]}},
+  {t:1, q:'How high was the ball at [[2.0 s]]?',
+   c:[['70 cm','Go up from 2.0 s to the curve, then across: 70 cm.'],
+      ['120 cm','120 cm was the top of the first bounce, at 1.1 s.'],
+      ['2 cm','2.0 is the time, not the height.'],
+      ['40 cm','40 cm was the top of the third bounce, at 2.7 s.']],
+   s:{pt:[[2,70]]}},
+  {t:5, q:'How much [[LOWER]] was the second bounce than the first bounce?',
+   c:[['50 cm','120 cm − 70 cm = 50 cm.'],
+      ['190 cm','You added 120 + 70. "How much lower" means subtract.'],
+      ['70 cm','70 cm is the height of the second bounce, not the difference.'],
+      ['80 cm','200 − 120 compares the DROP to the first bounce.']],
+   s:{ring:[[1.1,120],[2,70]],hy:[120,70],brk:[[2,70,120,'50 cm']]}},
+  {t:12, q:'What does the [[FLAT]] line at 0 cm after 3.4 s mean?',
+   c:[['The ball stopped and is resting on the floor.','A height of 0 that does not change means the ball is sitting still on the floor.'],
+      ['The ball is at its highest point.','The highest point is 200 cm at the start.'],
+      ['The ball is falling fast.','Falling would be a line going down.'],
+      ['The ball flew out of the video.','The video still shows the ball at 0 cm.']],
+   s:{seg:[[3.4,0,4,0]]}}
+ ]},
+/* ---------- 22 ---------- */
+{n:22, topic:'Hot pack and cold pack',
+ title:'Temperature vs. Time',
+ desc:'A student activated a hot pack and a cold pack at the same time. A thermometer was taped to each pack, and both were read every minute.',
+ x:{l:'Time (min)',min:0,max:10,st:0.5,ev:2}, y:{l:'Temperature (°C)',min:0,max:60,st:2,ev:5},
+ series:[{name:'Cold pack',pts:[[0,22],[1,10],[2,6],[3,4],[4,4],[5,6],[6,8],[8,10],[10,12]]},
+         {name:'Hot pack',pts:[[0,22],[1,40],[2,50],[3,54],[4,54],[5,52],[6,50],[8,46],[10,42]]}],
+ qs:[
+  {t:8, q:'At [[2 minutes]], how much [[WARMER]] was the hot pack than the cold pack?',
+   c:[['44 °C','At 2 min: 50 °C − 6 °C = 44 °C.'],
+      ['56 °C','You added 50 + 6. "How much warmer" means subtract.'],
+      ['50 °C','50 °C is the hot pack alone, not the difference.'],
+      ['2 °C','2 is the time, not a temperature.']],
+   s:{vx:[2],pt:[[2,50],[2,6]],brk:[[2,6,50,'44 °C']]}},
+  {t:1, q:'What was the [[COLD]] pack’s temperature at 6 minutes?',
+   c:[['8 °C','Use the blue cold-pack line: up from 6 min, then across: 8 °C.'],
+      ['50 °C','50 °C is the orange HOT pack line. Check the legend.'],
+      ['6 °C','6 °C was the cold pack at 5 minutes.'],
+      ['10 °C','10 °C was the cold pack at 8 minutes.']],
+   s:{pt:[[6,8]]}},
+  {t:3, q:'What was the [[LOWEST]] temperature of the cold pack?',
+   c:[['4 °C','The lowest blue dots are at 3 and 4 minutes: 4 °C.'],
+      ['12 °C','12 °C is the LAST reading, not the lowest.'],
+      ['22 °C','22 °C is where it started.'],
+      ['0 °C','The line never reaches 0 °C.']],
+   s:{ring:[[3,4],[4,4]]}},
+  {t:2, q:'When did the hot pack [[FIRST]] reach 54 °C?',
+   c:[['3 minutes','Use the orange line: across from 54 °C, then down: 3 minutes.'],
+      ['4 minutes','It was still 54 °C at 4 minutes, but it FIRST got there at 3.'],
+      ['2 minutes','At 2 minutes the hot pack was 50 °C.'],
+      ['54 minutes','54 is the temperature. Read the time on the x-axis.']],
+   s:{hy:[54],pt:[[3,54]]}},
+  {t:12, q:'Both lines start at [[22 °C]]. Why?',
+   c:[['Both packs started at room temperature.','Before they were activated, both packs were just sitting in the room.'],
+      ['Both packs were already hot.','22 °C is room temperature, not hot.'],
+      ['The thermometers were broken.','The thermometers changed right away, so they worked.'],
+      ['22 is the starting time.','The time at the start is 0 minutes. 22 is on the temperature axis.']],
+   s:{pt:[[0,22]]}}
+ ]},
+/* ---------- 23 ---------- */
+{n:23, topic:'Hours of daylight in Arizona',
+ title:'Hours of Daylight vs. Month',
+ desc:'This graph shows how many hours of daylight Phoenix, Arizona, gets in the middle of each month.',
+ x:{l:'Month',cats:MONTHS}, y:{l:'Hours of daylight',min:9,max:15,st:0.2,ev:5},
+ series:[{pts:[[0,10.2],[1,11],[2,12],[3,12.8],[4,13.6],[5,14.2],[6,14],[7,13.4],[8,12.4],[9,11.4],[10,10.6],[11,10]]}],
+ qs:[
+  {t:3, q:'Which month has the [[MOST]] daylight?',
+   c:[['June','June has the highest dot: 14.2 hours.'],
+      ['July','July is close (14.0), but June is higher.'],
+      ['December','December has the LEAST daylight.'],
+      ['August','August has 13.4 hours, lower than June.']],
+   s:{ring:[[5,14.2]]}},
+  {t:1, q:'About how many hours of daylight are there in [[March]]?',
+   c:[['12 hours','Go up from March to the dot, then across: 12 hours.'],
+      ['3 hours','March is month 3, but the hours are on the y-axis.'],
+      ['11 hours','11 hours is February.'],
+      ['12.8 hours','12.8 hours is April.']],
+   s:{pt:[[2,12]]}},
+  {t:7, q:'What is the [[RANGE]] of daylight hours (most − least)?',
+   c:[['4.2 hours','Most 14.2 (June) − least 10.0 (December) = 4.2 hours.'],
+      ['24.2 hours','You added 14.2 + 10.0. Range means subtract.'],
+      ['4.0 hours','You used January (10.2) instead of the true least, December (10.0).'],
+      ['10.0 hours','10.0 hours is just the least.']],
+   s:{ring:[[5,14.2],[11,10]],hy:[14.2,10]}},
+  {t:2, q:'Which month has about [[12.4 hours]] of daylight?',
+   c:[['September','Go across from 12.4 hours to the dot, then down: September.'],
+      ['March','March has 12.0 hours.'],
+      ['April','April has 12.8 hours.'],
+      ['August','August has 13.4 hours.']],
+   s:{hy:[12.4],pt:[[8,12.4]]}},
+  {t:12, q:'The curve is [[STEEPEST]] in spring and fall. What does that mean?',
+   c:[['Day length changes the fastest then.','A steep part means a big change from month to month.'],
+      ['The days are the longest then.','The longest days are at the TOP of the curve, in June.'],
+      ['Day length does not change then.','No change would be flat, not steep.'],
+      ['It is the hottest time of year.','The graph shows daylight hours, not temperature.']],
+   s:{seg:[[1,11,4,13.6],[7,13.4,10,10.6]]}}
+ ]},
+/* ---------- 24 ---------- */
+{n:24, topic:'Mass vs. volume of aluminum (density)',
+ title:'Mass vs. Volume',
+ desc:'Students found the mass and volume of 6 pieces of aluminum. The magenta dashed line is the best-fit line. Its slope is the density of aluminum.',
+ x:{l:'Volume (mL)',min:0,max:50,st:2,ev:5}, y:{l:'Mass (g)',min:0,max:140,st:5,ev:4},
+ series:[{name:'one piece',line:false,pts:[[10,27],[15,41],[20,54],[25,68],[30,80],[40,108]]}],
+ fit:{m:2.7,b:0,x0:0,x1:50},
+ qs:[
+  {t:1, q:'What was the mass of the [[20 mL]] piece?',
+   c:[['About 54 g','Go up from 20 mL to the dot, then across: about 54 g.'],
+      ['About 20 g','20 is the volume, not the mass.'],
+      ['About 68 g','68 g is the 25 mL piece.'],
+      ['About 41 g','41 g is the 15 mL piece.']],
+   s:{pt:[[20,54]]}},
+  {t:2, q:'Which piece had a mass of about [[108 g]]?',
+   c:[['The 40 mL piece','Go across from 108 g to the dot, then down: 40 mL.'],
+      ['The 30 mL piece','The 30 mL piece was about 80 g.'],
+      ['The 108 mL piece','108 is the mass. Read the volume on the x-axis.'],
+      ['The 50 mL piece','No 50 mL piece was measured.']],
+   s:{hy:[108],pt:[[40,108]]}},
+  {t:4, q:'Which [[BEST]] describes the pattern?',
+   c:[['Mass goes up steadily as volume goes up.','The dots follow a straight rising line: bigger pieces have more mass.'],
+      ['Mass goes down as volume goes up.','The line rises from left to right.'],
+      ['Mass goes up, then levels off.','The dots never flatten out.'],
+      ['There is no pattern.','The dots line up very well.']],
+   s:{seg:[[10,27,40,108]]}},
+  {g:'CHANGE', t:12, q:'About how many grams does [[EACH mL]] of aluminum add? (This is its density.)',
+   c:[['About 2.7 g per mL','From 10 mL to 20 mL the line rises 27 g. That is 2.7 g for each mL.'],
+      ['About 27 g per mL','27 g is the mass of the whole 10 mL piece, not 1 mL.'],
+      ['About 0.4 g per mL','You divided volume by mass. Density is mass ÷ volume.'],
+      ['About 135 g per mL','135 g is the mass at 50 mL.']],
+   s:{pt:[[10,'fit'],[20,'fit']],brk:[[20,27,54,'+27 g']]}},
+  {t:11, q:'Use the best-fit line to [[PREDICT]] the mass of a [[50 mL]] piece.',
+   c:[['About 135 g','Go up from 50 mL to the line, then across: about 135 g.'],
+      ['About 108 g','108 g is the 40 mL piece.'],
+      ['About 50 g','50 is the volume, not the mass.'],
+      ['About 180 g','Too high. Follow the line at 50 mL.']],
+   s:{pt:[[50,'fit']]}}
+ ]},
+/* ---------- 25 ---------- */
+{n:25, topic:'Players online in a video game',
+ title:'Players Online vs. Time of Day',
+ desc:'A video game company counted how many players were online every 2 hours on a school day. The numbers are in thousands, so 10 means 10,000.',
+ x:{l:'Time of day',cats:['12 AM','2 AM','4 AM','6 AM','8 AM','10 AM','12 PM','2 PM','4 PM','6 PM','8 PM','10 PM']}, y:{l:'Players online (thousands)',min:0,max:60,st:2,ev:5},
+ series:[{pts:[[0,30],[1,18],[2,8],[3,6],[4,10],[5,14],[6,20],[7,22],[8,36],[9,48],[10,56],[11,44]]}],
+ qs:[
+  {t:1, q:'How many players were online at [[6 PM]]?',
+   c:[['48,000','Go up from 6 PM to the dot, then across: 48 thousand.'],
+      ['56,000','56 thousand were online at 8 PM.'],
+      ['6,000','6 is the time. Read the players on the y-axis.'],
+      ['36,000','36 thousand were online at 4 PM.']],
+   s:{pt:[[9,48]]}},
+  {t:3, q:'At what time were the [[FEWEST]] players online?',
+   c:[['6 AM','6 AM has the lowest dot: 6 thousand players.'],
+      ['4 AM','4 AM is low (8 thousand), but 6 AM is lower.'],
+      ['12 AM','12 AM is the FIRST point, not the lowest.'],
+      ['8 PM','8 PM has the MOST players.']],
+   s:{ring:[[3,6]]}},
+  {t:6, q:'Between which two [[NEIGHBORING]] times did the number of players go up the [[MOST]]?',
+   c:[['2 PM to 4 PM','From 22 to 36 thousand: up 14 thousand, the biggest rise.'],
+      ['4 PM to 6 PM','That rise is 12 thousand (36 to 48).'],
+      ['8 PM to 10 PM','That is a DROP, not a rise.'],
+      ['12 AM to 2 AM','That is a DROP, not a rise.']],
+   s:{band:[7,8],seg:[[7,22,8,36]],brk:[[8,22,36,'+14']]}},
+  {t:2, q:'At what time were there [[20,000]] players online?',
+   c:[['12 PM','Go across from 20 to the dot, then down: 12 PM.'],
+      ['2 PM','At 2 PM there were 22 thousand, one box higher.'],
+      ['10 AM','At 10 AM there were 14 thousand.'],
+      ['2 AM','At 2 AM there were 18 thousand.']],
+   s:{hy:[20],pt:[[6,20]]}},
+  {t:12, q:'[[WHY]] might the most players be online around 8 PM?',
+   c:[['Most people are done with school and work.','The evening is free time, so more people play.'],
+      ['Most people are asleep.','When people sleep (like 6 AM), the graph is LOW.'],
+      ['The game is closed at 8 PM.','A closed game would have 0 players.'],
+      ['It is the start of the school day.','School starts in the morning, when the graph is low.']],
+   s:{ring:[[10,56]]}}
+ ]},
+/* ---------- 26 ---------- */
+{n:26, topic:'Fading dye (absorbance)',
+ title:'Absorbance vs. Time',
+ desc:'Bleach was added to blue food dye. A colorimeter measured the absorbance, which is how much light the dye blocks. More color means a higher absorbance.',
+ x:{l:'Time (min)',min:0,max:20,st:1,ev:2}, y:{l:'Absorbance',min:0,max:1,st:0.05,ev:2},
+ series:[{pts:[[0,0.8],[2,0.65],[4,0.55],[6,0.45],[8,0.35],[10,0.3],[12,0.25],[14,0.2],[16,0.15],[18,0.15],[20,0.1]]}],
+ qs:[
+  {t:1, q:'What was the absorbance at [[6 minutes]]?',
+   c:[['0.45','Go up from 6 minutes to the dot, then across: 0.45.'],
+      ['0.55','0.55 was at 4 minutes.'],
+      ['6','6 is the time on the x-axis, not the absorbance.'],
+      ['0.50','That is one box too high. Each box is 0.05.']],
+   s:{pt:[[6,0.45]]}},
+  {t:2, q:'At what time was the absorbance [[0.30]]?',
+   c:[['10 minutes','Go across from 0.30 to the dot, then down: 10 minutes.'],
+      ['12 minutes','At 12 minutes it was 0.25, one box lower.'],
+      ['8 minutes','At 8 minutes it was 0.35, one box higher.'],
+      ['6 minutes','At 6 minutes it was 0.45.']],
+   s:{hy:[0.3],pt:[[10,0.3]]}},
+  {t:4, q:'Which [[BEST]] describes how the absorbance changes?',
+   c:[['It drops fast at first, then more slowly.','The line is steep at the start and flatter near the end.'],
+      ['It goes up over time.','The line goes down.'],
+      ['It drops at a steady rate.','The drops get smaller over time, so it is not steady.'],
+      ['It stays the same.','That would be a flat line.']],
+   s:{seg:[[0,0.8,2,0.65],[16,0.15,20,0.1]]}},
+  {t:5, q:'How much did the absorbance [[DROP]] from 0 to 10 minutes?',
+   c:[['0.50','0.80 − 0.30 = 0.50.'],
+      ['1.10','You added 0.80 + 0.30. A drop means subtract.'],
+      ['0.30','0.30 is the value AT 10 minutes, not the drop.'],
+      ['10','10 is the time that passed, not the drop.']],
+   s:{pt:[[0,0.8],[10,0.3]],brk:[[10,0.3,0.8,'−0.50']]}},
+  {t:12, q:'What does a [[LOWER]] absorbance mean?',
+   c:[['The dye is lighter, with less color.','Less color blocks less light, so absorbance goes down.'],
+      ['The dye is getting darker.','Darker dye would block MORE light.'],
+      ['More dye was added.','More dye would make the absorbance go up.'],
+      ['The dye is getting hotter.','The graph does not show temperature.']],
+   s:{seg:[[0,0.8,20,0.1]]}}
+ ]},
+/* ---------- 27 ---------- */
+{n:27, topic:'Gas tank on a road trip',
+ title:'Gas in Tank vs. Time',
+ desc:'A family drove from Chandler to San Diego. A passenger checked the fuel gauge every hour. They made one stop at a gas station.',
+ x:{l:'Time (hours)',min:0,max:10,st:0.5,ev:2}, y:{l:'Gas in tank (gallons)',min:0,max:16,st:0.5,ev:4},
+ series:[{pts:[[0,14],[1,12],[2,10],[3,8],[4,6],[5,4],[5.5,15],[6.5,13],[7.5,11],[8.5,9],[9.5,7]]}],
+ qs:[
+  {t:10, q:'About how much gas was in the tank at [[1.5 hours]]?',
+   c:[['About 11 gallons','1.5 h is halfway between 1 h (12 gal) and 2 h (10 gal). The line is at 11.'],
+      ['About 12 gallons','12 gallons was at 1 hour.'],
+      ['About 10 gallons','10 gallons was at 2 hours.'],
+      ['About 1.5 gallons','1.5 is the time, not the gas.']],
+   s:{pt:[[1.5,11]]}},
+  {t:12, q:'What happened [[BETWEEN]] 5 and 5.5 hours?',
+   c:[['They filled up the gas tank.','The line jumps UP from 4 to 15 gallons. Only a refill adds gas.'],
+      ['The car used a lot of gas fast.','Using gas makes the line go DOWN.'],
+      ['The car stopped and used no gas.','That would make a flat line, not a jump up.'],
+      ['The tank leaked.','A leak would make the line go down.']],
+   s:{band:[5,5.5],seg:[[5,4,5.5,15]]}},
+  {t:3, q:'What was the [[LEAST]] amount of gas in the tank?',
+   c:[['4 gallons','The lowest dot is at 5 hours: 4 gallons.'],
+      ['7 gallons','7 gallons is the LAST value, not the lowest.'],
+      ['0 gallons','The tank never ran empty.'],
+      ['15 gallons','15 gallons is the MOST, right after the refill.']],
+   s:{ring:[[5,4]]}},
+  {t:5, q:'How much gas was [[ADDED]] at the gas station?',
+   c:[['11 gallons','15 − 4 = 11 gallons.'],
+      ['19 gallons','You added 15 + 4. To find the amount added, subtract.'],
+      ['15 gallons','15 gallons is what the tank held AFTER the refill.'],
+      ['4 gallons','4 gallons is what was left BEFORE the refill.']],
+   s:{pt:[[5,4],[5.5,15]],brk:[[5.5,4,15,'+11 gal']]}},
+  {t:2, q:'At what time did the tank have [[6 gallons]]?',
+   c:[['4 hours','Go across from 6 gallons to the dot, then down: 4 hours.'],
+      ['6 hours','6 is the gallons. Read the time on the x-axis.'],
+      ['5 hours','At 5 hours there were 4 gallons.'],
+      ['3 hours','At 3 hours there were 8 gallons.']],
+   s:{hy:[6],pt:[[4,6]]}}
+ ]},
+/* ---------- 28 ---------- */
+{n:28, topic:'CO₂ in a classroom',
+ title:'CO₂ Level vs. Time of Day',
+ desc:'A CO₂ sensor measured carbon dioxide in a classroom every hour. People breathe out CO₂. The room was empty at lunch, and the windows were opened.',
+ x:{l:'Time of day',cats:['7 AM','8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM']}, y:{l:'CO₂ level (ppm)',min:400,max:1600,st:50,ev:2},
+ series:[{pts:[[0,450],[1,700],[2,1000],[3,1200],[4,1350],[5,800],[6,1050],[7,1300],[8,1450],[9,900]]}],
+ qs:[
+  {t:1, q:'What was the CO₂ level at [[10 AM]]?',
+   c:[['1,200 ppm','Go up from 10 AM to the dot, then across: 1,200 ppm.'],
+      ['1,000 ppm','1,000 ppm was at 9 AM.'],
+      ['1,350 ppm','1,350 ppm was at 11 AM.'],
+      ['1,250 ppm','That is one box too high. Each box is 50 ppm.']],
+   s:{pt:[[3,1200]]}},
+  {t:3, q:'When was the CO₂ level the [[HIGHEST]]?',
+   c:[['3 PM','3 PM has the highest dot: 1,450 ppm.'],
+      ['4 PM','4 PM is the LAST point, not the highest.'],
+      ['11 AM','11 AM was the highest in the MORNING, but 3 PM is higher.'],
+      ['7 AM','7 AM is the LOWEST point.']],
+   s:{ring:[[8,1450]]}},
+  {t:5, q:'How much did the CO₂ [[DROP]] from 11 AM to 12 PM?',
+   c:[['550 ppm','1,350 − 800 = 550 ppm.'],
+      ['2,150 ppm','You added 1,350 + 800. A drop means subtract.'],
+      ['800 ppm','800 ppm is the level at 12 PM, not the drop.'],
+      ['1 ppm','1 is the hour that passed, not the drop.']],
+   s:{pt:[[4,1350],[5,800]],brk:[[5,800,1350,'−550']]}},
+  {t:2, q:'At what time was the CO₂ level [[1,050 ppm]]?',
+   c:[['1 PM','Go across from 1,050 ppm to the dot, then down: 1 PM.'],
+      ['9 AM','At 9 AM it was 1,000 ppm, one box lower.'],
+      ['2 PM','At 2 PM it was 1,300 ppm.'],
+      ['10 AM','At 10 AM it was 1,200 ppm.']],
+   s:{hy:[1050],pt:[[6,1050]]}},
+  {t:12, q:'[[WHY]] did the CO₂ go down at lunch?',
+   c:[['The students left and the windows were open.','Fewer people breathing out CO₂, plus fresh air, lowered the level.'],
+      ['The students breathed faster.','More breathing would make CO₂ go UP.'],
+      ['More students came into the room.','More people would make CO₂ go up.'],
+      ['The sensor was turned off.','The sensor still gave a reading at 12 PM.']],
+   s:{band:[4,5],seg:[[4,1350,5,800]]}}
+ ]},
+/* ---------- 29 ---------- */
+{n:29, topic:'Shoe size vs. height',
+ title:'Shoe Size vs. Height',
+ desc:'A class measured the height and shoe size of 11 students. Each dot is one student. The magenta dashed line is the best-fit line.',
+ x:{l:'Height (cm)',min:140,max:190,st:2,ev:5}, y:{l:'Shoe size (US)',min:4,max:14,st:0.5,ev:2},
+ series:[{name:'one student',line:false,pts:[[145,5],[150,6],[155,6.5],[158,7.5],[162,8],[165,8],[170,9],[173,10],[178,10.5],[182,11],[186,12]]}],
+ fit:{m:0.15,b:-16.5,x0:140,x1:190},
+ qs:[
+  {t:1, q:'What is the shoe size of the student who is [[170 cm]] tall?',
+   c:[['9','Go up from 170 cm to the dot, then across: size 9.'],
+      ['10','Size 10 is the student who is 173 cm tall.'],
+      ['8','Size 8 is the student who is 165 cm tall.'],
+      ['6','Size 6 is the student who is 150 cm tall.']],
+   s:{pt:[[170,9]]}},
+  {t:4, q:'What is the [[TREND]] in this graph?',
+   c:[['Taller students tend to have bigger shoe sizes.','The dots rise from left to right.'],
+      ['Taller students tend to have smaller shoe sizes.','That would make the dots go DOWN to the right.'],
+      ['There is no pattern.','The dots clearly line up and rise.'],
+      ['Every student has the same shoe size.','That would be a flat line.']],
+   s:{seg:[[145,5,186,12]]}},
+  {t:12, q:'Does having big feet [[CAUSE]] a student to be tall?',
+   c:[['No. They are linked, but one does not cause the other.','Both grow as a person grows. Linked is not the same as caused.'],
+      ['Yes, because the line goes up.','A rising line shows a link, not a cause.'],
+      ['Yes, because big shoes stretch you.','Shoes do not change how tall you grow.'],
+      ['No, because the dots are not on the line.','Dots near the line still show a link. That is not the reason.']],
+   s:{seg:[[145,5,186,12]]}},
+  {t:2, q:'How tall is the student with shoe size [[12]]?',
+   c:[['186 cm','Go across from size 12 to the dot, then down: 186 cm.'],
+      ['182 cm','The 182 cm student wears size 11.'],
+      ['178 cm','The 178 cm student wears size 10.5.'],
+      ['12 cm','12 is the shoe size. Read the height on the x-axis.']],
+   s:{hy:[12],pt:[[186,12]]}},
+  {t:5, q:'How much [[TALLER]] is the size-12 student than the size-6 student?',
+   c:[['36 cm','186 cm − 150 cm = 36 cm.'],
+      ['336 cm','You added 186 + 150. "How much taller" means subtract.'],
+      ['6 cm','6 is the difference in SHOE SIZE, not height.'],
+      ['186 cm','186 cm is just the taller student’s height.']],
+   s:{pt:[[150,6],[186,12]]}}
+ ]},
+/* ---------- 30 ---------- */
+{n:30, topic:'Melting ice cube',
+ title:'Mass of Ice vs. Time',
+ desc:'An ice cube was put in a strainer at room temperature. Every 5 minutes, the ice left was weighed. The magenta dashed line is the best-fit line.',
+ x:{l:'Time (min)',min:0,max:50,st:2,ev:5}, y:{l:'Mass of ice (g)',min:0,max:30,st:1,ev:5},
+ series:[{name:'measured',line:false,pts:[[0,25],[5,23],[10,20],[15,18],[20,15],[25,13],[30,10]]}],
+ fit:{m:-0.5,b:25,x0:0,x1:50},
+ qs:[
+  {t:11, q:'Use the best-fit line to [[PREDICT]] when the ice will be [[completely melted]] (0 g).',
+   c:[['About 50 minutes','Follow the line down until it hits 0 g, then go down to the x-axis: about 50 minutes.'],
+      ['About 30 minutes','30 minutes is the last measurement. There was still 10 g left.'],
+      ['About 25 minutes','25 is the starting MASS, not a time.'],
+      ['About 80 minutes','Too late. The line reaches 0 g at about 50 minutes.']],
+   s:{pt:[[50,'fit']],ring:[]}},
+  {t:1, q:'What was the mass of the ice at [[20 minutes]]?',
+   c:[['15 g','Go up from 20 minutes to the dot, then across: 15 g.'],
+      ['20 g','20 is the time. 20 g was the mass at 10 minutes.'],
+      ['13 g','13 g was at 25 minutes.'],
+      ['18 g','18 g was at 15 minutes.']],
+   s:{pt:[[20,15]]}},
+  {t:5, q:'How much ice [[MELTED]] from 0 to 30 minutes?',
+   c:[['15 g','25 g − 10 g = 15 g melted.'],
+      ['35 g','You added 25 + 10. To find how much melted, subtract.'],
+      ['10 g','10 g is the ice LEFT at 30 minutes, not the amount melted.'],
+      ['30 g','30 is the time, not the mass.']],
+   s:{pt:[[0,25],[30,10]],brk:[[30,10,25,'−15 g']]}},
+  {t:2, q:'At what time was the mass of the ice [[18 g]]?',
+   c:[['15 minutes','Go across from 18 g to the dot, then down: 15 minutes.'],
+      ['18 minutes','18 is the mass. Read the time on the x-axis.'],
+      ['20 minutes','At 20 minutes the mass was 15 g.'],
+      ['10 minutes','At 10 minutes the mass was 20 g.']],
+   s:{hy:[18],pt:[[15,18]]}},
+  {t:4, q:'Which [[BEST]] describes how the mass changed?',
+   c:[['It went down at a steady rate.','The dots follow a straight line going down.'],
+      ['It went up.','The dots go down from left to right.'],
+      ['It went down, then leveled off.','The dots never flatten out.'],
+      ['It stayed the same.','That would be a flat line.']],
+   s:{seg:[[0,25,30,10]]}}
+ ]},
+/* ---------- 31 ---------- */
+{n:31, topic:'Football points per game',
+ title:'Points Scored vs. Game Number',
+ desc:'This graph shows how many points a high school football team scored in each of its 12 games this season.',
+ x:{l:'Game number',cats:['1','2','3','4','5','6','7','8','9','10','11','12']}, y:{l:'Points scored',min:0,max:50,st:2,ev:5},
+ series:[{pts:[[0,14],[1,20],[2,28],[3,6],[4,24],[5,34],[6,16],[7,42],[8,10],[9,30],[10,26],[11,38]]}],
+ qs:[
+  {t:1, q:'How many points did the team score in [[Game 6]]?',
+   c:[['34 points','Go up from Game 6 to the dot, then across: 34.'],
+      ['24 points','24 points was Game 5.'],
+      ['6 points','6 is the game number. (Game 4 also scored 6.)'],
+      ['36 points','That is one box too high. Each box is 2 points.']],
+   s:{pt:[[5,34]]}},
+  {t:3, q:'Which game had the [[MOST]] points?',
+   c:[['Game 8','Game 8 has the highest dot: 42 points.'],
+      ['Game 12','Game 12 is the LAST game, not the highest.'],
+      ['Game 42','42 is the points. Read the game on the x-axis.'],
+      ['Game 6','Game 6 scored 34, less than 42.']],
+   s:{ring:[[7,42]]}},
+  {t:7, q:'What is the [[RANGE]] of points scored (most − least)?',
+   c:[['36 points','Most 42 − least 6 = 36 points.'],
+      ['48 points','You added 42 + 6. Range means subtract.'],
+      ['28 points','You used Game 1 (14) instead of the least (6).'],
+      ['42 points','42 is just the most.']],
+   s:{ring:[[7,42],[3,6]],hy:[42,6]}},
+  {t:2, q:'In which game did the team score [[10]] points?',
+   c:[['Game 9','Go across from 10 to the dot, then down: Game 9.'],
+      ['Game 10','10 is the points. Game 10 scored 30.'],
+      ['Game 4','Game 4 scored 6, two boxes lower.'],
+      ['Game 1','Game 1 scored 14.']],
+   s:{hy:[10],pt:[[8,10]]}},
+  {t:9, q:'What is the [[INDEPENDENT]] variable on this graph?',
+   c:[['The game number','It is on the x-axis. It counts the games in order.'],
+      ['The points scored','Points scored is what was measured. It is on the y-axis.'],
+      ['The other team','The other team is not shown on this graph.'],
+      ['The weather','The weather is not shown on this graph.']],
+   s:{axis:'x'}}
+ ]},
+/* ---------- 32 ---------- */
+{n:32, topic:'Boiling point vs. altitude',
+ title:'Boiling Point vs. Altitude',
+ desc:'Water was boiled at places with different altitudes (height above sea level). The magenta dashed line is the best-fit line.',
+ x:{l:'Altitude (ft)',min:0,max:8000,st:200,ev:5}, y:{l:'Boiling point (°C)',min:90,max:102,st:0.5,ev:2},
+ series:[{name:'measured',line:false,pts:[[0,100],[1000,99],[2000,98.5],[3000,97],[4000,96],[5000,94.5]]}],
+ fit:{m:-0.001,b:100,x0:0,x1:8000},
+ qs:[
+  {t:11, q:'Flagstaff, AZ is about [[7,000 ft]] high. [[PREDICT]] the boiling point there.',
+   c:[['About 93 °C','Go up from 7,000 ft to the line, then across: about 93 °C.'],
+      ['About 95 °C','About 95 °C is the last measured point, near 5,000 ft.'],
+      ['About 100 °C','100 °C is the boiling point at sea level.'],
+      ['About 107 °C','The boiling point goes DOWN as altitude goes up.']],
+   s:{pt:[[7000,'fit']]}},
+  {t:10, q:'Use the best-fit line to find the boiling point at [[2,500 ft]].',
+   c:[['About 97.5 °C','Go up from 2,500 ft to the line, then across: about 97.5 °C.'],
+      ['About 98.5 °C','98.5 °C is the dot at 2,000 ft.'],
+      ['About 97 °C','97 °C is the dot at 3,000 ft.'],
+      ['About 96 °C','96 °C is the dot at 4,000 ft.']],
+   s:{pt:[[2500,'fit']]}},
+  {t:4, q:'As altitude goes [[UP]], what happens to the boiling point?',
+   c:[['It goes down.','The dots and the line go down from left to right.'],
+      ['It goes up.','The dots go DOWN from left to right.'],
+      ['It stays at 100 °C.','Only the sea-level point is at 100 °C.'],
+      ['It goes up, then down.','The line goes down the whole way.']],
+   s:{seg:[[0,100,5000,95]]}},
+  {t:5, q:'How much [[LOWER]] is the boiling point at 4,000 ft than at sea level (0 ft)?',
+   c:[['4 °C','100 °C − 96 °C = 4 °C.'],
+      ['196 °C','You added 100 + 96. "How much lower" means subtract.'],
+      ['96 °C','96 °C is the boiling point at 4,000 ft, not the difference.'],
+      ['4,000 °C','4,000 is the altitude in feet.']],
+   s:{pt:[[0,100],[4000,96]],brk:[[4000,96,100,'−4 °C']]}},
+  {t:2, q:'At what altitude did water boil at [[99 °C]]?',
+   c:[['1,000 ft','Go across from 99 °C to the dot, then down: 1,000 ft.'],
+      ['2,000 ft','At 2,000 ft water boiled at 98.5 °C.'],
+      ['0 ft','At sea level (0 ft) water boiled at 100 °C.'],
+      ['99 ft','99 is the temperature. Read the altitude on the x-axis.']],
+   s:{hy:[99],pt:[[1000,99]]}}
+ ]},
+/* ---------- 33 ---------- */
+{n:33, topic:'Snow-cone stand sales',
+ title:'Snow Cones Sold vs. Week of Summer',
+ desc:'A family ran a snow-cone stand for 10 weeks of summer vacation. They counted how many snow cones they sold each week.',
+ x:{l:'Week of summer',min:0,max:10,st:0.5,ev:2}, y:{l:'Snow cones sold',min:0,max:300,st:10,ev:5},
+ series:[{pts:[[1,80],[2,120],[3,150],[4,210],[5,240],[6,260],[7,250],[8,200],[9,140],[10,90]]}],
+ qs:[
+  {t:1, q:'How many snow cones were sold in [[week 4]]?',
+   c:[['210','Go up from week 4 to the dot, then across: 210.'],
+      ['240','240 were sold in week 5.'],
+      ['150','150 were sold in week 3.'],
+      ['220','That is one box too high. Each box is 10 snow cones.']],
+   s:{pt:[[4,210]]}},
+  {t:3, q:'Which week had the [[MOST]] sales?',
+   c:[['Week 6','Week 6 has the highest dot: 260.'],
+      ['Week 7','Week 7 is close (250), but week 6 is higher.'],
+      ['Week 10','Week 10 is the LAST week, not the highest.'],
+      ['Week 1','Week 1 is the LOWEST.']],
+   s:{ring:[[6,260]]}},
+  {t:6, q:'Between which two [[NEIGHBORING]] weeks did sales [[FALL]] the most?',
+   c:[['Week 8 to week 9','From 200 to 140: down 60, the biggest fall.'],
+      ['Week 3 to week 4','That is the biggest RISE (+60), not a fall.'],
+      ['Week 7 to week 8','That fall is 50 (250 to 200).'],
+      ['Week 9 to week 10','That fall is 50 (140 to 90).']],
+   s:{band:[8,9],seg:[[8,200,9,140]],brk:[[9,140,200,'−60']]}},
+  {t:2, q:'In which week were [[150]] snow cones sold?',
+   c:[['Week 3','Go across from 150 to the dot, then down: week 3.'],
+      ['Week 9','Week 9 sold 140, one box lower.'],
+      ['Week 2','Week 2 sold 120.'],
+      ['Week 4','Week 4 sold 210.']],
+   s:{hy:[150],pt:[[3,150]]}},
+  {t:12, q:'Sales go [[DOWN]] after week 7. What is a likely reason?',
+   c:[['School started and the weather cooled off.','Fewer kids are free and it is less hot, so fewer people buy snow cones.'],
+      ['It got hotter.','Hotter weather would make sales go UP.'],
+      ['More people walked by the stand.','More customers would make sales go up.'],
+      ['The family made more snow cones.','Making more does not mean selling more.']],
+   s:{band:[7,10],seg:[[7,250,10,90]]}}
+ ]},
+/* ---------- 34 ---------- */
+{n:34, topic:'Yeast activity vs. temperature',
+ title:'Yeast Activity vs. Temperature',
+ desc:'Yeast and sugar were mixed with water at different temperatures. Students counted the bubbles of CO₂ gas made in one minute.',
+ x:{l:'Water temperature (°C)',min:0,max:70,st:2,ev:5}, y:{l:'Bubbles per minute',min:0,max:60,st:2,ev:5},
+ series:[{pts:[[10,4],[20,16],[30,34],[35,44],[40,50],[45,44],[50,26],[60,6],[70,0]]}],
+ qs:[
+  {t:3, q:'At what temperature was the yeast [[MOST]] active?',
+   c:[['40 °C','The highest dot is at 40 °C, with 50 bubbles per minute.'],
+      ['50 °C','50 is the number of BUBBLES at the peak, not the temperature.'],
+      ['70 °C','70 °C is the LAST point, and the yeast made 0 bubbles there.'],
+      ['35 °C','At 35 °C there were 44 bubbles, less than the peak.']],
+   s:{ring:[[40,50]]}},
+  {t:1, q:'How many bubbles per minute were counted at [[30 °C]]?',
+   c:[['34','Go up from 30 °C to the dot, then across: 34.'],
+      ['30','30 is the temperature, not the bubbles.'],
+      ['44','44 bubbles were at 35 °C.'],
+      ['36','That is one box too high. Each box is 2 bubbles.']],
+   s:{pt:[[30,34]]}},
+  {t:2, q:'At which [[TWO]] temperatures were there 44 bubbles per minute?',
+   c:[['35 °C and 45 °C','Go across from 44: the line hits a dot on each side of the peak.'],
+      ['40 °C only','At 40 °C there were 50 bubbles.'],
+      ['30 °C and 50 °C','Those had 34 and 26 bubbles.'],
+      ['44 °C only','44 is the number of bubbles, not the temperature.']],
+   s:{hy:[44],pt:[[35,44],[45,44]]}},
+  {t:5, q:'How much did activity [[DROP]] from 40 °C to 60 °C?',
+   c:[['44 bubbles per minute','50 − 6 = 44.'],
+      ['56 bubbles per minute','You added 50 + 6. A drop means subtract.'],
+      ['20 bubbles per minute','20 is the change in TEMPERATURE (60 − 40).'],
+      ['6 bubbles per minute','6 is the value AT 60 °C, not the drop.']],
+   s:{pt:[[40,50],[60,6]],brk:[[60,6,50,'−44']]}},
+  {t:12, q:'What happens to the yeast [[ABOVE]] 50 °C?',
+   c:[['It slows down and stops. It is too hot for yeast.','The line drops toward 0 above 50 °C. Too much heat harms yeast.'],
+      ['It works faster.','Faster would mean MORE bubbles. The line goes down.'],
+      ['It stays the same.','The line drops. It is not flat.'],
+      ['It makes the most bubbles.','The most bubbles are at 40 °C.']],
+   s:{band:[50,70],seg:[[50,26,70,0]]}}
+ ]},
+/* ---------- 35 ---------- */
+{n:35, topic:'Monsoon rainfall in Arizona',
+ title:'Rainfall vs. Month',
+ desc:'This graph shows the average rainfall each month in a southern Arizona town. Arizona’s monsoon season brings summer storms.',
+ x:{l:'Month',cats:MONTHS}, y:{l:'Rainfall (inches)',min:0,max:3,st:0.1,ev:2},
+ series:[{pts:[[0,0.9],[1,0.7],[2,0.6],[3,0.3],[4,0.2],[5,0.3],[6,2.2],[7,2.4],[8,1.4],[9,0.8],[10,0.6],[11,0.9]]}],
+ qs:[
+  {t:3, q:'Which month gets the [[MOST]] rain?',
+   c:[['August','August has the highest dot: 2.4 inches.'],
+      ['July','July is close (2.2), but August is higher.'],
+      ['January','January is the FIRST month, not the highest.'],
+      ['May','May gets the LEAST rain.']],
+   s:{ring:[[7,2.4]]}},
+  {t:1, q:'About how much rain falls in [[September]]?',
+   c:[['1.4 inches','Go up from September to the dot, then across: 1.4 inches.'],
+      ['2.4 inches','2.4 inches is August.'],
+      ['0.8 inches','0.8 inches is October.'],
+      ['1.5 inches','That is one box too high. Each box is 0.1 inch.']],
+   s:{pt:[[8,1.4]]}},
+  {t:5, q:'How much [[MORE]] rain falls in July than in June?',
+   c:[['1.9 inches','2.2 − 0.3 = 1.9 inches.'],
+      ['2.5 inches','You added 2.2 + 0.3. "How much more" means subtract.'],
+      ['2.2 inches','2.2 inches is July alone, not the difference.'],
+      ['0.3 inches','0.3 inches is June alone, not the difference.']],
+   s:{pt:[[5,0.3],[6,2.2]],brk:[[6,0.3,2.2,'+1.9 in.']]}},
+  {t:2, q:'Which month gets about [[0.2 inches]] of rain?',
+   c:[['May','Go across from 0.2 to the dot, then down: May.'],
+      ['April','April gets 0.3 inches, one box higher.'],
+      ['June','June gets 0.3 inches, one box higher.'],
+      ['February','February gets 0.7 inches.']],
+   s:{hy:[0.2],pt:[[4,0.2]]}},
+  {t:12, q:'What does the big [[JUMP]] from June to July show?',
+   c:[['The monsoon season starts in July.','Rain jumps from 0.3 to 2.2 inches when the summer storms arrive.'],
+      ['Summer is the driest time of the year.','July and August are the WETTEST months.'],
+      ['It rains about the same all year.','The line goes from very low to very high.'],
+      ['Winter is the wettest season.','Winter months get under 1 inch. August gets 2.4.']],
+   s:{band:[5,6],seg:[[5,0.3,6,2.2]]}}
+ ]}
+];
+
+
+var GROUPS=['READ','FIND','PATTERN','CHANGE','REASON'];
+var TYPE_GROUP={1:'READ',10:'READ',2:'FIND',3:'PATTERN',4:'PATTERN',5:'CHANGE',6:'CHANGE',7:'CHANGE',8:'CHANGE',9:'REASON',11:'REASON',12:'REASON'};
+function normAxis(a){
+  var o={l:a.l, cat:!!a.cats};
+  if(a.cats){ o.cats=a.cats; o.min=-0.5; o.max=a.cats.length-0.5; o.st=0.5; o.ev=2; }
+  else { o.min=a.min; o.max=a.max; o.st=a.st; o.ev=a.ev||1; }
+  o.nb=Math.round((o.max-o.min)/o.st);
+  o.dec=decs(o.st*o.ev);
+  return o;
+}
+SETS.forEach(function(S){ if(S.x){ S.X=normAxis(S.x); S.Y=normAxis(S.y); } });
+function getSet(n){ for(var i=0;i<SETS.length;i++) if(SETS[i].n===n) return SETS[i]; return null; }
+function fitY(S,x){ return S.fit.m*x+S.fit.b; }
+function xText(S,x){ return S.X.cat ? S.X.cats[Math.round(x)] : fmt(x); }
+
+/* ================= graph (hand-written SVG) ================= */
+var SER_COL=['#1758b8','#d9480f','#2f9e44'], SER_SHAPE=['circle','tri','sq'];
+function shape(kind,x,y,r,fill){
+  if(kind==='tri'){ var h=r*1.25; return '<path d="M'+x.toFixed(1)+','+(y-h).toFixed(1)+' L'+(x+h*0.95).toFixed(1)+','+(y+h*0.7).toFixed(1)+' L'+(x-h*0.95).toFixed(1)+','+(y+h*0.7).toFixed(1)+'Z" fill="'+fill+'" stroke="#fff" stroke-width="1"/>'; }
+  if(kind==='sq'){ var s=r*0.95; return '<rect x="'+(x-s).toFixed(1)+'" y="'+(y-s).toFixed(1)+'" width="'+(2*s).toFixed(1)+'" height="'+(2*s).toFixed(1)+'" fill="'+fill+'" stroke="#fff" stroke-width="1"/>'; }
+  return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r+'" fill="'+fill+'" stroke="#fff" stroke-width="1"/>';
+}
+function tw(t,fs){ return String(t).length*fs*0.58; }
+function pill(x,y,t,fs,anchor,col){
+  var w=tw(t,fs)+10, h=fs+6, x0 = anchor==='end'? x-w : anchor==='middle'? x-w/2 : x;
+  return '<g class="mk"><rect x="'+x0.toFixed(1)+'" y="'+(y-h+4).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h+'" rx="5" fill="#fff" stroke="'+(col||'#c62828')+'" stroke-width="1.5"/><text x="'+(x0+w/2).toFixed(1)+'" y="'+(y).toFixed(1)+'" font-size="'+fs+'" font-weight="800" fill="'+(col||'#c62828')+'" text-anchor="middle">'+esc(t)+'</text></g>';
+}
+var UID=0;
+function dk(ev,nb){ if(5%ev===0) return 5; if(ev%5===0) return ev; if(ev*5<=nb/2+0.01) return ev*5; return ev; }
+function graphSVG(S, W, H, mk){
+  mk = mk||{};
+  var X=S.X, Y=S.Y, o=[], id='c'+(++UID);
+  var fs=Math.max(12,Math.min(17,Math.round(Math.min(W/52,H/30))));
+  // y tick labels -> left margin
+  var yl=[], i, v;
+  for(i=0;i<=Y.nb;i+=Y.ev){ v=Y.min+i*Y.st; yl.push({i:i,t:fmt(v,Y.dec)}); }
+  var ymax=yl.reduce(function(a,b){return Math.max(a,tw(b.t,fs));},0);
+  var hasLeg = S.series.length>1 || !!S.fit;
+  var ml=Math.round(ymax+fs*2.2+14), mr=Math.round(fs*1.4), mt=Math.round(fs*2.6+(hasLeg?fs+12:0)), mb=Math.round(fs*3.6);
+  var pw=Math.max(50,W-ml-mr), ph=Math.max(50,H-mt-mb);
+  var bw=pw/X.nb, bh=ph/Y.nb;
+  var px=function(x){ return ml+(x-X.min)/(X.max-X.min)*pw; }, py=function(y){ return mt+ph-(y-Y.min)/(Y.max-Y.min)*ph; };
+  var R = S.r || Math.max(3.5,Math.min(6.5,Math.min(bw,bh)*0.42+2));
+  o.push('<defs><clipPath id="'+id+'"><rect x="'+ml+'" y="'+mt+'" width="'+pw+'" height="'+ph+'"/></clipPath><clipPath id="'+id+'b"><rect x="'+(ml-10)+'" y="'+(mt-10)+'" width="'+(pw+20)+'" height="'+(ph+20)+'"/></clipPath></defs>');
+  o.push('<rect x="'+ml+'" y="'+mt+'" width="'+pw+'" height="'+ph+'" fill="#fff"/>');
+  // label spacing (skip labels when crowded), then dark grid lines that line up with the labels
+  var xev=X.ev, xw=0;
+  if(!X.cat){ for(i=0;i<=X.nb;i+=X.ev) xw=Math.max(xw,tw(fmt(X.min+i*X.st,X.dec),fs)); while(xw+6>xev*bw && xev<X.nb) xev = xev===1?5:xev*2; }
+  var yev=Y.ev; while(fs*1.15>yev*bh && yev<Y.nb) yev = yev===1?5:yev*2;
+  var dkX = X.cat ? 0 : dk(xev,X.nb), dkY = dk(yev,Y.nb);
+  for(i=0;i<=X.nb;i++){ var xx=(ml+i*bw).toFixed(1), d = X.cat ? (i%2===1) : (i%dkX===0); o.push('<line x1="'+xx+'" y1="'+mt+'" x2="'+xx+'" y2="'+(mt+ph)+'" stroke="'+(d?'#8fb9de':'#cfe2f3')+'" stroke-width="'+(d?1.3:1)+'"/>'); }
+  for(i=0;i<=Y.nb;i++){ var yy=(mt+ph-i*bh).toFixed(1), d2=i%dkY===0; o.push('<line x1="'+ml+'" y1="'+yy+'" x2="'+(ml+pw)+'" y2="'+yy+'" stroke="'+(d2?'#8fb9de':'#cfe2f3')+'" stroke-width="'+(d2?1.3:1)+'"/>'); }
+  // under-marks: bands, segments, axis highlight
+  var bands=mk.band||[]; if(typeof bands[0]==='number') bands=[bands];
+  bands.forEach(function(b){ var x1=px(b[0]),x2=px(b[1]); o.push('<rect class="mk" x="'+Math.min(x1,x2).toFixed(1)+'" y="'+mt+'" width="'+Math.abs(x2-x1).toFixed(1)+'" height="'+ph+'" fill="rgba(242,169,0,.20)" stroke="#f2a900" stroke-width="2" stroke-dasharray="6 4"/>'); });
+  (mk.seg||[]).forEach(function(s){ o.push('<line class="mk" x1="'+px(s[0]).toFixed(1)+'" y1="'+py(s[1]).toFixed(1)+'" x2="'+px(s[2]).toFixed(1)+'" y2="'+py(s[3]).toFixed(1)+'" stroke="rgba(242,169,0,.6)" stroke-width="'+(R*2.6+6)+'" stroke-linecap="round"/>'); });
+  var xlab=X.l, ylab=Y.l;
+  if(mk.axis==='x'){ var w1=tw(xlab,fs+2)+18; o.push('<rect class="mk" x="'+(ml+pw/2-w1/2)+'" y="'+(H-fs*1.2-14)+'" width="'+w1+'" height="'+(fs+12)+'" rx="7" fill="#fff4d6" stroke="#f2a900" stroke-width="2.5"/>'); }
+  if(mk.axis==='y'){ var w2=tw(ylab,fs+2)+18; o.push('<rect class="mk" x="'+(4)+'" y="'+(mt+ph/2-w2/2)+'" width="'+(fs+14)+'" height="'+w2+'" rx="7" fill="#fff4d6" stroke="#f2a900" stroke-width="2.5"/>'); }
+  // ticks + tick labels
+  if(X.cat){
+    X.cats.forEach(function(c,k){ var x=px(k); o.push('<line x1="'+x.toFixed(1)+'" y1="'+(mt+ph)+'" x2="'+x.toFixed(1)+'" y2="'+(mt+ph+5)+'" stroke="#1d2731" stroke-width="1.5"/>'); });
+    var slot=pw/X.cats.length, cf=fs, cm=X.cats.reduce(function(a,b){return Math.max(a,tw(b,fs));},0);
+    if(cm>slot*0.94) cf=Math.max(9,fs*slot*0.94/cm);
+    X.cats.forEach(function(c,k){ o.push('<text x="'+px(k).toFixed(1)+'" y="'+(mt+ph+fs+7)+'" font-size="'+cf.toFixed(1)+'" text-anchor="middle" fill="#1d2731">'+esc(c)+'</text>'); });
+  } else {
+    for(i=0;i<=X.nb;i+=xev){ var x0=ml+i*bw; o.push('<line x1="'+x0.toFixed(1)+'" y1="'+(mt+ph)+'" x2="'+x0.toFixed(1)+'" y2="'+(mt+ph+5)+'" stroke="#1d2731" stroke-width="1.5"/><text x="'+x0.toFixed(1)+'" y="'+(mt+ph+fs+7)+'" font-size="'+fs+'" text-anchor="middle" fill="#1d2731">'+esc(fmt(X.min+i*X.st,decs(X.st*xev)))+'</text>'); }
+  }
+  for(i=0;i<=Y.nb;i+=yev){ var y0=mt+ph-i*bh; o.push('<line x1="'+(ml-5)+'" y1="'+y0.toFixed(1)+'" x2="'+ml+'" y2="'+y0.toFixed(1)+'" stroke="#1d2731" stroke-width="1.5"/><text x="'+(ml-8)+'" y="'+(y0+fs*0.36).toFixed(1)+'" font-size="'+fs+'" text-anchor="end" fill="#1d2731">'+esc(fmt(Y.min+i*Y.st,decs(Y.st*yev)))+'</text>'); }
+  // axes
+  o.push('<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#1d2731" stroke-width="2.4"/><line x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(mt+ph)+'" stroke="#1d2731" stroke-width="2.4"/>');
+  o.push('<text x="'+(ml+pw/2)+'" y="'+(H-12)+'" font-size="'+(fs+2)+'" font-weight="700" text-anchor="middle" fill="#1d2731">'+esc(xlab)+'</text>');
+  o.push('<text transform="translate('+(fs+8)+','+(mt+ph/2)+') rotate(-90)" font-size="'+(fs+2)+'" font-weight="700" text-anchor="middle" fill="#1d2731">'+esc(ylab)+'</text>');
+  o.push('<text x="'+(ml+pw/2)+'" y="'+(fs+8)+'" font-size="'+(fs+4)+'" font-weight="800" text-anchor="middle" fill="#1d2731">'+esc(S.title)+'</text>');
+  // legend
+  if(hasLeg){
+    var items=[];
+    S.series.forEach(function(s,k){ items.push({k:'s',s:s,idx:k,t:s.name||'measured'}); });
+    if(S.fit) items.push({k:'f',t:'best-fit line'});
+    var lx=0, parts=[], lfs=fs-1;
+    items.forEach(function(it){
+      var g=[];
+      if(it.k==='s'){ var col=it.s.col||(S.series.length>1?SER_COL[it.idx]:'#1d2731'), sh=it.s.shape||(S.series.length>1?SER_SHAPE[it.idx]:'circle');
+        if(it.s.line!==false) g.push('<line x1="'+lx+'" y1="0" x2="'+(lx+30)+'" y2="0" stroke="'+(it.s.col||SER_COL[it.idx])+'" stroke-width="2.4"/>');
+        g.push(shape(sh,lx+15,0,5,col)); }
+      else g.push('<line x1="'+lx+'" y1="0" x2="'+(lx+30)+'" y2="0" stroke="#c2185b" stroke-width="2.6" stroke-dasharray="8 5"/>');
+      g.push('<text x="'+(lx+36)+'" y="'+(lfs*0.36)+'" font-size="'+lfs+'" font-weight="700" fill="#1d2731">'+esc(it.t)+'</text>');
+      parts.push(g.join('')); lx+=36+tw(it.t,lfs)+24;
+    });
+    o.push('<g transform="translate('+(ml+pw/2-(lx-24)/2).toFixed(1)+','+(fs*2.6+4)+')">'+parts.join('')+'</g>');
+  }
+  // fit line
+  if(S.fit){ var f=S.fit; o.push('<line clip-path="url(#'+id+')" x1="'+px(f.x0).toFixed(1)+'" y1="'+py(fitY(S,f.x0)).toFixed(1)+'" x2="'+px(f.x1).toFixed(1)+'" y2="'+py(fitY(S,f.x1)).toFixed(1)+'" stroke="#c2185b" stroke-width="2.6" stroke-dasharray="9 6"/>'); }
+  // series
+  S.series.forEach(function(s,k){
+    var multi=S.series.length>1, lc=s.col||SER_COL[k], dc=s.col||(multi?SER_COL[k]:'#1d2731'), sh=s.shape||(multi?SER_SHAPE[k]:'circle');
+    if(s.line!==false && s.pts.length>1) o.push('<polyline clip-path="url(#'+id+'b)" fill="none" stroke="'+lc+'" stroke-width="2.4" stroke-linejoin="round" points="'+s.pts.map(function(p){return px(p[0]).toFixed(1)+','+py(p[1]).toFixed(1);}).join(' ')+'"/>');
+  });
+  S.series.forEach(function(s,k){
+    var multi=S.series.length>1, dc=s.col||(multi?SER_COL[k]:'#1d2731'), sh=s.shape||(multi?SER_SHAPE[k]:'circle');
+    s.pts.forEach(function(p){ o.push(shape(sh,px(p[0]),py(p[1]),R,dc)); });
+  });
+  // over-marks
+  var pfs=Math.max(12,fs-1);
+  (mk.hy||[]).forEach(function(y){ var Y0=py(y); o.push('<line class="mk" x1="'+ml+'" y1="'+Y0.toFixed(1)+'" x2="'+(ml+pw)+'" y2="'+Y0.toFixed(1)+'" stroke="#c62828" stroke-width="2" stroke-dasharray="7 5"/>'); o.push(pill(ml+6,Y0-5,fmt(y),pfs,'start')); });
+  (mk.vx||[]).forEach(function(x){ var X0=px(x); o.push('<line class="mk" x1="'+X0.toFixed(1)+'" y1="'+mt+'" x2="'+X0.toFixed(1)+'" y2="'+(mt+ph)+'" stroke="#c62828" stroke-width="2" stroke-dasharray="7 5"/>'); o.push(pill(X0+5,mt+ph-6,xText(S,x),pfs,'start')); });
+  (mk.pt||[]).forEach(function(p){
+    var yv = p[1]==='fit'? fitY(S,p[0]) : p[1], X0=px(p[0]), Y0=py(yv);
+    o.push('<path class="mk" d="M'+X0.toFixed(1)+','+(mt+ph)+' V'+Y0.toFixed(1)+' H'+ml+'" fill="none" stroke="#c62828" stroke-width="2.2" stroke-dasharray="7 5"/>');
+    o.push('<circle class="mk" cx="'+X0.toFixed(1)+'" cy="'+Y0.toFixed(1)+'" r="'+(R+5)+'" fill="none" stroke="#c62828" stroke-width="2.5"/>');
+    o.push(pill(ml+6,Y0-6,fmt(yv),pfs,'start'));
+    var xt=xText(S,p[0]), right = X0+5+tw(xt,pfs)+10 < ml+pw;
+    o.push(pill(right?X0+5:X0-5,mt+ph-6,xt,pfs,right?'start':'end'));
+  });
+  (mk.ring||[]).forEach(function(p){ o.push('<circle class="mk" cx="'+px(p[0]).toFixed(1)+'" cy="'+py(p[1]).toFixed(1)+'" r="'+(R+8)+'" fill="rgba(198,40,40,.08)" stroke="#c62828" stroke-width="3.2"/>'); });
+  (mk.brk||[]).forEach(function(b){
+    var X0=px(b[0]), y1=py(b[1]), y2=py(b[2]), lab=b[3]||'', lw=tw(lab,pfs)+12, left = X0+16+lw > ml+pw, bx = left? X0-16 : X0+16;
+    o.push('<path class="mk" d="M'+(bx+(left?7:-7))+','+y1.toFixed(1)+' H'+bx+' V'+y2.toFixed(1)+' H'+(bx+(left?7:-7))+'" fill="none" stroke="#c62828" stroke-width="3"/>');
+    if(lab) o.push(pill(left?bx-6:bx+6,(y1+y2)/2+pfs*0.4,lab,pfs,left?'end':'start'));
+  });
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif" role="img" aria-label="'+esc(S.title)+'">'+o.join('')+'</svg>';
+}
+
+/* ================= which set today ================= */
+function todayDate(){ var t=parseYMD(Q.get('today')); if(t) return t; var d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+/* The date picks the set, so every device shows the same set on the same date:
+   Set #1 = Mon, Nov 30, 2026, then one set per weekday (Mon–Fri), looping after #35.
+   If this device already finished the date's set, it takes the LAST set in the loop (counting from
+   today) that it has not finished: the one furthest ahead, so the device stays in sync as long as possible. When all 35 are finished, it stops.
+   Weekends show the coming Monday's set. ?day=12 forces a set. */
+var EPOCH=new Date(2026,10,30);
+function computeDay(today){
+  var isSchool=function(d){ var w=d.getDay(); return w>0 && w<6; };
+  var eff=today; while(!isSchool(eff)) eff=addDays(eff,1);
+  var diff=Math.round((Date.UTC(eff.getFullYear(),eff.getMonth(),eff.getDate())-Date.UTC(EPOCH.getFullYear(),EPOCH.getMonth(),EPOCH.getDate()))/864e5);
+  var wk=Math.floor(diff/7), idx=wk*5+(diff-wk*7);
+  var n = idx<0 ? 1 : (idx%35)+1, forced=false;
+  var fd=parseInt(Q.get('day'),10); if(fd>=1 && fd<=35){ n=fd; forced=true; }
+  return {n:n, dateSet:n, idx:idx, loop:idx>=35, eff:eff, forced:forced, isSchoolToday:isSchool(today)};
+}
+
+/* ================= state ================= */
+var KEY='gotd-reading-graphs-v1', HKEY='gotd-reading-graphs-done-v1', HIST={done:{}}, ALLDONE=false;
+function loadHist(){ var h=null; try{ h=JSON.parse(LS.get(HKEY)||'null'); }catch(e){ h=null; } HIST=(h && typeof h.done==='object')?h:{done:{}}; }
+function saveHist(){ LS.set(HKEY,JSON.stringify(HIST)); }
+function remaining(){ var r=[]; for(var n=1;n<=35;n++) if(!HIST.done[n]) r.push(n); return r; }
+function markDone(){ if(SET && P && liveIndex()===5 && !HIST.done[DAY.n]){ HIST.done[DAY.n]={s:score().s,d:ymd(TODAY)}; saveHist(); } }
+var DEV=LS.get('gotd-device'); if(!DEV){ DEV=Math.random().toString(36).slice(2)+Date.now().toString(36); LS.set('gotd-device',DEV); }
+var TODAY, DAY, SET, store, P, view, lastAns=-1;   // P = progress for today's set
+function load(){
+  TODAY=todayDate(); DAY=computeDay(TODAY); loadHist();
+  var s=null; try{ s=JSON.parse(LS.get(KEY)||'null'); }catch(e){ s=null; }
+  if(!s || s.date!==ymd(TODAY) || typeof s.sets!=='object') s={date:ymd(TODAY), sets:{}};
+  store=s; ALLDONE=false; lastAns=-1;
+  if(!DAY.forced){
+    if(store.pick) DAY.n=store.pick;          // keep the same set all day, even after it is finished
+    else {
+      var pick=0;
+      if(!HIST.done[DAY.dateSet]) pick=DAY.dateSet;
+      else for(var k=34;k>=1;k--){ var c=((DAY.dateSet-1+k)%35)+1; if(!HIST.done[c]){ pick=c; break; } }  // last unfinished set in the loop = furthest ahead, so it stays in sync longest
+      if(!pick){ ALLDONE=true; SET=null; P=null; view=0; return; }
+      DAY.n=pick; store.pick=pick;
+    }
+  }
+  SET=getSet(DAY.n);
+  if(!store.sets[DAY.n]) store.sets[DAY.n]={a:[[],[],[],[],[]]};
+  P=store.sets[DAY.n];
+  view=liveIndex();
+  if(typeof P.v==='number' && P.v>=0 && P.v<=5 && (P.v===liveIndex() || resolved(P.v))) view=P.v;
+}
+function save(){ if(!store) return; if(P) P.v=view; LS.set(KEY,JSON.stringify(store)); }
+function resolved(i){ var a=P.a[i]; return !!a && (a.indexOf(0)>=0 || a.length>=2); }
+function liveIndex(){ var qs=SET.qs||[]; for(var i=0;i<qs.length;i++) if(!resolved(i)) return i; return qs.length?5:0; }
+function score(){ var s=0,n=0; P.a.forEach(function(a){ if(a.length){ n++; if(a[0]===0) s++; } }); return {s:s,n:n}; }
+function order(qi,len){ var r=rng(hash(DEV+':'+DAY.n+':'+qi)), a=[]; for(var i=0;i<len;i++) a.push(i); for(var j=len-1;j>0;j--){ var k=Math.floor(r()*(j+1)); var t=a[j]; a[j]=a[k]; a[k]=t; } return a; }
+
+/* ================= speech ================= */
+var canSpeak = ('speechSynthesis' in window) && typeof SpeechSynthesisUtterance!=='undefined', speakingBtn=null;
+function sayable(t){
+  return plain(t).replace(/CO₂/g,'C O 2').replace(/°C/g,' degrees Celsius').replace(/°F/g,' degrees Fahrenheit').replace(/\bmL\b/g,'milliliters').replace(/\bppm\b/g,'parts per million').replace(/\bkPa\b/g,'kilopascals')
+    .replace(/(\d)\s?cm\b/g,'$1 centimeters').replace(/(\d)\s?g\b/g,'$1 grams').replace(/(\d)\s?K\b/g,'$1 kelvins').replace(/(\d)\s?ft\b/g,'$1 feet').replace(/(\d)\s?in\.?(?=[\s,.)]|$)/g,'$1 inches').replace(/(\d)\s?gal\b/g,'$1 gallons').replace(/(\d)\s?min\b/g,'$1 minutes').replace(/(\d)\s?s\b/g,'$1 seconds')
+    .replace(/−/g,' minus ').replace(/×/g,' times ').replace(/→/g,' to ').replace(/–/g,' to ');
+}
+function stopSpeak(){ if(canSpeak){ try{ speechSynthesis.cancel(); }catch(e){} } if(speakingBtn){ speakingBtn.classList.remove('on'); speakingBtn=null; } }
+function speak(text,btn){
+  if(!canSpeak) return;
+  if(speakingBtn===btn){ stopSpeak(); return; }
+  stopSpeak();
+  try{ var u=new SpeechSynthesisUtterance(sayable(text)); u.rate=0.92; u.lang='en-US'; u.onend=u.onerror=function(){ if(speakingBtn===btn){ btn.classList.remove('on'); speakingBtn=null; } }; speakingBtn=btn; btn.classList.add('on'); speechSynthesis.speak(u); }catch(e){ speakingBtn=null; }
+}
+
+/* ================= render ================= */
+var gw=$('#gwrap'), curMarks=null;
+function drawGraph(){ if(!SET) return; var r=gw.getBoundingClientRect(); var W=Math.max(320,Math.round(r.width)), H=Math.max(240,Math.round(r.height)); gw.innerHTML=graphSVG(SET,W,H,curMarks); }
+function renderHeader(){
+  var left=remaining().length;
+  $('#ttl').innerHTML='Graph of the Day #'+DAY.n+' <span class="dt">· '+esc(nice(TODAY))+'</span>'+(!DAY.forced && (DAY.loop || DAY.n!==DAY.dateSet)?' <span class="rnd">'+left+' left</span>':'');
+  var sc=score(), done=liveIndex()===5;
+  $('#badge').className=done?'done':'';
+  $('#sc').textContent = done ? '✓ Done — '+sc.s+'/5' : 'Score '+sc.s+'/'+sc.n;
+  var h='';
+  for(var i=0;i<5;i++){
+    var a=P.a[i], cls=a.length? (a[0]===0?'y':'n') : '', sym=a.length?(a[0]===0?'✓':'✗'):(i+1);
+    var can = resolved(i) || i===liveIndex();
+    h+='<button class="'+cls+(i===view?' cur':'')+'" data-i="'+i+'" '+(can?'':'disabled')+' aria-label="Question '+(i+1)+(a.length?(a[0]===0?', correct':', missed'):'')+'"><i>'+sym+'</i></button>';
+  }
+  $('#dots').innerHTML=h;
+}
+function marksFor(i){ var q=SET.qs[i]; return (q && P.a[i].length) ? q.s : null; }
+function renderAllDone(){
+  $('#app').classList.add('alldone');
+  $('#ttl').innerHTML='Graph of the Day <span class="dt">· '+esc(nice(TODAY))+'</span>';
+  $('#badge').className='done'; $('#sc').textContent='✓ All 35 done'; $('#dots').innerHTML='';
+  $('#qhost').innerHTML='<div class="donebox"><div class="big">🎉 You finished all 35 graphs!</div><p>Great work reading graphs. Ask your teacher what to do next.</p><div class="rev"><button id="resetAllBtn">↺ Reset and start over</button></div></div>';
+  gw.innerHTML='';
+}
+function render(){
+  stopSpeak();
+  $('#app').classList.toggle('alldone',ALLDONE);
+  if(ALLDONE){ renderAllDone(); return; }
+  renderHeader();
+  $('#desc').innerHTML=kw(SET.desc||'');
+  $('#spkDesc').classList.toggle('hide',!canSpeak);
+  var host=$('#qhost'), qs=SET.qs||[];
+  if(!qs.length){ host.innerHTML='<div class="ask"><div class="ask-tag">❓ Questions</div><div class="ask-q">Questions coming soon.</div></div>'; curMarks=null; drawGraph(); return; }
+  if(view===5){
+    var sc=score();
+    var last=!DAY.forced && !remaining().length;
+    host.innerHTML='<div class="donebox"><div class="big">✓ Done for today — '+sc.s+'/5.</div><p>'+(last?'That was your last graph. You finished all 35!':'Come back tomorrow for a new graph!')+'</p><p class="small" style="color:#0f5229">Tap a question to look back at it:</p><div class="rev">'+[0,1,2,3,4].map(function(i){ var a=P.a[i]; return '<button data-rev="'+i+'">'+(a[0]===0?'✓':'✗')+' Q'+(i+1)+'</button>'; }).join('')+'</div></div>';
+    curMarks=null; drawGraph(); save(); return;
+  }
+  var q=qs[view], a=P.a[view], ord=order(view,q.c.length), res=resolved(view), live=view===lastAns;
+  var h='<div class="ask"><div class="ask-tag"><span>❓ Question '+(view+1)+' of 5'+(res&&!live?'<span class="rv">Review</span>':'')+'</span><button class="spk" id="spkQ" aria-label="Read the question aloud">🔊</button></div>';
+  h+='<div class="ask-q">'+kw(q.q)+'</div><div class="ask-a"><div class="ask-al">✎ Your answer</div><div class="choices">';
+  ord.forEach(function(ci,k){
+    var cls='', mark=String.fromCharCode(65+k);
+    if(a.indexOf(ci)>=0 && ci!==0){ cls='bad'; mark='✗'; }
+    if(ci===0 && res){ cls='ok'; mark='✓'; }
+    if(res && !cls) cls='dim';
+    var dis = res || a.indexOf(ci)>=0;
+    h+='<button class="ch '+cls+'" data-c="'+ci+'" '+(dis?'disabled':'')+'><span class="L">'+mark+'</span><span>'+esc(q.c[ci][0])+'</span></button>';
+  });
+  h+='</div></div>';
+  if(a.length){
+    var last=a[a.length-1], fb;
+    if(last===0) fb='<div class="fb ok"><span class="big">✓ '+(a.length===1?'Correct!':'Correct on your second try.')+'</span> '+esc(q.c[0][1])+'</div>';
+    else if(!res) fb='<div class="fb bad"><span class="big">✗ Not quite.</span> '+esc(q.c[last][1])+' Look at the red marks on the graph and try once more.</div>';
+    else fb='<div class="fb bad"><span class="big">✗ Not quite.</span> '+esc(q.c[last][1])+'<div class="ans"><b>✓ The answer:</b> '+esc(q.c[0][1])+'</div></div>';
+    h+='<div class="fbrow">'+fb+(res?'<button class="next" id="next">Next ▶</button>':'')+'</div>';
+  }
+  h+='</div>';
+  host.innerHTML=h;
+  var sq=$('#spkQ'); if(sq) sq.classList.toggle('hide',!canSpeak);
+  curMarks=marksFor(view); drawGraph(); save();
+}
+function choose(ci){
+  var i=view, a=P.a[i]; if(resolved(i) || a.indexOf(ci)>=0) return;
+  a.push(ci); if(resolved(i)) lastAns=i; markDone(); save(); render();
+  var nb=$('#next'); if(nb) try{ nb.focus({preventScroll:true}); }catch(e){}
+}
+function next(){ if(view<4) view++; else view=5; if(view<5 && !resolved(view) && view!==liveIndex()) view=liveIndex(); render(); }
+
+/* ================= modals / settings ================= */
+var modal=$('#modal'), mbox=$('#mbox');
+function openModal(html){ mbox.innerHTML=html; modal.hidden=false; var b=mbox.querySelector('button'); if(b) try{ b.focus(); }catch(e){} }
+function closeModal(){ modal.hidden=true; mbox.innerHTML=''; }
+modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !modal.hidden) closeModal(); });
+function confirmBox(title,msg,btn,fn){
+  openModal('<h2>'+title+'</h2><p>'+msg+'</p><div class="mrow"><button id="noR">Cancel</button><button class="danger" id="yesR">'+btn+'</button></div>');
+  $('#noR').onclick=closeModal; $('#yesR').onclick=function(){ fn(); closeModal(); };
+}
+function resetAll(){
+  confirmBox('Reset all graphs?','This erases every graph this device has finished, plus today’s answers. Graphs it has not done come back.','Reset everything',function(){
+    LS.del(HKEY); LS.del(KEY); store=null; load(); render(); });
+}
+function settings(){
+  var D=DAY, done=35-remaining().length;
+  var h='<h2>⚙ Settings</h2><table>';
+  h+='<tr><td>Today</td><td><b>'+esc(niceY(TODAY))+'</b>'+(D.isSchoolToday?'':' (weekend — showing Monday’s set)')+'</td></tr>';
+  h+='<tr><td>Today’s set</td><td>'+(ALLDONE?'none — all 35 finished':'<b>#'+D.n+'</b> of 35'+(D.forced?' (picked with ?day=)':D.n!==D.dateSet?' (today’s date set #'+D.dateSet+' was already finished)':''))+'</td></tr>';
+  h+='<tr><td>Finished on this device</td><td><b>'+done+'</b> of 35</td></tr></table>';
+  h+='<p class="small">Nothing to set up. The date picks the set, so everyone sees the same graph on the same day: #1 on Mon, Nov 30, 2026, then one set per weekday, looping after #35 (Fri, Jan 15, 2027). If this device already finished the date’s set, it gets the last graph in the loop it has not finished (the one furthest ahead), so it stays in step with the class as long as possible. When all 35 are finished, it stops. To show a certain set (for a sub), add <code>?day=12</code> to the link.</p>';
+  h+='<div class="mrow">'+(ALLDONE?'':'<button id="restart">Start today over</button>')+'<button class="danger" id="resetAll">Reset all graphs</button><button id="closeM">Close</button></div>';
+  openModal(h);
+  $('#closeM').onclick=closeModal;
+  $('#resetAll').onclick=resetAll;
+  var rs=$('#restart'); if(rs) rs.onclick=function(){
+    confirmBox('Start today over?','This erases today’s answers on this device and starts Graph of the Day #'+DAY.n+' from Question 1.','Start over',function(){
+      delete HIST.done[DAY.n]; saveHist(); store.sets[DAY.n]={a:[[],[],[],[],[]]}; P=store.sets[DAY.n]; view=0; lastAns=-1; save(); render(); });
+  };
+}
+
+/* ================= events ================= */
+$('#qhost').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.c!==undefined) choose(+b.dataset.c);
+  else if(b.id==='next') next();
+  else if(b.id==='spkQ'){ var q=SET.qs[view], ord=order(view,q.c.length); speak(q.q+'. '+ord.map(function(ci,k){ return String.fromCharCode(65+k)+': '+q.c[ci][0]+'.'; }).join(' '), b); }
+  else if(b.dataset.rev!==undefined){ view=+b.dataset.rev; render(); }
+  else if(b.id==='resetAllBtn') resetAll();
+});
+$('#dots').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b||b.disabled) return; view=+b.dataset.i; render(); });
+$('#spkDesc').addEventListener('click',function(){ speak(SET.desc,this); });
+$('#gear').addEventListener('click',settings);
+var rt=null; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(drawGraph,120); });
+function checkDate(){ if(!store || ymd(todayDate())!==store.date){ closeModal(); load(); render(); } }
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden'){ save(); stopSpeak(); } else checkDate(); });
+window.addEventListener('pagehide',function(){ save(); });
+setInterval(checkDate,60000);
+
+/* ================= check + gallery (teacher/dev only, not linked) ================= */
+function onSeries(S,x,y){ return S.series.some(function(s){ return s.pts.some(function(p){ return Math.abs(p[0]-x)<1e-9 && Math.abs(p[1]-y)<1e-6; }); }); }
+function onLine(S,x,y){ return S.series.some(function(s){ if(s.line===false) return false; for(var i=1;i<s.pts.length;i++){ var a=s.pts[i-1],b=s.pts[i]; if(x>=a[0]-1e-9 && x<=b[0]+1e-9 && b[0]!==a[0]){ var yy=a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); if(Math.abs(yy-y)<1e-6) return true; } } return false; }); }
+function checkSet(S){
+  var w=[], err=[];
+  if(!S.x){ err.push('no graph'); return {err:err,w:w}; }
+  var X=S.X, Y=S.Y, inX=function(x){ return x>=X.min-1e-9 && x<=X.max+1e-9; }, inY=function(y){ return y>=Y.min-1e-9 && y<=Y.max+1e-9; };
+  [X,Y].forEach(function(A,k){ if(Math.abs(A.nb-(A.max-A.min)/A.st)>1e-6) err.push((k?'y':'x')+' range not a whole number of boxes'); });
+  S.series.forEach(function(s){ s.pts.forEach(function(p){ if(!inX(p[0])||!inY(p[1])) err.push('point off graph '+p); }); });
+  if(S.fit){ if(!inX(S.fit.x0)||!inX(S.fit.x1)) err.push('fit line outside x range'); }
+  var dw=plain(S.desc||'').split(/\s+/).length; if(dw>60) w.push('description '+dw+' words');
+  var qs=S.qs||[]; if(qs.length!==5) err.push(qs.length+' questions (need 5)');
+  var gs={};
+  qs.forEach(function(q,i){
+    var tag='Q'+(i+1)+': ';
+    var g=TYPE_GROUP[q.t]; if(!g) err.push(tag+'bad type '+q.t);
+    gs[q.g||g]=1;
+    if(!q.c || q.c.length!==4) err.push(tag+'needs 4 choices');
+    var seen={}; (q.c||[]).forEach(function(c){ if(!c[0]||!c[1]) err.push(tag+'missing text/reason'); var k=String(c[0]).toLowerCase(); if(seen[k]) err.push(tag+'duplicate choice '+c[0]); seen[k]=1; if(String(c[1]).split(/\s+/).length>24) w.push(tag+'long reason: '+c[0]); if(/\b(choice|option) [A-D]\b|(^|\s)[A-D]\)/.test(c[1])) err.push(tag+'reason mentions a letter'); });
+    var qw=plain(q.q).split(/\s+/).length; if(qw>24) w.push(tag+'question '+qw+' words');
+    if(!q.s || !Object.keys(q.s).length) err.push(tag+'no graph marking');
+    var s=q.s||{};
+    (s.pt||[]).forEach(function(p){ var y=p[1]==='fit'?(S.fit?fitY(S,p[0]):NaN):p[1]; if(!inX(p[0])||!inY(y)) err.push(tag+'marking off graph '+p); else if(p[1]!=='fit' && !onSeries(S,p[0],y) && !onLine(S,p[0],y)) err.push(tag+'pt '+p+' not on data'); });
+    (s.ring||[]).forEach(function(p){ if(!onSeries(S,p[0],p[1])) err.push(tag+'ring '+p+' not a data point'); });
+    (s.hy||[]).forEach(function(y){ if(!inY(y)) err.push(tag+'hy off graph'); });
+    (s.vx||[]).concat([].concat.apply([],s.band||[])).forEach(function(x){ if(!inX(x)) err.push(tag+'x marking off graph'); });
+  });
+  GROUPS.forEach(function(g){ if(!gs[g]) err.push('missing group '+g); });
+  return {err:err,w:w};
+}
+function checkPage(){
+  document.body.style.overflow='auto'; document.body.style.height='auto';
+  var tc={}, rows='', bad=0;
+  SETS.forEach(function(S){ (S.qs||[]).forEach(function(q){ tc[q.t]=(tc[q.t]||0)+1; });
+    var r=checkSet(S); if(r.err.length) bad++;
+    rows+='<tr><td>#'+S.n+'</td><td>'+esc(S.topic)+'</td><td>'+((S.qs||[]).map(function(q){return q.t;}).join(', '))+'</td><td class="'+(r.err.length?'bad':'ok')+'">'+(r.err.length?esc(r.err.join(' · ')):'✓ OK')+'</td><td class="small">'+esc(r.w.join(' · '))+'</td></tr>';
+  });
+  var t='<div class="page"><h2>Check: '+SETS.length+' sets · '+(bad?'<span class="bad">'+bad+' with problems</span>':'<span class="ok">no problems</span>')+'</h2><p>Question types used: '+Object.keys(tc).sort(function(a,b){return a-b;}).map(function(k){ return 'type '+k+' × '+tc[k]; }).join(', ')+'</p><table><tr><th>Set</th><th>Topic</th><th>Types</th><th>Problems</th><th>Warnings</th></tr>'+rows+'</table></div>';
+  document.body.innerHTML=t;
+}
+function galleryPage(){
+  document.body.style.overflow='auto'; document.body.style.height='auto';
+  var h='<div class="page"><h2>All 35 graphs</h2><div class="gal">';
+  SETS.forEach(function(S){ h+='<figure><figcaption>#'+S.n+' · '+esc(S.topic)+'</figcaption>'+(S.x?graphSVG(S,760,470,null):'<p>(no graph yet)</p>')+'</figure>'; });
+  document.body.innerHTML=h+'</div></div>';
+}
+window.GOTD={SETS:SETS,checkSet:checkSet,computeDay:computeDay,graphSVG:graphSVG,state:function(){ return {store:store,view:view,day:DAY}; }};
+
+if(Q.get('check')==='1') checkPage();
+else if(Q.get('gallery')==='1') galleryPage();
+else { load(); render(); }
+})();
+</script>
+</body>
+</html>
