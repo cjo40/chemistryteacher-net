@@ -282,6 +282,7 @@ table.dt td.hlcol.tap:hover{background:#ffe7a3}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2731;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;z-index:70;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:opacity .5s}
 .toast.out{opacity:0}
 .cardmsg{font-size:14px;margin-top:6px;color:#0f5229}
+.ask-q .qn{color:var(--acc)}
 
 </style>
 </head>
@@ -1145,7 +1146,7 @@ function renderGuided(){
   if(!s.done && s.pend){
     h += '<p class="q">Step '+(st+1)+': '+esc(GSTEPS[st])+' — done!</p>'+fbHTML('ok',s.pend)+'<div class="btns"><button class="pri big" id="gGo">Next: Step '+(st+2)+' — '+esc(GSTEPS[st+1])+' ▶</button></div>';
   } else if(s.done){
-    h += fbHTML('ok','Guided graph complete! Now try one on your own.')+'<div class="btns"><button class="pri big" id="gNext">Next: 3 Graph It ▶</button></div>'+hwTable();
+    h += fbHTML('ok','Guided graph complete! Now try one on your own.')+'<div class="btns"><button class="pri big" id="gNext">Next: 3 Graph It ▶</button></div>';
   } else if(st===0){
     h += ask({n:'Step 1 of 8', q:'Drag each heading into the right <span class="kw">column</span>.'+why, sub:'The left column is the <b>x</b> column (independent). You can also tap a heading, then tap a column.',
       a:'<div class="chips" id="chipTray" style="gap:8px">'+HEAD_CHIPS.map(function(t){ var used=(s.slotX===t||s.slotY===t); return '<span class="chip'+(used?' used':'')+(gSel===t?' sel':'')+'" data-chip="'+esc(t)+'">'+esc(t)+'</span>'; }).join('')+'</div>'+
@@ -1163,12 +1164,12 @@ function renderGuided(){
   } else if(st===3||st===4){
     var isX = st===3, A = isX?s.x:s.y, vals = isX?HW.x:HW.y, nm = isX?'Time':'Temperature', un = isX?'min':'°F', r=rangeOf(vals), B=ST.settings[isX?'bx':'by'];
     var q=fmtNum(+((r.max-r.min)/B).toPrecision(3));
-    h += '<p class="q" style="margin:4px 0">Step '+(st+1)+' of 8: set up the '+(isX?'x-axis (across)':'y-axis (up)')+' for '+nm+'.'+why+'</p>'+
-      ask({n:'Question ①', q:'What number should the '+(isX?'x':'y')+'-axis <span class="kw">START</span> at?', sub:nm+' goes from <b>'+r.min+'</b> to <b>'+r.max+' '+un+'</b>. Pick a round number at or just below '+r.min+' — it does NOT have to be 0.',
-        a:'<label class="ans">Start at <input inputmode="decimal" id="aStart" value="'+esc(A.start)+'"> '+un+'</label>'})+
-      ask({n:'Question ②', q:'How much should each box <span class="kw">GO UP BY</span>?', sub:'Count the boxes: ('+r.max+' − '+r.min+') ÷ '+B+' boxes '+(isX?'across':'up')+' = <b>'+q+'</b> → round UP to a friendly number:<div class="chips">'+[1,2,5,10,20,25,50].map(function(v){return '<span>'+v+'</span>';}).join('')+'</div><div style="margin-top:3px">1.5 or 2.5 work too — count by 3 or 5 and label every 2nd line.</div>',
-        a:'<label class="ans">Go up by <input inputmode="decimal" id="aInc" value="'+esc(A.inc)+'"> '+un+' per box</label><span class="incnote" id="incNote"></span>', fb:'gfb',
-        btns:'<button class="pri big" id="gChk">Check my '+(isX?'x':'y')+'-axis</button>'+((s.tries[st]||0)>=2?'<button id="gShow">Show me</button>':'')})+
+    h += ask({n:'Step '+(st+1)+' of 8 — '+(isX?'x-axis (across)':'y-axis (up)')+': '+nm,
+      q:'<span class="qn">①</span> Where should the '+(isX?'x':'y')+'-axis <span class="kw">START</span>? &nbsp;<span class="qn">②</span> What should each box <span class="kw">GO UP BY</span>?'+why,
+      sub:nm+' goes from <b>'+r.min+'</b> to <b>'+r.max+' '+un+'</b> (see the data table). ① Start at a round number at or just below '+r.min+' — it does NOT have to be 0. ② Count the boxes: ('+r.max+' − '+r.min+') ÷ '+B+' = <b>'+q+'</b> → round UP to a friendly number (1, 2, 5, 10, 20, 25, 50…; 1.5 or 2.5 work too).',
+      a:'<label class="ans"><span class="qn">①</span> Start at <input inputmode="decimal" id="aStart" value="'+esc(A.start)+'"> '+un+'</label>'+
+        '<label class="ans"><span class="qn">②</span> Go up by <input inputmode="decimal" id="aInc" value="'+esc(A.inc)+'"> '+un+' per box</label><span class="incnote" id="incNote"></span>',
+      fb:'gfb', btns:'<button class="pri big" id="gChk">Check my '+(isX?'x':'y')+'-axis</button>'+((s.tries[st]||0)>=2?'<button id="gShow">Show me</button>':'')})+
       (isX?'':'<p class="muted" style="margin:2px 0;font-size:13px">Dashed preview dots show where your data will land.</p>');
   } else if(st===5){
     var n=gNext();
@@ -1193,6 +1194,14 @@ function renderGuided(){
   }
   if(!s.done && !s.pend && st<reach) h += '<div class="btns" style="margin-top:14px"><button class="pri big" id="gFwd">Next: Step '+(st+2)+' — '+esc(GSTEPS[st+1])+' ▶</button></div>';
   side.innerHTML=h;
+  // data table beside the graph whenever the side panel isn't already showing it
+  var showData = s.done || st>=3 && st!==5 || (st===5 && s.pend);
+  if(showData){
+    var hc = (!s.done && !s.pend) ? (st===3?0:st===4?1:-1) : -1;
+    var t='<div class="gdh">Data table</div><table class="dt compact"><tr><th class="'+(hc===0?'hlcol':'')+'">Time (min)</th><th class="'+(hc===1?'hlcol':'')+'">Temperature (°F)</th></tr>';
+    for(var i=0;i<20;i++) t+='<tr><td class="'+(hc===0?'hlcol':'')+'">'+HW.x[i]+'</td><td class="'+(hc===1?'hlcol':'')+'">'+HW.y[i]+'</td></tr>';
+    gGC.data.innerHTML=t+'</table>'; gGC.data.classList.remove('hide');
+  } else { gGC.data.classList.add('hide'); }
   wireGuided();
   drawGuided();
 }
