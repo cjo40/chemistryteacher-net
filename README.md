@@ -6,7 +6,7 @@ Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosti
 
 <!-- ACTIVITIES:START (made by make_readme.py from site.json; edit site.json, not this list) -->
 
-## All activities (20)
+## All activities (21)
 
 Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones) and needs no login. Open them at [chemistryteacher.net](https://chemistryteacher.net).
 
@@ -18,6 +18,7 @@ Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones
 | **[Significant Figures & Measurement](https://chemistryteacher.net/significant-figures)** | Sig figs = measured digits. Read graduated cylinders and burets, count and tap significant digits, round correctly, and multiply/divide with the fewest-sig-figs rule — I do → We do → You do, with answers graded on sig figs. | significant figures, sig figs, counting sig figs, placeholder zeros, leading zeros, trailing zeros, captive zeros, Atlantic–Pacific rule |
 | **[Dimensional Analysis Lab](https://chemistryteacher.net/dimensional-analysis)** | Build conversion factors, cancel units, and solve unit, mole and stoichiometry problems. | dimensional analysis, factor-label method, unit conversions, mole conversions, stoichiometry |
 | **[Calculator Skills for Chemistry](https://chemistryteacher.net/calculator-skills)** | Learn exactly which buttons to press: dimensional analysis work → simplified fraction → calculator, two ways (parentheses, or × every top and ÷ every bottom), with a TI-30XIIS-style on-screen calculator. | using a scientific calculator, TI-30XIIS, dimensional analysis, factor-label method, unit conversions, mole conversions, stoichiometry, scientific notation on a calculator |
+| **[Graphing Like a Scientist](https://chemistryteacher.net/graphing)** | Learn to make a real line graph: x vs. y, uniform scales, don't start at 0 unless the data is near 0, count the boxes for each axis, plot, connect or add a best-fit line — then graph your own lab data and turn it in. | how to make a line graph, data tables, independent vs dependent variable, DRY MIX, time on the x-axis, axis labels and units, graph titles (y vs. x), uniform scale |
 
 ### Matter & Change
 

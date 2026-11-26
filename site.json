@@ -107,7 +107,21 @@
     "/rounding-sig-figs": "/significant-figures",
     "/reading-a-graduated-cylinder": "/significant-figures",
     "/graduated-cylinder": "/significant-figures",
-    "/meniscus": "/significant-figures"
+    "/meniscus": "/significant-figures",
+    "/graph": "/graphing",
+    "/graphs": "/graphing",
+    "/graphing-practice": "/graphing",
+    "/how-to-make-a-graph": "/graphing",
+    "/make-a-graph": "/graphing",
+    "/line-graph": "/graphing",
+    "/line-graphs": "/graphing",
+    "/graphing-data": "/graphing",
+    "/graph-paper": "/graphing",
+    "/line-of-best-fit": "/graphing",
+    "/best-fit-line": "/graphing",
+    "/independent-dependent-variables": "/graphing",
+    "/dry-mix": "/graphing",
+    "/data-table": "/graphing"
   },
   "activities": {
     "dimensional-analysis": {
@@ -753,6 +767,46 @@
         "Teachers can add ?unlock to the address to open every section for a demo."
       ],
       "classroom": "Use Learn stops 2 and 3 on the projector before a real graduated-cylinder or buret lab, then have students finish Practice A (Read a graduated cylinder) before they measure. Practice E pairs well with a density lab: the screen shows the calculator answer, and students decide how to round it.",
+      "bar": "tl"
+    },
+    "graphing": {
+      "name": "Graphing Like a Scientist",
+      "title": "Graphing Like a Scientist: Data Tables, Line Graphs, Axis Scales & Best-Fit Lines",
+      "description": "Free interactive graphing practice for chemistry: build a data table, put time on x, choose a start and friendly increment for each axis, plot points, add a line or best-fit line, and turn in a graph of your own lab data.",
+      "unit": "Measurement & Math",
+      "order": 4,
+      "card": "Learn to make a real line graph: x vs. y, uniform scales, don't start at 0 unless the data is near 0, count the boxes for each axis, plot, connect or add a best-fit line — then graph your own lab data and turn it in.",
+      "topics": [
+        "how to make a line graph",
+        "data tables",
+        "independent vs dependent variable",
+        "DRY MIX",
+        "time on the x-axis",
+        "axis labels and units",
+        "graph titles (y vs. x)",
+        "uniform scale",
+        "choosing an axis start",
+        "choosing an increment",
+        "count the boxes",
+        "friendly numbers",
+        "skip-line labeling (1.5, 2.5)",
+        "plotting points",
+        "line graph vs bar graph",
+        "dot-to-dot vs best-fit line",
+        "linear, exponential, inverse and quadratic fits",
+        "R²",
+        "TAILS checklist",
+        "graphing lab data"
+      ],
+      "about": "Students arrive not knowing how to make a graph, so this activity walks through the parts in order and catches the classic mistakes: writing the data values in order as axis numbers (uneven spacing), always starting at 0 so the points are scrunched and the trend is hidden, swapping the axes, leaving off units, backwards titles and bar graphs for time data. Learn has 9 short stops with wrong-vs-right graphs and a check question each, plus a Spot the Mistakes game where every mistake found gets a note right on the graph. Guided (We do) builds a heating-water graph step by step on a touchscreen: drag headings into the table, drag rows into time order, tap the smallest and largest values, set each axis's start and increment, plot all 20 points on red guide lines, connect the dots and check TAILS. Graph It (You do) gives one random lab dataset (cooling water, heating curve, Alka-Seltzer, hydrogen gas, cold pack, crystal violet, acetone, radioactive decay, yeast CO₂ or flask pressure) and asks one question at a time while the graph updates live. Axis choices are graded by rules, not one key: all data fits, the increment is a friendly number (1, 2, 5, 10… with 1.5 and 2.5 counted by 3 or 5 on every 2nd line), the start is a number you count by, and the data fills at least half the axis. Free Form lets students paste or type data from any lab, set up the axes with the same checks, add a connect-the-dots or best-fit line (linear, through zero, quadratic, exponential, power, inverse, logarithmic, with equation and R²) and download, copy, email or print the graph with the data table included. Progress saves on the device, the tabs show % complete, and the completion card can be copied, saved as a PNG or emailed. No student names are collected.",
+      "how": [
+        "Learn: go through the 9 stops and answer each yellow check question, then finish Spot the Mistakes.",
+        "Guided: follow the 8 steps; each step ends with a Next button, and the step numbers let you go back.",
+        "Graph It: answer one question at a time; the data table sits next to the graph with the column you need highlighted. Plot all points (taps snap into place when close), choose the line, check TAILS, then show your completion card.",
+        "Free Form: type or paste two columns from Google Sheets, check both axes, plot by hand or auto-plot, then Download PNG, Copy, Email using Google or Print.",
+        "Teachers: add ?unlock=all to open every part for a demo, ?mode=free to open Free Form directly, and ?email=you@school.org to fill in your address on the email buttons."
+      ],
+      "classroom": "Do Learn and Guided together on the projector the first week, then let students finish Graph It on their own (about 25–45 minutes total). After any lab with time-based data, send students to Free Form to graph their own results and turn in the PNG on Google Classroom — the data table is printed with the graph so you can check the plotting.",
       "bar": "tl"
     }
   }
