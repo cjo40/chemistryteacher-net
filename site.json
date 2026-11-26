@@ -96,7 +96,18 @@
     "/scientific-calculator-practice": "/calculator-skills",
     "/calculator-dimensional-analysis": "/calculator-skills",
     "/mole-calculator-practice": "/calculator-skills",
-    "/ee-key": "/calculator-skills"
+    "/ee-key": "/calculator-skills",
+    "/sig-figs": "/significant-figures",
+    "/sig-fig": "/significant-figures",
+    "/significant-figure": "/significant-figures",
+    "/significant-figures-practice": "/significant-figures",
+    "/sig-fig-rules": "/significant-figures",
+    "/sig-fig-practice": "/significant-figures",
+    "/counting-sig-figs": "/significant-figures",
+    "/rounding-sig-figs": "/significant-figures",
+    "/reading-a-graduated-cylinder": "/significant-figures",
+    "/graduated-cylinder": "/significant-figures",
+    "/meniscus": "/significant-figures"
   },
   "activities": {
     "dimensional-analysis": {
@@ -104,7 +115,7 @@
       "title": "Dimensional Analysis Practice: Unit & Mole Conversions",
       "description": "Free interactive dimensional analysis (factor-label) practice. Build conversion factors, cancel units and solve unit, mole and stoichiometry conversions step by step.",
       "unit": "Measurement & Math",
-      "order": 1,
+      "order": 2,
       "card": "Build conversion factors, cancel units, and solve unit, mole and stoichiometry problems.",
       "topics": [
         "dimensional analysis",
@@ -675,7 +686,7 @@
       "title": "Calculator Skills for Chemistry: Dimensional Analysis & Mole Problems on a Scientific Calculator",
       "description": "Free interactive practice for typing dimensional analysis, mole and stoichiometry problems into a scientific calculator (TI-30XIIS layout): parentheses or multiply-every-top, divide-every-bottom, EE for 6.02 × 10²³.",
       "unit": "Measurement & Math",
-      "order": 2,
+      "order": 3,
       "card": "Learn exactly which buttons to press: dimensional analysis work → simplified fraction → calculator, two ways (parentheses, or × every top and ÷ every bottom), with a TI-30XIIS-style on-screen calculator.",
       "topics": [
         "using a scientific calculator",
@@ -702,6 +713,46 @@
         "Teachers can add ?teacher to the address to unlock every section, or ?mode=da / ?mode=mole to open a specific topic."
       ],
       "classroom": "Do the Dimensional Analysis topic on one day and Moles & Stoichiometry at least a week later. Check progress at a glance: the badge under the slider says 100% COMPLETE for the topic on screen. Use Show Me on the projector to model both keying methods, especially dividing by two numbers on the bottom.",
+      "bar": "tl"
+    },
+    "significant-figures": {
+      "name": "Significant Figures & Measurement",
+      "title": "Significant Figures & Measurement: Counting, Rounding, Reading Graduated Cylinders & Multiplying/Dividing",
+      "description": "Free interactive sig fig practice: read graduated cylinders and burets, count significant figures, tap the measured digits, round to n sig figs and multiply or divide with the right number of sig figs.",
+      "unit": "Measurement & Math",
+      "order": 1,
+      "card": "Sig figs = measured digits. Read graduated cylinders and burets, count and tap significant digits, round correctly, and multiply/divide with the fewest-sig-figs rule — I do → We do → You do, with answers graded on sig figs.",
+      "topics": [
+        "significant figures",
+        "sig figs",
+        "counting sig figs",
+        "placeholder zeros",
+        "leading zeros",
+        "trailing zeros",
+        "captive zeros",
+        "Atlantic–Pacific rule",
+        "reading a graduated cylinder",
+        "meniscus",
+        "reading a buret",
+        "digital balance readings",
+        "estimated digit",
+        "uncertainty in measurement",
+        "rounding to significant figures",
+        "round half up",
+        "scientific notation and sig figs",
+        "exact numbers",
+        "multiplying and dividing with sig figs",
+        "multi-step calculations"
+      ],
+      "about": "Students learn that significant figures are the digits that were actually measured: every certain digit plus one estimated digit. Zeros that only show how big or small a number is are placeholders, while zeros in the middle and zeros at the end that \"they didn't have to write\" were measured. Ten Learn stops cover why sig figs matter (one penny on a 0.1 g and a 0.001 g balance), reading the bottom of the meniscus on 10 mL and 100 mL graduated cylinders, digital balances, burets and pipet drops, measured vs. placeholder zeros, the Atlantic–Pacific check, trailing zeros and scientific notation, exact numbers, rounding (with each step explained), multiplying and dividing (fewest sig figs wins) and why you round only once at the end. Practice runs in order through five sections — read a graduated cylinder, count sig figs, tap the significant digits, round to n sig figs, and multiply & divide — each as I do (worked example), We do (step by step, answer shown after a miss) and You do (3 in a row). Calculation problems show the calculator screen, so students only do the sig figs. Answers are graded on value AND sig figs, accept 2.50 × 10³, 2.50e3 or 2.50x10^3, require scientific notation when ordinary form can't show the right count, and name the mistake (dropped a needed zero, counted leading zeros, rounded the wrong way, gave the raw calculator value, and more). The 10-question quiz draws from 25 questions and ends with a downloadable score card. Progress saves in the browser.",
+      "how": [
+        "Learn: go through all 10 stops with Back/Next or the numbered dots; each visual animates on its own and has buttons to try other numbers.",
+        "Practice: work through sections A–E in order. In each, watch I do, solve We do one step at a time, then get 3 correct in a row in You do. The Next button at the bottom moves you on.",
+        "Quiz: unlocks after every Learn stop is viewed and all Practice sections are done. 10 random questions, unlimited retakes.",
+        "Score card: Download PNG, Copy image or Email via Gmail, then attach the PNG. There is no name field.",
+        "Teachers can add ?unlock to the address to open every section for a demo."
+      ],
+      "classroom": "Use Learn stops 2 and 3 on the projector before a real graduated-cylinder or buret lab, then have students finish Practice A (Read a graduated cylinder) before they measure. Practice E pairs well with a density lab: the screen shows the calculator answer, and students decide how to round it.",
       "bar": "tl"
     }
   }
