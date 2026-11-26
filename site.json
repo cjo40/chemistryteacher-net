@@ -133,7 +133,17 @@
     "/isolate-the-variable": "/solving-for-a-variable",
     "/equation-board": "/solving-for-a-variable",
     "/formula-practice": "/solving-for-a-variable",
-    "/solving-equations": "/solving-for-a-variable"
+    "/solving-equations": "/solving-for-a-variable",
+    "/graph-of-the-day": "/reading-graphs",
+    "/graph-of-the-day-bellringer": "/reading-graphs",
+    "/interpreting-graphs": "/reading-graphs",
+    "/reading-a-graph": "/reading-graphs",
+    "/read-a-graph": "/reading-graphs",
+    "/graph-reading": "/reading-graphs",
+    "/graph-interpretation": "/reading-graphs",
+    "/interpreting-data": "/reading-graphs",
+    "/graph-bellringer": "/reading-graphs",
+    "/graph-warm-up": "/reading-graphs"
   },
   "activities": {
     "dimensional-analysis": {
@@ -859,6 +869,46 @@
         "Teachers: add ?unlock=all to open every part for a demo, ?mode=free to open Free Form directly, and ?email=you@school.org to fill in your address on the email buttons."
       ],
       "classroom": "Do Learn and Guided together on the projector, then let students work through Practice on their own (about 20 minutes for a fast student, 40 for a slow one). Walk around and check the green ✓ 100% tabs. Later in the year, send students to Free Form for any lab or homework calculation — it shows the rearranged formula so they can copy it into their notes.",
+      "bar": "tl"
+    },
+    "reading-graphs": {
+      "name": "Graph of the Day: Reading & Interpreting Graphs",
+      "title": "Graph of the Day: Reading & Interpreting Graphs Bellringer (35 Daily Graph Questions)",
+      "description": "Free daily bellringer for reading and interpreting graphs: one graph, a short description and 5 multiple-choice questions each day, with 35 science and everyday graphs. Read values, find max and min, trends, change, slope, best-fit predictions.",
+      "unit": "Measurement & Math",
+      "order": 6,
+      "card": "A 5-minute daily warm-up: one graph and 5 questions. Wrong answers name the mistake, and red guide lines on the graph show where the answer comes from. 35 graphs, picked by the date so the whole class sees the same one.",
+      "topics": [
+        "reading graphs",
+        "interpreting graphs",
+        "bellringer / warm-up",
+        "read a value from a graph",
+        "interpolation",
+        "maximum and minimum",
+        "trends (increasing, decreasing, leveling off)",
+        "change and difference",
+        "biggest change between points",
+        "range",
+        "comparing two lines",
+        "independent and dependent variables",
+        "best-fit line predictions (extrapolation)",
+        "slope as a rate (per week, per second)",
+        "density from a mass vs. volume graph",
+        "half-life from a decay curve",
+        "heating curve plateaus",
+        "solubility curve",
+        "Charles' and Boyle's laws",
+        "correlation is not causation"
+      ],
+      "about": "A daily bellringer for 9th-grade (and 8th-grade) students who struggle to read graphs. Each day has one graph drawn on graph paper, a 2–3 sentence description and 5 multiple-choice questions. Every set covers reading a value, finding when or where, a maximum/minimum or trend, a change or difference, and a reasoning or prediction question. Wrong answer choices come from real misreadings (the wrong axis, off by one gridline, the first value instead of the smallest, adding instead of subtracting), and each one has a reason that names the mistake. Students get one retry. After any answer, red dashed guide lines, circled points, shaded intervals or an extended best-fit line show where the answer comes from. The 35 graphs alternate science topics (cooling curves, a heating curve, solubility, half-life, titration, Charles' and Boyle's laws, density, yeast and temperature) with everyday ones (birds at a feeder, phone battery, steps, ticket sales, Arizona daylight and monsoon rain). The set is picked by the date, so the whole class sees the same graph: #1 on Mon, Nov 30, 2026, then one per weekday (Mon–Fri), looping after #35. If a device already finished that day's graph, it gets the last one in the loop it has not finished, so students who were absent catch up while staying in step with the class. The header shows the score and five ✓/✗ dots, readable from across the room. Answer choices are shuffled per device. A 🔊 button reads the description and question aloud with the browser's built-in voice. Progress saves on the device and resets at midnight. No student names are collected.",
+      "how": [
+        "Look at the graph and read the gray \"About this graph\" box (tap 🔊 to hear it).",
+        "Tap an answer. If it is wrong, read the reason, look at the red marks on the graph and try once more.",
+        "Tap Next ▶ for the next question. Only first tries count toward the score.",
+        "After question 5, tap the dots at the top to look back at any question.",
+        "Teachers: add ?day=12 to the link to show a certain graph (for a sub or a demo). ⚙ Settings has Start today over and Reset all graphs."
+      ],
+      "classroom": "Use it as a 5–8 minute bellringer at the start of class: post the link once and students open it every day. Walk around and check the score badge and dots in the header, then go over the trickiest question on the projector. Everyone gets the same graph on the same day, so it works well for a quick class discussion.",
       "bar": "tl"
     }
   }
