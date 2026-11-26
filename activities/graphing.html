@@ -284,6 +284,14 @@ table.dt td.hlcol.tap:hover{background:#ffe7a3}
 .cardmsg{font-size:14px;margin-top:6px;color:#0f5229}
 .ask-q .qn{color:var(--acc)}
 
+/* tappable column headings: obvious */
+.gdata th.tap{background:#fff1c2;border:2px solid #f2a900;color:#3d2a00;cursor:pointer;animation:tapglow 1.6s ease-in-out infinite}
+.gdata th.tap::after{content:' 👆';font-size:13px}
+.gdata th.tap:hover{background:#ffe08a}
+@keyframes tapglow{0%,100%{box-shadow:inset 0 0 0 0 rgba(242,169,0,0)}50%{box-shadow:inset 0 0 0 4px rgba(242,169,0,.55)}}
+.colpick button{flex:1;min-width:140px;background:#fff1c2;border:2px solid #f2a900;font-weight:700}
+.colpick button:hover{background:#ffe08a}
+
 </style>
 </head>
 <body>
@@ -833,7 +841,7 @@ function ask(o){
   // o.n label, o.q question (html), o.sub hint (html), o.a answer controls (html), o.graph true if answered on the graph, o.fb id for feedback, o.btns buttons html
   return '<div class="ask"><div class="ask-tag">❓ '+(o.n||'Question')+'</div><div class="ask-q">'+o.q+'</div>'+
     (o.sub?'<div class="ask-sub">'+o.sub+'</div>':'')+(o.data?'<div class="ask-data">'+o.data+'</div>':'')+
-    '<div class="ask-a'+(o.graph?' on-graph':'')+'"><div class="ask-al">'+(o.graph?'👉 Answer on the graph':'✎ Your answer')+'</div>'+(o.a||'')+'</div>'+
+    '<div class="ask-a'+(o.graph?' on-graph':'')+'"><div class="ask-al">'+(o.graph?(typeof o.graph==='string'?o.graph:'👉 Answer on the graph'):'✎ Your answer')+'</div>'+(o.a||'')+'</div>'+
     (o.fb?'<div id="'+o.fb+'"></div>':'')+(o.btns?'<div class="btns">'+o.btns+'</div>':'')+'</div>';
 }
 function prevOk(msg){ return msg ? '<div class="prev-ok">✓ '+msg+'</div>' : ''; }
@@ -1466,7 +1474,9 @@ function renderYou(){
   if(s.done){
     h += fbHTML('ok','Graph complete! Show your teacher your completion card.')+'<div class="btns"><button class="pri big" id="yCard">Show completion card</button><button id="yNew">New dataset (extra practice)</button></div>';
   } else if(st===0){
-    h += ask({n:n, q:'Which goes on the <span class="kw">x-axis</span>?', sub:'Tap the heading of that column in the data table next to the graph.', graph:'👉 Answer in the data table', a:'Tap a column heading in the data table →', fb:'yfb', btns:showBtn});
+    var colOrd = s.swap ? [1,0] : [0,1], heads=[axisLabel(d.xq,d.xu), axisLabel(d.yq,d.yu)];
+    h += ask({n:n, q:'Which goes on the <span class="kw">x-axis</span>?', sub:'Tap one of the two columns below (they\'re also highlighted in the data table next to the graph).',
+      a:'<div class="opts colpick" style="margin:0">'+colOrd.map(function(c){ return '<button class="big" data-col="'+c+'">'+esc(heads[c])+'</button>'; }).join('')+'</div>', fb:'yfb', btns:showBtn});
   } else if(st===1){
     var qo=shuffleSeed([d.yq,'Time'].concat(QPOOL.filter(function(q){return q!==d.yq&&q!=='Time';}).slice(s.ds%5,s.ds%5+2)), s.ds);
     var uo=shuffleSeed([yUnit(d.yu), d.xu].concat(UPOOL.filter(function(u){return u!==yUnit(d.yu)&&u!==d.xu;}).slice(s.ds%7,s.ds%7+3)), s.ds+3);
@@ -1515,7 +1525,7 @@ function wireYou(){
     return;
   }
   if(st===0){
-    $$('th[data-col]',yGC.data).forEach(function(th){ th.onclick=function(){
+    $$('[data-col]',side).concat($$('th[data-col]',yGC.data)).forEach(function(th){ th.onclick=function(){
       if(+th.dataset.col===0) right('Yes — '+d.xq+' is the independent variable. It goes on x.');
       else wrong(d.yq+' is what you measured (dependent) — it goes on y. Time goes on x.',6);
     }; });
