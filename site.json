@@ -530,10 +530,10 @@
     "periodic-trends": {
       "name": "Periodic Trends",
       "title": "Periodic Trends: Atomic Radius, Ionization Energy, Electron Affinity & Electronegativity",
-      "description": "Free interactive periodic trends lesson: atomic radius, ionization energy, electron affinity and electronegativity with heat maps, atom size comparisons, ranking practice and a quiz.",
+      "description": "Free interactive periodic trends lesson: atomic radius, ionization energy, electron affinity and electronegativity with trend breakouts, ranking practice and a quiz.",
       "unit": "Atomic Structure",
       "order": 6,
-      "card": "Explore atomic radius, ionization energy, electron affinity and electronegativity on interactive heat maps, compare atom sizes and rank elements by trend.",
+      "card": "Learn why atomic radius, ionization energy, electron affinity and electronegativity change across the table, then practice ranking elements by trend.",
       "topics": [
         "periodic trends",
         "atomic radius",
@@ -546,17 +546,15 @@
         "energy levels",
         "ion size",
         "cations and anions",
-        "periodic table heat map"
+        "ranking elements by trend"
       ],
-      "about": "Students learn why the trends happen (nuclear charge, energy levels and shielding), then explore each trend on a main-group periodic table with Period and Group buttons that break out the trend row by row and column by column. The Lab has a full heat-map periodic table with a 3D bar view and trend arrows, a Size Showdown that draws two atoms to scale, and ranking challenges on a colored periodic table. Values: calculated atomic radii (Clementi), NIST/CRC first ionization energies, experimental electron affinities and Pauling electronegativities.",
+      "about": "Students learn why the trends happen (nuclear charge, energy levels and shielding), then explore each trend on a main-group periodic table with Period and Group buttons that break out the trend row by row and column by column. In Practice, they rank elements by trend on a colored periodic table with trend arrows. Values: calculated atomic radii (Clementi), NIST/CRC first ionization energies, experimental electron affinities and Pauling electronegativities.",
       "how": [
         "Work through the 8 Learn stops (Back/Next or tap a numbered stop). On stops 2–5, tap a Period or Group button to break out the trend.",
-        "In Lab A, view all four heat maps; turn on numbers, trend arrows or 3D bars.",
-        "In Lab B, tap two elements on the heat map to compare their sizes (3 comparisons).",
-        "In Lab C, click the 3 red-circled elements in order from highest to lowest (8 challenges, at least 6 correct).",
-        "When the Lab Checklist is done, take the 10-question quiz and download, copy or email your score card."
+        "In Practice, pick a trend (or Mix) and click the 3 red-circled elements in the order shown (8 challenges, at least 6 correct).",
+        "When the Practice Checklist is done, take the 10-question quiz and download, copy or email your score card."
       ],
-      "classroom": "Use it as interactive notes on periodic trends, as a lab day before a trends worksheet, or as review before a periodic table test. The score card can be turned in through Google Classroom or Gmail.",
+      "classroom": "Use it as interactive notes on periodic trends, as a practice day before a trends worksheet, or as review before a periodic table test. The score card can be turned in through Google Classroom or Gmail.",
       "bar": "tl"
     },
     "physical-chemical-changes": {
