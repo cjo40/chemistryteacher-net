@@ -122,7 +122,18 @@ table.cmp .hl{background:#fff4c2!important;outline:2px solid #d4a017;outline-off
 .grille{width:70%;height:14px;background:radial-gradient(#3f3f46 1.6px,transparent 1.9px) 0 0/8px 7px;opacity:.85}
 .led{width:14px;height:14px;border-radius:50%;background:#7f1d1d;border:2px solid #451a03;display:inline-block}
 .led.on{background:#ef4444;box-shadow:0 0 8px 3px rgba(239,68,68,.85)}
-.srcpick .btn{min-width:8.5rem}
+.srcpick{flex-wrap:wrap}
+.seg{display:inline-flex;flex:none;border:2px solid var(--accent);border-radius:10px;overflow:hidden;background:#fff}
+.seg button{border:0;border-left:1px solid var(--line);background:#fff;color:var(--accent);font:inherit;font-weight:700;font-size:.84rem;padding:.2rem .5rem;min-height:38px;cursor:pointer;white-space:nowrap;touch-action:manipulation}
+.seg button:first-child{border-left:0}
+.seg button.mstart{border-left:3px solid var(--accent)}
+.seg button:hover{background:var(--panel)}
+.seg button[aria-checked=true]{background:var(--accent);color:#fff}
+.seg button.ta{color:var(--alpha)}.seg button.tb{color:var(--beta)}.seg button.tg{color:var(--gamma)}
+.seg button.ta[aria-checked=true]{background:var(--alpha);color:#fff}.seg button.tb[aria-checked=true]{background:var(--beta);color:#fff}.seg button.tg[aria-checked=true]{background:var(--gamma);color:#fff}
+.seg button:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+@media (max-width:620px){.seg{display:flex;width:100%}.seg button{flex:1 1 0;min-width:0;white-space:normal;line-height:1.1;padding:.15rem .1rem;font-size:.74rem}}
+@media (max-width:400px){.seg button{font-size:.66rem;padding:.15rem .05rem;overflow-wrap:anywhere}}
 .palette{display:flex;flex-wrap:wrap;gap:.45rem;margin:.6rem 0}
 .tile{display:flex;align-items:center;gap:.45rem;padding:.35rem .6rem;border:2px solid var(--line);border-radius:10px;background:#fff;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;min-height:46px;font-weight:700}
 .tile small{display:block;font-weight:400;color:var(--muted);font-size:.75rem}
@@ -145,6 +156,13 @@ label.rng{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-weight:7
 .data th,.data td{border:1px solid var(--line);padding:.25rem .4rem;text-align:left}
 .data thead th{background:var(--panel);position:sticky;top:0}
 .datawrap{max-height:260px;overflow:auto;border-radius:8px;max-width:100%}
+.cpmgrid th,.cpmgrid td{text-align:center;white-space:nowrap}
+.cpmgrid tbody th{text-align:left;background:var(--panel)}
+.cpmgrid thead th small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.cpmgrid td{font-weight:700;font-variant-numeric:tabular-nums;min-width:4.2rem}
+.cpmgrid td.empty{color:var(--muted);font-weight:400}
+.cpmgrid td.newcell{animation:flashrow 1.6s ease-out}
+.cpmgrid td.live{outline:3px solid var(--focus);outline-offset:-3px}
 .checklist{position:sticky;top:calc(var(--topH,0px) + 4.2rem)}
 .checklist h2{font-size:1.15rem;margin:0 0 .5rem;color:var(--accent)}
 .ck{display:flex;gap:.5rem;align-items:flex-start;margin:.45rem 0;font-size:.92rem}
@@ -262,18 +280,14 @@ footer{max-width:1320px;margin:0 auto;padding:0 1rem 3.4rem 3.6rem;font-size:.8r
   <section id="view-lab" class="view" role="tabpanel" aria-labelledby="tab-lab" hidden>
     <div class="lab-layout">
       <div class="lab-main">
-        <div class="subtabs" role="tablist" aria-label="Lab parts">
-          <button class="btn subtab" data-lab="A" role="tab">A · Shielding Lab</button>
-          <button class="btn subtab" data-lab="C" role="tab">B · Mystery Sources</button>
-        </div>
-
-        <!-- A + C share the bench -->
+        <!-- one combined bench: 4 known sources + 4 mystery sources -->
         <div id="lab-AC" class="card">
+          <h2 style="margin:0 0 .3rem;font-size:1.2rem;color:var(--accent)">Shielding Lab &amp; Mystery Sources</h2>
           <p class="labintro" id="benchIntro"></p>
-          <div class="row srcpick" id="srcPick" role="group" aria-label="Choose a source"></div>
+          <div class="row srcpick" id="srcPick"></div>
           <div class="palette" id="palette" aria-label="Shields: drag one into the shield slot, or tap to swap it in"></div>
           <div class="bench">
-            <svg class="viz" id="benchSvg" viewBox="0 0 820 268" role="img" aria-label="Radiation source, shield slot and Geiger counter"></svg>
+            <svg class="viz" id="benchSvg" viewBox="0 0 820 232" role="img" aria-label="Radiation source, shield slot and Geiger counter"></svg>
             <div class="meter" aria-live="off">
               <div class="mtop"><span>GEIGER COUNTER</span><span class="led" id="led" aria-hidden="true"></span></div>
               <svg class="gauge" id="gauge" viewBox="0 0 160 98" aria-hidden="true"></svg>
@@ -283,22 +297,20 @@ footer{max-width:1320px;margin:0 auto;padding:0 1rem 3.4rem 3.6rem;font-size:.8r
             </div>
           </div>
           <div class="ctrlrow">
-            <label class="rng" for="dist">Distance: <span id="distOut">3 cm</span>
-              <input type="range" id="dist" min="2" max="40" step="1" value="3"></label>
             <span class="autorec" id="autoRec" role="status">Readings record automatically.</span>
             <button class="btn ghost" id="clearShields">Remove shield</button>
           </div>
           <p class="tip" id="benchTip"></p>
-          <div id="mysteryPanel" hidden>
-            <h3 style="margin:.6rem 0 .2rem">Identify each mystery source</h3>
+          <h3 style="margin:.8rem 0 .1rem">Data table: known sources (counts per minute)</h3>
+          <div class="datawrap"><table class="data cpmgrid" id="dataKnown" aria-label="Counts per minute for each known source and shield"></table></div>
+          <h3 style="margin:.8rem 0 .1rem">Data table: mystery sources (counts per minute)</h3>
+          <div class="datawrap"><table class="data cpmgrid" id="dataMystery" aria-label="Counts per minute for each mystery source and shield"></table></div>
+          <div class="row" style="margin-top:.4rem"><button class="btn small ghost" id="clearData">Clear tables</button><span class="note" id="bgNote"></span></div>
+          <div id="mysteryPanel">
+            <h3 style="margin:.8rem 0 .2rem">Identify each mystery source</h3>
             <p class="note" style="margin:.1rem 0">Check every type of radiation the source gives off, then press <b>Check</b>. Identify at least 2.</p>
             <div class="mgrid" id="mgrid"></div>
           </div>
-          <h3 style="margin:.8rem 0 .1rem">Data table</h3>
-          <div class="datawrap"><table class="data" id="dataTable">
-            <thead><tr><th>#</th><th>Source</th><th>Shield(s)</th><th>Distance</th><th>Count (cpm)</th><th>Net (minus background)</th></tr></thead>
-            <tbody></tbody></table></div>
-          <div class="row" style="margin-top:.4rem"><button class="btn small ghost" id="clearData">Clear table</button><span class="note" id="bgNote"></span></div>
         </div>
 
       </div>
@@ -778,13 +790,13 @@ var STOPS=[
 ];
 
 /* ---------- tabs / views ---------- */
-var view='learn', labPart='A';
+var view='learn';
 function learnDone(){return TEACHER||STOPS.every(function(_,i){return state.viewed.indexOf(i)>=0;});}
 function quizUnlocked(){return TEACHER||(learnDone()&&checklistStatus().allDone);}
 function updateTabs(){
   var nv=state.viewed.length,cs=checklistStatus();
   $('#sub-learn').textContent=learnDone()?'✓ All stops viewed':nv+' of '+STOPS.length+' stops viewed';
-  $('#sub-lab').textContent=cs.allDone?'✓ Checklist complete':cs.doneCount+' of 3 tasks done';
+  $('#sub-lab').textContent=cs.allDone?'✓ Checklist complete':cs.doneCount+' of '+cs.items.length+' tasks done';
   var qt=$('#tab-quiz');
   if(quizUnlocked()){qt.classList.remove('locked');qt.removeAttribute('aria-disabled');$('#quizLabel').innerHTML='3 · Quiz';$('#sub-quiz').textContent=state.attempts?('Attempts: '+state.attempts):'Unlocked!';}
   else{qt.classList.add('locked');qt.setAttribute('aria-disabled','true');$('#quizLabel').innerHTML=LOCK+' 3 · Quiz';
@@ -795,7 +807,7 @@ function updateTabs(){
 function showView(v){
   view=v;['learn','lab','quiz'].forEach(function(n){$('#view-'+n).hidden=(n!==v);});
   if(v==='learn')renderStop(state.stop);else stopViz();
-  if(v==='lab'){showLab(labPart);}else benchActive(false);
+  if(v==='lab'){showLab();}else benchActive(false);
   if(v==='quiz')renderQuizHome();
   updateTabs();window.scrollTo(0,0);
 }
@@ -828,22 +840,20 @@ var SOURCES={
   sr:{name:'Strontium-90',short:'Sr-90 (β)',comps:[{t:'b',K:30000}]},
   co:{name:'Cobalt-60',short:'Co-60 (γ)',comps:[{t:'g',K:25000}]}
 };
-(function(){var pool=shuffle(['a','b','g','ag']).slice(0,3);pool.push('bg');pool=shuffle(pool);
-  ['A','B','C','D'].forEach(function(L,i){var p=pool[i],r=0.7+Math.random()*0.6,c=[];
+(function(){var pool=shuffle(['a','b','g','ag']).slice(0,2);pool.push('bg');pool=shuffle(pool);
+  ['A','B','C'].forEach(function(L,i){var p=pool[i],r=0.7+Math.random()*0.6,c=[];
     if(p.indexOf('a')>=0)c.push({t:'a',K:10000*r});
     if(p.indexOf('b')>=0)c.push({t:'b',K:(p==='bg'?20000:30000)*r});
     if(p.indexOf('g')>=0)c.push({t:'g',K:(p.length>1?14000:25000)*r});
     SOURCES['m'+L]={name:'Mystery '+L,short:'Mystery '+L,comps:c,answer:p,letter:L};});})();
 var SHIELDS=[
-  {id:'hand',name:'Hand / skin',th:'≈2 cm of tissue',T:{a:0,b:0.01,g:0.88},w:24,fill:'#f2c7a5',pat:''},
   {id:'paper',name:'Paper',th:'1 sheet',T:{a:0,b:0.9,g:1},w:5,fill:'#ffffff',pat:''},
-  {id:'wood',name:'Wood',th:'1 cm',T:{a:0,b:0.15,g:0.965},w:14,fill:'#b7793f',pat:'wood'},
   {id:'al',name:'Aluminum',th:'3 mm',T:{a:0,b:0.003,g:0.956},w:8,fill:'#cbd5e1',pat:''},
   {id:'pb',name:'Lead',th:'5 cm',T:{a:0,b:0,g:0.056},w:34,fill:'#64748b',pat:'hatch'},
   {id:'conc',name:'Concrete',th:'10 cm',T:{a:0,b:0,g:0.35},w:44,fill:'#b8b2ab',pat:'dots'}
 ];
 var SH={};SHIELDS.forEach(function(s){SH[s.id]=s;});
-var bench={src:'am',shields:[],d:3}, trials=[], identified={};
+var bench={src:'am',shields:[],d:3}, identified={};
 function alphaAir(d){return clamp((4.3-d)/2.3,0,1);}
 function trueRate(){var src=SOURCES[bench.src],r=0,d=bench.d;
   src.comps.forEach(function(c){var f=c.K/(d*d);if(c.t==='a')f*=alphaAir(d);bench.shields.forEach(function(id){f*=SH[id].T[c.t];});r+=f;});return r+BG_RATE;}
@@ -873,13 +883,8 @@ function benchDraw(){
     g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();removeShield(id);}});});
   var dx=detX();
   $('#bDet').innerHTML='<rect x="'+(dx+38)+'" y="'+(B.y+14)+'" width="6" height="'+(B.bench-B.y-14)+'" fill="#475569"/><ellipse cx="'+(dx+41)+'" cy="'+B.bench+'" rx="16" ry="4" fill="#1e293b"/>'+gmTube(dx,B.y,1);
-  var t='',per=(dx-B.srcR)/bench.d,step=per>=24?1:(per>=9?5:10);
-  for(var c=0;c<=bench.d;c++){var tx=B.srcR+c*per;if(per>=5||c%5===0)t+='<line x1="'+tx.toFixed(1)+'" y1="228" x2="'+tx.toFixed(1)+'" y2="'+(c%step===0?238:233)+'" stroke="#78350f" stroke-width="1"/>';
-    if(c%step===0&&c>0&&c<bench.d)t+='<text x="'+tx.toFixed(1)+'" y="247" text-anchor="middle" font-size="9" fill="#78350f">'+c+'</text>';}
-  $('#bRuler').innerHTML='<rect x="'+B.srcR+'" y="226" width="'+(dx-B.srcR)+'" height="14" rx="2" fill="url(#gTape)" stroke="#a16207"/>'+t+
-    '<text x="'+((B.srcR+dx)/2)+'" y="262" text-anchor="middle" class="svglbl" font-size="14">distance = '+bench.d+' cm (not to scale)</text>';
   $$('.tile').forEach(function(t){t.setAttribute('aria-pressed',bench.shields.indexOf(t.dataset.sid)>=0?'true':'false');});
-  $('#distOut').textContent=bench.d+' cm';
+  renderData();
 }
 function slotHot(x,y){$('#benchSvg').classList.toggle('slot-hot',x>=0&&inRect(x,y,$('#slotbox')));}
 function addShield(id){bench.shields=[id];benchDraw();}
@@ -891,12 +896,13 @@ function buildPalette(){
     makeDraggable(t,{label:function(){return SH[id].name;},onMove:slotHot,onDrop:function(x,y){slotHot(-1,-1);if(inRect(x,y,$('#slotbox')))addShield(id);},onClick:function(){if(bench.shields.indexOf(id)>=0)removeShield(id);else addShield(id);}});});
 }
 function buildSrcPick(){
-  var keys=labPart==='C'?['mA','mB','mC','mD']:['none','am','sr','co'];
-  if(keys.indexOf(bench.src)<0)bench.src=keys[labPart==='C'?0:1];
-  $('#srcPick').innerHTML='<span class="note" style="font-weight:700">Source:</span>'+keys.map(function(k){var s=SOURCES[k];return '<button class="btn small'+(k==='am'?' ta':k==='sr'?' tb':k==='co'?' tg':'')+'" data-src="'+k+'" aria-pressed="'+(k===bench.src)+'">'+s.short+'</button>';}).join('');
+  var keys=['none','am','sr','co','mA','mB','mC'],LBL={none:'None',am:'Am-241 α',sr:'Sr-90 β',co:'Co-60 γ',mA:'Mystery A',mB:'Mystery B',mC:'Mystery C'};
+  $('#srcPick').innerHTML='<span class="note" style="font-weight:700">Sources:</span><div class="seg" role="radiogroup" aria-label="Choose a source">'+keys.map(function(k){var on=k===bench.src;
+    return '<button type="button" role="radio" class="'+(k==='am'?'ta':k==='sr'?'tb':k==='co'?'tg':'')+(k==='mA'?' mstart':'')+'" data-src="'+k+'" aria-checked="'+on+'" tabindex="'+(on?0:-1)+'" title="'+SOURCES[k].name+'">'+LBL[k]+'</button>';}).join('')+'</div>';
+  $('#srcPick .seg').addEventListener('keydown',function(e){var i=keys.indexOf(bench.src),d=(e.key==='ArrowRight'||e.key==='ArrowDown')?1:(e.key==='ArrowLeft'||e.key==='ArrowUp')?-1:0;
+    if(!d)return;e.preventDefault();var k=keys[(i+d+keys.length)%keys.length];$('#srcPick [data-src="'+k+'"]').click();$('#srcPick [data-src="'+k+'"]').focus();});
   $$('#srcPick [data-src]').forEach(function(b){b.addEventListener('click',function(){bench.src=b.dataset.src;parts=[];bgParts=[];$('#bBeam').innerHTML='';buildSrcPick();benchDraw();});});
 }
-$('#dist').addEventListener('input',function(){bench.d=+this.value;benchDraw();});
 $('#clearShields').addEventListener('click',function(){bench.shields=[];benchDraw();});
 
 /* particles + counter */
@@ -920,7 +926,7 @@ function setMeter(c){var n=$('#needle');$('#cpm').textContent=c;var th=-80+160*c
 var TICK=250,NB=120,win=[],winLam=-1,cfgKey='',cfgT=0,cfgDone=true,shownCpm=null;
 function seedWindow(lam){win=[];for(var i=0;i<NB;i++)win.push(poisson(lam*TICK/60000));winLam=lam;}
 function windowCpm(){return Math.round(win.reduce(function(a,b){return a+b;},0)*60000/(NB*TICK));}
-function benchKey(){return bench.src+'|'+bench.shields.join('+')+'|'+bench.d;}
+function benchKey(){return bench.src+'|'+bench.shields.join('+');}
 function benchActive(on){
   if(tickTimer){clearInterval(tickTimer);tickTimer=null;}if(stopBeam){stopBeam();stopBeam=null;}
   if(!on)return;
@@ -955,31 +961,37 @@ function benchActive(on){
 }
 
 /* recording */
-function bgEstimate(){var b=trials.filter(function(t){return t.src==='none';});if(!b.length)return {v:25,est:true};return {v:b.reduce(function(a,t){return a+t.c;},0)/b.length,est:false};}
-function renderTrials(hi){var bg=bgEstimate();
-  $('#dataTable tbody').innerHTML=trials.length?trials.map(function(t,i){var net=t.src==='none'?'—':Math.max(0,Math.round(t.c-bg.v));
-    return '<tr'+(i===hi?' class="newrow"':'')+'><td>'+(i+1)+'</td><td>'+SOURCES[t.src].short+'</td><td>'+(t.sh.length?t.sh.map(function(id){return SH[id].name+' ('+SH[id].th+')';}).join(' + '):'none')+'</td><td>'+t.d+' cm</td><td><b>'+t.c+'</b></td><td>'+net+'</td></tr>';}).reverse().join(''):'<tr><td colspan="6" class="note">No trials yet. Set up a source and shields, and hold still for a moment. Readings record automatically.</td></tr>';
-  $('#bgNote').textContent=bg.est?'Net uses a typical background of 25 cpm. Record a trial with “None (background)” to measure your own.':'Net uses your measured background: '+Math.round(bg.v)+' cpm.';}
+var cpmData={},lastKey='';
+function bgEstimate(){var b=cpmData['none|none'];return b?{v:b,est:false}:{v:25,est:true};}
+function cpmCols(){return [{id:'none',h:'No shield',sm:''}].concat(SHIELDS.map(function(s){return {id:s.id,h:s.name,sm:s.th};}));}
+function cpmTable(rows){var cols=cpmCols(),cur=bench.src+'|'+(bench.shields[0]||'none');
+  return '<thead><tr><th scope="col">Source</th>'+cols.map(function(c){return '<th scope="col">'+c.h+'<small>'+(c.sm||'&nbsp;')+'</small></th>';}).join('')+'</tr></thead><tbody>'+
+    rows.map(function(r){return '<tr><th scope="row">'+r[1]+'</th>'+cols.map(function(c){var k=r[0]+'|'+c.id,v=cpmData[k],cls=[];
+      if(v==null)cls.push('empty');if(k===lastKey)cls.push('newcell');if(k===cur)cls.push('live');
+      return '<td'+(cls.length?' class="'+cls.join(' ')+'"':'')+'>'+(v==null?'·':v)+'</td>';}).join('')+'</tr>';}).join('')+'</tbody>';}
+function renderData(){
+  $('#dataKnown').innerHTML=cpmTable([['am','α Am-241'],['sr','β Sr-90'],['co','γ Co-60']]);
+  $('#dataMystery').innerHTML=cpmTable([['mA','Mystery A'],['mB','Mystery B'],['mC','Mystery C']]);
+  lastKey='';var bg=bgEstimate();
+  $('#bgNote').innerHTML=bg.est?'Background: not measured yet (typical ≈25 cpm). Pick <b>None (background)</b> with no shield to measure it.':'Background (no source, no shield): <b>'+Math.round(bg.v)+' cpm</b>.';}
 function autoRecord(){var k=benchKey(),st=$('#autoRec');
   if(k!==cfgKey){cfgKey=k;cfgT=performance.now();cfgDone=false;}
   if(cfgDone)return;
   var left=1500-(performance.now()-cfgT);
   if(left>0){st.className='autorec busy';st.innerHTML='<span class="spin" aria-hidden="true"></span> Measuring…';return;}
-  cfgDone=true;var c=windowCpm(),i=-1;
-  trials.forEach(function(t,n){if(t.key===k)i=n;});
-  if(i>=0){trials[i].c=c;}else{trials.push({key:k,src:bench.src,sh:bench.shields.slice(),d:bench.d,c:c});i=trials.length-1;}
-  if(['am','sr','co'].indexOf(bench.src)>=0){
-    if(bench.shields.length===1){var key=bench.src+'|'+bench.shields[0];if(state.shieldTests.indexOf(key)<0)state.shieldTests.push(key);}
-    var L=state.dist[bench.src]||(state.dist[bench.src]=[]);if(L.indexOf(bench.d)<0)L.push(bench.d);save();}
-  renderTrials(i);renderChecklist();
-  st.className='autorec done';st.textContent='✓ Recorded trial #'+(i+1)+': '+c+' cpm';
+  cfgDone=true;var c=windowCpm(),sh=bench.shields[0]||'none';
+  if(bench.src==='none'&&sh!=='none'){st.className='autorec';st.textContent='No source: remove the shield to measure background.';return;}
+  var dk=bench.src+'|'+sh;cpmData[dk]=c;lastKey=dk;
+  if(['am','sr','co'].indexOf(bench.src)>=0&&sh!=='none'){if(state.shieldTests.indexOf(dk)<0){state.shieldTests.push(dk);save();}}
+  renderData();renderChecklist();
+  st.className='autorec done';st.textContent='✓ Recorded: '+SOURCES[bench.src].short+', '+(sh==='none'?'no shield':SH[sh].name)+' = '+c+' cpm';
 }
-$('#clearData').addEventListener('click',function(){trials=[];cfgKey='';renderTrials();});
+$('#clearData').addEventListener('click',function(){cpmData={};cfgKey='';renderData();});
 
 /* mystery */
 var mysterySel={};
 function renderMystery(){
-  $('#mgrid').innerHTML=['A','B','C','D'].map(function(L){var s=SOURCES['m'+L],ok=identified[L],sel=mysterySel[L]||[];
+  $('#mgrid').innerHTML=['A','B','C'].map(function(L){var s=SOURCES['m'+L],ok=identified[L],sel=mysterySel[L]||[];
     return '<div class="mcard'+(ok?' solved':'')+'" data-l="'+L+'"><h3>Mystery '+L+(ok?' · ✓ Identified':'')+'</h3><div class="checks">'+
       ['a','b','g'].map(function(t){var on=ok?s.answer.indexOf(t)>=0:sel.indexOf(t)>=0;return '<label><input type="checkbox" value="'+t+'"'+(ok?' disabled':'')+(on?' checked':'')+'> '+{a:'α',b:'β',g:'γ'}[t]+'</label>';}).join('')+
       '</div><button class="btn small" '+(ok?'disabled':'')+'>Check</button><div class="mfb" role="status"></div></div>';}).join('');
@@ -988,7 +1000,7 @@ function renderMystery(){
     $('button',card).addEventListener('click',function(){
       var pick=$$('input:checked',card).map(function(i){return i.value;}).sort().join(''),ans=SOURCES['m'+L].answer.split('').sort().join(''),fb=$('.mfb',card);
       if(!pick){fb.className='mfb fbk info';fb.textContent='Check at least one box.';return;}
-      if(pick===ans){identified[L]=true;state.mysteryOk=Math.min(4,(state.mysteryOk||0)+1);save();
+      if(pick===ans){identified[L]=true;state.mysteryOk=Math.min(3,(state.mysteryOk||0)+1);save();
         card.classList.add('solved');$('h3',card).textContent='Mystery '+L+' · ✓ Identified';$$('input',card).forEach(function(i){i.disabled=true;});$('button',card).disabled=true;
         fb.className='mfb fbk ok';fb.textContent='✓ Correct! '+mysteryWhy(ans);renderChecklist();}
       else{fb.className='mfb fbk bad';fb.innerHTML='✗ Not yet. '+mysteryHint(pick,ans);}
@@ -999,38 +1011,29 @@ function mysteryHint(p,a){if(a.length>1&&p.length===1)return 'Look closer: after
   return 'Test it with no shield, then paper, then 3 mm aluminum, then lead. Compare each count to background (≈25 cpm).';}
 
 /* lab parts */
-function showLab(L){
-  labPart=L;$$('.subtab').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lab===L?'true':'false');b.setAttribute('aria-selected',b.dataset.lab===L?'true':'false');});
-  var ac=(L==='A'||L==='C');$('#lab-AC').hidden=!ac;$('#mysteryPanel').hidden=(L!=='C');
-  if(ac){
-    $('#benchIntro').innerHTML=L==='A'?'Choose a <b>source</b>, then <b>drag a shield</b> into the slot (or tap it). Only <b>one shield</b> is used at a time; picking a new one swaps it in. Watch the <b>Geiger counter</b>. About 1.5 seconds after you stop changing things, the reading is <b>recorded automatically</b> in the data table. The reading always includes about 20–30 cpm of <b>background radiation</b>.'
-      :'Each <b>mystery source</b> gives off α, β, γ or a <b>mix</b>. Use the shields to figure out what is inside. One source gives off <b>both β and γ</b>.';
-    $('#benchTip').innerHTML=L==='A'?'<b>Inverse-square tip:</b> with Sr-90 or Co-60 and no shield, record counts at <b>5, 10 and 20 cm</b>. Each time you double the distance, the <b>net</b> count should drop to about <b>¼</b>. Alpha only travels about <b>4 cm</b> in air: try Am-241 at 2, 3, 4 and 5 cm.'
-      :'<b>Strategy:</b> no shield → paper → 3 mm aluminum → 5 cm lead. Compare each count to background. If a shield cuts the count a lot but <b>not</b> down to background, something more penetrating is also coming out.';
-    buildSrcPick();benchDraw();if(L==='C')renderMystery();benchActive(view==='lab');
-  }else{benchActive(false);}
+function showLab(){
+  $('#benchIntro').innerHTML='Choose a <b>source</b>, then <b>drag a shield</b> into the slot (or tap it). Only <b>one shield</b> is used at a time; picking a new one swaps it in. About 1.5 seconds after you stop changing things, the <b>Geiger counter</b> reading is <b>recorded automatically</b> in the data tables below. Every reading includes about 20–30 cpm of <b>background radiation</b>. Test the 3 <b>known</b> sources first, then use the same shields to figure out what is inside each <b>mystery</b> source (α, β, γ or a <b>mix</b>; one gives off <b>both β and γ</b>).';
+  $('#benchTip').innerHTML='<b>Strategy for mystery sources:</b> no shield → paper → 3 mm aluminum → 5 cm lead. Compare each count to background and to your known-source table. If a shield cuts the count a lot but <b>not</b> down to background, something more penetrating is also coming out.';
+  buildSrcPick();benchDraw();renderMystery();benchActive(view==='lab');
   renderChecklist();
 }
-$$('.subtab').forEach(function(b){b.addEventListener('click',function(){showLab(b.dataset.lab);});});
 
 /* checklist */
 function checklistStatus(){
   var combos=0;['am','sr','co'].forEach(function(s){SHIELDS.forEach(function(sh){if(state.shieldTests.indexOf(s+'|'+sh.id)>=0)combos++;});});
-  var bestD=0;['am','sr','co'].forEach(function(s){bestD=Math.max(bestD,(state.dist[s]||[]).length);});
-  var my=Math.min(2,state.mysteryOk||0);
-  var items=[{done:combos>=18,n:combos,of:18},{done:bestD>=3,n:Math.min(3,bestD),of:3},{done:my>=2,n:my,of:2}];
-  var dc=items.filter(function(i){return i.done;}).length;return {items:items,doneCount:dc,allDone:dc===3||TEACHER};
+  var nC=SHIELDS.length*3,my=Math.min(2,state.mysteryOk||0);
+  var items=[{done:combos>=nC,n:combos,of:nC},{done:my>=2,n:my,of:2}];
+  var dc=items.filter(function(i){return i.done;}).length;return {items:items,doneCount:dc,allDone:dc===items.length||TEACHER};
 }
 function renderChecklist(){
   var cs=checklistStatus(),it=cs.items;
   function row(i,html){var d=it[i].done;return '<div class="ck'+(d?' done':'')+'"><span class="box" aria-hidden="true">'+(d?'✓':'')+'</span><div>'+html+'<span class="st">'+(d?'Done ✓':it[i].n+' of '+it[i].of)+'</span></div></div>';}
-  var grid='<table class="grid18" aria-label="Source and shield combinations tested"><tr><th></th>'+SHIELDS.map(function(s){return '<th title="'+s.name+'">'+{hand:'Hand',paper:'Pap',wood:'Wood',al:'Al',pb:'Pb',conc:'Conc'}[s.id]+'</th>';}).join('')+'</tr>'+
+  var grid='<table class="grid18" aria-label="Source and shield combinations tested"><tr><th></th>'+SHIELDS.map(function(s){return '<th title="'+s.name+'">'+{paper:'Pap',al:'Al',pb:'Pb',conc:'Conc'}[s.id]+'</th>';}).join('')+'</tr>'+
     [['am','α Am'],['sr','β Sr'],['co','γ Co']].map(function(r){return '<tr><th>'+r[1]+'</th>'+SHIELDS.map(function(s){var y=state.shieldTests.indexOf(r[0]+'|'+s.id)>=0;return '<td class="'+(y?'y':'')+'">'+(y?'✓':'·')+'</td>';}).join('')+'</tr>';}).join('')+'</table>';
   var q=quizUnlocked();
   $('#checklist').innerHTML='<h2>Lab Checklist</h2>'+
     row(0,'<b>Test all 3 sources with every shield</b> (a reading is recorded for each).'+grid)+
-    row(1,'<b>Get readings at 3 distances</b> (same source).')+
-    row(2,'<b>Identify 2 mystery sources.</b>')+
+    row(1,'<b>Identify 2 mystery sources.</b>')+
     '<div class="unlock '+(q?'yes':'no')+'">'+(q?'✓ Quiz unlocked!':LOCK+' Quiz unlocks when all Learn stops are viewed ('+state.viewed.length+'/'+STOPS.length+') and this checklist is complete.')+'</div>'+
     (q?'<button class="btn primary" style="margin-top:.5rem;width:100%" id="goQuiz">Go to the Quiz ▶</button>':'');
   var gq=$('#goQuiz');if(gq)gq.addEventListener('click',function(){showView('quiz');});
@@ -1139,7 +1142,7 @@ function pickQuiz(){
 function renderQuizHome(){
   var root=$('#quizRoot');
   if(!quizUnlocked()){var cs=checklistStatus(),miss=STOPS.map(function(s,i){return state.viewed.indexOf(i)<0?'Stop '+(i+1)+': '+s.t:null;}).filter(Boolean);
-    var labs=['Test all 3 sources with every shield','Get readings at 3 distances','Identify 2 mystery sources'].filter(function(_,i){return !cs.items[i].done;});
+    var labs=['Test all 3 sources with every shield','Identify 2 mystery sources'].filter(function(_,i){return !cs.items[i].done;});
     root.innerHTML='<div class="card lockpanel"><h2>'+LOCK+' The Quiz is locked</h2><p>Finish these first:</p>'+
       (miss.length?'<p><b>Learn stops not viewed yet ('+miss.length+'):</b></p><ul>'+miss.map(function(m){return '<li>'+m+'</li>';}).join('')+'</ul>':'<p>✓ All Learn stops viewed.</p>')+
       (labs.length?'<p><b>Lab Checklist tasks left ('+labs.length+'):</b></p><ul>'+labs.map(function(m){return '<li>'+m+'</li>';}).join('')+'</ul>':'<p>✓ Lab Checklist complete.</p>')+
@@ -1266,7 +1269,7 @@ $('#resetBtn').addEventListener('click',function(){var b=this;if(!resetArmed){re
   try{localStorage.removeItem(KEY);}catch(e){}location.reload();});
 function setTopH(){var t=$('.topbar'),h=getComputedStyle(t).position==='sticky'?t.offsetHeight:0;document.documentElement.style.setProperty('--topH',h+'px');}
 setTopH();window.addEventListener('resize',setTopH);window.addEventListener('load',setTopH);if(window.ResizeObserver){try{new ResizeObserver(setTopH).observe($('.topbar'));}catch(e){}}
-renderMute();gaugeInit();buildPalette();benchStatic();renderTrials();
+renderMute();gaugeInit();buildPalette();benchStatic();renderData();
 if(state.stop>=STOPS.length)state.stop=0;
 showLab('A');showView('learn');setTopH();
 })();
