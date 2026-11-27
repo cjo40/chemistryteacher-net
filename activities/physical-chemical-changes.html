@@ -80,6 +80,15 @@ main{max-width:1280px;margin:0 auto;padding:12px 14px 28px}
 .chip{border:2px solid #64748b;background:#fff;border-radius:99px;padding:4px 12px;min-height:40px;font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;gap:6px}
 .chip[aria-pressed=true]{background:#0f172a;color:#fff;border-color:#0f172a}
 .chip svg{width:28px;height:24px}
+.seg{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);margin:6px 0;padding:3px;background:#e2e8f0;border:2px solid #64748b;border-radius:99px;max-width:560px}
+.seg-thumb{position:absolute;top:3px;bottom:3px;left:calc(3px + var(--i,0) * (100% - 6px) / var(--n));width:calc((100% - 6px) / var(--n));background:#0f172a;border-radius:99px;box-shadow:0 2px 4px #0003;transition:left .25s ease}
+.seg button{position:relative;z-index:1;border:0;background:none;border-radius:99px;min-height:40px;padding:3px 6px;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:5px;color:#0f172a;transition:color .25s;min-width:0}
+.seg button[aria-checked=true]{color:#fff}
+.seg button:not([aria-checked=true]):hover{background:#fff8}
+.seg button svg{width:26px;height:22px;flex:none}
+.seg button[aria-checked=true] svg{background:#f1f5f9;border-radius:6px}
+@media (max-width:480px){.seg button{flex-direction:column;gap:0;font-size:.8rem;line-height:1.1;padding:3px 2px}.seg{border-radius:16px}.seg-thumb,.seg button{border-radius:13px}}
+@media (prefers-reduced-motion:reduce){.seg-thumb{transition:none}}
 .idcard{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
 @media (max-width:520px){.idcard{grid-template-columns:1fr}}
 .idcard>div{border-radius:10px;padding:8px 10px;border:2px solid}
@@ -124,9 +133,30 @@ main{max-width:1280px;margin:0 auto;padding:12px 14px 28px}
 .done .box{background:var(--ok);border-color:var(--ok);color:#fff}
 .checklist .cnt{display:block;font-weight:700;color:var(--ink2)}
 .done .cnt{color:var(--ok)}
-.checklist .meter{height:8px;background:#e2e8f0;border-radius:9px;overflow:hidden;margin-top:3px}
+.checklist .meter{display:block;height:8px;background:#e2e8f0;border-radius:9px;overflow:hidden;margin-top:3px}
 .checklist .meter i{display:block;height:100%;background:var(--accent)}
-.step-h{font-size:1rem;margin:4px 0 4px}
+.step-h{font-size:1rem;margin:4px 0 4px;display:flex;align-items:center;gap:8px}
+.step-h .sn{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#cbd5e1;color:#0f172a;font-size:.9rem;flex:none}
+.lstep{border:3px solid transparent;border-radius:12px;padding:4px 8px 8px;margin:0 -8px 4px;transition:border-color .2s,background .2s}
+.lstep.cur{border-color:var(--accent);background:#f0fdfa}
+.lstep.cur .sn{background:var(--accent);color:#fff}
+.lstep.cur .step-h::after{content:"◀ do this";font-size:.8rem;font-weight:700;color:var(--accent);margin-left:4px}
+.lstep.done .sn{background:var(--ok);color:#fff}
+.lstep.off{opacity:.5}
+.btn.run{width:100%;min-height:56px;font-size:1.15rem}
+.lstep.cur .btn.run:not(:disabled){animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(15,118,110,.55)}50%{box-shadow:0 0 0 9px rgba(15,118,110,0)}}
+.clsbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+@media (max-width:420px){.clsbtns{grid-template-columns:1fr}}
+.cbtn{border:3px solid;border-radius:12px;min-height:60px;font-weight:700;font-size:1.02rem;background:#fff;padding:4px 6px;line-height:1.15}
+.cbtn.P{border-color:var(--phys);color:var(--phys)}
+.cbtn.C{border-color:var(--chem);color:var(--chem)}
+.cbtn.N{border-color:var(--none);color:var(--none)}
+.cbtn:not(:disabled):hover{box-shadow:0 0 0 3px #cbd5e1}
+.cbtn.P:not(:disabled):hover{background:var(--physbg)}.cbtn.C:not(:disabled):hover{background:var(--chembg)}.cbtn.N:not(:disabled):hover{background:var(--nonebg)}
+.cbtn:disabled{opacity:.35;cursor:not-allowed}
+.cbtn.right{opacity:1;background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.cbtn.wrong{opacity:1;background:var(--badbg);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
 .shelf{display:flex;flex-wrap:wrap;gap:6px}
 .sbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:86px;padding:4px 3px;border:2px solid #94a3b8;border-radius:10px;background:#fff;font-size:.76rem;line-height:1.12;min-height:66px;font-weight:700;text-align:center}
 .sbtn svg{width:42px;height:30px}
@@ -298,41 +328,42 @@ footer button{background:none;border:0;text-decoration:underline;color:var(--ink
       </div>
 
       <div id="bench" class="card">
-        <h3 class="step-h">1 · Pick a substance</h3>
-        <div class="shelf" id="shelf"></div>
-        <h3 class="step-h" style="margin-top:8px">2 · Pick a test</h3>
-        <div class="actions" id="actions"></div>
+        <div class="lstep cur" id="ls1">
+          <h3 class="step-h"><span class="sn">1</span>Pick a substance</h3>
+          <div class="shelf" id="shelf"></div>
+        </div>
+        <div class="lstep" id="ls2">
+          <h3 class="step-h"><span class="sn">2</span>Pick a test</h3>
+          <div class="actions" id="actions"></div>
+        </div>
         <div class="bench-row">
           <div>
             <div class="scene" id="scene" aria-live="polite"></div>
             <div class="scene-ctl">
-              <button class="btn pri" id="runBtn" disabled>▶ Run test</button>
               <div class="tl" id="tlWrap" hidden><label for="tl" id="tlLbl">Time: 0 days</label><input type="range" id="tl" min="0" max="30" step="1" value="0"></div>
             </div>
           </div>
           <div class="obs">
-            <h3>3 · Observe &amp; classify</h3>
+            <div class="lstep" id="ls3">
+              <h3 class="step-h"><span class="sn">3</span>Run it</h3>
+              <button class="btn pri run" id="runBtn" disabled>▶ Run test</button>
+            </div>
             <p class="obstext" id="obsText">Pick a substance and a test, then press <b>Run test</b>.</p>
-            <fieldset id="evSet" disabled>
-              <legend>Evidence of a chemical change you saw (tick all)</legend>
-              <div class="togs" id="evTogs"></div>
-            </fieldset>
-            <fieldset id="clsSet" disabled>
-              <legend>What happened?</legend>
-              <div class="togs">
-                <label class="tog P"><input type="radio" name="cls" value="phys"><span>◀ Physical change</span></label>
-                <label class="tog C"><input type="radio" name="cls" value="chem"><span>Chemical change ▶</span></label>
-                <label class="tog N"><input type="radio" name="cls" value="none"><span>No change</span></label>
+            <div class="lstep off" id="ls4">
+              <h3 class="step-h"><span class="sn">4</span>Physical, chemical or no change?</h3>
+              <div class="clsbtns" id="clsBtns" role="group" aria-label="Classify the result">
+                <button class="cbtn P" data-c="phys" disabled>Physical change</button>
+                <button class="cbtn C" data-c="chem" disabled>Chemical change</button>
+                <button class="cbtn N" data-c="none" disabled>No change</button>
               </div>
-            </fieldset>
-            <input class="note" id="note" placeholder="Your notes (optional)" aria-label="Your notes (optional)" disabled>
-            <div style="margin-top:8px"><button class="btn acc" id="checkBtn" disabled>✓ Check &amp; log</button></div>
-            <div id="labFb"></div>
+              <div id="labFb" aria-live="polite"></div>
+            </div>
+            <input class="note" id="note" placeholder="Your notes (optional)" aria-label="Your notes (optional)" disabled style="margin-top:6px">
           </div>
         </div>
         <div class="logwrap">
           <h3 class="step-h">Lab notebook <span class="small muted" id="logCount"></span></h3>
-          <table class="log"><thead><tr><th>#</th><th>Substance</th><th>Test</th><th>Observation</th><th>Evidence ticked</th><th>Your call</th><th>Result</th></tr></thead><tbody id="logBody"><tr><td colspan="7" class="muted">No tests logged yet.</td></tr></tbody></table>
+          <table class="log"><thead><tr><th>#</th><th>Substance</th><th>Test</th><th>Observation</th><th>Your call</th><th>Result</th></tr></thead><tbody id="logBody"><tr><td colspan="6" class="muted">No tests logged yet.</td></tr></tbody></table>
         </div>
       </div>
 
@@ -1004,7 +1035,7 @@ function v2(box){
   candle:{mag:[0,"Not attracted to the magnet.","magnetism (not magnetic)"],circ:[0,"The bulb stays dark — wax doesn't conduct.","conductivity"],wat:["float","It floats — wax is less dense than water.","density"]}
  };
  let s="cu",tst="circ",cancel=null;
- box.innerHTML=`<div class="chips" id="v2s" aria-label="Sample">${Object.keys(SAM).map(k=>`<button class="chip" data-s="${k}">${subIcon(k)}${SAM[k]}</button>`).join("")}</div><div class="chips" id="v2t" aria-label="Test">${Object.keys(TST).map(k=>`<button class="chip" data-t="${k}">${TST[k]}</button>`).join("")}</div><div id="v2svg"></div><p class="vis-cap" id="v2cap" aria-live="polite"></p>`;
+ box.innerHTML=`<div class="seg" id="v2t" role="radiogroup" aria-label="Test" style="--n:${Object.keys(TST).length}"><span class="seg-thumb" aria-hidden="true"></span>${Object.keys(TST).map(k=>`<button role="radio" data-t="${k}">${TST[k]}</button>`).join("")}</div><div class="seg" id="v2s" role="radiogroup" aria-label="Sample" style="--n:${Object.keys(SAM).length}"><span class="seg-thumb" aria-hidden="true"></span>${Object.keys(SAM).map(k=>`<button role="radio" data-s="${k}">${subIcon(k)}<span>${SAM[k]}</span></button>`).join("")}</div><div id="v2svg"></div><p class="vis-cap" id="v2cap" aria-live="polite"></p>`;
  const big=(id)=>id==="salt"?cube(-4,4,30,"#f8fafc",0):id==="candle"?cube(-4,4,30,"#fffaf0",0)+`<path d="M-17-7l9-9" stroke="#fff" stroke-width="2" opacity=".6"/>`:drawSub(id);
  const MB=`<rect width="420" height="214" fill="url(#gWall)"/><rect width="420" height="212" fill="url(#pTile)" opacity=".5"/><rect y="212" width="420" height="18" fill="url(#gBench)"/><rect y="212" width="420" height="2" fill="#94a3b8"/>`;
  const BKW=beakerC(120,70,180,140);
@@ -1027,10 +1058,12 @@ function v2(box){
    g+=`<g transform="translate(210 ${y.toFixed(1)}) scale(.75)" opacity="${op.toFixed(2)}">${big(s)}</g><path d="${BKW.lp(r[0]==="float"?118:110)}" fill="#cfe5f8" opacity=".3"/>${BKW.front}`}
   $("#v2svg",box).innerHTML=`<svg viewBox="0 0 420 230" role="img" aria-label="${SAM[s]} — ${TST[tst]} test">${g}</svg>`;
  }
- function go(){if(cancel)cancel();$$("#v2s .chip",box).forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===s));$$("#v2t .chip",box).forEach(b=>b.setAttribute("aria-pressed",b.dataset.t===tst));
+ function sync(id,key,val){const g=$(id,box),bs=$$("button",g);bs.forEach((b,i)=>{const on=b.dataset[key]===val;b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1;if(on)g.style.setProperty("--i",i)})}
+ function go(){if(cancel)cancel();sync("#v2s","s",s);sync("#v2t","t",tst);
   $("#v2cap",box).innerHTML="&nbsp;";
   cancel=tween(1700,draw,()=>{const r=R[s][tst];$("#v2cap",box).innerHTML=`<b>Result:</b> ${r[1]} <span class="lbl P">physical property: ${r[2]}</span> — it's still ${SAM[s].toLowerCase()} ✔`})}
- box.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;if(b.dataset.s)s=b.dataset.s;if(b.dataset.t)tst=b.dataset.t;go()});
+ box.addEventListener("click",e=>{const b=e.target.closest(".seg button");if(!b)return;if(b.dataset.s)s=b.dataset.s;if(b.dataset.t)tst=b.dataset.t;go()});
+ box.addEventListener("keydown",e=>{const b=e.target.closest(".seg button");if(!b||!["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key))return;e.preventDefault();const bs=$$("button",b.parentElement),d=(e.key==="ArrowRight"||e.key==="ArrowDown")?1:-1,n=bs[(bs.indexOf(b)+d+bs.length)%bs.length];n.click();n.focus()});
  go();return()=>cancel&&cancel();
 }
 
@@ -1191,24 +1224,30 @@ let selSub=null,selAct=null,runCancel=null,revealed=false,curScene=null,fxSig=nu
 function buildLabUI(){
  $("#shelf").innerHTML=SUB_ORDER.map(id=>`<button class="sbtn" data-s="${id}" aria-pressed="false">${subIcon(id)}<span>${SUBS[id].s}</span><span class="tick" data-tick="${id}"></span></button>`).join("");
  $("#actions").innerHTML=ACT_ORDER.map(a=>`<button class="abtn" data-a="${a}" aria-pressed="false">${actIcon(a)}${ACTS[a].n}</button>`).join("");
- $("#evTogs").innerHTML=EVS.map(e=>`<label class="tog"><input type="checkbox" name="ev" value="${e.k}"><span>${e.n}</span></label>`).join("")+`<label class="tog"><input type="checkbox" name="ev" value="none" id="evNone"><span>None</span></label>`;
  $("#shelf").addEventListener("click",e=>{const b=e.target.closest(".sbtn");if(!b)return;selSub=b.dataset.s;$$("#shelf .sbtn").forEach(x=>x.setAttribute("aria-pressed",x===b));prepare()});
  $("#actions").addEventListener("click",e=>{const b=e.target.closest(".abtn");if(!b)return;selAct=b.dataset.a;$$("#actions .abtn").forEach(x=>x.setAttribute("aria-pressed",x===b));prepare()});
- $("#evTogs").addEventListener("change",e=>{if(e.target.value==="none"&&e.target.checked)$$('#evTogs input').forEach(x=>{if(x.value!=="none")x.checked=false});else if(e.target.checked)$("#evNone").checked=false});
  $("#runBtn").onclick=runTest;
  $("#tl").addEventListener("input",()=>{if(selAct!=="air"||!curScene)return;if(runCancel){runCancel();runCancel=null}const t=$("#tl").value/30;drawFrame(t);$("#tlLbl").textContent=`Time: ${$("#tl").value} days`;if(+$("#tl").value===30&&!revealed)reveal()});
- $("#checkBtn").onclick=checkTest;
+ $("#clsBtns").addEventListener("click",e=>{const b=e.target.closest(".cbtn");if(b&&!b.disabled)checkTest(b.dataset.c)});
+ $("#note").addEventListener("change",()=>{const t=selSub&&selAct&&ST.tests[selSub+"|"+selAct];if(t){t.note=$("#note").value.slice(0,200);save();renderLog()}});
+ setStep(1);
  $("#scene").innerHTML=`<svg viewBox="0 0 480 300" role="img" aria-label="Empty lab bench">${BENCH}<text x="240" y="140" text-anchor="middle" font-size="18" fill="#475569" font-weight="700">Pick a substance and a test</text></svg>`;
 }
-function resetObs(){revealed=false;$("#evSet").disabled=true;$("#clsSet").disabled=true;$("#note").disabled=true;$("#checkBtn").disabled=true;$$('#evTogs input,input[name=cls]').forEach(x=>x.checked=false);$("#note").value="";$("#labFb").innerHTML="";$("#obsText").classList.remove("ready")}
+/* guided steps: 1 substance → 2 test → 3 run → 4 classify (5 = finished, pick another) */
+function setStep(n){
+ [1,2,3,4].forEach(i=>{const el=$("#ls"+i);el.classList.toggle("cur",i===n||(n===5&&i===2));
+  el.classList.toggle("done",i<n&&!(n===5&&i===2)&&!(i===1&&!selSub)&&!(i===2&&!selAct));
+  el.classList.toggle("off",i===4&&n<4)});
+}
+function resetObs(){revealed=false;$("#note").disabled=true;$$("#clsBtns .cbtn").forEach(b=>{b.disabled=true;b.classList.remove("right","wrong")});$("#note").value="";$("#labFb").innerHTML="";$("#obsText").classList.remove("ready")}
 function prepare(){
  if(runCancel){runCancel();runCancel=null}resetObs();
- if(!(selSub&&selAct)){$("#obsText").innerHTML=selSub?`<b>${SUBS[selSub].n}</b> selected. Now pick a test.`:`<b>${ACTS[selAct].n}</b> selected. Now pick a substance.`;$("#runBtn").disabled=true;$("#tlWrap").hidden=true;return}
+ if(!(selSub&&selAct)){$("#obsText").innerHTML=selSub?`<b>${SUBS[selSub].n}</b> selected. Now pick a test.`:`<b>${ACTS[selAct].n}</b> selected. Now pick a substance.`;$("#runBtn").disabled=true;$("#tlWrap").hidden=true;setStep(selSub?2:1);return}
  curScene=buildScene(selSub,selAct);fxSig=null;
  $("#scene").innerHTML=`<svg viewBox="0 0 480 300" role="img" aria-label="${esc(SUBS[selSub].n+" — "+ACTS[selAct].n)}">${curScene.bg}<g id="sdyn"></g><g id="sfx"></g>${curScene.fg}</svg>`;
  drawFrame(0);
  const air=selAct==="air";$("#tlWrap").hidden=!air;$("#tl").value=0;$("#tlLbl").textContent="Time: 0 days";
- $("#runBtn").disabled=false;$("#runBtn").innerHTML=air?"▶ Play time-lapse":"▶ Run test";
+ $("#runBtn").disabled=false;$("#runBtn").innerHTML=air?"▶ Play time-lapse":"▶ Run test";setStep(3);
  const prev=ST.tests[selSub+"|"+selAct];
  $("#obsText").innerHTML=`<b>Ready:</b> ${esc(SUBS[selSub].n)} + ${esc(ACTS[selAct].n)}. ${ACTS[selAct].d}${air?" Drag the slider to the end, or press Play.":" Press <b>Run test</b>."}${prev?` <br><span class="small muted">Already in your notebook (${prev.ok?"✓ correct":"✗ not yet correct"}).</span>`:""}`;
 }
@@ -1221,38 +1260,35 @@ function runTest(){
 function reveal(){
  revealed=true;const r=RES[selSub][selAct];
  $("#obsText").innerHTML=`<b>Observation:</b> ${r.o}`;$("#obsText").classList.add("ready");
- $("#evSet").disabled=false;$("#clsSet").disabled=false;$("#note").disabled=false;$("#checkBtn").disabled=false;
+ $$("#clsBtns .cbtn").forEach(b=>b.disabled=false);$("#note").disabled=false;setStep(4);
  const prev=ST.tests[selSub+"|"+selAct];if(prev&&prev.note)$("#note").value=prev.note;
+ const l4=$("#ls4");if(l4.getBoundingClientRect().bottom>innerHeight)l4.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 const CLS_NAME={chem:"Chemical change",phys:"Physical change",none:"No change"};
 const HINT={chem:"Look again — does the observation describe a new substance forming?",phys:"Look again — is it still the same substance, just a different state, size, shape or mixture?",none:"Look again — did anything actually change, or did the test only reveal a property?"};
-function checkTest(){
- if(!revealed)return;const r=RES[selSub][selAct];
- const ev=$$('#evTogs input:checked').map(x=>x.value).filter(v=>v!=="none");
- const clsEl=$('input[name=cls]:checked');
- if(!clsEl){$("#labFb").innerHTML=`<div class="fb info"><p>Choose <b>Physical change</b>, <b>Chemical change</b> or <b>No change</b> first.</p></div>`;return}
- if(!ev.length&&!$("#evNone").checked){$("#labFb").innerHTML=`<div class="fb info"><p>Tick the evidence you saw — or tick <b>None</b>.</p></div>`;return}
- const cls=clsEl.value,need=r.ev||[],okE=r.ok||[],trap=r.trap||{};
- const clsOK=cls===r.c||(r.alt||[]).includes(cls);
- const missing=need.filter(k=>!ev.includes(k)),extra=ev.filter(k=>!need.includes(k)&&!okE.includes(k));
- const evOK=!missing.length&&!extra.length,all=clsOK&&evOK;
- let h="";
- h+=clsOK?`<p><span class="okt">✓ Classification:</span> ${CLS_NAME[cls]}${r.alt&&r.alt.length?` <span class="small muted">(${[r.c,...r.alt].map(c=>CLS_NAME[c]).join(" or ")} accepted)</span>`:""}.</p>`:`<p><span class="badt">✗ Classification:</span> ${HINT[r.c]}</p>`;
- if(evOK)h+=`<p><span class="okt">✓ Evidence</span> ${need.length?"— you spotted it.":"— correct, no real evidence of a new substance."}</p>`;
- else{h+=`<p><span class="badt">✗ Evidence:</span></p><ul style="margin:.2em 0;padding-left:1.2em">`;
-  if(missing.length)h+=`<li>Look at the observation again — you missed a piece of evidence${missing.length>1?"s":""}: <b>${missing.map(k=>EVNAME[k]).join(", ")}</b>.</li>`;
-  extra.forEach(k=>{h+=`<li><b>${EVNAME[k]}:</b> ${trap[k]||"the observation doesn't describe this."}</li>`});h+="</ul>"}
- if(all)h+=`<p><b>Why:</b> ${r.w}</p>`;else h+=`<p class="small">Fix your answer and press <b>Check &amp; log</b> again.</p>`;
- $("#labFb").innerHTML=`<div class="fb ${all?"ok":"bad"}">${h}</div>`;
+function checkTest(cls){
+ if(!revealed)return;const r=RES[selSub][selAct],trap=r.trap||{};
+ const ok=cls===r.c||(r.alt||[]).includes(cls),btn=$(`#clsBtns .cbtn[data-c="${cls}"]`);
+ let h;
+ if(ok){
+  $$("#clsBtns .cbtn").forEach(b=>b.disabled=true);btn.classList.add("right");
+  const fool=Object.keys(trap).map(k=>`<li><b>${EVNAME[k]}?</b> ${trap[k]}</li>`).join("");
+  h=`<div class="fb ok"><p><span class="okt">✓ ${CLS_NAME[cls]}.</span>${r.alt&&r.alt.length?` <span class="small muted">(${[r.c,...r.alt].map(c=>CLS_NAME[c]).join(" or ")} accepted)</span>`:""} ${r.w}</p>${fool?`<p class="small" style="margin-bottom:0"><b>Don't be fooled:</b></p><ul class="small" style="margin:.1em 0;padding-left:1.2em">${fool}</ul>`:""}<p class="small muted">Logged ✓ — pick another test or substance.</p></div>`;
+  setStep(5);
+ }else{
+  btn.disabled=true;btn.classList.add("wrong");
+  h=`<div class="fb bad"><p><span class="badt">✗ Not ${CLS_NAME[cls].toLowerCase()}.</span> ${HINT[r.c]} Try again.</p></div>`;
+ }
+ $("#labFb").innerHTML=h;
  const key=selSub+"|"+selAct,prev=ST.tests[key];
- ST.tests[key]={sub:selSub,act:selAct,ev,cls,ok:all||(prev&&prev.ok)||false,note:$("#note").value.slice(0,200),n:prev?prev.n:(++ST.logN),tries:(prev?prev.tries:0)+1};
+ ST.tests[key]={sub:selSub,act:selAct,ev:[],cls,ok:ok||(prev&&prev.ok)||false,note:$("#note").value.slice(0,200),n:prev?prev.n:(++ST.logN),tries:(prev?prev.tries:0)+1};
  save();renderLog();updateAll();
 }
 function renderLog(){
  const rows=Object.values(ST.tests).sort((a,b)=>a.n-b.n);
  $("#logCount").textContent=rows.length?`(${rows.length} test${rows.length>1?"s":""})`:"";
- if(!rows.length){$("#logBody").innerHTML=`<tr><td colspan="7" class="muted">No tests logged yet.</td></tr>`;return}
- $("#logBody").innerHTML=rows.map((t,i)=>{const r=RES[t.sub][t.act];return`<tr><td>${i+1}</td><td>${esc(SUBS[t.sub].s)}</td><td>${esc(ACTS[t.act].n)}</td><td>${r.o}${t.note?`<br><i>Note: ${esc(t.note)}</i>`:""}</td><td>${t.ev.length?t.ev.map(k=>EVNAME[k]).join(", "):"None"}</td><td>${CLS_NAME[t.cls]}</td><td class="r ${t.ok?"okt":"badt"}">${t.ok?"✓ Correct":"✗ Retry"}</td></tr>`}).join("");
+ if(!rows.length){$("#logBody").innerHTML=`<tr><td colspan="6" class="muted">No tests logged yet.</td></tr>`;return}
+ $("#logBody").innerHTML=rows.map((t,i)=>{const r=RES[t.sub][t.act];return`<tr><td>${i+1}</td><td>${esc(SUBS[t.sub].s)}</td><td>${esc(ACTS[t.act].n)}</td><td>${r.o}${t.note?`<br><i>Note: ${esc(t.note)}</i>`:""}</td><td>${CLS_NAME[t.cls]}</td><td class="r ${t.ok?"okt":"badt"}">${t.ok?"✓ Correct":"✗ Retry"}</td></tr>`}).join("");
  SUB_ORDER.forEach(id=>{const n=Object.values(ST.tests).filter(t=>t.sub===id).length;const el=$(`[data-tick="${id}"]`);if(el)el.textContent=n?`${n}/8 tested`:""});
 }
 
