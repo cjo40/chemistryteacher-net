@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Periodic Trends: Atomic Radius, Ionization Energy, Electron Affinity &amp; Electronegativity</title>
-<meta name="description" content="Interactive periodic trends activity for high school chemistry: learn, explore heat maps, compare atom sizes, rank elements and take a quiz.">
+<meta name="description" content="Interactive periodic trends activity for high school chemistry: learn the trends, practice ranking elements and take a quiz.">
 <style>
 *{box-sizing:border-box}
 html{font-size:18px;-webkit-text-size-adjust:100%}
@@ -69,40 +69,16 @@ h3{font-size:1.1rem;margin:.2rem 0 .4rem}
 .learn-nav{display:flex;justify-content:space-between;align-items:center;margin-top:.7rem;gap:.5rem}
 .stop.wide{grid-template-columns:minmax(250px,.6fr) 1.4fr}
 @media (max-width:880px){.stop,.stop.wide{grid-template-columns:1fr}}
-/* Lab */
+/* Practice */
 .checklist{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;align-items:center;border:2px solid #0b3d91;border-radius:12px;padding:.4rem .8rem;margin-bottom:.55rem;background:#f2f5fb}
 .checklist strong{color:#0b3d91}
 .ci{display:flex;align-items:center;gap:.4rem;font-size:.92rem}
 .box{display:inline-flex;width:22px;height:22px;border:2px solid #0b3d91;border-radius:5px;align-items:center;justify-content:center;font-weight:700;background:#fff;color:#fff;flex:none}
 .ci.done .box{background:#1b7f3b;border-color:#1b7f3b}
 .ci.done{color:#145c2b}
-.subtabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem}
 .toolbar{display:flex;flex-wrap:wrap;gap:.45rem .9rem;align-items:center;margin-bottom:.45rem}
 .toggle{display:inline-flex;align-items:center;gap:.35rem;font-weight:700;cursor:pointer;min-height:40px;padding:0 .25rem}
 .toggle input{width:22px;height:22px}
-.info{border:2px solid #cfd8e5;border-radius:10px;padding:.35rem .7rem;margin-bottom:.45rem;background:#fff;min-height:3.1rem;display:flex;flex-wrap:wrap;gap:.2rem 1.2rem;align-items:center;font-size:.95rem}
-.info .nm{font-weight:700;font-size:1.05rem}
-.info .pv b{color:#0b3d91}
-.info .pv.cur{background:#fff4d6;border-radius:6px;padding:0 .3rem}
-.heatwrap{position:relative;overflow-x:auto;padding:4px;-webkit-overflow-scrolling:touch}
-.heatwrap.arrows{padding:44px 6px 6px 60px}
-.heatgrid{display:grid;grid-template-columns:22px repeat(18,minmax(37px,1fr));grid-template-rows:20px repeat(6,minmax(42px,auto));gap:3px;min-width:760px}
-.glabel,.plabel{font-size:.62rem;color:#333;display:flex;align-items:center;justify-content:center;font-weight:700}
-.lanlabel{justify-content:flex-end;padding-right:4px;text-align:right;line-height:1.1}
-.cell{border:1px solid rgba(0,0,0,.45);border-radius:5px;padding:1px 1px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;line-height:1.05;background:#fff;color:#111;position:relative;min-height:42px;min-width:0;touch-action:manipulation}
-.cell .z{position:absolute;top:1px;left:3px;font-size:.48rem}
-.cell .sym{font-weight:700;font-size:.95rem;margin-top:5px}
-.cell .val{font-size:.6rem;white-space:nowrap}
-.cell.na{background:repeating-linear-gradient(45deg,#d9dde3 0 4px,#fff 4px 9px);color:#222}
-.cell.ph{cursor:default;background:#eef1f5;font-size:.6rem;border-style:dashed}
-.cell.sel{outline:3px solid #d97706;outline-offset:1px;z-index:2}
-.nonum .cell:not(.na) .val{visibility:hidden}
-.legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;margin:.4rem 0 .2rem;font-size:.85rem}
-.grad{width:220px;height:16px;border:1px solid #333;border-radius:4px}
-.swatch-na{width:22px;height:16px;border:1px solid #333;border-radius:3px;background:repeating-linear-gradient(45deg,#d9dde3 0 4px,#fff 4px 9px)}
-.overlay{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
-canvas.bars3d{display:block;width:100%;touch-action:none;border:2px solid #cfd8e5;border-radius:10px;background:#fbfcfe}
-.showdown-ctl{display:flex;flex-wrap:wrap;gap:.45rem .8rem;align-items:center;margin-bottom:.4rem}
 select{padding:.35rem .5rem;border:2px solid #0b3d91;border-radius:8px;min-height:42px;background:#fff;color:#111;max-width:100%}
 .panelbox{background:#f6f8fc;border:2px solid #cfd8e5;border-radius:14px;padding:.6rem}
 .panelbox svg{width:100%;height:auto;display:block;max-height:60vh}
@@ -185,7 +161,7 @@ footer .linkbtn{background:none;border:none;color:#0b3d91;text-decoration:underl
   <div class="brand"><h1>Periodic Trends</h1><span class="sub">Atomic radius · Ionization energy · Electron affinity · Electronegativity</span></div>
   <nav class="tabs" role="tablist" aria-label="Activity sections">
     <button class="tab" role="tab" id="tab-learn" data-tab="learn" aria-selected="true" aria-controls="panel-learn"><span class="tl">1 · Learn</span><span class="need" id="need-learn"></span></button>
-    <button class="tab" role="tab" id="tab-lab" data-tab="lab" aria-selected="false" aria-controls="panel-lab"><span class="tl">2 · Lab</span><span class="need" id="need-lab"></span></button>
+    <button class="tab" role="tab" id="tab-practice" data-tab="practice" aria-selected="false" aria-controls="panel-practice"><span class="tl">2 · Practice</span><span class="need" id="need-practice"></span></button>
     <button class="tab" role="tab" id="tab-quiz" data-tab="quiz" aria-selected="false" aria-controls="panel-quiz"><span class="tl" id="quiz-tl">3 · Quiz</span><span class="need" id="need-quiz"></span></button>
   </nav>
 </header>
@@ -206,41 +182,9 @@ footer .linkbtn{background:none;border:none;color:#0b3d91;text-decoration:underl
     </div>
   </section>
 
-  <section id="panel-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+  <section id="panel-practice" role="tabpanel" aria-labelledby="tab-practice" hidden>
     <div class="checklist" id="checklist" aria-live="polite"></div>
-    <div class="subtabs" role="group" aria-label="Lab stations">
-      <button class="chip" data-station="heat" aria-pressed="true">A · Heat-Map Table</button>
-      <button class="chip" data-station="size" aria-pressed="false">B · Size Showdown</button>
-      <button class="chip" data-station="rank" aria-pressed="false">C · Ranking Challenges</button>
-    </div>
-
-    <div id="st-heat">
-      <div class="toolbar">
-        <div class="seg" id="trendBtns" role="group" aria-label="Choose a trend"></div>
-        <label class="toggle"><input type="checkbox" id="tgNums" checked> Numbers</label>
-        <label class="toggle"><input type="checkbox" id="tgArrows"> Trend arrows</label>
-        <label class="toggle"><input type="checkbox" id="tg3d"> 3D bars</label>
-      </div>
-      <div class="info" id="heatInfo" aria-live="polite"><span class="muted">Hover over or tap an element to see all four values.</span></div>
-      <div class="heatwrap" id="heatWrap"><div class="heatgrid" id="heatGrid"></div><svg class="overlay" id="heatOverlay" aria-hidden="true"></svg></div>
-      <canvas class="bars3d" id="bars3d" hidden aria-label="3D bar periodic table"></canvas>
-      <div class="legend" id="legend"></div>
-    </div>
-
-    <div id="st-size" hidden>
-      <div class="showdown-ctl">
-        <span id="sdStatus" aria-live="polite"></span>
-        <button class="btn secondary sm" id="sdClear">Clear</button>
-        <button class="btn secondary sm" id="sdRandom">Random pair</button>
-        <span class="stats" id="sdCount"></span>
-      </div>
-      <div class="note">Tap two elements on the heat map (color = atomic radius: dark = small, light = large). Tapping a third starts a new pair.</div>
-      <div class="sdpick" id="sdPick"></div>
-      <div class="panelbox"><svg id="sdSvg" viewBox="0 0 760 410" role="img" aria-label="Two atoms drawn to scale"></svg></div>
-      <div class="explain" id="sdExplain" aria-live="polite">Choose two elements to compare their sizes. Circles are drawn to the same scale.</div>
-    </div>
-
-    <div id="st-rank" hidden>
+    <div id="st-rank">
       <div class="toolbar">
         <span class="stats" id="rkStats"></span>
         <div class="seg" id="rkProp" role="group" aria-label="Property to rank by"></div>
@@ -261,7 +205,7 @@ footer .linkbtn{background:none;border:none;color:#0b3d91;text-decoration:underl
       <li><b>First ionization energy:</b> NIST Atomic Spectra Database / CRC Handbook of Chemistry and Physics values in kJ/mol (Tc: Mattolat et al., 2010).</li>
       <li><b>Electron affinity:</b> experimental gas-phase values (kJ/mol) from laser photodetachment studies (J. Phys. Chem. Ref. Data compilations and later measurements), as compiled in Wikipedia’s “Electron affinity (data page)”, Nov 2026. Sign convention: positive = energy released. n/a = anion not stable. * = estimate (Tc, Po).</li>
       <li><b>Electronegativity:</b> Pauling scale (revised values, Allred 1961) as compiled by WebElements. Noble gases are not given values in this activity.</li>
-      <li>Lanthanides (Z = 57–71) are kept in the embedded data but not shown in the Lab.</li>
+      <li>Lanthanides (Z = 57–71) are kept in the embedded data but not used in Practice.</li>
       <li><b>Ionic radii</b> (Learn stop 7 and quiz): R. D. Shannon, <i>Acta Cryst.</i> A32, 751 (1976), 6-coordinate.</li>
     </ul>
   </details>
@@ -493,13 +437,13 @@ function colorFor(k, v, lo, hi) { lo = lo == null ? RANGE[k][0] : lo; hi = hi ==
 /* ================= PROGRESS STATE ================= */
 const STORE_KEY = 'periodicTrends.v1';
 const NSTOPS = 8;
-const state = { viewed: [], heatViewed: [], sdPairs: [], rankDone: 0, rankCorrect: 0, attempts: 0, stop: 0 };
+const state = { viewed: [], rankDone: 0, rankCorrect: 0, attempts: 0, stop: 0 };
 function loadState() { try { const raw = localStorage.getItem(STORE_KEY); if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') Object.assign(state, o); } } catch (e) { /* storage unavailable */ } }
 function saveState() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ } }
 const uniq = a => Array.from(new Set(a));
 function learnCount() { return uniq(state.viewed).length; }
-function checks() { return { heat: uniq(state.heatViewed).length, size: uniq(state.sdPairs).length, done: state.rankDone, correct: state.rankCorrect }; }
-function labDone() { const c = checks(); return c.heat >= 4 && c.size >= 3 && c.done >= 8 && c.correct >= 6; }
+function checks() { return { done: state.rankDone, correct: state.rankCorrect }; }
+function labDone() { const c = checks(); return c.done >= 8 && c.correct >= 6; }
 function quizUnlocked() { return learnCount() >= NSTOPS && labDone(); }
 const LOCK_SVG = '<svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="7" width="11" height="8" rx="1.5" fill="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
 
@@ -507,8 +451,8 @@ function updateTabs() {
   const lc = learnCount();
   $('#need-learn').textContent = lc >= NSTOPS ? '✓ all stops viewed' : `${lc}/${NSTOPS} stops viewed`;
   const c = checks();
-  const labN = (c.heat >= 4) + (c.size >= 3) + (c.done >= 8 && c.correct >= 6);
-  $('#need-lab').textContent = labDone() ? '✓ checklist done' : `checklist ${labN}/3`;
+  const pn = c.correct >= 6 ? `${c.done}/8 done` : `${c.correct}/6 correct`;
+  $('#need-practice').textContent = labDone() ? '✓ checklist done' : pn;
   const qt = $('#tab-quiz');
   if (quizUnlocked()) {
     qt.classList.remove('locked');
@@ -520,7 +464,7 @@ function updateTabs() {
     $('#quiz-tl').innerHTML = LOCK_SVG + ' 3 · Quiz';
     const needs = [];
     if (lc < NSTOPS) needs.push(`Learn ${lc}/${NSTOPS}`);
-    if (!labDone()) needs.push(`Lab ${labN}/3`);
+    if (!labDone()) needs.push(`Practice ${pn}`);
     $('#need-quiz').textContent = 'Needs: ' + needs.join(' · ');
     qt.setAttribute('aria-label', 'Quiz (locked). Needs: ' + needs.join(', '));
   }
@@ -1022,245 +966,12 @@ function showStop(i) {
   $('#learnCount').textContent = `${lc} of ${NSTOPS} stops viewed`;
   $('#stopPos').textContent = `Stop ${curStop + 1} of ${NSTOPS}`;
   $('#prevStop').disabled = curStop === 0;
-  $('#nextStop').textContent = curStop === NSTOPS - 1 ? 'Go to the Lab →' : 'Next →';
+  $('#nextStop').textContent = curStop === NSTOPS - 1 ? 'Go to Practice →' : 'Next →';
   updateTabs();
 }
 
-/* ================= LAB A: HEAT MAP ================= */
-const SRC = { R: 'Clementi calculated radii (WebElements)', IE: 'NIST ASD / CRC Handbook', EA: 'experimental gas-phase values (see Data sources)', EN: 'Pauling scale (WebElements)' };
-let heatProp = 'R', heatSel = null, show3d = false, station = 'heat';
+/* ================= PRACTICE: RANKING CHALLENGES ================= */
 function fmtRange(k, v) { return k === 'EN' ? v.toFixed(2) : String(Math.round(v)); }
-function buildTrendBtns() {
-  const box = $('#trendBtns');
-  PKEYS.forEach(k => box.append(h('button', { class: 'chip', 'data-k': k, 'aria-pressed': String(k === heatProp), onclick: () => { heatProp = k; markHeatViewed(); updateHeat(); } }, PROPS[k].short, h('span', { class: 'ck' }))));
-}
-function buildHeatGrid() {
-  const grid = $('#heatGrid'); grid.innerHTML = '';
-  for (let g = 1; g <= 18; g++) grid.append(h('div', { class: 'glabel', style: `grid-column:${g + 1};grid-row:1` }, String(g)));
-  for (let p = 1; p <= 6; p++) grid.append(h('div', { class: 'plabel', style: `grid-column:1;grid-row:${p + 1}` }, String(p)));
-  grid.append(h('div', { class: 'cell ph', style: 'grid-column:4;grid-row:7', 'aria-hidden': 'true' }, '57–71'));
-  ELEMENTS.filter(e => !e.lan).forEach(e => {
-    const col = e.group, row = e.period + 1;
-    const b = h('button', { class: 'cell', 'data-z': e.Z, style: `grid-column:${col + 1};grid-row:${row}` }, h('span', { class: 'z' }, String(e.Z)), h('span', { class: 'sym' }, e.sym), h('span', { class: 'val' }));
-    b.addEventListener('pointerenter', ev => { if (ev.pointerType === 'mouse') showInfo(e); });
-    b.addEventListener('focus', () => showInfo(e));
-    b.addEventListener('click', () => { heatSel = e.Z; showInfo(e); markSel(); });
-    grid.append(b);
-  });
-  grid.addEventListener('pointerleave', () => { if (heatSel) showInfo(BY_Z[heatSel]); });
-}
-function markSel() { $$('#heatGrid .cell[data-z]').forEach(b => b.classList.toggle('sel', +b.dataset.z === heatSel)); if (show3d) draw3d(); }
-function showInfo(e) {
-  const box = $('#heatInfo'); box.innerHTML = '';
-  box.append(h('span', { class: 'nm' }, `${e.sym} · ${e.name}`), h('span', null, `Z = ${e.Z} · ${placeText(e)}`));
-  PKEYS.forEach(k => {
-    const why = naReason(e, k);
-    box.append(h('span', { class: 'pv' + (k === heatProp ? ' cur' : '') }, h('b', null, PROPS[k].short + ': '), fullVal(e, k) + (why ? ` (${why})` : '')));
-  });
-}
-function updateHeat() {
-  const k = heatProp, grid = $('#heatGrid');
-  grid.classList.toggle('nonum', !$('#tgNums').checked);
-  $$('.cell[data-z]', grid).forEach(b => {
-    const e = BY_Z[b.dataset.z], v = e[k], val = b.querySelector('.val');
-    if (v == null) { b.classList.add('na'); b.style.background = ''; b.style.color = ''; val.textContent = 'n/a'; }
-    else { b.classList.remove('na'); const c = colorFor(k, v); b.style.background = rgb(c); b.style.color = textOn(c); val.textContent = cellVal(e, k); }
-    b.setAttribute('aria-label', `${e.name}: ${PROPS[k].name} ${fullVal(e, k)}`);
-  });
-  $$('#trendBtns .chip').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.k === k)); b.querySelector('.ck').textContent = state.heatViewed.includes(b.dataset.k) ? '✓' : ''; });
-  const [lo, hi] = RANGE[k], stops = VIRIDIS.map((c, i) => `${c} ${(i / (VIRIDIS.length - 1) * 100).toFixed(0)}%`).join(',');
-  const lg = $('#legend'); lg.innerHTML = '';
-  lg.append(h('strong', null, PROPS[k].name + ' (' + PROPS[k].unit + '):'), h('span', null, 'low ' + fmtRange(k, lo)), h('span', { class: 'grad', style: `background:linear-gradient(90deg,${stops})` }), h('span', null, fmtRange(k, hi) + ' high'),
-    h('span', { class: 'swatch-na' }), h('span', null, 'n/a'), h('span', null, k === 'EA' ? '* = estimate' : ''), h('span', { class: 'muted' }, 'Source: ' + SRC[k]));
-  if (heatSel) showInfo(BY_Z[heatSel]);
-  drawOverlay();
-  if (show3d) draw3d();
-}
-function markHeatViewed() {
-  if ($('#panel-lab').hidden || station !== 'heat') return;
-  if (!state.heatViewed.includes(heatProp)) { state.heatViewed.push(heatProp); saveState(); updateChecklist(); }
-}
-function drawOverlay() {
-  const wrap = $('#heatWrap'), svg = $('#heatOverlay'), on = $('#tgArrows').checked && !show3d;
-  wrap.classList.toggle('arrows', on);
-  svg.innerHTML = '';
-  if (!on || wrap.offsetParent === null) { svg.setAttribute('width', 0); svg.setAttribute('height', 0); return; }
-  const W = wrap.scrollWidth, H = wrap.scrollHeight;
-  svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-  const wr = wrap.getBoundingClientRect();
-  const rel = z => { const r = $(`#heatGrid [data-z="${z}"]`).getBoundingClientRect(); return { x: r.left - wr.left + wrap.scrollLeft, y: r.top - wr.top + wrap.scrollTop, w: r.width, h: r.height }; };
-  const cH = rel(1), cHe = rel(2), cCs = rel(55), cSc = rel(21), cNa = rel(11), cZn = rel(30);
-  const k = heatProp, isR = k === 'R', col = '#0b3d91';
-  const mk = arrowMarker(svg, col, nextId('ov'));
-  const line = (x1, y1, x2, y2, w) => { sv('line', { x1, y1, x2, y2, stroke: '#fff', 'stroke-width': w + 5, 'stroke-linecap': 'round' }, svg); sv('line', { x1, y1, x2, y2, stroke: col, 'stroke-width': w, 'marker-end': mk }, svg); };
-  const label = (x, y, t, rot) => sv('text', { x, y, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 700, fill: col, stroke: '#fff', 'stroke-width': 4, 'paint-order': 'stroke', transform: rot ? `rotate(-90 ${x} ${y})` : null, text: t }, svg);
-  const xL = cH.x, xR = cHe.x + cHe.w, yT = cH.y, yB = cCs.y + cCs.h, yA = 30;
-  const name = PROPS[k].short;
-  if (isR) { line(xR, yA, xL + 6, yA, 4); line(26, yT, 26, yB - 6, 4); }
-  else { line(xL, yA, xR - 6, yA, 4); line(26, yB, 26, yT + 6, 4); }
-  label((xL + xR) / 2, yA - 10, isR ? '← Radius increases to the left' : `${name} increases to the right →`);
-  label(14, (yT + yB) / 2, isR ? 'increases going down ↓' : (k === 'EA' ? 'generally increases going up ↑' : 'increases going up ↑'), true);
-  const gx1 = cSc.x + 8, gy1 = cNa.y + cNa.h - 8, gx2 = cZn.x + cZn.w - 8, gy2 = cH.y + 8;
-  if (isR) line(gx2, gy2, gx1, gy1, 6); else line(gx1, gy1, gx2, gy2, 6);
-  label((gx1 + gx2) / 2, (gy1 + gy2) / 2 - 14, isR ? 'bigger toward the bottom-left' : 'higher toward the top-right (fluorine corner)');
-}
-
-/* ---------- 3D isometric-style bars (canvas) ---------- */
-let bars3d = [], stripePat = null;
-function draw3d() {
-  const cv = $('#bars3d');
-  if (cv.hidden || cv.offsetParent === null) return;
-  const ctx = cv.getContext('2d');
-  const W = Math.max(560, cv.parentElement.clientWidth), rowsN = 6, arrowsOn = $('#tgArrows').checked;
-  const a = (W - 30) / (18 + rowsN * 0.2), b = a * 0.62, sk = a * 0.2, Hmax = Math.min(170, a * 2.8);
-  const ox = 14, oy = Hmax + 50, Ht = Math.round(oy + rowsN * b + (arrowsOn ? 54 : 16));
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  cv.width = Math.round(W * dpr); cv.height = Math.round(Ht * dpr); cv.style.height = Ht + 'px';
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, W, Ht);
-  if (!stripePat) {
-    const pc = document.createElement('canvas'); pc.width = pc.height = 8; const p = pc.getContext('2d');
-    p.fillStyle = '#eceff3'; p.fillRect(0, 0, 8, 8); p.strokeStyle = '#b8bec8'; p.lineWidth = 2; p.beginPath(); p.moveTo(0, 8); p.lineTo(8, 0); p.stroke();
-    stripePat = ctx.createPattern(pc, 'repeat');
-  }
-  const P = (c, r) => [ox + c * a + (rowsN - r) * sk, oy + r * b];
-  const k = heatProp, hi = RANGE[k][1], nums = $('#tgNums').checked;
-  const items = ELEMENTS.filter(e => !e.lan).map(e => ({ e, c: e.group - 1, r: e.period - 1 }));
-  items.sort((p, q) => p.r - q.r || p.c - q.c);
-  bars3d = [];
-  const poly = (pts, fill) => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 1; ctx.stroke(); };
-  items.forEach(({ e, c, r }) => {
-    const v = e[k], hgt = v == null ? 0 : Math.max(3, v / hi * Hmax);
-    const c0 = c + 0.1, c1 = c + 0.9, r0 = r + 0.1, r1 = r + 0.9;
-    const TL = P(c0, r0), TR = P(c1, r0), BR = P(c1, r1), BL = P(c0, r1), up = p => [p[0], p[1] - hgt];
-    let top;
-    if (v == null) { poly([TL, TR, BR, BL], stripePat); top = [TL, TR, BR, BL]; }
-    else {
-      const col = colorFor(k, v);
-      poly([BL, BR, up(BR), up(BL)], rgb(shadeC(col, 0.78)));
-      poly([TR, BR, up(BR), up(TR)], rgb(shadeC(col, 0.6)));
-      top = [up(TL), up(TR), up(BR), up(BL)];
-      poly(top, rgb(col));
-      e._txt = textOn(col);
-    }
-    if (e.Z === heatSel) { ctx.save(); ctx.lineWidth = 3.5; ctx.strokeStyle = '#d97706'; ctx.beginPath(); top.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.stroke(); ctx.restore(); }
-    const cx = (top[0][0] + top[2][0]) / 2, cy = (top[0][1] + top[2][1]) / 2;
-    ctx.fillStyle = v == null ? '#222' : e._txt; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const fs = Math.max(9, Math.min(16, a * 0.34));
-    ctx.font = `700 ${fs}px "Atkinson Hyperlegible", system-ui, sans-serif`;
-    if (nums && a >= 36) { ctx.fillText(e.sym, cx, cy - fs * 0.32); ctx.font = `${Math.max(8, fs * 0.62)}px "Atkinson Hyperlegible", system-ui, sans-serif`; ctx.fillText(cellVal(e, k), cx, cy + fs * 0.5); }
-    else ctx.fillText(e.sym, cx, cy);
-    bars3d.push({ e, pts: [up(TL), up(TR), TR, BR, BL, up(BL)] });
-  });
-  ctx.textAlign = 'left'; ctx.fillStyle = '#111'; ctx.font = `700 15px "Atkinson Hyperlegible", system-ui, sans-serif`;
-  ctx.fillText(`${PROPS[k].name}: bar height = value (tallest = ${fmtRange(k, hi)} ${PROPS[k].unit})`, 12, 20);
-  ctx.font = `13px "Atkinson Hyperlegible", system-ui, sans-serif`; ctx.fillStyle = '#333';
-  ctx.fillText('Tap a bar for all four values.', 12, 38);
-  if (arrowsOn) {
-    const y = oy + rowsN * b + 26, isR = k === 'R';
-    const arrow = (x1, y1, x2, y2) => { ctx.strokeStyle = '#0b3d91'; ctx.fillStyle = '#0b3d91'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); const ang = Math.atan2(y2 - y1, x2 - x1); ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - 13 * Math.cos(ang - 0.45), y2 - 13 * Math.sin(ang - 0.45)); ctx.lineTo(x2 - 13 * Math.cos(ang + 0.45), y2 - 13 * Math.sin(ang + 0.45)); ctx.closePath(); ctx.fill(); };
-    const L = P(0, rowsN + 0.5)[0], R = P(18, rowsN + 0.5)[0];
-    if (isR) arrow(R, y, L + 10, y); else arrow(L, y, R - 10, y);
-    ctx.font = `700 14px "Atkinson Hyperlegible", system-ui, sans-serif`; ctx.textAlign = 'center';
-    ctx.fillText(isR ? '← radius increases to the left · and toward the front (down a group)' : `${PROPS[k].short} increases to the right → · and toward the back (up a group)`, W / 2, y + 20);
-  }
-}
-function hit3d(x, y) {
-  for (let i = bars3d.length - 1; i >= 0; i--) {
-    const p = bars3d[i].pts; let inside = false;
-    for (let a = 0, b = p.length - 1; a < p.length; b = a++) {
-      if (((p[a][1] > y) !== (p[b][1] > y)) && (x < (p[b][0] - p[a][0]) * (y - p[a][1]) / (p[b][1] - p[a][1]) + p[a][0])) inside = !inside;
-    }
-    if (inside) return bars3d[i].e;
-  }
-  return null;
-}
-function setup3dEvents() {
-  const cv = $('#bars3d');
-  const xy = ev => { const r = cv.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
-  cv.addEventListener('pointermove', ev => { if (ev.pointerType !== 'mouse') return; const e = hit3d(...xy(ev)); if (e) showInfo(e); });
-  cv.addEventListener('pointerdown', ev => { const e = hit3d(...xy(ev)); if (e) { heatSel = e.Z; showInfo(e); markSel(); } });
-}
-
-/* ================= LAB B: SIZE SHOWDOWN ================= */
-const SD_SCALE = 165 / 298;
-let sdA = null, sdB = null, sdCells = {};
-function buildShowdown() {
-  const opts = ELEMENTS.filter(e => e.R != null && !e.lan);
-  const x0 = 28, y0 = 24, cw = 40, ch = 46, W = x0 + 18 * cw + 4, H = y0 + 6 * ch + 4;
-  const svg = svgRoot(W, H, 'Atomic radius heat map: tap two elements to compare');
-  const SH = shine(svg);
-  for (let g = 1; g <= 18; g++) sv('text', { x: x0 + (g - 1) * cw + cw / 2, y: y0 - 8, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#334155', text: g }, svg);
-  for (let p = 1; p <= 6; p++) sv('text', { x: x0 - 8, y: y0 + (p - 1) * ch + ch / 2 + 5, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: '#334155', text: p }, svg);
-  sv('rect', { x: x0 + 2 * cw + 2, y: y0 + 5 * ch + 2, width: cw - 4, height: ch - 4, rx: 5, fill: '#eef1f5', stroke: '#a3adbb', 'stroke-dasharray': '4 3' }, svg);
-  sv('text', { x: x0 + 2.5 * cw, y: y0 + 5.5 * ch + 4, 'text-anchor': 'middle', 'font-size': 10, fill: '#475569', text: '57–71' }, svg);
-  opts.forEach(e => {
-    const x = x0 + (e.group - 1) * cw, y = y0 + (e.period - 1) * ch, c = colorFor('R', e.R), tc = textOn(c);
-    const g = sv('g', { 'data-sym': e.sym, role: 'button', tabindex: 0, 'aria-label': `${e.name}, ${e.R} pm`, style: 'cursor:pointer', class: 'sdcell' }, svg);
-    const r = sv('rect', { x: x + 1.5, y: y + 1.5, width: cw - 3, height: ch - 3, rx: 5, fill: rgb(c), stroke: 'rgba(0,0,0,.3)', 'stroke-width': 1, filter: SH.drop }, g);
-    sv('rect', { x: x + 1.5, y: y + 1.5, width: cw - 3, height: (ch - 3) / 2, rx: 5, fill: '#fff', opacity: .14, 'pointer-events': 'none' }, g);
-    sv('text', { x: x + cw / 2, y: y + 21, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: tc, text: e.sym }, g);
-    sv('text', { x: x + cw / 2, y: y + 37, 'text-anchor': 'middle', 'font-size': 11, fill: tc, text: e.R }, g);
-    const bg = sv('g', { visibility: 'hidden' }, g);
-    sv('circle', { cx: x + cw - 6, cy: y + 7, r: 10, fill: '#b91c1c', stroke: '#fff', 'stroke-width': 2 }, bg);
-    const bt = sv('text', { x: x + cw - 6, y: y + 11.5, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#fff' }, bg);
-    sdCells[e.sym] = { r, bg, bt };
-    const go = () => { if (sdA === null) sdA = e.sym; else if (sdB === null && e.sym !== sdA) sdB = e.sym; else { sdA = e.sym; sdB = null; } drawShowdown(); };
-    g.addEventListener('click', go);
-    g.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } });
-  });
-  $('#sdPick').append(svg);
-  $('#sdRandom').addEventListener('click', () => {
-    const mg = opts.filter(e => isMain(e));
-    let a, b; do { a = pick(mg); b = pick(mg); } while (a === b || Math.abs(a.R - b.R) < 10);
-    sdA = a.sym; sdB = b.sym; drawShowdown();
-  });
-  $('#sdClear').addEventListener('click', () => { sdA = sdB = null; drawShowdown(); });
-  drawShowdown();
-}
-function explainSize(A, B) {
-  if (A.R === B.R) return `<b>${A.name} and ${B.name} have the same calculated radius (${A.R} pm).</b>`;
-  const big = A.R > B.R ? A : B, sm = big === A ? B : A, nb = shells(big.Z).length, ns = shells(sm.Z).length;
-  const zb = zeff(big), zs = zeff(sm);
-  const zTxt = (zb != null && zs != null) ? ` (simple Z<sub>eff</sub>: +${zs} for ${sm.sym} vs +${zb} for ${big.sym})` : ` (${sm.Z} protons vs ${big.Z})`;
-  let s = `<b>${big.name} (${big.R} pm) is bigger than ${sm.name} (${sm.R} pm).</b> `;
-  if (nb > ns) s += `Its outer electrons are in energy level n = ${nb} instead of n = ${ns}. More energy levels put the outer electrons farther from the nucleus, with more inner electrons shielding them. That outweighs ${big.sym}'s larger number of protons (${big.Z} vs ${sm.Z}).`;
-  else if (nb === ns) {
-    if (big.Z < sm.Z) s += `Both have outer electrons in energy level n = ${nb}, but ${sm.sym} has more protons${zTxt}. The stronger net pull draws ${sm.sym}'s electron cloud in tighter.`;
-    else s += `Both have outer electrons in energy level n = ${nb}. This is an exception to the simple trend: in the middle block and the lanthanides, radii do not change smoothly.`;
-  } else s += `It has fewer energy levels (n = ${nb} vs n = ${ns}), but ${sm.sym}'s much stronger net pull${zTxt} holds its electrons close. Here the across-a-period effect wins.`;
-  return s;
-}
-function drawShowdown() {
-  const svg = $('#sdSvg'); svg.innerHTML = '';
-  const A = sdA ? BY_SYM[sdA] : null, B = sdB ? BY_SYM[sdB] : null;
-  Object.entries(sdCells).forEach(([sym, o]) => { const n = sym === sdA ? '1' : sym === sdB ? '2' : ''; o.bg.setAttribute('visibility', n ? 'visible' : 'hidden'); o.bt.textContent = n; o.r.setAttribute('stroke', n ? '#b91c1c' : 'rgba(0,0,0,.3)'); o.r.setAttribute('stroke-width', n ? 4 : 1); });
-  $('#sdStatus').innerHTML = `Element 1: <b>${A ? A.sym + ' · ' + A.name : '—'}</b> &nbsp; Element 2: <b>${B ? B.sym + ' · ' + B.name : (A ? 'tap a second element' : '—')}</b>`;
-  [[A, 200], [B, 560]].forEach(([e, cx]) => {
-    if (!e) {
-      sv('circle', { cx, cy: 200, r: 90, fill: '#fff', stroke: '#8592a6', 'stroke-width': 2, 'stroke-dasharray': '8 6' }, svg);
-      sv('text', { x: cx, y: 212, 'text-anchor': 'middle', 'font-size': 40, fill: '#8592a6', text: '?' }, svg);
-      return;
-    }
-    const R = e.R * SD_SCALE, sh = shells(e.Z);
-    drawBohr(svg, cx, 200, R, sh, e.Z, {});
-    sv('text', { x: cx, y: 24, 'text-anchor': 'middle', 'font-size': 20, 'font-weight': 700, text: `${e.sym} — ${e.name}` }, svg);
-    sv('text', { x: cx, y: 388, 'text-anchor': 'middle', 'font-size': 15, text: `${e.R} pm · ${e.Z} protons · ${sh.length} energy level${sh.length > 1 ? 's' : ''}` }, svg);
-    if (R < 22) sv('text', { x: cx, y: 200 + R + 18, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#b91c1c', text: '+' + e.Z }, svg);
-  });
-  const ex = $('#sdExplain');
-  if (A && B && A !== B) {
-    const key = [A.sym, B.sym].sort().join('|');
-    if (!state.sdPairs.includes(key)) { state.sdPairs.push(key); saveState(); updateChecklist(); }
-    const big = A.R >= B.R ? 200 : 560;
-    if (A.R !== B.R) sv('text', { x: big, y: 48, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#145c2b', text: '▲ BIGGER' }, svg);
-    ex.innerHTML = explainSize(A, B);
-  } else if (A && B) ex.textContent = 'Pick two different elements.';
-  else ex.textContent = 'Tap two elements on the heat map to compare their sizes. Both atoms are drawn to the same scale (red = nucleus with proton count; rings = energy levels).';
-  $('#sdCount').textContent = `Comparisons: ${uniq(state.sdPairs).length}`;
-}
-
-/* ================= LAB C: RANKING CHALLENGES ================= */
 const RK_GAP = { R: 6, IE: 40, EA: 12, EN: 0.15 };
 let rkMode = 'MIX', rkCur = null, rkList = null, rkOffset = Math.floor(Math.random() * 4);
 function rkPool(k) { return ELEMENTS.filter(e => isMain(e) && e.Z > 2 && e[k] != null && !(k === 'EA' && e.eaEst) && !(k === 'EN' && e.group === 18)); }
@@ -1435,28 +1146,11 @@ function rkStats() { $('#rkStats').textContent = `Completed: ${state.rankDone} �
 function updateChecklist() {
   const c = checks(), box = $('#checklist'); box.innerHTML = '';
   const item = (done, txt) => h('span', { class: 'ci' + (done ? ' done' : '') }, h('span', { class: 'box', 'aria-hidden': 'true' }, done ? '✓' : ''), h('span', null, (done ? 'Done: ' : '') + txt));
-  box.append(h('strong', null, 'Lab Checklist'),
-    item(c.heat >= 4, `View all 4 heat maps (${Math.min(c.heat, 4)}/4)`),
-    item(c.size >= 3, `Use Size Showdown 3 times (${Math.min(c.size, 3)}/3)`),
+  box.append(h('strong', null, 'Practice Checklist'),
     item(c.done >= 8 && c.correct >= 6, `8 ranking challenges, at least 6 correct (${c.done} done, ${c.correct} correct)`));
-  if (labDone()) box.append(h('span', { class: 'ci done' }, learnCount() >= NSTOPS ? '★ Lab complete: the Quiz is unlocked!' : `★ Lab complete. View all Learn stops (${learnCount()}/${NSTOPS}) to unlock the Quiz.`));
-  $$('#trendBtns .chip').forEach(b => { b.querySelector('.ck').textContent = state.heatViewed.includes(b.dataset.k) ? '✓' : ''; });
+  if (labDone()) box.append(h('span', { class: 'ci done' }, learnCount() >= NSTOPS ? '★ Practice complete: the Quiz is unlocked!' : `★ Practice complete. View all Learn stops (${learnCount()}/${NSTOPS}) to unlock the Quiz.`));
   updateTabs();
 }
-function setStation(s) {
-  station = s;
-  ['heat', 'size', 'rank'].forEach(x => { $('#st-' + x).hidden = x !== s; });
-  $$('.subtabs .chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.station === s)));
-  if (s === 'heat') { markHeatViewed(); drawOverlay(); if (show3d) draw3d(); }
-  if (s === 'rank' && !rkCur) newRank();
-}
-function set3d(on) {
-  show3d = on;
-  $('#bars3d').hidden = !on; $('#heatWrap').hidden = on;
-  if (on) draw3d();
-  drawOverlay();
-}
-
 /* ================= QUIZ ================= */
 function miniHeat(k, syms) {
   const els = syms.map(s => BY_SYM[s]);
@@ -1549,10 +1243,8 @@ function renderQuiz() {
       h('p', null, 'Finish these to unlock it:'),
       h('ul', { class: 'reqlist' },
         req(lc >= NSTOPS, `View every Learn stop (${lc}/${NSTOPS})`),
-        req(c.heat >= 4, `Lab: view all 4 heat maps (${Math.min(c.heat, 4)}/4)`),
-        req(c.size >= 3, `Lab: use Size Showdown 3 times (${Math.min(c.size, 3)}/3)`),
-        req(c.done >= 8 && c.correct >= 6, `Lab: 8 ranking challenges with at least 6 correct (${c.done} done, ${c.correct} correct)`)),
-      h('div', { class: 'qactions' }, h('button', { class: 'btn', onclick: () => setTab('learn') }, 'Go to Learn'), h('button', { class: 'btn secondary', onclick: () => setTab('lab') }, 'Go to Lab'))));
+        req(c.done >= 8 && c.correct >= 6, `Practice: 8 ranking challenges with at least 6 correct (${c.done} done, ${c.correct} correct)`)),
+      h('div', { class: 'qactions' }, h('button', { class: 'btn', onclick: () => setTab('learn') }, 'Go to Learn'), h('button', { class: 'btn secondary', onclick: () => setTab('practice') }, 'Go to Practice'))));
     return;
   }
   if (!quiz) {
@@ -1700,29 +1392,23 @@ function renderScore() {
 let currentTab = 'learn';
 function setTab(t) {
   currentTab = t;
-  ['learn', 'lab', 'quiz'].forEach(x => { $('#panel-' + x).hidden = x !== t; $('#tab-' + x).setAttribute('aria-selected', String(x === t)); });
-  if (t === 'lab') { setStation(station); }
+  ['learn', 'practice', 'quiz'].forEach(x => { $('#panel-' + x).hidden = x !== t; $('#tab-' + x).setAttribute('aria-selected', String(x === t)); });
+  if (t === 'practice' && !rkCur) newRank();
   if (t === 'quiz') renderQuiz();
   if (t === 'learn') showStop(curStop);
 }
 let resetArmed = false;
 function init() {
   loadState();
-  ['viewed', 'heatViewed', 'sdPairs'].forEach(k => { if (!Array.isArray(state[k])) state[k] = []; });
+  if (!Array.isArray(state.viewed)) state.viewed = [];
+  delete state.heatViewed; delete state.sdPairs;
   state.viewed = state.viewed.filter(i => Number.isInteger(i) && i >= 0 && i < NSTOPS);
   ['rankDone', 'rankCorrect', 'attempts', 'stop'].forEach(k => { state[k] = Math.max(0, parseInt(state[k], 10) || 0); });
   buildDots();
-  buildTrendBtns(); buildHeatGrid(); updateHeat(); setup3dEvents();
-  buildShowdown(); buildRankProps(); updateChecklist(); rkStats();
+  buildRankProps(); updateChecklist(); rkStats();
   $$('.tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
   $('#prevStop').addEventListener('click', () => showStop(curStop - 1));
-  $('#nextStop').addEventListener('click', () => { if (curStop === NSTOPS - 1) setTab('lab'); else showStop(curStop + 1); });
-  $('#tgNums').addEventListener('change', updateHeat);
-  $('#tgArrows').addEventListener('change', () => { drawOverlay(); if (show3d) draw3d(); });
-  $('#tg3d').addEventListener('change', e => set3d(e.target.checked));
-  $$('.subtabs .chip').forEach(b => b.addEventListener('click', () => setStation(b.dataset.station)));
-  $('#heatWrap').addEventListener('scroll', debounce(drawOverlay, 80));
-  window.addEventListener('resize', debounce(() => { if (!$('#panel-lab').hidden) { drawOverlay(); if (show3d) draw3d(); } }, 150));
+  $('#nextStop').addEventListener('click', () => { if (curStop === NSTOPS - 1) setTab('practice'); else showStop(curStop + 1); });
   $('#resetBtn').addEventListener('click', () => {
     const b = $('#resetBtn');
     if (!resetArmed) { resetArmed = true; b.textContent = 'Click again to erase all progress'; setTimeout(() => { resetArmed = false; b.textContent = 'Reset my progress'; }, 4000); return; }
