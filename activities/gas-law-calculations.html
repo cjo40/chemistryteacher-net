@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gas Law Calculations: Boyle’s, Charles’ &amp; Gay-Lussac’s Laws Trainer</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#eef1f5;color:#15191e;-webkit-tap-highlight-color:transparent;font-size:16px}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default}
+/* header */
+header{display:flex;align-items:center;gap:10px;min-height:56px;padding:5px 10px 5px 64px;background:#1f3a5f;color:#fff;flex-wrap:wrap}
+header h1{font-size:1.05rem;margin:0;font-weight:700;line-height:1.15}
+header h1 small{display:block;font-weight:500;font-size:.75rem;opacity:.85}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{min-height:46px;min-width:96px;padding:3px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.35);background:#2d4f7c;color:#fff;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.tab small{font-weight:600;font-size:.74rem;opacity:.95;margin-top:2px}
+.tab.on{background:#fff;color:#1f3a5f;border-color:#fff}
+.tab.full{background:#1d7a35;border-color:#9fe0b0;color:#fff}
+.tab.full.on{box-shadow:0 0 0 3px #fff inset}
+.tab.lock{opacity:.62}
+/* combined gas law switch (big so the teacher can read it from across the room) */
+.combo{display:flex;align-items:center;gap:9px;min-height:48px;padding:3px 14px 3px 10px;border-radius:12px;border:3px solid;cursor:pointer;user-select:none;-webkit-user-select:none;line-height:1.05}
+.combo input{width:26px;height:26px;margin:0;accent-color:#1f3a5f;cursor:pointer;flex:none}
+.combo .ct{display:flex;flex-direction:column}
+.combo .ct b{font-size:1.15rem;font-weight:900;letter-spacing:.03em}
+.combo .ct small{font-size:.78rem;font-weight:800}
+.combo.on{background:#f29d12;color:#2b1a00;border-color:#ffd38a}
+.combo.off{background:#e9edf2;color:#3b4652;border-color:#9aa6b2}
+.combo:focus-within{outline:3px solid #fff;outline-offset:2px}
+/* layout */
+main{height:calc(100% - 56px);display:grid;grid-template-columns:minmax(380px,44%) 1fr;gap:12px;padding:10px 12px}
+.col{overflow:auto;min-height:0;padding-bottom:6px}
+.panel{background:#fff;border:1px solid #d5dbe2;border-radius:14px;padding:12px}
+#right .panel{min-height:100%;display:flex;flex-direction:column;gap:10px}
+/* step pills */
+.pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.pills .lbl{font-weight:700;color:#3b4652;margin-right:2px;font-size:.9rem}
+.pill{min-width:44px;min-height:40px;padding:2px 10px;border-radius:20px;border:2px solid #b9c3ce;background:#fff;font-weight:700;color:#3b4652}
+.pill.cur{border-color:#1f3a5f;background:#1f3a5f;color:#fff}
+.pill.done{border-color:#1d7a35;color:#1d7a35;background:#e6f4ea}
+.pill.cur.done{background:#1d7a35;color:#fff}
+.pill:disabled{opacity:.45}
+.pill.cur:disabled,.pill.done:disabled{opacity:1}
+.streak{margin-left:auto;display:flex;gap:4px;align-items:center;font-size:.85rem;font-weight:700;color:#3b4652}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid #1d7a35;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff}
+.dot.on{background:#1d7a35}
+/* gray reference boxes */
+.gray{background:#eceff3;border:1px solid #cfd6de;border-radius:10px;padding:8px 12px;color:#26303a}
+.gray .t{font-size:.75rem;font-weight:800;letter-spacing:.04em;color:#5a6672;text-transform:uppercase;margin-bottom:2px}
+.teach{font-size:1.02rem;line-height:1.4;margin:0 0 8px}
+.story{margin-bottom:8px;font-size:1rem;line-height:1.38}
+.showclue .clue{color:#b3141a;text-decoration:underline;text-decoration-color:#d4202a;text-decoration-thickness:2px;text-underline-offset:3px;font-weight:700}
+.clue{text-decoration:none}
+/* question box */
+.qbox{border:5px solid #f29d12;border-radius:14px;background:#fffdf7;overflow:hidden;margin-bottom:8px}
+.qhead{background:#f29d12;color:#2b1a00;font-weight:800;font-size:.85rem;letter-spacing:.04em;padding:4px 10px}
+.qbody{padding:8px 12px 10px}
+.qtext{font-size:1.22rem;font-weight:800;line-height:1.3}
+.kw{color:#b3141a;text-decoration:underline;text-decoration-color:#d4202a;text-decoration-thickness:3px;text-underline-offset:3px}
+.qhint{font-size:.92rem;color:#4a5560;margin-top:3px}
+.ans{border:2px dashed #9aa6b2;border-radius:10px;padding:5px 8px 7px;margin-top:6px;background:#fff}
+.anslbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#6a7682;margin-bottom:5px}
+.row{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.row+.row{margin-top:7px}
+.opt{min-height:48px;padding:6px 14px;border-radius:10px;border:2px solid #9aa6b2;background:#f7f9fb;font-weight:700;font-size:1.05rem;display:inline-flex;align-items:center;gap:6px}
+.opt:hover:not(:disabled){border-color:#1f3a5f}
+.opt.right{background:#e6f4ea;border-color:#1d7a35;color:#145a27}
+.opt.wrong{background:#fdecea;border-color:#b3261e;color:#8c1d18}
+.lawopt{flex-direction:column;align-items:flex-start;gap:2px;padding:6px 12px}
+.lawopt .mini .eq{font-size:1rem}
+.opbtn{min-width:52px;min-height:46px;border-radius:10px;border:2px solid #1f3a5f;background:#fff;font-size:1.45rem;font-weight:800;color:#1f3a5f}
+.opbtn.sel{background:#1f3a5f;color:#fff}
+.kbtn{min-height:52px;min-width:110px;padding:6px 16px;border-radius:10px;border:2px solid #1f3a5f;background:#fff;font-size:1.25rem;font-weight:800;color:#1f3a5f}
+.kbtn.wrong{background:#fdecea;border-color:#b3261e;color:#8c1d18}
+.undo{min-height:46px;padding:4px 12px;border-radius:10px;border:2px solid #6a7682;background:#fff;font-weight:700;margin-left:auto}
+.chip{min-height:46px;padding:4px 12px;border-radius:12px;border:2px solid #2b6cb0;background:#eef5fd;font-weight:800;font-size:1.12rem;color:#123;display:inline-flex;align-items:baseline;gap:4px;touch-action:none;user-select:none;-webkit-user-select:none}
+.chip small,.tk small{font-size:.62em;color:#66727e;font-weight:600}
+.chip.sel{background:#2b6cb0;color:#fff;border-color:#174a80}
+.chip.sel small{color:#dbe8f7}
+.chip.used{display:none}
+.chip.grp{border-style:double;border-width:4px}
+.big{min-height:52px;padding:6px 22px;border-radius:12px;border:none;background:#1f3a5f;color:#fff;font-weight:800;font-size:1.15rem}
+.big.green{background:#1d7a35}
+.big.ghost{background:#fff;color:#1f3a5f;border:2px solid #1f3a5f}
+.big:disabled{opacity:.45}
+.nextrow{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 8px}
+.fb{margin-top:8px;border-radius:10px;padding:7px 10px;font-size:.98rem;line-height:1.35}
+.fb.bad{background:#fdecea;border:2px solid #b3261e;color:#6f1510}
+.fb.good{background:#e6f4ea;border:2px solid #1d7a35;color:#0f4720}
+.fb.note{background:#fff7e6;border:2px solid #f29d12;color:#5a3a00}
+.fb b{display:block}
+.doneline{background:#e6f4ea;border:1px solid #8fcca0;border-left:6px solid #1d7a35;color:#0f4720;border-radius:8px;padding:4px 10px;font-weight:700;font-size:.92rem;margin-bottom:6px}
+.measuring *,.measuring *::after{animation:none!important;transition:none!important}
+.dl2{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+.glow{animation:glow 1.1s ease-in-out infinite;position:relative;z-index:1}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(242,157,18,.9)}50%{box-shadow:0 0 0 7px rgba(242,157,18,.35)}}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* equation board */
+.boardt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.boardt h2{margin:0;font-size:1rem;color:#1f3a5f}
+.fcard{display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
+.fcard.moved{background:#fff7e6;border-color:#f29d12}
+.fcard .t{line-height:1.15}
+.fcard .eq{font-size:1.8rem;gap:.25em}
+.ann{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05}
+.ann .ar{color:#c8102e;font-size:.7em;font-weight:900;line-height:.9}
+.ann .al{color:#c8102e;font-size:.5em;font-weight:800;white-space:nowrap;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.ann .al em{font-style:normal;text-transform:uppercase;font-size:.85em;letter-spacing:.03em}
+.chip .role{font-style:normal;font-size:.62em;font-weight:800;color:#fff;background:#c8102e;border-radius:6px;padding:1px 5px;margin-left:3px;text-transform:uppercase;letter-spacing:.03em;align-self:center}
+.chip.sel .role{background:#fff;color:#c8102e}
+.eqwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:120px;border:2px solid #e1e6ec;border-radius:14px;background:#fbfcfe;padding:10px 6px;overflow:hidden}
+.eq{display:flex;align-items:center;justify-content:center;gap:.3em;font-size:2.3rem;font-weight:700;white-space:nowrap;max-width:100%}
+.eqs{padding:0 .15em;color:#1f3a5f}
+.side{display:inline-flex;align-items:center;gap:.18em}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.fn,.fd{display:flex;align-items:center;gap:.18em;padding:0 .2em}
+.fn{border-bottom:.08em solid currentColor;padding-bottom:.08em}
+.fd{padding-top:.08em}
+.times{color:#5d6975;font-weight:600;font-size:.8em}
+.tk{display:inline-flex;align-items:baseline;gap:.12em;transition:opacity .5s}
+.tk small{font-size:.42em}
+.tile{display:inline-flex;align-items:center;justify-content:center;min-width:1.25em;padding:0 .22em;height:1.3em;border-radius:.22em;background:#6a2fb0;color:#fff;font-weight:800;font-size:.92em}
+.symtk{font-style:italic;font-weight:700;color:#26303a}
+.cst{color:#1f3a5f}
+.x{position:relative;opacity:.35}
+.x::after{content:"";position:absolute;left:-4%;right:-4%;top:50%;border-top:.09em solid #b3261e;transform:rotate(-18deg)}
+.nw{animation:pop .5s}
+@keyframes pop{0%{transform:scale(1.5);color:#c56a00}100%{transform:scale(1)}}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:2.1em;min-height:1.45em;padding:0 .2em;border:.07em dashed #6a7682;border-radius:.2em;background:#fff;cursor:pointer;color:#7a8692;font-style:italic;font-size:.95em}
+.slot.filled{border-style:solid;border-color:#2b6cb0;background:#eef5fd;color:#123;font-style:normal}
+.slot.unk{border-color:#6a2fb0;background:#f5effc}
+.slot.tgt{outline:.1em solid #f29d12}
+.paren{color:#5d6975;font-weight:500}
+.status.bad{color:#b3261e}
+.status{font-size:1.15rem;font-weight:800;color:#1d7a35;text-align:center;min-height:1.6em}
+.answer{font-size:1.9rem;font-weight:800;text-align:center;color:#0f4720;background:#e6f4ea;border:2px solid #1d7a35;border-radius:12px;padding:6px}
+.answer small{font-size:.55em;color:#2d5d3a}
+.sense{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:#f1faf3;border:2px dashed #1d7a35;border-radius:12px;padding:6px 10px;color:#0f4720;font-weight:700}
+.sense .arw{font-size:1.6rem;font-weight:900;white-space:nowrap}
+.sense .arw i{font-style:normal;color:#b3141a}
+.flipnote{font-size:.85rem;color:#5a6672;font-weight:600;margin-top:4px}
+/* before -> after gas pictures */
+.strip{display:flex;align-items:stretch;justify-content:center;gap:6px;flex-wrap:wrap}
+.gs{flex:1 1 0;min-width:140px;max-width:250px;border:2px solid #d5dbe2;border-radius:12px;background:#fbfcfe;padding:4px 6px 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.gs.after{border-color:#c9b3e6;background:#fbf8ff}
+.gst{font-size:.72rem;font-weight:900;letter-spacing:.06em;color:#5a6672;text-transform:uppercase}
+.gl{font-size:.95rem;font-weight:800;line-height:1.3;color:#15191e}
+.gl .sm{color:#7a8692;font-weight:700;font-size:.85rem}
+.gl .tile{font-size:.9rem;height:1.4em}
+.garr{align-self:center;font-size:2rem;color:#1f3a5f;font-weight:900}
+.gsvg{display:block;max-width:100%;height:auto}
+.gsvg .pt{animation:jig .6s ease-in-out infinite alternate}
+.gsvg.fast .pt{animation-duration:.28s}
+.gsvg.slow .pt{animation-duration:1.15s}
+@keyframes jig{0%{transform:translate(0,0)}100%{transform:translate(3px,-3px)}}
+/* learn visuals */
+.vis{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.vcard{border:2px solid #d5dbe2;border-radius:12px;padding:10px 16px;background:#fbfcfe;min-width:260px}
+.vcard.ok{border-color:#1d7a35;background:#f1faf3}
+.vcard .h{font-weight:800;margin-bottom:6px}
+.vcard .eq{font-size:1.8rem}
+.lcards{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.lcard{flex:1 1 0;min-width:150px;max-width:230px;border:2px solid #d5dbe2;border-radius:12px;background:#fbfcfe;padding:6px 8px 8px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.lcard .h{font-weight:900;color:#1f3a5f}
+.lcard .eq{font-size:1.2rem}
+.lcard .same{font-size:.85rem;font-weight:800;color:#5a6672;background:#eceff3;border-radius:8px;padding:2px 8px}
+.lcard .rel{font-size:1.15rem;font-weight:900;color:#b3141a}
+.lcard .rel small{display:block;font-size:.72rem;color:#5a6672;letter-spacing:.05em;text-transform:uppercase}
+.mtab{border-collapse:collapse;font-size:1rem;width:100%;max-width:600px}
+.mtab td,.mtab th{border:1px solid #d5dbe2;padding:6px 8px;text-align:left;vertical-align:middle}
+.mtab th{background:#eceff3;font-size:.85rem}
+.mtab .w{color:#8c1d18;background:#fdf3f2}
+.mtab .r{color:#145a27;background:#f1faf3}
+.mtab .eq{font-size:1.1rem;justify-content:flex-start;display:inline-flex;vertical-align:middle}
+.mini{display:inline-flex;vertical-align:middle}
+.mini .eq{font-size:1rem;gap:.2em}
+.mini .tk small{font-size:.6em}
+.opt.sm{min-height:44px;padding:4px 10px;font-size:.95rem}
+.opt .eq{font-size:1.25rem}
+.qtext .eq{font-size:1em;display:inline-flex}
+.frame{font-size:.95rem;font-weight:800;color:#c56a00;min-height:1.4em}
+.storyhl{font-size:1.05rem;line-height:1.5;text-align:left;max-width:560px}
+.storyhl span{border-radius:4px;padding:0 2px;transition:background .3s}
+.storyhl .on1{background:#dbeaf8;outline:2px solid #2b6cb0}
+.storyhl .on2{background:#efe4fb;outline:2px solid #6a2fb0}
+/* modal + toast + keypad */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:10px}
+.mbox{background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:96vh;overflow:auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.mbox h3{margin:0 0 8px;color:#1f3a5f}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1f3a5f;color:#fff;padding:10px 18px;border-radius:24px;font-weight:700;z-index:60;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:opacity .6s}
+.kp{max-width:360px}
+.kpd{font-size:1.9rem;font-weight:800;border:2px solid #9aa6b2;border-radius:10px;padding:6px 10px;min-height:56px;text-align:right;background:#fbfcfe;overflow:auto;white-space:nowrap}
+.kpd small{font-size:.5em;color:#66727e}
+.kpg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.kpg button{min-height:56px;border-radius:10px;border:2px solid #b9c3ce;background:#f7f9fb;font-size:1.35rem;font-weight:800}
+.kpg .ok{background:#1d7a35;color:#fff;border-color:#1d7a35}
+.kperr{color:#8c1d18;font-weight:700;min-height:1.3em;margin-top:6px}
+.card{border:3px solid #1f3a5f;border-radius:14px;padding:12px 16px}
+.card table{border-collapse:collapse;width:100%}
+.card td{padding:4px 6px;border-bottom:1px solid #e1e6ec}
+.card td:last-child{text-align:right;font-weight:800}
+.units{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;font-weight:700}
+.units .lb{min-width:96px}
+.units .opt{min-height:44px;padding:4px 12px;font-size:.95rem}
+.units .opt.sel{background:#1f3a5f;color:#fff;border-color:#1f3a5f}
+#print{display:none}
+@media (max-width:900px){
+  main{display:block;height:auto}
+  .col{overflow:visible}
+  #right{margin-top:10px}
+  .eq{font-size:1.8rem}
+}
+@media print{
+  header,main,.modal,.toast{display:none!important}
+  #print{display:block;padding:20px;font-size:14pt}
+  #print .eq{font-size:20pt;justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gas Law Calculations<small>Boyle’s · Charles’ · Gay-Lussac’s Laws Trainer</small></h1>
+  <label class="combo off" id="combo" title="Teacher setting: include the combined gas law">
+    <input type="checkbox" id="comboBox" aria-label="Include the combined gas law">
+    <span class="ct"><b id="comboWord">WITHOUT</b><small>Combined Gas Law</small></span>
+  </label>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main>
+  <section class="col" id="left"></section>
+  <section class="col" id="right"></section>
+</main>
+<div id="print"></div>
+<script>
+/* ===== EQUATION ENGINE (no DOM) ===== */
+var SYMS = {M1:'M₁',M2:'M₂',V1:'V₁',V2:'V₂',T1:'T₁',T2:'T₂',P1:'P₁',P2:'P₂',dT:'ΔT',dH:'ΔH',H:'[H⁺]',OH:'[OH⁻]',PY:'% yield',act:'actual',theo:'theoretical'};
+function sy(s){ return SYMS[s] || s; }
+var SUPM = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':''};
+function sup(s){ return String(s).split('').map(function(c){ return SUPM[c] !== undefined ? SUPM[c] : c; }).join(''); }
+function fmt3(x){
+  if (!isFinite(x) || isNaN(x)) return '—';
+  if (x === 0) return '0';
+  var a = Math.abs(x);
+  if (a >= 1e5 || a < 1e-3){ var p = x.toExponential(2).split('e'); return p[0] + '×10' + sup(parseInt(p[1], 10)); }
+  if (a >= 1000) return String(Math.round(Number(x.toPrecision(3))));
+  var s = Number(x).toPrecision(3);
+  if (s.indexOf('e') >= 0) s = String(Number(s));
+  if (s.indexOf('.') < 0 && /0$/.test(s)) s += '.';
+  return s;
+}
+function r3(x){ return Number(Number(x).toPrecision(3)); }
+
+var CONSTS = {
+  'c:R':  {val:0.0821, txt:'0.0821', unit:'L·atm/mol·K', name:'R'},
+  'c:NA': {val:6.02e23, txt:'6.02×10²³', unit:'/mol', name:'6.02×10²³'},
+  'c:100':{val:100, txt:'100', unit:'', name:'100'},
+  'c:14': {val:14, txt:'14', unit:'', name:'14'}
+};
+
+/* quantity types: name + whether a slot's unit is a ___ unit */
+var QT = {
+  density:'density', mass:'mass', volume:'volume', molarity:'concentration (molarity)', moles:'moles',
+  heat:'energy (heat)', sheat:'specific heat', dtemp:'temperature change', temp:'temperature',
+  pressure:'pressure', mm:'molar mass', count:'particle count', dh:'heat per gram', pct:'percent',
+  ph:'pH', poh:'pOH', conc:'concentration'
+};
+
+/* formulas: L/R templates; vars: sym -> quantity type */
+var FORMULAS = {
+  boyle:    {name:"Boyle’s law", grp:'Gases', L:{k:'f',num:['P1','V1']}, R:{k:'f',num:['P2','V2']}, q:{P1:'pressure',V1:'volume',P2:'pressure',V2:'volume'}},
+  charles:  {name:"Charles’ law", grp:'Gases', L:{k:'f',num:['V1'],den:['T1']}, R:{k:'f',num:['V2'],den:['T2']}, q:{V1:'volume',T1:'temp',V2:'volume',T2:'temp'}},
+  gaylussac:{name:"Gay-Lussac’s law", grp:'Gases', L:{k:'f',num:['P1'],den:['T1']}, R:{k:'f',num:['P2'],den:['T2']}, q:{P1:'pressure',T1:'temp',P2:'pressure',T2:'temp'}},
+  combined: {name:'Combined gas law', grp:'Gases', L:{k:'f',num:['P1','V1'],den:['T1']}, R:{k:'f',num:['P2','V2'],den:['T2']}, q:{P1:'pressure',V1:'volume',T1:'temp',P2:'pressure',V2:'volume',T2:'temp'}}
+};
+function formulaSyms(fid){ return Object.keys(FORMULAS[fid].q); }
+
+function F(num, den){ return {k:'f', num:num || [], den:den || []}; }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+/* build an equation side from a template; mk(sym) -> factor */
+function buildSide(t, mk){
+  if (t.k === 'f') return F(t.num.map(mk), (t.den || []).map(mk));
+  if (t.k === 's') return {k:'s', t:t.t.map(function(p){ return {s:p[0], f:F([mk(p[1])])}; })};
+  if (t.k === 'l') return {k:'l', a:F([mk(t.a)])};
+}
+function constFactor(sym){ var c = CONSTS[sym]; return {id:sym, sym:sym, val:c.val, txt:c.txt, unit:c.unit, k:1}; }
+/* values: sym -> {val,txt,unit}; U = unknown sym */
+function buildEq(fid, values, U){
+  var fo = FORMULAS[fid];
+  function mk(sym){
+    if (sym.indexOf('c:') === 0) return constFactor(sym);
+    if (sym === U) return {id:sym, sym:sym, v:1};
+    var g = values[sym];
+    return {id:sym, sym:sym, val:g.val, txt:g.txt, unit:g.unit};
+  }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+
+/* ---------- searching ---------- */
+function locIn(side, id){
+  if (!side) return null;
+  if (side.k === 'f'){
+    var i;
+    for (i = 0; i < side.num.length; i++) if (side.num[i].id === id) return {w:'num'};
+    for (i = 0; i < side.den.length; i++) if (side.den[i].id === id) return {w:'den'};
+    var all = side.num.concat(side.den);
+    for (i = 0; i < all.length; i++) if (all[i].w && locIn(all[i].w, id)) return {w:'wrap'};
+    return null;
+  }
+  if (side.k === 's'){
+    for (var j = 0; j < side.t.length; j++){
+      var t = side.t[j], r = locIn(t.f, id);
+      if (r){
+        if (r.w === 'num' && t.f.num.length === 1 && t.f.den.length === 0) return {w: t.s > 0 ? 'plus' : 'minus'};
+        return {w:'deep'};
+      }
+    }
+    return null;
+  }
+  if (side.k === 'l') return locIn(side.a, id) ? {w:'log'} : null;
+  if (side.k === 'p') return locIn(side.a, id) ? {w:'pow'} : null;
+  return null;
+}
+function locate(eq, id){
+  var r = locIn(eq.L, id); if (r){ r.sd = 'L'; return r; }
+  r = locIn(eq.R, id); if (r){ r.sd = 'R'; return r; }
+  return null;
+}
+function findFactor(eq, id){
+  var found = null;
+  function walk(side){
+    if (!side || found) return;
+    if (side.k === 'f'){ side.num.concat(side.den).forEach(function(f){ if (found) return; if (f.w) walk(f.w); else if (f.id === id) found = f; }); }
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return found;
+}
+/* every plain factor in order (L then R) */
+function allFactors(eq){
+  var out = [];
+  function walk(side){
+    if (side.k === 'f') side.num.concat(side.den).forEach(function(f){ if (f.w) walk(f.w); else out.push(f); });
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return out;
+}
+function isAlone(side, U){ return side.k === 'f' && side.num.length === 1 && side.den.length === 0 && side.num[0].id === U && !side.num[0].w; }
+function aloneSide(eq, U){ if (isAlone(eq.L, U)) return 'L'; if (isAlone(eq.R, U)) return 'R'; return null; }
+
+/* ---------- applying a move to BOTH sides ---------- */
+function simplify(side){
+  if (side.k === 'f'){
+    side.num = side.num.filter(function(f){ return !f.x; });
+    side.den = side.den.filter(function(f){ return !f.x; });
+    side.num.concat(side.den).forEach(function(f){ delete f.nw; if (f.w) f.w = simplify(f.w); });
+    if (side.num.length === 1 && side.den.length === 0 && side.num[0].w) return side.num[0].w;
+    return side;
+  }
+  if (side.k === 's'){
+    side.t = side.t.filter(function(t){ return !t.x; });
+    side.t.forEach(function(t){ delete t.nw; t.f = simplify(t.f); });
+    if (side.t.length === 1 && side.t[0].s === 1) { var f = side.t[0].f; return f.k ? f : F([{id:'w', w:f}]); }
+    if (side.t.length === 0) return F([{id:'zero', sym:'0', val:0, txt:'0', unit:'', k:1}]);
+    return side;
+  }
+  if (side.k === 'l' || side.k === 'p'){ delete side.nw; side.a = simplify(side.a); return side; }
+  return side;
+}
+function asFrac(S){ return S.k === 'f' ? S : F([{id:'w', w:S}]); }
+/* op: '×','÷','+','−','p10'; ids: factor ids (group = several). Returns {mid,out,cancels} */
+function applyOp(eq, op, ids){
+  var mid = clone(eq), cancels = [], cs = [];
+  ['L','R'].forEach(function(sd){
+    var S = mid[sd];
+    if (op === 'p10'){
+      if (S.k === 'l'){ var a = S.a; a.num.forEach(function(f){ f.nw = 1; }); mid[sd] = a; cancels.push('log'); }
+      else mid[sd] = {k:'p', a:S, nw:1};
+      return;
+    }
+    if (op === '×' || op === '÷'){
+      S = asFrac(S);
+      ids.forEach(function(id){
+        var fac = clone(findFactor(eq, id)); delete fac.x; fac.nw = 1;
+        var same = op === '×' ? S.den : S.num, other = op === '×' ? S.num : S.den;
+        var hit = null;
+        for (var i = 0; i < same.length; i++) if (same[i].id === id && !same[i].x){ hit = same[i]; break; }
+        if (hit){ hit.x = 1; fac.x = 1; cancels.push(id); cs.push(sd); }
+        other.push(fac);
+      });
+      mid[sd] = S;
+      return;
+    }
+    var sg = op === '+' ? 1 : -1;
+    var fac2 = clone(findFactor(eq, ids[0])); delete fac2.x; fac2.nw = 1;
+    if (S.k !== 's') S = {k:'s', t:[{s:1, f:asFrac(S)}]};
+    var hit2 = null;
+    S.t.forEach(function(t){
+      if (!hit2 && !t.x && t.s === -sg && t.f.k === 'f' && t.f.den.length === 0 && t.f.num.length === 1 && t.f.num[0].id === fac2.id) hit2 = t;
+    });
+    var nt = {s:sg, f:F([fac2]), nw:1};
+    if (hit2){ hit2.x = 1; nt.x = 1; cancels.push(fac2.id); cs.push(sd); }
+    S.t.push(nt);
+    mid[sd] = S;
+  });
+  return {mid:mid, out:{L:simplify(clone(mid.L)), R:simplify(clone(mid.R))}, cancels:cancels, cs:cs};
+}
+
+/* ---------- judging a move ---------- */
+function chipLabel(eq, ids){
+  if (ids.length > 1) return '(' + ids.map(function(id){ var f = findFactor(eq, id); return f.v ? sy(f.sym) : f.txt; }).join(' × ') + ')';
+  var f = findFactor(eq, ids[0]);
+  if (!f) return '?';
+  return f.v ? sy(f.sym) : f.txt;
+}
+function judge(eq, op, ids, res, U){
+  var u = sy(U), uL = locate(eq, U), uSd = uL.sd, uSide = eq[uSd];
+  function bad(type, title, why){ return {ok:false, type:type, title:title, why:why}; }
+  if (op === 'p10'){
+    if (res.cancels.indexOf('log') >= 0) return {ok:true};
+    return bad('opposite', 'Mistake: 10⁻ˣ with no −log', '10⁻ˣ only undoes −log, and there is no −log here. Tap ↶ Undo.');
+  }
+  if (uSide.k === 'l') return bad('opposite', 'Mistake: ' + u + ' is stuck inside −log', 'Nothing can reach ' + u + ' until the −log is gone. 10⁻ˣ undoes −log. Tap ↶ Undo and try 10⁻ˣ.');
+  if (res.cancels.indexOf(U) >= 0 && op !== '×'){
+    if (op === '÷') return bad('opposite', 'Mistake: divided by the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+    return bad('opposite', 'Mistake: subtracted the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+  }
+  if (res.cancels.length > 0 && (op === '×' || op === '÷' || res.cs.indexOf(uSd) >= 0)) return {ok:true};
+  var x = chipLabel(eq, ids), L = locate(eq, ids[0]), onU = L && L.sd === uSd, isVar = ids[0] === U && ids.length === 1;
+  var uDen = uSide.k === 'f' && uSide.den.some(function(f){ return f.id === U; });
+  if (uDen && onU && !isVar && L.w === 'num') return bad('nohelp', 'Mistake: work on ' + u + ' first', x + ' is on top, but ' + u + ' is on the bottom. Bring ' + u + ' up first: × ' + u + ' on both sides. Tap ↶ Undo.');
+  var nohelp = bad('nohelp', "Mistake: that move doesn't help", x + " isn't on " + u + "'s side, so that just adds clutter. Tap ↶ Undo and work on what's next to " + u + '.');
+  if (op === '×' || op === '÷'){
+    if (uSide.k === 's'){
+      if (!onU) return nohelp;
+      var und = L.w === 'minus' ? '+' : '−';
+      return bad('opposite', 'Mistake: ' + (op === '×' ? 'multiplied' : 'divided') + ' instead of ' + (und === '−' ? 'subtracting' : 'adding'),
+        x + ' is ' + (L.w === 'minus' ? 'subtracted from ' : 'added to ') + u + ', not multiplied. To undo ' + (und === '−' ? '+' : '−') + ' you ' + und + '. Tap ↶ Undo and try ' + und + ' ' + x + '.');
+    }
+    if (isVar){
+      if (op === '×') return bad('opposite', 'Mistake: ' + u + ' is already on top', u + ' is already on top, so × ' + u + ' just makes ' + u + ' × ' + u + '. Tap ↶ Undo.');
+      return bad('opposite', 'Mistake: divided by ' + u + ' again', u + ' is already on the bottom. To bring it up, × ' + u + '. Tap ↶ Undo and try × ' + u + '.');
+    }
+    if (!onU) return nohelp;
+    if (op === '×') return bad('opposite', 'Mistake: multiplied when you should divide', 'You multiplied by ' + x + ', but ' + x + ' was already multiplying ' + u + '. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+    return bad('opposite', 'Mistake: divided when you should multiply', x + ' was already dividing ' + u + " (it's on the bottom). To undo ÷ you ×. Tap ↶ Undo and try × " + x + '.');
+  }
+  /* + or − */
+  var verb = op === '+' ? 'added' : 'subtracted';
+  if (uSide.k === 's'){
+    if (!onU) return nohelp;
+    if (L.w === 'plus') return bad('opposite', 'Mistake: added when you should subtract', x + ' was already added to ' + u + '. To undo + you −. Tap ↶ Undo and try − ' + x + '.');
+    if (L.w === 'minus') return bad('opposite', 'Mistake: subtracted when you should add', x + ' was already subtracted from ' + u + '. To undo − you +. Tap ↶ Undo and try + ' + x + '.');
+    return nohelp;
+  }
+  if (isVar) return bad('opposite', 'Mistake: ' + verb + ' ' + u, 'Adding or subtracting ' + u + " won't get it alone. Tap ↶ Undo.");
+  if (!onU) return nohelp;
+  if (L.w === 'den') return bad('opposite', 'Mistake: ' + verb + ' instead of multiplying', x + ' is dividing ' + u + ', not added to it. To undo ÷ you ×. Tap ↶ Undo and try × ' + x + '.');
+  return bad('opposite', 'Mistake: ' + verb + ' instead of dividing', x + ' is multiplying ' + u + ', not added to it. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+}
+
+/* ---------- best next move + hint ---------- */
+function nextMove(eq, U){
+  var L = locate(eq, U); if (!L) return null;
+  var S = eq[L.sd];
+  if (isAlone(S, U)) return null;
+  if (S.k === 'l') return {op:'p10', ids:[], why: sy(U) + ' is inside −log. 10⁻ˣ undoes −log, so tap 10⁻ˣ.'};
+  if (S.k === 's'){
+    for (var i = 0; i < S.t.length; i++){
+      var t = S.t[i];
+      if (!(t.f.num.length === 1 && t.f.num[0].id === U)){
+        var f = t.f.num[0], o = t.s > 0 ? '−' : '+';
+        return {op:o, ids:[f.id], why: f.txt + ' is ' + (t.s > 0 ? 'added to ' : 'subtracted from ') + sy(U) + '. To undo ' + (t.s > 0 ? '+ you −' : '− you +') + ': ' + o + ' ' + f.txt + ' on both sides.'};
+      }
+    }
+  }
+  if (S.k === 'f'){
+    if (S.den.some(function(f){ return f.id === U; })) return {op:'×', ids:[U], why: sy(U) + ' is on the bottom. Multiply both sides by ' + sy(U) + ' to bring it up.'};
+    if (S.den.length){ var d = S.den[0]; return {op:'×', ids:[d.id], why: d.txt + ' is dividing ' + sy(U) + " (it's on the bottom). To undo ÷ you ×: multiply both sides by " + d.txt + '.'}; }
+    var o2 = S.num.filter(function(f){ return f.id !== U; });
+    if (o2.length >= 2) return {op:'÷', ids:o2.map(function(f){ return f.id; }), group:true,
+      why: o2.map(function(f){ return f.txt; }).join(' and ') + ' are all multiplying ' + sy(U) + '. Divide both sides by all of them at once (or one at a time).'};
+    if (o2.length === 1) return {op:'÷', ids:[o2[0].id], why: o2[0].txt + ' is multiplying ' + sy(U) + '. To undo × you ÷: divide both sides by ' + o2[0].txt + '.'};
+  }
+  return null;
+}
+
+/* chips available in the solve step */
+function solveChips(eq, U){
+  var out = [], seen = {};
+  allFactors(eq).forEach(function(f){
+    if (seen[f.id]) return; seen[f.id] = 1;
+    if (f.v){ var L = locate(eq, U); if (L && eq[L.sd].k === 'f' && eq[L.sd].den.some(function(d){ return d.id === U; })) out.push({ids:[f.id]}); return; }
+    out.push({ids:[f.id]});
+  });
+  var L2 = locate(eq, U);
+  if (L2){
+    var S = eq[L2.sd];
+    if (S.k === 'f' && !S.den.some(function(d){ return d.id === U; })){
+      var o = S.num.filter(function(f){ return f.id !== U && !f.w; });
+      if (o.length >= 2) out.push({ids:o.map(function(f){ return f.id; }), group:true});
+    }
+  }
+  return out;
+}
+
+/* ---------- evaluating ---------- */
+function ev(S){
+  if (S.k === 'f'){ var v = 1; S.num.forEach(function(f){ v *= fv(f); }); S.den.forEach(function(f){ v /= fv(f); }); return v; }
+  if (S.k === 's') return S.t.reduce(function(a, t){ return a + t.s * ev(t.f); }, 0);
+  if (S.k === 'l') return -Math.log10(ev(S.a));
+  if (S.k === 'p') return Math.pow(10, -ev(S.a));
+}
+function fv(f){ return f.w ? ev(f.w) : f.val; }
+
+/* ---------- plain-text form (for copy/email) ---------- */
+function facText(f, symMode){
+  if (f.w) return '(' + sideText(f.w, symMode) + ')';
+  if (f.v) return sy(f.sym);
+  if (symMode) return f.k ? CONSTS[f.id].name : sy(f.sym);
+  return f.txt;
+}
+function prodText(arr, symMode){ return arr.length ? arr.map(function(f){ return facText(f, symMode); }).join(' × ') : '1'; }
+function sideText(S, symMode){
+  if (S.k === 'f'){
+    if (!S.den.length) return prodText(S.num, symMode);
+    var n = prodText(S.num, symMode), d = prodText(S.den, symMode);
+    if (S.num.length > 1) n = '(' + n + ')';
+    if (S.den.length > 1) d = '(' + d + ')';
+    return n + ' / ' + d;
+  }
+  if (S.k === 's') return S.t.map(function(t, i){ var tx = sideText(t.f, symMode); return i === 0 ? (t.s < 0 ? '−' + tx : tx) : (t.s < 0 ? ' − ' : ' + ') + tx; }).join('');
+  if (S.k === 'l') return '−log(' + sideText(S.a, symMode) + ')';
+  if (S.k === 'p') return '10^−(' + sideText(S.a, symMode) + ')';
+}
+function eqText(eq, symMode){ return sideText(eq.L, symMode) + ' = ' + sideText(eq.R, symMode); }
+
+if (typeof module !== 'undefined' && module.exports) module.exports = {FORMULAS:FORMULAS, CONSTS:CONSTS, buildEq:buildEq, applyOp:applyOp, judge:judge, nextMove:nextMove, solveChips:solveChips, ev:ev, eqText:eqText, aloneSide:aloneSide, fmt3:fmt3, locate:locate, sy:sy};
+
+
+</script>
+<script>
+/* ===== APP ===== */
+(function(){
+'use strict';
+var Q = new URLSearchParams(location.search);
+var UNLOCK = Q.get('unlock') === 'all';
+var EMAIL = Q.get('email') || '';
+var KEY = 'ctn-gas-law-calculations-v1';
+var LEFT = document.getElementById('left'), RIGHT = document.getElementById('right'), TABS = document.getElementById('tabs');
+var COMBO = document.getElementById('combo'), COMBOBOX = document.getElementById('comboBox'), COMBOWORD = document.getElementById('comboWord');
+var PAGE = 'chemistryteacher.net/gas-law-calculations';
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function R(a, b){ return a + Math.random() * (b - a); }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function shuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function G(v, unit, role, clue){ v = r3(v); return {val:v, txt:fmt3(v), unit:unit || '', role:role || '', clue:clue || ''}; }
+function Gc(c, role, clue){ c = Math.round(c); return {val:c, txt:String(c).replace('-', '−'), unit:'°C', c:true, role:role || '', clue:clue || ''}; }
+function T(g){ return g.txt + (g.unit ? ' ' + g.unit : ''); }
+function kOf(g){ return g.c ? g.val + 273 : g.val; }
+function num(o, k){ return o[k] || 0; }
+
+/* ---------- gas law facts ---------- */
+var LAW = {
+  boyle:    {name:'Boyle’s law', changes:'pressure and volume', same:'temperature', sameL:'T', rel:'inverse', x:'P', y:'V'},
+  charles:  {name:'Charles’ law', changes:'volume and temperature', same:'pressure', sameL:'P', rel:'direct', x:'T', y:'V'},
+  gaylussac:{name:'Gay-Lussac’s law', changes:'pressure and temperature', same:'volume', sameL:'V', rel:'direct', x:'T', y:'P'},
+  combined: {name:'Combined gas law', changes:'pressure, volume and temperature', same:'nothing', sameL:'', rel:null}
+};
+var QT = {pressure:'pressure', volume:'volume', temp:'temperature'};
+var QL = {pressure:'P', volume:'V', temp:'T'};
+function lawIds(){ return S.combo ? ['boyle','charles','gaylussac','combined'] : ['boyle','charles','gaylussac']; }
+function lawWhy(id){ var L = LAW[id]; return id === 'combined' ? 'Pressure, volume AND temperature all change, so you need the combined gas law.' : 'The ' + L.changes + ' change and the ' + L.same + ' stays the same, so it’s ' + L.name + '.'; }
+
+/* ---------- state ---------- */
+function fresh(){
+  return {tab:'learn', combo:false,
+    learn:{cur:'laws', done:{}},
+    guided:{cur:'g1', done:{}, b:null},
+    prac:{lvl:'boyle', streak:{}, done:{}, count:{}, b:null, cardShown:0, last:null},
+    free:{step:1, fid:null, U:null, vals:{}, units:{P:'atm', V:'L', T:'K'}, b:null},
+    mis:{law:0, kelvin:0, swap:0, slot:0, opposite:0, nohelp:0, showme:0}};
+}
+var S, hadSave = false;
+try { var raw = localStorage.getItem(KEY); if (raw){ S = JSON.parse(raw); hadSave = true; } } catch(e){}
+if (!S || !S.learn || !S.prac || !S.free || typeof S.learn.done !== 'object' || Array.isArray(S.learn.done)) { S = fresh(); hadSave = false; }
+var CP = Q.get('combined');
+if (CP !== null) S.combo = /^(1|on|yes|true|with)$/i.test(CP);
+[S.guided.b, S.prac.b, S.free.b].forEach(function(b){ if (b){ b.anim = null; b.busy = false; if (b.auto){ b.auto = false; b.dead = true; } } });
+var saveT = null;
+function flush(){ clearTimeout(saveT); try { localStorage.setItem(KEY, JSON.stringify(S, function(k, v){ return k === 'anim' ? undefined : v; })); } catch(e){} }
+function save(){ clearTimeout(saveT); saveT = setTimeout(flush, 250); }
+window.addEventListener('pagehide', flush);
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') flush(); });
+
+/* ---------- equation HTML (same as Solving for a Variable) ---------- */
+function tokHTML(f, o){
+  o = o || {};
+  if (f.slot) return slotHTML(f, o);
+  if (f.w) return '<span class="paren">(</span>' + sideHTML(f.w, o) + '<span class="paren">)</span>';
+  var cls = 'tk' + (f.x ? ' x' : '') + (f.nw ? ' nw' : '');
+  if (f.v) return annotate('<span class="' + cls + '"><span class="tile">' + esc(sy(f.sym)) + '</span></span>', f, o);
+  if (o.sym) return annotate('<span class="' + cls + ' symtk">' + esc(sy(f.sym)) + '</span>', f, o);
+  return '<span class="' + cls + '"><b>' + esc(f.txt) + '</b>' + (f.unit ? '<small>' + esc(f.unit) + '</small>' : '') + '</span>';
+}
+function roleOf(sym){ return /1$/.test(sym) ? 'start' : /2$/.test(sym) ? 'final' : ''; }
+function annotate(html, f, o){
+  if (!o.units || f.k || f.w || o.units[f.sym] === undefined) return html;
+  var unit = o.units[f.sym], role = roleOf(f.sym);
+  if (!unit && !role) return html;
+  var lbl = '<span class="al">' + (role ? '<em>' + role + '</em>' : '') + esc(unit || '') + '</span>';
+  if (o.pos === 'num') return '<span class="ann">' + lbl + '<span class="ar">↓</span>' + html + '</span>';
+  return '<span class="ann">' + html + '<span class="ar">↑</span>' + lbl + '</span>';
+}
+function withPos(o, pos){ var c = {}; for (var k in (o || {})) c[k] = o[k]; c.pos = pos; return c; }
+function prodHTML(arr, o){ return arr.length ? arr.map(function(f){ return tokHTML(f, o); }).join('<span class="times">×</span>') : '<span class="tk"><b>1</b></span>'; }
+function sideHTML(S0, o){
+  if (S0.k === 'f'){
+    if (!S0.den.length) return '<span class="side">' + prodHTML(S0.num, withPos(o, (o && o.pos) || 'flat')) + '</span>';
+    return '<span class="frac"><span class="fn">' + prodHTML(S0.num, withPos(o, 'num')) + '</span><span class="fd">' + prodHTML(S0.den, withPos(o, 'den')) + '</span></span>';
+  }
+  if (S0.k === 's'){
+    return '<span class="side">' + S0.t.map(function(t, i){
+      var sign = i === 0 ? (t.s < 0 ? '−' : '') : (t.s < 0 ? '−' : '+');
+      var inner = (sign ? '<span class="eqs">' + sign + '</span>' : '') + sideHTML(t.f, o);
+      return (t.x || t.nw) ? '<span class="tk' + (t.x ? ' x' : '') + (t.nw ? ' nw' : '') + '">' + inner + '</span>' : inner;
+    }).join('') + '</span>';
+  }
+  return '';
+}
+function eqHTML(eq, o){ return '<div class="eq">' + sideHTML(eq.L, o) + '<span class="eqs">=</span>' + sideHTML(eq.R, o) + '</div>'; }
+function symEq(fid){
+  var fo = FORMULAS[fid];
+  function mk(sym){ return {id:sym, sym:sym, txt:sy(sym)}; }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+function formulaHTML(fid, units){ return eqHTML(symEq(fid), {sym:true, units:units}); }
+function formulaText(fid){ return eqText(symEq(fid), true); }
+function tmplSyms(fid){
+  var fo = FORMULAS[fid];
+  return fo.L.num.concat(fo.L.den || [], fo.R.num, fo.R.den || []);
+}
+function boardUnits(b){
+  var u = {};
+  tmplSyms(b.p.fid).forEach(function(s){ u[s] = s === b.p.U ? (b.p.aunit || '') : (b.p.givens[s] ? b.p.givens[s].unit : ''); });
+  return u;
+}
+function fcardHTML(inner, moved, label){
+  return '<div class="gray fcard' + (moved ? ' moved' : '') + '"><span class="t" style="margin:0">' + (label || (moved ? 'Formula,<br>rearranged' : 'Formula')) + '</span>' +
+    '<div class="eq">' + inner.replace(/^<div class="eq">|<\/div>$/g, '') + '</div></div>';
+}
+
+/* slots for the plug-in step */
+var SLOTCTX = null;
+function slotHTML(f){
+  var c = SLOTCTX, sym = f.sym, U = c.U, filled = c.fills[sym], cls = 'slot', inner = esc(sy(sym));
+  if (filled){
+    cls += ' filled';
+    if (filled === 'U'){ cls += ' unk'; inner = '<span class="tile">' + esc(sy(U)) + '</span>'; }
+    else { var g = c.vals[filled]; inner = '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small style="font-size:.42em;color:#66727e">' + esc(g.unit) + '</small>' : ''); }
+  }
+  if (c.glow === sym) cls += ' glow';
+  if (c.shake === sym) cls += ' shake';
+  if (c.sel && !filled) cls += ' tgt';
+  return '<span class="' + cls + '" role="button" tabindex="0" data-act="' + (c.act || 'slot') + '" data-arg="' + sym + '" aria-label="slot ' + esc(sy(sym)) + '">' + inner + '</span>';
+}
+function templateHTML(fid, ctx){
+  SLOTCTX = ctx;
+  var fo = FORMULAS[fid];
+  function mk(sym){ return {id:sym, sym:sym, slot:1}; }
+  var h = eqHTML({L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)});
+  SLOTCTX = null;
+  return h;
+}
+function chipHTML(g, extra){ return '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small>' + esc(g.unit) + '</small>' : '') + (extra || ''); }
+
+/* ---------- UI helpers ---------- */
+function qbox(head, qtext, hint, ansHTML, fbH, extra){
+  return '<div class="qbox"><div class="qhead">❓ ' + head + '</div><div class="qbody"><div class="qtext">' + qtext + '</div>' +
+    (hint ? '<div class="qhint">' + hint + '</div>' : '') +
+    (ansHTML ? '<div class="ans"><div class="anslbl">✎ YOUR ANSWER</div>' + ansHTML + '</div>' : '') +
+    (fbH || '') + (extra || '') + '</div></div>';
+}
+function fbHTML(fb){
+  if (!fb) return '';
+  var cls = fb.note ? 'note' : fb.ok ? 'good' : 'bad', mk = fb.note ? '' : fb.ok ? '✓ ' : '✗ ';
+  return '<div class="fb ' + cls + '" role="status">' + (fb.title ? '<b>' + mk + esc(fb.title) + '</b>' : '') + (fb.why ? esc(fb.why) : '') + (fb.html || '') + '</div>';
+}
+function toast(msg){
+  var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity = '0'; }, 3200); setTimeout(function(){ t.remove(); }, 4000);
+}
+var modalEl = null;
+function modal(html){
+  closeModal();
+  modalEl = document.createElement('div'); modalEl.className = 'modal';
+  modalEl.innerHTML = '<div class="mbox" role="dialog" aria-modal="true">' + html + '</div>';
+  modalEl.addEventListener('click', function(e){ if (e.target === modalEl) closeModal(); });
+  document.body.appendChild(modalEl);
+}
+function closeModal(){ if (modalEl){ modalEl.remove(); modalEl = null; } }
+function copyText(text, done){
+  function fallback(){
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(true); } catch(e){ done(false); } ta.remove();
+  }
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback); else fallback(); } catch(e){ fallback(); }
+}
+function gmail(subject, body){
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.open(url, '_blank', 'noopener');
+}
+function fitEqs(){
+  document.body.classList.add('measuring');
+  document.querySelectorAll('.eqwrap .eq').forEach(function(el){
+    el.style.fontSize = '';
+    var fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while (el.scrollWidth > el.clientWidth + 1 && fs > 13 && n < 40){ fs -= 1.5; el.style.fontSize = fs + 'px'; n++; }
+  });
+  document.body.classList.remove('measuring');
+}
+
+/* ===================================================================
+   GAS PICTURES (cylinder + piston or sealed can, gauge, thermometer)
+   Any number can be a pair [before, after] to animate (Learn cards).
+   =================================================================== */
+var PTS = (function(){ var a = [], s = 11; function rnd(){ s = (s * 9301 + 49297) % 233280; return s / 233280; } for (var i = 0; i < 14; i++) a.push([rnd(), rnd(), rnd()]); return a; })();
+var KT = '0;.22;.45;.75;1';
+function isP(x){ return Array.isArray(x) && x[0] !== x[1]; }
+function at(x, i){ return Array.isArray(x) ? x[i] : x; }
+function an(attr, a, b){ return '<animate attributeName="' + attr + '" values="' + a + ';' + a + ';' + b + ';' + b + ';' + a + '" keyTimes="' + KT + '" dur="5s" repeatCount="indefinite"/>'; }
+function anT(type, a, b){ return '<animateTransform attributeName="transform" type="' + type + '" values="' + a + ';' + a + ';' + b + ';' + b + ';' + a + '" keyTimes="' + KT + '" dur="5s" repeatCount="indefinite"/>'; }
+function gasSVG(o, w){
+  var can = o.kind === 'can', FL = 172;
+  function gt(v){ return can ? 44 : Math.round(FL - Math.max(.15, Math.min(1, v)) * 122); }
+  var v = can ? 1 : (o.v === undefined ? .6 : o.v), p = o.p === undefined ? .5 : o.p, t = o.t === undefined ? .5 : o.t;
+  var g0 = gt(at(v, 0)), g1 = gt(at(v, 1)), vA = isP(v);
+  var spd = o.speed || (at(t, 1) > .78 ? 'fast' : at(t, 1) < .3 ? 'slow' : '');
+  var s = '<svg viewBox="0 0 205 210" width="' + w + '" class="gsvg ' + spd + '" role="img" aria-label="gas container">';
+  /* thermometer */
+  function th(tt){ return Math.round(10 + Math.max(0, Math.min(1, tt)) * 112); }
+  s += '<rect x="9" y="40" width="12" height="135" rx="6" fill="#fff" stroke="#6a7682" stroke-width="2"/>';
+  if (o.unk && o.unk.T) s += '<text x="15" y="112" text-anchor="middle" font-size="18" font-weight="900" fill="#6a2fb0">?</text>';
+  else { var h0 = th(at(t, 0)), h1 = th(at(t, 1)); s += '<rect x="12" width="6" fill="#d4202a" y="' + (172 - h0) + '" height="' + (h0 + 6) + '">' + (isP(t) ? an('y', 172 - h0, 172 - h1) + an('height', h0 + 6, h1 + 6) : '') + '</rect>'; }
+  s += '<circle cx="15" cy="180" r="9" fill="#d4202a"/><text x="15" y="33" text-anchor="middle" font-size="12" font-weight="800" fill="#5a6672">T</text>';
+  /* gas */
+  s += '<rect x="42" width="106" fill="' + (o.unk && o.unk.V ? '#efe4fb' : '#dbeaf8') + '" y="' + g0 + '" height="' + (FL + 3 - g0) + '">' + (vA ? an('y', g0, g1) + an('height', FL + 3 - g0, FL + 3 - g1) : '') + '</rect>';
+  PTS.forEach(function(q, i){
+    function cy(gtop){ return Math.round(FL - 4 - q[1] * (FL - gtop - 12)); }
+    var c0 = cy(g0), c1 = cy(g1);
+    s += '<circle class="pt" style="animation-delay:-' + (q[2]).toFixed(2) + 's" cx="' + Math.round(50 + q[0] * 90) + '" cy="' + c0 + '" r="3.6" fill="#2b6cb0">' + (vA ? an('cy', c0, c1) : '') + '</circle>';
+  });
+  if (o.unk && o.unk.V) s += '<text x="95" y="' + (g0 + (FL - g0) / 2 + 12) + '" text-anchor="middle" font-size="34" font-weight="900" fill="#6a2fb0">?</text>';
+  /* walls */
+  s += '<path d="M40 30 V176 H150 V30" fill="none" stroke="#1f3a5f" stroke-width="4" stroke-linejoin="round"/>';
+  if (can) s += '<rect x="38" y="36" width="114" height="8" rx="2" fill="#1f3a5f"/><text x="95" y="28" text-anchor="middle" font-size="11" font-weight="800" fill="#5a6672">sealed, can’t stretch</text>';
+  else {
+    var pg = '<rect x="42" y="-10" width="106" height="10" fill="#6a7682"/><rect x="91" y="-38" width="8" height="28" fill="#6a7682"/><rect x="77" y="-43" width="36" height="6" rx="2" fill="#6a7682"/>';
+    var push = o.push;
+    if (push !== undefined){
+      var op0 = at(push, 0), op1 = at(push, 1);
+      pg += '<path d="M95 -46 l-11 -13 h7 v-16 h8 v16 h7 z" fill="#b3141a" opacity="' + op0 + '">' + (isP(push) ? an('opacity', op0, op1) : '') + '</path>';
+    }
+    s += '<g transform="translate(0 ' + g0 + ')"' + (o.unk && o.unk.V ? ' opacity=".35" stroke="#6a2fb0" stroke-dasharray="4 3"' : '') + '>' + (vA ? anT('translate', '0 ' + g0, '0 ' + g1) : '') + pg + '</g>';
+  }
+  /* gauge */
+  s += '<line x1="150" y1="76" x2="164" y2="76" stroke="#1f3a5f" stroke-width="4"/><circle cx="180" cy="76" r="19" fill="#fff" stroke="#1f3a5f" stroke-width="3"/>';
+  [-70, -35, 0, 35, 70].forEach(function(a){ var r1 = 15, r2 = 18, rad = (a - 90) * Math.PI / 180; s += '<line x1="' + (180 + r1 * Math.cos(rad)).toFixed(1) + '" y1="' + (76 + r1 * Math.sin(rad)).toFixed(1) + '" x2="' + (180 + r2 * Math.cos(rad)).toFixed(1) + '" y2="' + (76 + r2 * Math.sin(rad)).toFixed(1) + '" stroke="#9aa6b2" stroke-width="1.5"/>'; });
+  if (o.unk && o.unk.P) s += '<text x="180" y="83" text-anchor="middle" font-size="18" font-weight="900" fill="#6a2fb0">?</text>';
+  else { var a0 = Math.round(-75 + at(p, 0) * 150), a1 = Math.round(-75 + at(p, 1) * 150); s += '<line x1="180" y1="76" x2="180" y2="61" stroke="#b3141a" stroke-width="3" stroke-linecap="round" transform="rotate(' + a0 + ' 180 76)">' + (isP(p) ? anT('rotate', a0 + ' 180 76', a1 + ' 180 76') : '') + '</line><circle cx="180" cy="76" r="2.5" fill="#b3141a"/>'; }
+  s += '<text x="180" y="108" text-anchor="middle" font-size="12" font-weight="800" fill="#5a6672">P</text>';
+  /* heat / cold */
+  if (o.hot !== undefined){
+    var f0 = at(o.hot, 0), f1 = at(o.hot, 1);
+    s += '<g opacity="' + f0 + '">' + (isP(o.hot) ? an('opacity', f0, f1) : '') + '<path d="M95 206 C76 199 82 188 88 180 C90 187 93 188 95 178 C99 186 104 186 106 180 C111 189 114 199 95 206Z" fill="#f29d12"/><path d="M95 205 C87 201 89 194 95 189 C101 194 103 201 95 205Z" fill="#ffd84a"/></g>';
+  }
+  if (o.cold !== undefined){
+    var c0 = at(o.cold, 0), c1 = at(o.cold, 1);
+    s += '<text x="95" y="205" text-anchor="middle" font-size="24" fill="#2b6cb0" opacity="' + c0 + '">' + (isP(o.cold) ? an('opacity', c0, c1) : '') + '❄</text>';
+  }
+  return s + '</svg>';
+}
+/* Learn law cards (animated) */
+function lawCards(rel){
+  var C = [
+    {id:'boyle', o:{kind:'piston', v:[.9, .42], p:[.25, .78], t:.5, push:[0, 1]}, same:'T stays the same', r:'P ↑ → V ↓', rl:'inverse'},
+    {id:'charles', o:{kind:'piston', v:[.45, .9], p:.5, t:[.2, .85], hot:[0, 1]}, same:'P stays the same', r:'T ↑ → V ↑', rl:'direct'},
+    {id:'gaylussac', o:{kind:'can', p:[.25, .8], t:[.2, .85], hot:[0, 1]}, same:'V stays the same', r:'T ↑ → P ↑', rl:'direct'}
+  ];
+  return '<div class="lcards">' + C.map(function(c){
+    return '<div class="lcard"><div class="h">' + esc(LAW[c.id].name) + '</div>' + gasSVG(c.o, 150) + '<div class="mini">' + formulaHTML(c.id) + '</div>' +
+      '<div class="same">' + c.same + '</div>' + (rel ? '<div class="rel"><small>' + c.rl + '</small>' + c.r + '</div>' : '') + '</div>';
+  }).join('') + '</div>';
+}
+/* before -> after strip for a problem */
+function gasVals(sp){
+  var fq = FORMULAS[sp.fid].q, out = {};
+  ['P','V','T'].forEach(function(L){
+    var s1 = L + '1', s2 = L + '2';
+    if (!fq[s1]){ out[L] = null; return; }
+    function val(s){ if (s === sp.U) return sp.ans === null || sp.ans === undefined ? null : sp.ans; var g = sp.givens[s]; return g ? (L === 'T' ? kOf(g) : g.val) : null; }
+    out[L] = [val(s1), val(s2)];
+  });
+  return out;
+}
+function stripHTML(sp, w){
+  var fid = sp.fid, v = gasVals(sp), U = sp.U;
+  function fr(L){
+    var a = v[L];
+    if (!a) return [.6, .6];
+    if (a[0] === null || a[1] === null){ var k = a[0] === null ? a[1] : a[0]; return [.6, .6]; }
+    var m = Math.max(a[0], a[1]); return [Math.max(.18, .9 * a[0] / m), Math.max(.18, .9 * a[1] / m)];
+  }
+  var P = fr('P'), V = fr('V'), Tt = fr('T'), heat = null;
+  if (v.T && v.T[0] !== null && v.T[1] !== null && v.T[0] !== v.T[1]) heat = v.T[1] > v.T[0] ? 'hot' : 'cold';
+  function card(i){
+    var unk = {}, n = i + 1;
+    ['P','V','T'].forEach(function(L){ if (U === L + n && (sp.ans === null || sp.ans === undefined)) unk[L] = true; });
+    var o = {kind: fid === 'gaylussac' ? 'can' : 'piston', v:V[i], p:P[i], t:Tt[i], unk:unk};
+    if (i === 1 && heat === 'hot') o.hot = 1;
+    if (i === 1 && heat === 'cold') o.cold = 1;
+    if (i === 1 && fid !== 'gaylussac' && v.P && v.P[0] !== null && v.P[1] !== null && v.P[1] > v.P[0] * 1.02) o.push = 1;
+    var lines = ['P','V','T'].map(function(L){
+      var s = L + n;
+      if (!v[L]) return '<div class="sm">' + L + ' stays the same</div>';
+      if (sp.show && sp.show.indexOf(s) < 0) return '<div class="sm">' + esc(sy(s)) + ' = …</div>';
+      if (s === U){
+        if (sp.ans === null || sp.ans === undefined) return '<div><span class="tile">' + esc(sy(s)) + '</span> = ?</div>';
+        return '<div>' + esc(sy(s)) + ' = <span style="color:#6a2fb0">' + esc(fmt3(sp.ans)) + ' ' + esc(sp.aunit || '') + '</span></div>';
+      }
+      var g = sp.givens[s];
+      return g ? '<div>' + esc(sy(s)) + ' = ' + esc(T(g)) + '</div>' : '<div class="sm">' + esc(sy(s)) + '</div>';
+    }).join('');
+    return '<div class="gs' + (i ? ' after' : '') + '"><div class="gst">' + (i ? 'After · 2 · final' : 'Before · 1 · start') + '</div>' + gasSVG(o, w) + '<div class="gl">' + lines + '</div></div>';
+  }
+  return '<div class="strip">' + card(0) + '<div class="garr" aria-hidden="true">➜</div>' + card(1) + '</div>';
+}
+function boardSpec(b, show){ return {fid:b.p.fid, U:b.p.U, givens:b.p.givens, ans: b.phase === 'done' ? b.ans : null, aunit:b.p.aunit, show:show}; }
+/* °C ⇄ K thermometer */
+function thermoScale(c, w){
+  var top = Math.max(400, c === undefined || c === null ? 0 : c + 273 + 40);
+  function y(k){ return Math.round(262 - k * 222 / top); }
+  var s = '<svg viewBox="0 0 300 300" width="' + (w || 260) + '" class="gsvg" role="img" aria-label="Celsius and Kelvin scales">';
+  s += '<text x="60" y="16" text-anchor="end" font-size="15" font-weight="900" fill="#1f3a5f">°C</text><text x="240" y="16" font-size="15" font-weight="900" fill="#1f3a5f">K</text>';
+  s += '<rect x="136" y="22" width="28" height="248" rx="14" fill="#fff" stroke="#1f3a5f" stroke-width="3"/>';
+  var hk = c === undefined || c === null ? 298 : c + 273;
+  s += '<rect x="143" y="' + y(Math.max(hk, 0)) + '" width="14" height="' + (282 - y(Math.max(hk, 0))) + '" fill="#d4202a"/><circle cx="150" cy="276" r="20" fill="#d4202a"/>';
+  [[0, '−273', '0'], [273, '0', '273'], [373, '100', '373']].forEach(function(t){
+    if (c !== undefined && c !== null && Math.abs(t[0] - hk) < 36) return;
+    s += '<line x1="128" y1="' + y(t[0]) + '" x2="172" y2="' + y(t[0]) + '" stroke="#5a6672" stroke-width="2"/>' +
+      '<text x="122" y="' + (y(t[0]) + 5) + '" text-anchor="end" font-size="15" font-weight="700" fill="#3b4652">' + t[1] + ' °C</text>' +
+      '<text x="178" y="' + (y(t[0]) + 5) + '" font-size="15" font-weight="700" fill="#3b4652">' + t[2] + ' K</text>';
+  });
+  s += '<text x="178" y="' + (y(0) + 20) + '" font-size="11" fill="#5a6672">coldest possible</text>';
+  if (c !== undefined && c !== null){
+    var yy = y(hk);
+    s += '<line x1="118" y1="' + yy + '" x2="182" y2="' + yy + '" stroke="#f29d12" stroke-width="4"/>' +
+      '<text x="112" y="' + (yy + 6) + '" text-anchor="end" font-size="19" font-weight="900" fill="#c56a00">' + String(c).replace('-', '−') + ' °C</text>' +
+      '<text x="188" y="' + (yy + 6) + '" font-size="19" font-weight="900" fill="#c56a00">' + hk + ' K</text>';
+  }
+  return s + '</svg>';
+}
+
+/* ---------- progress ---------- */
+function visL(){ return STOPS.filter(function(x){ return !x.combo || S.combo; }); }
+function visG(){ return GP.filter(function(x){ return !x.combo || S.combo; }); }
+function visP(){ return LEVELS.filter(function(x){ return !x.combo || S.combo; }); }
+function ids(list){ return list.map(function(x){ return x.id; }); }
+function cntDone(list, done){ return list.reduce(function(n, x){ return n + (done[x.id] ? 1 : 0); }, 0); }
+function pct(which){
+  if (which === 'learn'){ var l = visL(); return Math.round(cntDone(l, S.learn.done) / l.length * 100); }
+  if (which === 'guided'){ var g = visG(); return Math.round(cntDone(g, S.guided.done) / g.length * 100); }
+  if (which === 'prac'){ var p = visP(); return Math.round(cntDone(p, S.prac.done) / p.length * 100); }
+  return 0;
+}
+/* once a part unlocks it stays unlocked (turning the combined gas law on adds new items but doesn't lock anyone out) */
+function unlocked(t){
+  if (UNLOCK || t === 'learn' || t === 'free') return true;
+  S.unl = S.unl || {};
+  if (S.unl[t]) return true;
+  var ok = t === 'guided' ? pct('learn') === 100 : pct('guided') === 100;
+  if (ok) S.unl[t] = 1;
+  return ok;
+}
+function firstOpen(list, done){ for (var i = 0; i < list.length; i++) if (!done[list[i].id]) return list[i].id; return list[list.length - 1].id; }
+function ensureValid(){
+  if (ids(visL()).indexOf(S.learn.cur) < 0) S.learn.cur = firstOpen(visL(), S.learn.done);
+  if (ids(visG()).indexOf(S.guided.cur) < 0){ S.guided.cur = firstOpen(visG(), S.guided.done); S.guided.b = null; }
+  if (ids(visP()).indexOf(S.prac.lvl) < 0){ S.prac.lvl = firstOpen(visP(), S.prac.done); S.prac.b = null; }
+  if (!S.combo && S.prac.b && S.prac.b.p.fid === 'combined') S.prac.b = null;
+  if (!S.combo && S.free.fid === 'combined') freeReset(1);
+}
+var TABDEF = [['learn','1 Learn'],['guided','2 Guided'],['prac','3 Practice'],['free','4 Free Form']];
+var LOCKMSG = {guided:'Finish Learn first', prac:'Finish Guided first'};
+function renderTabs(){
+  TABS.innerHTML = TABDEF.map(function(d){
+    var t = d[0], on = S.tab === t, lk = !unlocked(t), p = t === 'free' ? null : pct(t);
+    var cls = 'tab' + (on ? ' on' : '') + (p === 100 ? ' full' : '') + (lk ? ' lock' : '');
+    var sub = lk ? '🔒 ' + LOCKMSG[t] : (p === null ? 'always open' : (p === 100 ? '✓ 100%' : p + '%'));
+    return '<button class="' + cls + '" data-act="tab" data-arg="' + t + '"' + (on ? ' aria-current="page"' : '') + '>' + d[1] + '<small>' + sub + '</small></button>';
+  }).join('');
+  COMBOBOX.checked = !!S.combo;
+  COMBO.className = 'combo ' + (S.combo ? 'on' : 'off');
+  COMBOWORD.textContent = S.combo ? '✓ WITH' : 'WITHOUT';
+}
+
+/* ===================================================================
+   PART 1: LEARN
+   =================================================================== */
+function fr(n, d){ return '<span class="frac"><span class="fn">' + n + '</span><span class="fd">' + d + '</span></span>'; }
+function tl(s){ return '<span class="tile">' + s + '</span>'; }
+function sv(s){ return '<span class="symtk">' + s + '</span>'; }
+function nu(n, u){ return '<span class="tk"><b>' + n + '</b>' + (u ? '<small>' + u + '</small>' : '') + '</span>'; }
+function X(s){ return '<span class="tk x">' + s + '</span>'; }
+function NW(s){ return '<span class="tk nw">' + s + '</span>'; }
+var TM = '<span class="times">×</span>';
+function E(l, r){ return '<div class="eq">' + l + '<span class="eqs">=</span>' + r + '</div>'; }
+function inl(h){ return '<span style="display:inline-flex;vertical-align:middle;font-size:.9em">' + h + '</span>'; }
+
+var LV = {pick:null, wrong:null, frame:0, timer:null, hold:0};
+var SIDES_STORY = [['A balloon ', 0], ['holds 4.00 L', 'V1'], [' of air ', 0], ['at 1.00 atm', 'P1'], ['. It is ', 0], ['squeezed until the pressure is 2.50 atm', 'P2'], ['. The temperature stays the same. What is the ', 0], ['new volume?', 'V2']];
+var SIDES_FR = [
+  {cap:'Before the change = 1 (start). After the change = 2 (final).', show:[]},
+  {cap:'“holds 4.00 L” is before the change → V₁', show:['V1']},
+  {cap:'“at 1.00 atm” is also before → P₁', show:['V1','P1']},
+  {cap:'“squeezed until … 2.50 atm” is after → P₂', show:['V1','P1','P2']},
+  {cap:'“new volume” is after → V₂ is the unknown', show:['V1','P1','P2','V2']}];
+var STOPS = [
+  {id:'laws', title:'Three laws: what stays the same?',
+   teach:'Each gas law has <b>two things that change</b> and <b>one that stays the same</b>. Find what stays the same and you know which law to use.',
+   q:'Pressure and volume change. <span class="kw">Temperature stays the same</span>. Which law?', hint:'Look at the cards: which one keeps T the same?',
+   opts:[
+     {lbl:'Boyle’s law', ok:1, why:'Boyle’s law is pressure and volume, with the temperature staying the same.'},
+     {lbl:'Charles’ law', t:'Mistake: wrong law', why:'Charles’ law is volume and temperature. There, the pressure stays the same.'},
+     {lbl:'Gay-Lussac’s law', t:'Mistake: wrong law', why:'Gay-Lussac’s law is pressure and temperature. There, the volume stays the same (a sealed can).'}],
+   take:'What stays the same tells you the law.', vis:function(){ return '<div class="vis">' + lawCards(false) + '<div class="qhint">Each picture repeats: watch what changes and what doesn’t.</div></div>'; }},
+  {id:'sides', title:'1 = start, 2 = final',
+   teach:'Every gas law has a <b>1</b> side and a <b>2</b> side. <b>1 = before</b> the change (start). <b>2 = after</b> the change (final). Clue words: “at first”, “holds”, “starts at” → <b>1</b>. “changed to”, “heated to”, “until”, “new” → <b>2</b>.',
+   q:'A gas at 2.00 atm is compressed <span class="kw">until</span> its pressure is 5.00 atm. Which slot gets <b>5.00 atm</b>?', hint:'Is 5.00 atm before or after the change?',
+   opts:[
+     {lbl:'P₁ (start)', t:'Mistake: mixed up start and final', why:'“until its pressure is 5.00 atm” is where it ENDS. After the change = 2.'},
+     {lbl:'P₂ (final)', ok:1, why:'“until” tells you 5.00 atm is after the change, so it goes in P₂.'},
+     {lbl:'V₂ (final)', t:'Mistake: wrong slot', why:'atm is a pressure unit, so it goes in a P slot, not a V slot.'}],
+   take:'1 = before (start), 2 = after (final).', nframes:SIDES_FR.length,
+   custom:function(k){
+     var f = SIDES_FR[k], lastSym = f.show[f.show.length - 1];
+     var story = SIDES_STORY.map(function(p){ var on = p[1] && f.show.indexOf(p[1]) >= 0; return '<span class="' + (on ? (/1$/.test(p[1]) ? 'on1' : 'on2') : '') + '">' + esc(p[0]) + '</span>'; }).join('');
+     var sp = {fid:'boyle', U:'V2', givens:{V1:G(4, 'L'), P1:G(1, 'atm'), P2:G(2.5, 'atm')}, ans:null, show:f.show};
+     return '<div class="vis"><div class="frame">' + esc(f.cap) + '</div><div class="gray storyhl">' + story + '</div>' + stripHTML(sp, 150) + dotsHTML(SIDES_FR.length) + '</div>';
+   }},
+  {id:'kelvin', title:'Temperature must be in Kelvin',
+   teach:'Gas laws only work in <b>Kelvin (K)</b>: <b>K = °C + 273</b>. 0 K is the coldest anything can get, so doubling the Kelvin really doubles the temperature. (Pressure and volume can be any unit, as long as 1 and 2 use the <b>same</b> unit.)',
+   q:'Change <span class="kw">27 °C</span> to Kelvin.', hint:'K = °C + 273',
+   opts:[
+     {lbl:'300 K', ok:1, why:'27 + 273 = 300 K.'},
+     {lbl:'−246 K', t:'Mistake: subtracted 273', why:'Kelvin is never negative. To go from °C to K, ADD 273: 27 + 273 = 300 K.'},
+     {lbl:'27 K', t:'Mistake: didn’t convert', why:'27 K would be colder than anything on Earth. Add 273: 300 K.'}],
+   take:'K = °C + 273. Always use K in gas laws.',
+   vis:function(){ return '<div class="vis">' + thermoScale(27, 250) + '<div class="vcard ok"><div class="h">°C → K: add 273</div><div class="eq" style="font-size:1.5rem">' + nu('27', '°C') + '<span class="eqs">+</span>' + nu('273') + '<span class="eqs">=</span>' + nu('300', 'K') + '</div></div></div>'; }},
+  {id:'dir', title:'Direct or inverse?',
+   teach:'<b>Boyle’s</b> is <b>inverse</b>: squeeze it (P ↑) and V ↓. <b>Charles’</b> and <b>Gay-Lussac’s</b> are <b>direct</b>: heat it (T ↑) and V ↑ or P ↑. Use this to check that your answer makes sense.',
+   q:'Charles’ law: a balloon is <span class="kw">cooled</span> (T ↓). Its volume…', hint:'Charles’ law is direct: both go the same way.',
+   opts:[
+     {lbl:'gets bigger', t:'Mistake: backwards', why:'Charles’ law is direct. T goes down, so V goes down too.'},
+     {lbl:'gets smaller', ok:1, why:'Direct: T ↓ so V ↓. A balloon in the freezer shrinks.'},
+     {lbl:'stays the same', t:'Mistake: wrong thing stays the same', why:'In Charles’ law the PRESSURE stays the same. Volume changes with temperature.'}],
+   take:'Boyle’s: inverse. Charles’ and Gay-Lussac’s: direct.', vis:function(){ return '<div class="vis">' + lawCards(true) + '</div>'; }},
+  {id:'solve', title:'Plug in, then get it alone',
+   teach:'<b>Step 1:</b> plug each number into its slot. <b>Step 2:</b> get the unknown alone by doing the <b>same thing to both sides</b>. × and ÷ undo each other.',
+   q:'In 1.00 × 4.00 = 2.50 × V₂, what <span class="kw">undoes</span> the × 2.50?',
+   qh:'In ' + inl(E(nu('1.00') + TM + nu('4.00'), nu('2.50') + TM + tl('V₂'))) + ', what <span class="kw">undoes</span> the × 2.50?', hint:'2.50 is multiplying V₂.',
+   opts:[
+     {lbl:'÷ 2.50 both sides', ok:1, why:'÷ undoes ×. The 2.50s cancel and V₂ is alone.'},
+     {lbl:'× 2.50 both sides', t:'Mistake: multiplied when you should divide', why:'2.50 is already multiplying V₂. Multiplying again just stacks another 2.50.'},
+     {lbl:'− 2.50 both sides', t:'Mistake: subtracted instead of dividing', why:'2.50 is multiplied, not added. The opposite of × is ÷.'}],
+   take:'Plug in, then undo × with ÷ on both sides.',
+   frames:[
+     {cap:'Boyle’s law', l:sv('P₁') + TM + sv('V₁'), r:sv('P₂') + TM + tl('V₂')},
+     {cap:'Step 1: plug in the numbers', l:nu('1.00', 'atm') + TM + nu('4.00', 'L'), r:nu('2.50', 'atm') + TM + tl('V₂')},
+     {cap:'Step 2: ÷ 2.50 on BOTH sides: the 2.50s on the right cancel', l:fr(nu('1.00') + TM + nu('4.00'), NW(nu('2.50'))), r:fr(X(nu('2.50')) + TM + tl('V₂'), X(nu('2.50')))},
+     {cap:'V₂ is alone! ✓', l:tl('V₂'), r:fr(nu('1.00') + TM + nu('4.00'), nu('2.50'))},
+     {cap:'= Calculate: P went ↑, V went ↓. Inverse, so it makes sense ✓', l:tl('V₂'), r:nu('1.60', 'L')}]},
+  {id:'bottom', title:'Unknown on the BOTTOM',
+   teach:'In Charles’ and Gay-Lussac’s law, T is on the bottom. If T is the unknown, first <b>× by it</b> to bring it up. Then undo the rest.',
+   q:'In 2.00 / 300 = 3.00 / T₂, what’s the <span class="kw">first move</span>?',
+   qh:'In ' + inl(E(fr(nu('2.00'), nu('300')), fr(nu('3.00'), tl('T₂')))) + ', what’s the <span class="kw">first move</span>?', hint:'Where is T₂? On top or on the bottom?',
+   opts:[
+     {lbl:'× T₂ both sides', ok:1, why:'T₂ is on the bottom, so × T₂ brings it up.'},
+     {lbl:'÷ T₂ both sides', t:'Mistake: divided when you should multiply', why:'T₂ is already dividing (it’s on the bottom). To undo ÷ you ×.'},
+     {lbl:'× 3.00 both sides', t:'Mistake: worked on the wrong number', why:'Work on T₂ first: it’s on the bottom, so × T₂.'}],
+   take:'Unknown on the bottom? × by it first.',
+   frames:[
+     {cap:'Charles’ law: T₂ is on the bottom', l:fr(nu('2.00', 'L'), nu('300', 'K')), r:fr(nu('3.00', 'L'), tl('T₂'))},
+     {cap:'× T₂ on BOTH sides: the T₂s on the right cancel', l:fr(nu('2.00') + TM + NW(tl('T₂')), nu('300')), r:fr(nu('3.00') + TM + X(tl('T₂')), X(tl('T₂')))},
+     {cap:'× 300 on BOTH sides: the 300s on the left cancel', l:fr(nu('2.00') + TM + tl('T₂') + TM + X(nu('300')), X(nu('300'))), r:nu('3.00') + TM + NW(nu('300'))},
+     {cap:'÷ 2.00 on BOTH sides: the 2.00s cancel', l:fr(X(nu('2.00')) + TM + tl('T₂'), X(nu('2.00'))), r:fr(nu('3.00') + TM + nu('300'), NW(nu('2.00')))},
+     {cap:'T₂ is alone! = Calculate: 450 K. V went ↑ so T went ↑ ✓', l:tl('T₂'), r:nu('450', 'K')}]},
+  {id:'combined', combo:true, title:'The combined gas law',
+   teach:'When <b>P, V and T all change</b>, use the combined gas law. Cross out the one that stays the same and you get the other three laws back.',
+   q:'Cross out <span class="kw">V</span> in the combined gas law. Which law is left?', hint:'Watch the animation: what’s left when V is crossed out?',
+   opts:[
+     {lbl:'Boyle’s law', t:'Mistake: wrong law', why:'Boyle’s law is what’s left when you cross out T.'},
+     {lbl:'Charles’ law', t:'Mistake: wrong law', why:'Charles’ law is what’s left when you cross out P.'},
+     {lbl:'Gay-Lussac’s law', ok:1, why:'Cross out V and P₁/T₁ = P₂/T₂ is left: Gay-Lussac’s law.'}],
+   take:'P, V and T all change → combined gas law.',
+   frames:[
+     {cap:'Combined gas law: P, V and T all change', l:fr(sv('P₁') + TM + sv('V₁'), sv('T₁')), r:fr(sv('P₂') + TM + sv('V₂'), sv('T₂'))},
+     {cap:'T stays the same? Cross out T → Boyle’s law', l:fr(sv('P₁') + TM + sv('V₁'), X(sv('T₁'))), r:fr(sv('P₂') + TM + sv('V₂'), X(sv('T₂')))},
+     {cap:'P stays the same? Cross out P → Charles’ law', l:fr(X(sv('P₁')) + TM + sv('V₁'), sv('T₁')), r:fr(X(sv('P₂')) + TM + sv('V₂'), sv('T₂'))},
+     {cap:'V stays the same? Cross out V → Gay-Lussac’s law', l:fr(sv('P₁') + TM + X(sv('V₁')), sv('T₁')), r:fr(sv('P₂') + TM + X(sv('V₂')), sv('T₂'))}]},
+  {id:'mistakes', title:'Common mistakes',
+   teach:'Watch out for these four.',
+   q:'A gas is at 27 °C. A student put <b>27</b> into T₁. <span class="kw">What’s the mistake?</span>', hint:'Look at the first row of the table.',
+   opts:[
+     {lbl:'Forgot to change to Kelvin', ok:1, why:'27 °C must be changed to 300 K (27 + 273) before it goes in the formula.'},
+     {lbl:'Mixed up 1 and 2', t:'Not this one', why:'27 °C is the starting temperature, so T₁ is the right slot. The problem is the unit: it must be K.'},
+     {lbl:'Divided upside down', t:'Not this one', why:'Nothing has been divided yet. The problem is 27 °C: change it to 300 K first.'}],
+   take:'Learn complete!',
+   vis:function(){
+     function rw(name, w, r){ return '<tr><td><b>' + name + '</b></td><td class="w">✗ ' + w + '</td><td class="r">✓ ' + r + '</td></tr>'; }
+     return '<div class="vis"><table class="mtab"><tr><th>Mistake</th><th>Wrong</th><th>Right</th></tr>' +
+       rw('Forgot Kelvin', '27 °C goes in as 27', '27 + 273 = 300 K') +
+       rw('Mixed up 1 and 2', '“squeezed until 2.50 atm” in P₁', '2.50 atm in P₂ (after)') +
+       rw('Wrong law', 'Charles’ for a P and V problem', 'Boyle’s: P and V change, T same') +
+       rw('Divided upside down', E(tl('V₂'), fr(sv('P₂'), sv('P₁') + TM + sv('V₁'))), E(tl('V₂'), fr(sv('P₁') + TM + sv('V₁'), sv('P₂')))) + '</table></div>'; }}
+];
+function stopById(id){ for (var i = 0; i < STOPS.length; i++) if (STOPS[i].id === id) return STOPS[i]; return STOPS[0]; }
+function dotsHTML(n){ return '<div class="row" style="justify-content:center;gap:6px" aria-hidden="true">' + Array.apply(null, Array(n)).map(function(x, k){ return '<span class="dot' + (k <= LV.frame ? ' on' : '') + '"></span>'; }).join('') + '</div><div class="qhint">The animation repeats. Watch it as many times as you need.</div>'; }
+function framesHTML(stop){
+  var f = stop.frames[Math.min(LV.frame, stop.frames.length - 1)];
+  return '<div class="vis"><div class="frame">' + f.cap + '</div><div class="eqwrap" style="flex:0 0 auto;min-height:150px;width:100%">' + E(f.l, f.r) + '</div>' + dotsHTML(stop.frames.length) + '</div>';
+}
+function nFrames(st){ return st.nframes || (st.frames ? st.frames.length : 0); }
+function playFrames(){
+  clearInterval(LV.timer); LV.frame = 0; LV.hold = 0;
+  var stop = stopById(S.learn.cur), n = nFrames(stop);
+  if (!n) return;
+  LV.timer = setInterval(function(){
+    if (S.tab !== 'learn' || S.learn.cur !== stop.id){ clearInterval(LV.timer); return; }
+    if (LV.frame >= n - 1){ if (++LV.hold < 2) return; LV.hold = 0; LV.frame = 0; }
+    else LV.frame++;
+    renderLearnRight(); fitEqs();
+  }, 1800);
+}
+function renderLearnRight(){
+  var st = stopById(S.learn.cur), body;
+  if (st.custom) body = st.custom(Math.min(LV.frame, st.nframes - 1));
+  else if (st.frames) body = framesHTML(st);
+  else body = st.vis();
+  RIGHT.innerHTML = '<div class="panel"><div class="boardt"><h2>' + esc(st.title) + '</h2></div>' + body + '</div>';
+}
+function renderLearn(){
+  var list = visL(), i = ids(list).indexOf(S.learn.cur), st = list[i], done = S.learn.done[st.id];
+  var pills = '<div class="pills"><span class="lbl">Learn</span>' + list.map(function(s, k){
+    var en = UNLOCK || k === 0 || S.learn.done[list[k - 1].id] || S.learn.done[s.id];
+    return '<button class="pill' + (k === i ? ' cur' : '') + (S.learn.done[s.id] ? ' done' : '') + '" data-act="lstop" data-arg="' + s.id + '"' + (en ? '' : ' disabled') + '>' + (S.learn.done[s.id] ? '✓' : k + 1) + '</button>';
+  }).join('') + '</div>';
+  var prev = i > 0 && S.learn.done[list[i - 1].id] ? '<div class="doneline">✓ ' + esc(list[i - 1].take) + '</div>' : '';
+  var opts = '<div class="row">' + st.opts.map(function(o, k){
+    var cls = 'opt' + ((done && o.ok) || LV.pick === k ? ' right' : '') + (LV.wrong === k ? ' wrong' : '');
+    var mark = cls.indexOf('right') >= 0 ? '✓ ' : cls.indexOf('wrong') >= 0 ? '✗ ' : '';
+    return '<button class="' + cls + '" data-act="lopt" data-arg="' + k + '"' + (done ? ' disabled' : '') + '>' + mark + esc(o.lbl) + '</button>';
+  }).join('') + '</div>';
+  var fb = null;
+  if (LV.wrong !== null && !done){ var w = st.opts[LV.wrong]; fb = {ok:false, title:w.t, why:w.why}; }
+  if (done){ var r = st.opts.filter(function(o){ return o.ok; })[0]; fb = {ok:true, title:'Right!', why:r.why}; }
+  var last = i === list.length - 1;
+  var next = done ? '<div class="nextrow"><button class="big" data-act="lnext">' + (last ? 'Go to Guided ▶' : 'Next ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + prev + '<p class="teach">' + st.teach + '</p>' + qbox('QUESTION ' + (i + 1) + ' OF ' + list.length, st.qh || st.q, st.hint, opts, fbHTML(fb)) + next;
+  renderLearnRight();
+}
+
+/* ===================================================================
+   SHARED BOARD (Guided, Practice, Free Form)
+   steps: [law] → [kelvin] → plug → solve
+   =================================================================== */
+var STEPNAME = {law:'Which law?', kelvin:'Kelvin', plug:'Plug in', solve:'Solve'};
+function newBoard(mode, p){
+  if (!p.g0) p.g0 = clone(p.givens); else p.givens = clone(p.g0);
+  var steps = [];
+  if (p.askLaw) steps.push('law');
+  if (Object.keys(p.givens).some(function(s){ return p.givens[s].c; })) steps.push('kelvin');
+  if (mode !== 'free') steps.push('plug');
+  steps.push('solve');
+  var b = {mode:mode, p:p, steps:steps, phase:steps[0], lawWrong:null, kdone:[], kwrong:null, fills:{}, sel:null, eq:null, eq0:null, hist:[], moves:[], locked:false, op:null, fb:null, miss:0, ans:null, flipped:false, shown:false, auto:false};
+  if (b.phase === 'solve') finishPlug(b);
+  return b;
+}
+function curBoard(){ return S.tab === 'guided' ? S.guided.b : S.tab === 'prac' ? S.prac.b : S.tab === 'free' ? S.free.b : null; }
+function uName(b){ return sy(b.p.U); }
+function mistake(b, type){
+  b.miss++;
+  if (b.mode !== 'free') S.mis[type] = (S.mis[type] || 0) + 1;
+  if (b.mode === 'prac') S.prac.streak[S.prac.lvl] = 0;
+}
+function advance(b){
+  var i = b.steps.indexOf(b.phase);
+  b.phase = b.steps[i + 1]; b.fb = null;
+  if (b.phase === 'solve' && !b.eq) finishPlug(b);
+}
+function stepNo(b){ var i = b.steps.indexOf(b.phase === 'done' ? 'solve' : b.phase); return 'STEP ' + (i + 1) + ' OF ' + b.steps.length + ' — ' + STEPNAME[b.steps[i]].toUpperCase(); }
+/* --- step: which law --- */
+function pickLaw(b, id){
+  if (b.phase !== 'law' || (b.auto && !b.autoOK)) return;
+  var want = b.p.fid, L = LAW[want];
+  if (id === want){ b.lawWrong = null; advance(b); }
+  else if (id === 'combined'){
+    b.lawWrong = null;
+    b.fb = {note:true, title:'That would work, but there’s a shorter law', why:'Only the ' + L.changes + ' change here. The ' + L.same + ' stays the same, so it would just cancel. Pick the law for ' + L.changes + '. (Not counted as a mistake.)'};
+  } else {
+    b.lawWrong = id;
+    b.fb = {ok:false, title:'Mistake: wrong law', why: LAW[id].name + ' is for ' + LAW[id].changes + ' (the ' + LAW[id].same + ' stays the same). Here, ' + (want === 'combined' ? 'pressure, volume AND temperature all change.' : 'the ' + L.changes + ' change and the ' + L.same + ' stays the same.')};
+    mistake(b, 'law');
+  }
+  save(); render();
+}
+/* --- step: kelvin --- */
+function nextC(b){ var o = tmplSyms(b.p.fid); for (var i = 0; i < o.length; i++){ var g = b.p.givens[o[i]]; if (g && g.c) return o[i]; } return null; }
+function doKelvin(b, ch){
+  if (b.phase !== 'kelvin' || (b.auto && !b.autoOK)) return;
+  var s = nextC(b); if (!s) return;
+  var g = b.p.givens[s];
+  if (ch === '+'){
+    var k = g.val + 273;
+    b.p.givens[s] = {val:k, txt:String(k), unit:'K', role:g.role, clue:g.clue, from:g.txt + ' °C'};
+    b.kdone.push(g.txt + ' °C + 273 = ' + k + ' K'); b.kwrong = null; b.fb = null;
+    if (!nextC(b)) advance(b);
+  } else if (ch === '-'){
+    var d = g.val - 273; b.kwrong = '-';
+    b.fb = {ok:false, title:'Mistake: subtracted 273', why: g.txt + ' − 273 = ' + String(d).replace('-', '−') + ' K. ' + (d <= 0 ? 'Kelvin can’t be zero or negative: 0 K is the coldest anything can get. ' : 'K numbers are always 273 BIGGER than °C numbers. ') + 'To go from °C to K, add 273.'};
+    mistake(b, 'kelvin');
+  } else {
+    b.kwrong = 'keep';
+    b.fb = {ok:false, title:'Mistake: left it in °C', why:'Gas laws only work in Kelvin. In °C, 0 isn’t the coldest possible, so the math comes out wrong (and you can’t divide by 0 °C). Add 273.'};
+    mistake(b, 'kelvin');
+  }
+  save(); render();
+}
+/* --- step: plug in --- */
+function slotReason(b, chip, slot){
+  var U = b.p.U, u = sy(U), fq = FORMULAS[b.p.fid].q;
+  if (chip === 'U') return {type:'slot', why:'That slot gets a number. The ' + u + ' tile goes in ' + u + '’s slot: ' + u + ' is what you’re finding.'};
+  var g = b.p.givens[chip];
+  if (slot === U) return {type:'slot', why: u + ' is the unknown, so nothing is given for it. Put the purple ' + u + ' tile there.'};
+  if (fq[chip] === fq[slot]) return {type:'swap', title:'Mistake: mixed up start and final', why: T(g) + ' is the ' + g.role + (g.clue ? ' (the problem says “' + g.clue + '”)' : '') + ', so it goes in ' + sy(chip) + '. 1 = before the change, 2 = after.'};
+  return {type:'slot', why: g.unit + ' is a ' + QT[fq[chip]] + ' unit, so ' + T(g) + ' goes in a ' + QL[fq[chip]] + ' slot (' + sy(chip) + ').'};
+}
+function placeChip(b, chip, slot){
+  if (b.phase !== 'plug' || (b.auto && !b.autoOK) || b.fills[slot]) return;
+  var ok = chip === slot || (chip === 'U' && slot === b.p.U);
+  if (!ok){
+    var r = slotReason(b, chip, slot);
+    b.fb = {ok:false, title:r.title || 'Mistake: wrong slot', why:r.why};
+    b.shake = slot; b.sel = null; mistake(b, r.type);
+  } else {
+    b.fills[slot] = chip; b.sel = null; b.fb = null; b.shake = null;
+    if (tmplSyms(b.p.fid).every(function(s){ return b.fills[s]; })) advance(b);
+  }
+  save(); render();
+  setTimeout(function(){ if (b.shake){ b.shake = null; } }, 450);
+}
+function finishPlug(b){
+  b.eq = buildEq(b.p.fid, b.p.givens, b.p.U);
+  b.eq0 = clone(b.eq); b.hist = []; b.moves = []; b.phase = 'solve'; b.op = null; b.locked = false;
+  normalize(b);
+}
+function normalize(b){
+  if (aloneSide(b.eq, b.p.U) === 'R'){ var t = b.eq.L; b.eq.L = b.eq.R; b.eq.R = t; b.flipped = true; }
+}
+/* --- step: solve --- */
+function doMove(b, op, ids2){
+  if (b.locked || (b.auto && !b.autoOK) || b.phase !== 'solve') return;
+  var before = b.eq, res = applyOp(before, op, ids2), j = judge(before, op, ids2, res, b.p.U);
+  b.hist.push(before); b.flipHist = b.flipHist || []; b.flipHist.push(b.flipped);
+  b.moves.push({op:op, label:chipLabel(before, ids2), ok:j.ok, text:eqText(res.out)});
+  b.anim = res.mid; b.eq = res.out; b.op = null;
+  if (!j.ok){ b.locked = true; b.fb = {ok:false, title:j.title, why:j.why}; mistake(b, j.type); }
+  else b.fb = null;
+  save(); render();
+  b.busy = true;
+  setTimeout(function(){ b.anim = null; b.busy = false; normalize(b); save(); if (curBoard() === b) render(); }, b.mode === 'guided' ? 1500 : 800);
+}
+function undo(b){
+  if (!b.hist.length || b.phase !== 'solve') return;
+  b.eq = b.hist.pop(); b.moves.pop(); b.flipped = b.flipHist && b.flipHist.length ? b.flipHist.pop() : false;
+  b.locked = false; b.fb = null; b.op = null; b.anim = null;
+  save(); render();
+}
+function calc(b){
+  if (b.phase !== 'solve' || b.locked || !aloneSide(b.eq, b.p.U)) return;
+  var v = ev(b.eq.R);
+  if (!isFinite(v) || isNaN(v) || v <= 0){ b.fb = {ok:false, title:'That can’t be calculated', why:'Check the values: you can’t divide by 0, and gas values must be above 0.'}; render(); return; }
+  b.ans = v; b.phase = 'done'; b.fb = null;
+  if (b.mode === 'guided') S.guided.done[S.guided.cur] = 1;
+  if (b.mode === 'prac') pracScore(b);
+  save(); render();
+}
+function cOf(k){ return Math.round(k - 273); }
+function ansText(b){
+  var t = uName(b) + ' = ' + fmt3(b.ans) + (b.p.aunit ? ' ' + b.p.aunit : '');
+  if (FORMULAS[b.p.fid].q[b.p.U] === 'temp') t += ' (' + String(cOf(b.ans)).replace('-', '−') + ' °C)';
+  return t;
+}
+/* the “does it make sense?” arrows after calculating */
+function senseHTML(b){
+  if (b.phase !== 'done' || b.p.fid === 'combined') return '';
+  var L = LAW[b.p.fid], v = gasVals(boardSpec(b)), x = v[L.x], y = v[L.y];
+  function d(a){ return a[1] > a[0] * 1.0005 ? 1 : a[1] < a[0] * .9995 ? -1 : 0; }
+  var dx = d(x), dy = d(y);
+  function ar(n){ return n > 0 ? '↑' : n < 0 ? '↓' : '='; }
+  var ok = L.rel === 'inverse' ? dx === -dy : dx === dy;
+  return '<div class="sense"><span class="arw">' + L.x + ' <i>' + ar(dx) + '</i></span><span class="arw">' + L.y + ' <i>' + ar(dy) + '</i></span><span>' +
+    (L.rel === 'inverse' ? 'Inverse: one up, one down.' : 'Direct: both go the same way.') + (ok ? ' ✓ Makes sense!' : ' Check your numbers.') + '</span></div>';
+}
+function senseText(b){
+  if (b.p.fid === 'combined') return '';
+  var L = LAW[b.p.fid], v = gasVals(boardSpec(b)), x = v[L.x], y = v[L.y];
+  function w(a){ return a[1] > a[0] ? 'went up' : a[1] < a[0] ? 'went down' : 'stayed the same'; }
+  return L.x + ' ' + w(x) + ' and ' + L.y + ' ' + w(y) + ' (' + L.rel + ').';
+}
+
+/* expected next action (Guided glow + Show me) */
+function expect(b){
+  if (b.phase === 'law') return {kind:'law', law:b.p.fid, why:lawWhy(b.p.fid)};
+  if (b.phase === 'kelvin'){ var g = b.p.givens[nextC(b)]; return {kind:'kelvin', why:'To change °C to K, add 273: ' + g.txt + ' + 273 = ' + (g.val + 273) + ' K.'}; }
+  if (b.phase === 'plug'){
+    var order = tmplSyms(b.p.fid);
+    for (var i = 0; i < order.length; i++){
+      var s = order[i];
+      if (!b.fills[s]){
+        var chip = s === b.p.U ? 'U' : s, why;
+        if (chip === 'U') why = sy(s) + ' is what you’re finding, so its slot gets the purple ' + sy(s) + ' tile.';
+        else { var gg = b.p.givens[s]; why = T(gg) + ' is the ' + gg.role + (gg.clue ? ' (“' + gg.clue + '”)' : '') + ', so it goes in ' + sy(s) + '.'; }
+        return {kind:'plug', chip:chip, slot:s, why:why};
+      }
+    }
+    return null;
+  }
+  if (b.phase === 'solve'){
+    if (b.locked) return {kind:'undo', why:'Tap ↶ Undo to take that move back.'};
+    if (aloneSide(b.eq, b.p.U)) return {kind:'calc', why:uName(b) + ' is alone. Tap = Calculate and the app does the math.'};
+    var mv = nextMove(b.eq, b.p.U);
+    if (mv) return {kind:'move', op:mv.op, ids:mv.ids, why:mv.why};
+  }
+  return null;
+}
+
+/* ----- board left (question box) ----- */
+function doneLines(b){
+  var parts = [], i = b.steps.indexOf(b.phase === 'done' ? 'solve' : b.phase);
+  if (b.steps.indexOf('law') >= 0 && b.steps.indexOf('law') < i) parts.push('✓ ' + esc(LAW[b.p.fid].name) + ': ' + esc(LAW[b.p.fid].changes) + ' change');
+  if (b.kdone.length) parts.push('✓ ' + b.kdone.map(esc).join(' · '));
+  if (b.eq0 && b.mode !== 'free') parts.push('<span>✓ Plugged in: <span class="mini">' + eqHTML(b.eq0) + '</span></span>');
+  var okm = (b.moves || []).filter(function(m){ return m.ok; });
+  if (okm.length) parts.push('✓ ' + okm.map(function(m, k){ return 'Move ' + (k + 1) + ': ' + m.op + '&nbsp;' + esc(m.label); }).join(' · '));
+  return parts.length ? '<div class="doneline dl2">' + parts.map(function(p){ return '<span>' + p + '</span>'; }).join('') + '</div>' : '';
+}
+function boardLeft(b){
+  var u = uName(b), ex = b.mode === 'guided' ? expect(b) : null, h = '';
+  var ci = b.steps.indexOf(b.phase === 'done' ? 'solve' : b.phase);
+  if (b.mode !== 'free') h += '<div class="pills"><span class="lbl">Step</span>' + b.steps.map(function(s, k){
+    var dn = k < ci || b.phase === 'done';
+    return '<button class="pill' + (k === ci ? ' cur' : '') + (dn ? ' done' : '') + '" disabled>' + (dn ? '✓ ' : (k + 1) + ' ') + STEPNAME[s] + '</button>';
+  }).join('') + '</div>';
+  h += doneLines(b);
+  var head = stepNo(b);
+  if (b.phase === 'law'){
+    var lopts = '<div class="row">' + lawIds().map(function(id){
+      var cls = 'opt lawopt' + (b.lawWrong === id ? ' wrong' : '') + (ex && ex.law === id ? ' glow' : '');
+      return '<button class="' + cls + '" data-act="law" data-arg="' + id + '"' + (b.auto ? ' disabled' : '') + '><span>' + (b.lawWrong === id ? '✗ ' : '') + esc(LAW[id].name) + '</span><span class="mini">' + formulaHTML(id) + '</span></button>';
+    }).join('') + '</div>';
+    return h + qbox(head, 'Which <span class="kw">gas law</span> fits this problem?', ex ? '👉 ' + esc(ex.why) : 'Ask yourself: what changes? What stays the same?', lopts, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'kelvin'){
+    var s = nextC(b), g = b.p.givens[s];
+    var kb = '<div class="row">' + [['+', '+ 273'], ['-', '− 273'], ['keep', 'Keep it in °C']].map(function(k){
+      return '<button class="kbtn' + (b.kwrong === k[0] ? ' wrong' : '') + (ex && k[0] === '+' ? ' glow' : '') + '" data-act="kel" data-arg="' + k[0] + '"' + (b.auto ? ' disabled' : '') + '>' + k[1] + '</button>';
+    }).join('') + '</div>';
+    return h + qbox(head, 'Gas laws need <span class="kw">Kelvin</span>. Change <b>' + esc(g.txt) + ' °C</b> (' + esc(sy(s)) + ') to K.', ex ? '👉 ' + esc(ex.why) : 'K = °C + 273', kb, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'plug'){
+    var order = b.mode === 'guided' ? tmplSyms(b.p.fid).filter(function(x){ return x !== b.p.U; }) : (b.p.order || Object.keys(b.p.givens));
+    var list = order.concat(['U']);
+    var row = '<div class="row">' + list.map(function(c){
+      var used = c === 'U' ? b.fills[b.p.U] : b.fills[c];
+      var cls = 'chip' + (used ? ' used' : '') + (b.sel === c ? ' sel' : '') + (ex && ex.chip === c && b.sel !== c ? ' glow' : '');
+      var inner = c === 'U' ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(u) + '</span><small>unknown</small>' : chipHTML(b.p.givens[c], b.mode === 'guided' && roleOf(c) ? '<em class="role">' + roleOf(c) + '</em>' : '');
+      return '<button class="' + cls + '" data-act="chip" data-arg="' + c + '"' + (used || b.auto ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    var hint = ex ? '👉 ' + esc(b.sel === ex.chip ? 'Now tap the ' + sy(ex.slot) + ' slot in the formula. ' + ex.why : 'Tap the glowing chip. ' + ex.why) :
+      (b.sel ? 'Now tap its slot in the formula (or drag it there).' : 'Tap a value, then tap its slot. Read the problem: 1 = before the change, 2 = after.');
+    return h + qbox(head, 'Put each value in its <span class="kw">slot</span>.', hint, row, fbHTML(b.fb), showMeBtn(b));
+  }
+  var alone = aloneSide(b.eq, b.p.U) && !b.anim, qt, hint2, ans = '';
+  if (b.phase === 'done'){
+    var gp = b.mode === 'guided' ? gpById(S.guided.cur) : null;
+    var msg = b.mode === 'prac' ? b.pmsg : gp ? gp.done : '';
+    return h + qbox(head, '<span class="kw">' + esc(u) + ' is alone</span> and calculated.', 'The app did the arithmetic for you, rounded to 3 significant figures.', '', fbHTML({ok:true, title:ansText(b), why:msg || ''}));
+  }
+  var dis = b.locked || b.auto || b.busy;
+  if (alone && !b.locked){
+    qt = '<span class="kw">' + esc(u) + ' is alone!</span> ✓';
+    hint2 = ex ? '👉 ' + esc(ex.why) : 'Tap = Calculate. The app does the math.';
+    ans = '<div class="row"><button class="big green' + (ex && ex.kind === 'calc' ? ' glow' : '') + '" data-act="calc"' + (b.auto ? ' disabled' : '') + '>= Calculate</button>' +
+      '<button class="undo" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+  } else {
+    qt = 'Get <span class="kw">' + esc(u) + '</span> alone. Do the same thing to <span class="kw">BOTH sides</span>.';
+    hint2 = ex ? '👉 ' + esc(ex.why) : (b.locked ? 'Tap ↶ Undo to take that move back.' : b.op ? 'Now tap a number to ' + opName(b.op) + ' both sides by.' : 'Tap an operation, then a number.');
+    var row1 = '<div class="row">' + ['+','−','×','÷'].map(function(o){
+      var gl = ex && ex.kind === 'move' && ex.op === o && b.op !== o;
+      return '<button class="opbtn' + (b.op === o ? ' sel' : '') + (gl ? ' glow' : '') + '" data-act="op" data-arg="' + o + '"' + (dis ? ' disabled' : '') + ' aria-label="' + opName(o) + '">' + o + '</button>';
+    }).join('') + '<button class="undo' + (b.locked ? ' glow' : '') + '" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+    var chips2 = solveChips(b.eq, b.p.U);
+    var row2 = '<div class="row">' + chips2.map(function(c, k){
+      var fac = c.group ? null : findFactor(b.eq, c.ids[0]);
+      var inner = c.group ? '<b>' + esc(chipLabel(b.eq, c.ids)) + '</b><small>both</small>' : fac.v ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(sy(fac.sym)) + '</span>' : chipHTML(fac);
+      var gl = ex && ex.kind === 'move' && b.op === ex.op && ex.ids.join() === c.ids.join();
+      return '<button class="chip' + (c.group ? ' grp' : '') + (gl ? ' glow' : '') + '" data-act="schip" data-arg="' + k + '"' + (dis ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    ans = row1 + row2;
+  }
+  return h + qbox(head, qt, hint2, ans, fbHTML(b.fb), showMeBtn(b));
+}
+function opName(o){ return {'+':'add','−':'subtract','×':'multiply','÷':'divide'}[o]; }
+function showMeBtn(b){
+  if (b.mode !== 'prac' || b.miss < 2 || b.phase === 'done' || b.auto) return '';
+  return '<div class="row" style="margin-top:8px"><button class="big ghost" data-act="showme">👀 Show me</button><span class="qhint">Two misses: watch the solution step by step.</span></div>';
+}
+
+/* ----- board right ----- */
+function boardRight(b){
+  var early = b.phase === 'law' || b.phase === 'kelvin';
+  var h = '<div class="panel"><div class="boardt"><h2>Before → After</h2></div>' + stripHTML(boardSpec(b), b.phase === 'law' ? 165 : 108) + senseHTML(b);
+  if (b.phase === 'law') return h + '<div class="gray" style="text-align:center;font-weight:700">Which two things change? Which one stays the same?<br><span class="qhint">The formula shows up after you pick the law.</span></div></div>';
+  if (b.phase === 'kelvin'){
+    var g = b.p.givens[nextC(b)];
+    return h + '<div class="vis">' + thermoScale(g.val, 230) + '<div class="gray" style="font-weight:800">K = °C + 273</div></div></div>';
+  }
+  var fEq = null, okMoves = (b.moves || []).filter(function(m){ return m.ok; }).length;
+  if (b.phase !== 'plug' && okMoves) fEq = b.locked ? b.hist[b.hist.length - 1] : (b.anim || b.eq);
+  var fInner = fEq ? eqHTML(fEq, {sym:true, units:boardUnits(b)}) : formulaHTML(b.p.fid, boardUnits(b));
+  var u = uName(b);
+  h += '<div class="boardt"><h2>Equation board</h2>' + fcardHTML(fInner, !!fEq, b.mode === 'free' && b.phase === 'done' ? 'Rearranged<br>formula<br>(for your notes)' : '') + '</div>';
+  var main;
+  if (b.phase === 'plug'){
+    var ex = b.mode === 'guided' ? expect(b) : null;
+    main = templateHTML(b.p.fid, {U:b.p.U, fills:b.fills, vals:b.p.givens, sel:b.sel, glow:ex && b.sel === ex.chip ? ex.slot : null, shake:b.shake});
+  } else main = eqHTML(b.anim || b.eq);
+  h += '<div class="eqwrap">' + main + (b.flipped && !b.anim && b.phase !== 'plug' ? '<div class="flipnote">(same thing, just flipped so ' + esc(u) + ' is on the left)</div>' : '') + '</div>';
+  var alone = b.phase !== 'plug' && !b.anim && aloneSide(b.eq, b.p.U) && !b.locked;
+  if (b.phase !== 'done') h += '<div class="status' + (b.locked && !alone ? ' bad' : '') + '">' + (alone ? esc(u) + ' is alone! ✓' : b.phase === 'plug' ? 'Plug in: 1 = before, 2 = after' : b.locked ? '✗ Tap ↶ Undo' : '') + '</div>';
+  else {
+    var isT = FORMULAS[b.p.fid].q[b.p.U] === 'temp';
+    h += '<div class="answer">' + esc(u) + ' = ' + esc(fmt3(b.ans)) + (b.p.aunit ? ' <small>' + esc(b.p.aunit) + '</small>' : '') + (isT ? ' <small>(' + String(cOf(b.ans)).replace('-', '−') + ' °C)</small>' : '') + '</div>';
+  }
+  return h + '</div>';
+}
+
+/* ===================================================================
+   PART 2: GUIDED
+   =================================================================== */
+function cl(s){ return '<u class="clue">' + s + '</u>'; }
+var GP = [
+  {id:'g1', fid:'boyle', U:'V2', askLaw:true, aunit:'L',
+   givens:{V1:G(4.00, 'L', 'STARTING volume', 'holds'), P1:G(1.00, 'atm', 'STARTING pressure', 'at 1.00 atm'), P2:G(2.50, 'atm', 'FINAL pressure', 'squeezed until')},
+   story:'A balloon ' + cl('holds') + ' <b>4.00 L</b> of air ' + cl('at 1.00 atm') + '. It is ' + cl('squeezed until') + ' the pressure is <b>2.50 atm</b>. The temperature stays the same. What is the <b>new volume</b>, V₂?',
+   tip:'Pressure and volume change. Temperature doesn’t.', done:'Pressure went up, so volume went down: 4.00 L → 1.60 L. Boyle’s law is inverse.'},
+  {id:'g2', fid:'charles', U:'V2', askLaw:true, aunit:'L',
+   givens:{V1:G(2.00, 'L', 'STARTING volume', 'takes up'), T1:Gc(27, 'STARTING temperature', 'at 27 °C'), T2:Gc(177, 'FINAL temperature', 'heated to')},
+   story:'A gas ' + cl('takes up') + ' <b>2.00 L</b> ' + cl('at 27 °C') + '. It is ' + cl('heated to') + ' <b>177 °C</b>. The pressure stays the same. What is the <b>new volume</b>, V₂?',
+   tip:'The temperatures are in °C. Change them to Kelvin first (+ 273).', done:'27 °C → 300 K and 177 °C → 450 K. Heated, so the volume went up: 2.00 L → 3.00 L.'},
+  {id:'g3', fid:'gaylussac', U:'T2', askLaw:true, aunit:'K',
+   givens:{P1:G(1.20, 'atm', 'STARTING pressure', 'is at'), T1:G(300, 'K', 'STARTING temperature', 'is at'), P2:G(1.50, 'atm', 'FINAL pressure', 'rises to')},
+   story:'A sealed steel can ' + cl('is at') + ' <b>1.20 atm</b> and <b>300. K</b>. It is heated until its pressure ' + cl('rises to') + ' <b>1.50 atm</b>. The can can’t stretch, so the volume stays the same. What is the <b>new temperature</b>, T₂?',
+   tip:'T₂ ends up on the bottom. × T₂ first to bring it up.', done:'T₂ was on the bottom: × T₂ brought it up. 375 K is 102 °C. Pressure went up, so temperature went up.'},
+  {id:'g4', combo:true, fid:'combined', U:'V2', askLaw:true, aunit:'L',
+   givens:{P1:G(1.00, 'atm', 'STARTING pressure', 'starts at'), V1:G(6.00, 'L', 'STARTING volume', 'starts at'), T1:Gc(27, 'STARTING temperature', 'starts at'), P2:G(2.00, 'atm', 'FINAL pressure', 'changed to'), T2:Gc(127, 'FINAL temperature', 'changed to')},
+   story:'A gas ' + cl('starts at') + ' <b>1.00 atm</b>, <b>6.00 L</b> and <b>27 °C</b>. It is ' + cl('changed to') + ' <b>2.00 atm</b> and <b>127 °C</b>. What is its <b>new volume</b>, V₂?',
+   tip:'Pressure, volume AND temperature all change → combined gas law.', done:'27 °C → 300 K, 127 °C → 400 K. V₂ = 4.00 L.'}
+];
+function gpById(id){ for (var i = 0; i < GP.length; i++) if (GP[i].id === id) return GP[i]; return GP[0]; }
+function guidedBoard(){
+  var g = S.guided;
+  if (!g.b || g.b.gi !== g.cur || g.b.dead){ g.b = newBoard('guided', clone(gpById(g.cur))); g.b.gi = g.cur; }
+  return g.b;
+}
+function renderGuided(){
+  var g = S.guided, list = visG(), i = ids(list).indexOf(g.cur), gp = list[i], b = guidedBoard();
+  var pills = '<div class="pills"><span class="lbl">Problem</span>' + list.map(function(p, k){
+    var en = UNLOCK || k === 0 || g.done[list[k - 1].id] || g.done[p.id];
+    return '<button class="pill' + (k === i ? ' cur' : '') + (g.done[p.id] ? ' done' : '') + '" data-act="gprob" data-arg="' + p.id + '"' + (en ? '' : ' disabled') + '>' + (g.done[p.id] ? '✓ ' : '') + (k + 1) + ' ' + esc(LAW[p.fid].name.replace(' gas law', '').replace(' law', '')) + '</button>';
+  }).join('') + '</div>';
+  var story = '<div class="gray story showclue"><div class="t">Problem ' + (i + 1) + ' of ' + list.length + ' · We do it together</div>' + gp.story + '<div class="qhint" style="margin-top:4px">💡 ' + esc(gp.tip) + '</div></div>';
+  var next = b.phase === 'done' ? '<div class="nextrow"><button class="big" data-act="gnext">' + (i < list.length - 1 ? 'Next problem ▶' : 'Go to Practice ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + story + boardLeft(b) + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+
+/* ===================================================================
+   PART 3: PRACTICE
+   =================================================================== */
+var LEVELS = [
+  {id:'boyle', name:'Boyle’s law'},
+  {id:'charles', name:'Charles’ law'},
+  {id:'gay', name:'Gay-Lussac’s law'},
+  {id:'combined', name:'Combined gas law', combo:true},
+  {id:'mixed', name:'Mixed: which law?'}
+];
+function lvlName(id){ for (var i = 0; i < LEVELS.length; i++) if (LEVELS[i].id === id) return LEVELS[i].name; return ''; }
+function pU(){ return pick(['atm','atm','kPa','mmHg']); }
+function pV(u){ return u === 'atm' ? R(0.6, 3) : u === 'kPa' ? R(60, 300) : R(400, 2000); }
+function vU(){ return pick(['L','L','mL']); }
+function vV(u){ return u === 'L' ? R(0.5, 8) : R(50, 900); }
+function fac(up){ return up ? R(1.3, 2.1) : R(0.45, 0.78); }
+function tPair(up){ var k1 = Math.round(R(255, 345)), k2 = Math.round(Math.max(160, Math.min(690, k1 * fac(up)))); return [k1, k2]; }
+function Tg(k, cel, role, clue){ return cel ? Gc(k - 273, role, clue) : G(k, 'K', role, clue); }
+function fill(story, giv){ return story.replace(/\{(\w+)\}/g, function(m, s){ return giv[s] ? '<b>' + esc(T(giv[s])) + '</b>' : m; }); }
+function mkP(fid, U, giv, aunit, story){ var g2 = {}; Object.keys(giv).forEach(function(s){ if (s !== U) g2[s] = giv[s]; }); return {fid:fid, U:U, givens:g2, aunit:aunit, story:fill(story, giv)}; }
+
+function genBoyle(U){
+  var pu = pU(), vu = vU(), up = Math.random() < 0.55, f = fac(up);
+  var P1 = pV(pu), V1 = vV(vu), P2 = P1 * f, V2 = V1 / f, st, g;
+  if (U === 'V2'){
+    g = {V1:G(V1, vu, 'STARTING volume', 'holds'), P1:G(P1, pu, 'STARTING pressure', 'at first'), P2:G(P2, pu, 'FINAL pressure', up ? 'squeezed until' : 'drops to')};
+    st = up ? pick(['A balloon holds {V1} of air at {P1} at first. It is squeezed until the pressure is {P2}. The temperature stays the same. What is the <b>new volume</b>, V₂?',
+                   'A bike pump holds {V1} of air at {P1} at first. The handle is squeezed until the pressure is {P2}. The temperature stays the same. What is the <b>new volume</b>, V₂?'])
+            : 'A weather balloon holds {V1} at {P1} at first. As it rises, the pressure around it drops to {P2}. Assume the temperature stays the same. What is its <b>new volume</b>, V₂?';
+  } else if (U === 'P2'){
+    g = {V1:G(V1, vu, 'STARTING volume', 'holds'), P1:G(P1, pu, 'STARTING pressure', 'at first'), V2:G(V2, vu, 'FINAL volume', up ? 'pushed in until' : 'pulled out until')};
+    st = 'A syringe holds {V1} of air at {P1} at first. The plunger is ' + (up ? 'pushed in' : 'pulled out') + ' until the air takes up {V2}. The temperature stays the same. What is the <b>new pressure</b>, P₂?';
+  } else if (U === 'V1'){
+    g = {P1:G(P1, pu, 'STARTING pressure', 'from'), P2:G(P2, pu, 'FINAL pressure', 'to'), V2:G(V2, vu, 'FINAL volume', 'afterward')};
+    st = 'The pressure on a gas changes from {P1} to {P2}. The temperature stays the same. Afterward, the gas takes up {V2}. What was its <b>starting volume</b>, V₁?';
+  } else {
+    g = {V1:G(V1, vu, 'STARTING volume', 'starts out'), V2:G(V2, vu, 'FINAL volume', 'changed to'), P2:G(P2, pu, 'FINAL pressure', 'is now')};
+    st = 'A gas starts out taking up {V1}. At the same temperature it is changed to {V2}, and its pressure is now {P2}. What was its <b>starting pressure</b>, P₁?';
+  }
+  return mkP('boyle', U, g, U[0] === 'V' ? vu : pu, st);
+}
+function genCharles(U, cel){
+  var vu = vU(), up = Math.random() < 0.6, t = tPair(up), V1 = vV(vu), V2 = V1 * t[1] / t[0], st, g, hw = up ? 'heated' : 'cooled';
+  var T1 = Tg(t[0], cel, 'STARTING temperature', 'at first'), T2 = Tg(t[1], cel, 'FINAL temperature', hw + ' to');
+  if (U === 'V2'){
+    g = {V1:G(V1, vu, 'STARTING volume', 'holds'), T1:T1, T2:T2};
+    st = up ? 'A balloon holds {V1} at {T1} at first. It is heated to {T2}. The pressure stays the same. What is its <b>new volume</b>, V₂?'
+            : 'A balloon holds {V1} at {T1} at first. It is put in a freezer and cooled to {T2}. The pressure stays the same. What is its <b>new volume</b>, V₂?';
+  } else if (U === 'T2'){
+    g = {V1:G(V1, vu, 'STARTING volume', 'at first'), T1:T1, V2:G(V2, vu, 'FINAL volume', hw + ' until')};
+    st = 'A gas in a cylinder with a sliding piston takes up {V1} at {T1} at first. It is ' + hw + ' until it takes up {V2}. The pressure stays the same. What is the <b>new temperature</b>, T₂, in kelvins?';
+  } else if (U === 'V1'){
+    g = {T1:Tg(t[0], cel, 'STARTING temperature', 'from'), T2:Tg(t[1], cel, 'FINAL temperature', 'to'), V2:G(V2, vu, 'FINAL volume', 'afterward')};
+    st = 'A balloon is ' + hw + ' from {T1} to {T2}. The pressure stays the same. Afterward it holds {V2}. What was its <b>starting volume</b>, V₁?';
+  } else {
+    g = {V1:G(V1, vu, 'STARTING volume', 'at first'), T2:Tg(t[1], cel, 'FINAL temperature', hw + ' to'), V2:G(V2, vu, 'FINAL volume', 'now takes up')};
+    st = 'A gas takes up {V1} at first. It is ' + hw + ' to {T2} at the same pressure and now takes up {V2}. What was its <b>starting temperature</b>, T₁, in kelvins?';
+  }
+  return mkP('charles', U, g, U[0] === 'V' ? vu : 'K', st);
+}
+function genGay(U, cel){
+  var pu = pU(), up = Math.random() < 0.6, t = tPair(up), P1 = pV(pu), P2 = P1 * t[1] / t[0], st, g, hw = up ? 'heated' : 'cooled';
+  var box = pick(['sealed aerosol can','sealed steel tank','sealed glass jar','propane tank']);
+  var T1 = Tg(t[0], cel, 'STARTING temperature', 'at first'), T2 = Tg(t[1], cel, 'FINAL temperature', hw + ' to');
+  if (U === 'P2'){
+    g = {P1:G(P1, pu, 'STARTING pressure', 'at first'), T1:T1, T2:T2};
+    st = up ? 'A ' + box + ' is at {P1} and {T1} at first. It is heated to {T2}. The ' + box.split(' ').pop() + ' can’t stretch, so the volume stays the same. What is the <b>new pressure</b>, P₂?'
+            : 'A car tire is at {P1} and {T1} at first, on a hot afternoon. Overnight it is cooled to {T2}. Assume the volume stays the same. What is the <b>new pressure</b>, P₂?';
+  } else if (U === 'T2'){
+    g = {P1:G(P1, pu, 'STARTING pressure', 'at first'), T1:T1, P2:G(P2, pu, 'FINAL pressure', hw + ' until')};
+    st = 'A ' + box + ' holds gas at {P1} and {T1} at first. It is ' + hw + ' until the pressure is {P2}. The volume stays the same. What is the <b>new temperature</b>, T₂, in kelvins?';
+  } else if (U === 'P1'){
+    g = {T1:Tg(t[0], cel, 'STARTING temperature', 'from'), T2:Tg(t[1], cel, 'FINAL temperature', 'to'), P2:G(P2, pu, 'FINAL pressure', 'afterward')};
+    st = 'A ' + box + ' is ' + hw + ' from {T1} to {T2}. The volume stays the same. Afterward its pressure is {P2}. What was its <b>starting pressure</b>, P₁?';
+  } else {
+    g = {P1:G(P1, pu, 'STARTING pressure', 'at first'), T2:Tg(t[1], cel, 'FINAL temperature', hw + ' to'), P2:G(P2, pu, 'FINAL pressure', 'now')};
+    st = 'A ' + box + ' is at {P1} at first. It is ' + hw + ' to {T2}, and its pressure is now {P2}. The volume stays the same. What was its <b>starting temperature</b>, T₁, in kelvins?';
+  }
+  return mkP('gaylussac', U, g, U[0] === 'P' ? pu : 'K', st);
+}
+function genComb(U, cel){
+  var pu = pU(), vu = vU(), t = tPair(Math.random() < 0.5), P1 = pV(pu), V1 = vV(vu), P2 = P1 * fac(Math.random() < 0.5), V2 = P1 * V1 * t[1] / (t[0] * P2), st;
+  var g = {P1:G(P1, pu, 'STARTING pressure', 'starts at'), V1:G(V1, vu, 'STARTING volume', 'starts at'), T1:Tg(t[0], cel, 'STARTING temperature', 'starts at'),
+           P2:G(P2, pu, 'FINAL pressure', 'changed to'), V2:G(V2, vu, 'FINAL volume', 'changed to'), T2:Tg(t[1], cel, 'FINAL temperature', 'changed to')};
+  if (U === 'V2') st = pick(['A gas starts at {P1}, {V1} and {T1}. It is changed to {P2} and {T2}. What is its <b>new volume</b>, V₂?',
+                            'A weather balloon starts at {P1}, {V1} and {T1}. High in the sky it is changed to {P2} and {T2}. What is its <b>new volume</b>, V₂?']);
+  else if (U === 'P2') st = 'A gas starts at {P1}, {V1} and {T1}. It is changed to {V2} and {T2}. What is its <b>new pressure</b>, P₂?';
+  else if (U === 'T2') st = 'A gas starts at {P1}, {V1} and {T1}. It is changed to {P2} and {V2}. What is its <b>new temperature</b>, T₂, in kelvins?';
+  else { g.V2.clue = 'ends at'; g.P2.clue = 'ends at'; g.T2.clue = 'ends at'; st = 'A gas starts at {P1} and {T1}. It ends at {P2}, {V2} and {T2}. What was its <b>starting volume</b>, V₁?'; }
+  return mkP('combined', U, g, U[0] === 'V' ? vu : U[0] === 'P' ? pu : 'K', st);
+}
+function gen(lvl, idx){
+  var p, cel = Math.random() < 0.4;
+  if (lvl === 'boyle') p = genBoyle(['V2','P2','V2','P2','V1','P1'][idx % 6]);
+  else if (lvl === 'charles') p = genCharles(['V2','T2','V2','T2','V1','T1'][idx % 6], cel);
+  else if (lvl === 'gay') p = genGay(['P2','T2','P2','T2','P1','T1'][idx % 6], cel);
+  else if (lvl === 'combined') p = genComb(['V2','P2','T2'][idx % 3], cel);
+  else {
+    var laws = lawIds().filter(function(x){ return x !== S.prac.last; }), fid = pick(laws);
+    S.prac.last = fid; cel = Math.random() < 0.6;
+    var start = Math.random() < 0.3;
+    if (fid === 'boyle') p = genBoyle(pick(start ? ['V1','P1'] : ['V2','P2']));
+    else if (fid === 'charles') p = genCharles(pick(start ? ['V1','T1'] : ['V2','T2']), cel);
+    else if (fid === 'gaylussac') p = genGay(pick(start ? ['P1','T1'] : ['P2','T2']), cel);
+    else p = genComb(pick(start ? ['V1'] : ['V2','P2','T2']), cel);
+    p.askLaw = true;
+  }
+  p.order = shuffle(Object.keys(p.givens));
+  return p;
+}
+function newPracProblem(){
+  var pr = S.prac, idx = num(pr.count, pr.lvl); pr.count[pr.lvl] = idx + 1;
+  pr.b = newBoard('prac', gen(pr.lvl, idx)); pr.b.lvl = pr.lvl;
+}
+function pracScore(b){
+  var pr = S.prac, l = pr.lvl;
+  if (b.shown){ b.pmsg = 'That one was a demo, so it doesn’t count. Try a new one.'; return; }
+  if (b.miss === 0){
+    pr.streak[l] = Math.min(3, num(pr.streak, l) + 1);
+    if (pr.streak[l] >= 3 && !pr.done[l]){ pr.done[l] = 1; b.pmsg = 'No mistakes! Level complete ✓'; b.lvlDone = 1; }
+    else b.pmsg = pr.done[l] ? 'No mistakes! (This level is already complete.)' : 'No mistakes! Streak: ' + pr.streak[l] + ' of 3.';
+  } else b.pmsg = 'Solved, but there was a mistake, so the streak starts over. You need 3 in a row with no mistakes.';
+  var s = senseText(b); if (s) b.pmsg += ' Check: ' + s;
+}
+function renderPractice(){
+  var pr = S.prac;
+  if (!pr.b || pr.b.lvl !== pr.lvl || pr.b.dead) newPracProblem();
+  var b = pr.b, l = pr.lvl, list = visP(), li = ids(list).indexOf(l), sk = num(pr.streak, l);
+  var pills = '<div class="pills"><span class="lbl">Level</span>' + list.map(function(n, k){
+    var en = UNLOCK || k === 0 || pr.done[list[k - 1].id] || pr.done[n.id];
+    return '<button class="pill' + (k === li ? ' cur' : '') + (pr.done[n.id] ? ' done' : '') + '" data-act="plvl" data-arg="' + n.id + '"' + (en ? '' : ' disabled') + ' title="' + esc(n.name) + '">' + (pr.done[n.id] ? '✓' : 'L' + (k + 1)) + '</button>';
+  }).join('') + '<span class="streak" aria-label="streak ' + sk + ' of 3">' + (pr.done[l] ? '✓ done' : 'Streak') + [0,1,2].map(function(i){ return '<span class="dot' + (i < sk ? ' on' : '') + '">' + (i < sk ? '✓' : '') + '</span>'; }).join('') + '</span></div>';
+  var story = '<div class="gray story"><div class="t">Level ' + (li + 1) + ' of ' + list.length + ' · ' + esc(lvlName(l)) + '</div>' + b.p.story + '</div>';
+  var next = '', allDone = cntDone(list, pr.done) === list.length;
+  if (b.phase === 'done'){
+    if (b.lvlDone && li < list.length - 1) next = '<button class="big green" data-act="pnext" data-arg="lvl">Next level ▶</button>';
+    else if (b.lvlDone && allDone) next = '<button class="big green" data-act="card">🏆 See completion card</button>';
+    else next = '<button class="big" data-act="pnext">Next problem ▶</button>';
+    next = '<div class="nextrow">' + next + (allDone && !b.lvlDone ? '<button class="big ghost" data-act="card">🏆 Completion card</button>' : '') + '</div>';
+  } else if (allDone) next = '<div class="nextrow"><button class="big ghost" data-act="card">🏆 Completion card</button></div>';
+  LEFT.innerHTML = pills + story + boardLeft(b) + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+async function showMe(b){
+  S.mis.showme++; b.shown = true; b.auto = true; b.autoOK = true;
+  b.p.givens = clone(b.p.g0); b.kdone = []; b.kwrong = null; b.lawWrong = null;
+  b.phase = b.steps[0]; b.fills = {}; b.sel = null; b.eq = null; b.eq0 = null; b.hist = []; b.moves = []; b.locked = false; b.op = null; b.flipped = false;
+  b.fb = {ok:true, title:'Watch', why:'Here is the solution, one step at a time.'};
+  render();
+  function gone(){ return S.prac.b !== b; }
+  if (b.phase === 'law'){ await wait(1200); if (gone()) return; b.fb = {ok:true, title:'Watch: ' + LAW[b.p.fid].name, why:lawWhy(b.p.fid)}; render(); await wait(1800); if (gone()) return; pickLaw(b, b.p.fid); }
+  while (b.phase === 'kelvin'){ await wait(1300); if (gone()) return; var g = b.p.givens[nextC(b)]; doKelvin(b, '+'); b.fb = {ok:true, title:'Watch', why:g.txt + ' °C + 273 = ' + (g.val + 273) + ' K'}; render(); }
+  b.fb = {ok:true, title:'Watch', why:'Plug in: 1 = before the change, 2 = after.'}; render();
+  var order = tmplSyms(b.p.fid);
+  for (var i = 0; i < order.length; i++){
+    await wait(700); if (gone()) return;
+    var s = order[i]; b.sel = s === b.p.U ? 'U' : s; render(); await wait(500);
+    b.fills[s] = b.sel; b.sel = null; render();
+  }
+  await wait(600); if (gone()) return;
+  finishPlug(b); b.fb = {ok:true, title:'Watch', why:'Now get ' + uName(b) + ' alone.'}; render();
+  var guard = 0;
+  while (!aloneSide(b.eq, b.p.U) && guard++ < 8){
+    await wait(1300); if (gone()) return;
+    var mv = nextMove(b.eq, b.p.U); if (!mv) break;
+    doMove(b, mv.op, mv.ids);
+    b.fb = {ok:true, title:mv.op + ' ' + b.moves[b.moves.length - 1].label + ' on both sides', why:mv.why}; render();
+    await wait(900);
+  }
+  await wait(1000); if (gone()) return;
+  b.auto = false; b.autoOK = false; calc(b);
+}
+
+/* ----- completion card ----- */
+function cardData(){
+  var d = new Date();
+  return {when:d.toLocaleDateString(undefined, {weekday:'short', year:'numeric', month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'}),
+    learn:pct('learn'), guided:pct('guided'), prac:pct('prac'), mis:S.mis, combo:!!S.combo};
+}
+var MISNAMES = [['law','Picked the wrong gas law'],['kelvin','Didn’t change °C to Kelvin'],['swap','Mixed up start (1) and final (2)'],['slot','Value in the wrong slot'],['opposite','Opposite operation (× vs ÷)'],['nohelp','Move that didn’t help'],['showme','“Show me” used']];
+function comboLine(c){ return c.combo ? 'WITH the combined gas law' : 'WITHOUT the combined gas law'; }
+function cardText(c){
+  return 'Gas Law Calculations — Completion Card\n' + c.when + '\n' + comboLine(c) + '\nLearn: ' + c.learn + '%   Guided: ' + c.guided + '%   Practice: ' + c.prac + '%\n\nMistakes by type:\n' +
+    MISNAMES.map(function(m){ return '  • ' + m[1] + ': ' + (c.mis[m[0]] || 0); }).join('\n') + '\n\n' + PAGE;
+}
+function cardCanvas(c){
+  var cv = document.createElement('canvas'); cv.width = 900; cv.height = 650;
+  var x = cv.getContext('2d'), F2 = 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+  x.fillStyle = '#fff'; x.fillRect(0, 0, 900, 650);
+  x.fillStyle = '#1f3a5f'; x.fillRect(0, 0, 900, 90);
+  x.fillStyle = '#fff'; x.font = 'bold 34px ' + F2; x.fillText('Gas Law Calculations', 30, 52);
+  x.font = '20px ' + F2; x.fillText('Completion Card · ' + c.when, 30, 80);
+  x.fillStyle = c.combo ? '#f29d12' : '#e9edf2'; x.fillRect(30, 104, 840, 40);
+  x.fillStyle = c.combo ? '#2b1a00' : '#3b4652'; x.font = 'bold 22px ' + F2; x.fillText(comboLine(c).toUpperCase(), 46, 132);
+  var y = 196;
+  [['Learn', c.learn], ['Guided', c.guided], ['Practice', c.prac]].forEach(function(r, i){
+    var bx = 30 + i * 285; x.fillStyle = r[1] === 100 ? '#1d7a35' : '#6a7682'; x.fillRect(bx, y - 34, 265, 64);
+    x.fillStyle = '#fff'; x.font = 'bold 26px ' + F2; x.fillText(r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%'), bx + 18, y + 8);
+  });
+  y = 278; x.fillStyle = '#1f3a5f'; x.font = 'bold 24px ' + F2; x.fillText('Mistakes by type', 30, y);
+  MISNAMES.forEach(function(m, i){
+    var yy = y + 40 + i * 40; x.fillStyle = '#15191e'; x.font = '22px ' + F2; x.fillText(m[1], 50, yy);
+    x.font = 'bold 22px ' + F2; x.fillText(String(c.mis[m[0]] || 0), 820, yy);
+    x.strokeStyle = '#e1e6ec'; x.lineWidth = 1; x.beginPath(); x.moveTo(40, yy + 13); x.lineTo(860, yy + 13); x.stroke();
+  });
+  x.fillStyle = '#5a6672'; x.font = '18px ' + F2; x.fillText(PAGE, 30, 632);
+  x.strokeStyle = '#1f3a5f'; x.lineWidth = 6; x.strokeRect(3, 3, 894, 644);
+  return cv;
+}
+function openCard(){
+  var c = cardData();
+  var rows = MISNAMES.map(function(m){ return '<tr><td>' + esc(m[1]) + '</td><td>' + (c.mis[m[0]] || 0) + '</td></tr>'; }).join('');
+  modal('<div class="card"><h3>🏆 Gas Law Calculations: Completion Card</h3><div>' + esc(c.when) + '</div>' +
+    '<div class="combo ' + (c.combo ? 'on' : 'off') + '" style="margin:8px 0;cursor:default"><span class="ct"><b>' + (c.combo ? '✓ WITH' : 'WITHOUT') + '</b><small>Combined Gas Law</small></span></div>' +
+    '<div class="row" style="margin:10px 0">' + [['Learn', c.learn], ['Guided', c.guided], ['Practice', c.prac]].map(function(r){ return '<span class="opt ' + (r[1] === 100 ? 'right' : '') + '">' + r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%') + '</span>'; }).join('') + '</div>' +
+    '<b>Mistakes by type</b><table>' + rows + '</table></div><div id="cardmsg" class="qhint" style="min-height:1.3em;margin-top:6px"></div>' +
+    '<div class="mbtns"><button class="big" data-act="cardcopy">📋 Copy</button><button class="big" data-act="cardpng">⬇ Save PNG</button><button class="big" data-act="cardmail">✉ Email using Google</button><button class="big ghost" data-act="close">Close</button></div>');
+}
+function cardMsg(t){ var el = document.getElementById('cardmsg'); if (el) el.textContent = t; }
+
+/* ===================================================================
+   PART 4: FREE FORM
+   =================================================================== */
+function unitFor(sym){ var q = FORMULAS[S.free.fid].q[sym]; return q === 'pressure' ? S.free.units.P : q === 'volume' ? S.free.units.V : 'K'; }
+function shownUnit(sym){ var q = FORMULAS[S.free.fid].q[sym]; return q === 'temp' ? S.free.units.T : unitFor(sym); }
+function freeUnits(){ var u = {}; tmplSyms(S.free.fid).forEach(function(s){ u[s] = unitFor(s); }); return u; }
+function freeReset(step){
+  var f = S.free;
+  if (step <= 1){ f.fid = null; f.U = null; f.vals = {}; }
+  f.b = null; f.step = step;
+}
+var KP = null;
+function openKeypad(sym){
+  var g = S.free.vals[sym];
+  KP = {sym:sym, m:'', e:'', neg:false, eneg:false, em:false, err:''};
+  if (g && g.raw){ KP.m = g.raw.m; KP.e = g.raw.e; KP.neg = g.raw.neg; KP.eneg = g.raw.eneg; KP.em = g.raw.em; }
+  drawKeypad();
+}
+function kpStr(){ var s = (KP.neg ? '−' : '') + (KP.m || ''); if (KP.em) s += '×10' + sup((KP.eneg ? '-' : '') + (KP.e || '')) + (KP.e ? '' : '▯'); return s; }
+function drawKeypad(){
+  var u = shownUnit(KP.sym);
+  var keys = ['7','8','9','⌫','4','5','6','±','1','2','3','×10ⁿ','0','.','',''];
+  modal('<div class="kp"><h3>Enter ' + esc(sy(KP.sym)) + ' (' + esc(u) + ')</h3><div class="kpd">' + esc(kpStr() || ' ') + ' <small>' + esc(u) + '</small></div>' +
+    '<div class="kpg">' + keys.map(function(k){ return k ? '<button data-act="kp" data-arg="' + k + '">' + k + '</button>' : ''; }).join('') +
+    '<button class="ok" data-act="kp" data-arg="OK" style="grid-column:span 2">OK</button></div><div class="kperr">' + esc(KP.err) + '</div>' +
+    '<div class="mbtns"><button class="big ghost" data-act="close">Cancel</button></div></div>');
+}
+function kpKey(k){
+  KP.err = '';
+  if (/^\d$/.test(k)){ if (KP.em){ if (KP.e.length < 3) KP.e += k; } else if (KP.m.replace('.', '').length < 10) KP.m += k; }
+  else if (k === '.'){ if (!KP.em && KP.m.indexOf('.') < 0) KP.m = (KP.m || '0') + '.'; }
+  else if (k === '±'){ if (KP.em) KP.eneg = !KP.eneg; else KP.neg = !KP.neg; }
+  else if (k === '×10ⁿ'){ if (!KP.em){ if (!KP.m) KP.m = '1'; KP.em = true; } }
+  else if (k === '⌫'){ if (KP.em){ if (KP.e) KP.e = KP.e.slice(0, -1); else if (KP.eneg) KP.eneg = false; else KP.em = false; } else if (KP.m) KP.m = KP.m.slice(0, -1); else KP.neg = false; }
+  else if (k === 'OK'){
+    var mv = parseFloat(KP.m);
+    if (!KP.m || isNaN(mv)){ KP.err = 'Type a number first.'; drawKeypad(); return; }
+    if (KP.em && !KP.e){ KP.err = 'Type the power of 10 (or tap ⌫).'; drawKeypad(); return; }
+    var val = (KP.neg ? -1 : 1) * mv * Math.pow(10, KP.em ? (KP.eneg ? -1 : 1) * parseInt(KP.e, 10) : 0);
+    var q = FORMULAS[S.free.fid].q[KP.sym], txt = (KP.neg ? '−' : '') + KP.m + (KP.em ? '×10' + sup((KP.eneg ? '-' : '') + KP.e) : '');
+    var raw = {m:KP.m, e:KP.e, neg:KP.neg, eneg:KP.eneg, em:KP.em};
+    if (q === 'temp' && S.free.units.T === '°C'){
+      if (val <= -273){ KP.err = 'Nothing is colder than −273 °C (0 K).'; drawKeypad(); return; }
+      var kk = Number((val + 273).toPrecision(10));
+      S.free.vals[KP.sym] = {val:kk, txt:String(kk), unit:'K', from:txt + ' °C', raw:raw};
+    } else {
+      if (val <= 0){ KP.err = q === 'temp' ? 'Kelvin must be above 0.' : 'This value must be above 0.'; drawKeypad(); return; }
+      S.free.vals[KP.sym] = {val:val, txt:txt, unit:unitFor(KP.sym), raw:raw};
+    }
+    KP = null; closeModal(); save(); render(); return;
+  }
+  drawKeypad();
+}
+function freeKnowns(){ var f = S.free; return tmplSyms(f.fid).filter(function(s){ return s !== f.U; }); }
+function valLabel(g){ return g.from ? g.from + ' → ' + g.txt + ' K' : g.txt + ' ' + g.unit; }
+function renderFree(){
+  var f = S.free, h = '', right = '';
+  var names = ['Law','Solve for','Values','Solve'];
+  h += '<div class="pills"><span class="lbl">Step</span>' + names.map(function(n, k){
+    var st = k + 1;
+    return '<button class="pill' + (st === f.step ? ' cur' : '') + (st < f.step ? ' done' : '') + '" data-act="fstep" data-arg="' + st + '"' + (st < f.step ? '' : ' disabled') + '>' + (st < f.step ? '✓ ' : st + ' ') + n + '</button>';
+  }).join('') + '</div>';
+  if (f.step === 1){
+    var a1 = '<div class="row">' + lawIds().map(function(id){ return '<button class="opt lawopt" data-act="fpick" data-arg="' + id + '"><span>' + esc(LAW[id].name) + '</span><span class="mini">' + formulaHTML(id) + '</span></button>'; }).join('') + '</div>';
+    h += qbox('STEP 1 OF 4 — LAW', 'Which <span class="kw">gas law</span> do you need?', 'For homework or lab calculations: pick the law, type your numbers, then solve it step by step.', a1, '');
+    right = '<div class="panel"><div class="boardt"><h2>Equation board</h2></div><div class="vis">' + lawCards(true) + '</div></div>';
+  } else {
+    h += '<div class="doneline">✓ ' + esc(LAW[f.fid].name) + ': <span class="mini">' + formulaHTML(f.fid) + '</span>' + (f.U && f.step > 2 ? ' · solve for ' + esc(sy(f.U)) : '') + '</div>';
+    if (f.step === 2){
+      var a2 = '<div class="row">' + tmplSyms(f.fid).map(function(s){ return '<button class="opt" data-act="fvar" data-arg="' + s + '"><span class="tile" style="font-size:1.05rem;height:1.6em">' + esc(sy(s)) + '</span><small style="color:#66727e">' + roleOf(s) + '</small></button>'; }).join('') + '</div>';
+      h += qbox('STEP 2 OF 4 — SOLVE FOR', 'Which variable are you <span class="kw">solving for</span>?', 'That’s the one you don’t have a number for.', a2, '');
+      right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(f.fid, freeUnits())) + '</div><div class="eqwrap">' + formulaHTML(f.fid) + '</div></div>';
+    } else if (f.step === 3){
+      var fq = FORMULAS[f.fid].q, has = function(t){ return Object.keys(fq).some(function(s){ return fq[s] === t; }); };
+      var unitsH = '';
+      if (has('pressure')) unitsH += '<div class="units"><span class="lb">Pressure:</span>' + ['atm','kPa','mmHg'].map(function(u){ return '<button class="opt' + (f.units.P === u ? ' sel' : '') + '" data-act="funit" data-arg="P:' + u + '">' + u + '</button>'; }).join('') + '</div>';
+      if (has('volume')) unitsH += '<div class="units"><span class="lb">Volume:</span>' + ['L','mL'].map(function(u){ return '<button class="opt' + (f.units.V === u ? ' sel' : '') + '" data-act="funit" data-arg="V:' + u + '">' + u + '</button>'; }).join('') + '</div>';
+      if (has('temp')) unitsH += '<div class="units"><span class="lb">Temperature:</span>' + ['K','°C'].map(function(u){ return '<button class="opt' + (f.units.T === u ? ' sel' : '') + '" data-act="funit" data-arg="T:' + u + '">' + u + '</button>'; }).join('') + (f.units.T === '°C' ? '<span class="qhint">°C is changed to K for you (+ 273).</span>' : '') + '</div>';
+      var kn = freeKnowns(), all = kn.every(function(s){ return f.vals[s]; });
+      var rows = '<div class="row">' + kn.map(function(s){
+        var g = f.vals[s];
+        return '<button class="opt" data-act="fslot" data-arg="' + s + '">' + esc(sy(s)) + ' = ' + (g ? '<b>' + esc(valLabel(g)) + '</b>' : '<span style="color:#8a96a2">tap to type</span> <small style="color:#66727e">' + esc(shownUnit(s)) + '</small>') + '</button>';
+      }).join('') + '</div>';
+      h += qbox('STEP 3 OF 4 — VALUES', 'Type the <span class="kw">values you know</span>.', 'Pick units first: 1 and 2 must use the same unit. Then tap a slot and type the number.', unitsH + rows, '');
+      h += '<div class="nextrow"><button class="big" data-act="fgo"' + (all ? '' : ' disabled') + '>Next ▶</button></div>';
+      var ctx = {U:f.U, fills:{}, vals:f.vals, act:'fslot'};
+      kn.forEach(function(s){ if (f.vals[s]) ctx.fills[s] = s; }); ctx.fills[f.U] = 'U';
+      right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(f.fid, freeUnits())) + '</div><div class="eqwrap">' + templateHTML(f.fid, ctx) + '</div><div class="status">Tap an empty slot to type its value.</div></div>';
+    } else {
+      var b = f.b;
+      h += boardLeft(b).replace(/STEP 1 OF 1/g, 'STEP 4 OF 4');
+      if (b.phase === 'done'){
+        h += '<div class="nextrow"><button class="big" data-act="fcopy">📋 Copy</button><button class="big" data-act="fmail">✉ Email using Google</button><button class="big" data-act="fprint">🖨 Print</button></div>' +
+          '<div class="nextrow"><button class="big ghost" data-act="fagain">↻ Same law, new numbers</button><button class="big ghost" data-act="fnew">New law</button></div><div id="fmsg" class="qhint"></div>';
+      }
+      right = boardRight(b);
+    }
+  }
+  LEFT.innerHTML = h;
+  RIGHT.innerHTML = right;
+}
+function freeSummary(){
+  var f = S.free, b = f.b, lines = [];
+  lines.push('Gas Law Calculations — Free Form');
+  lines.push('Law: ' + LAW[f.fid].name + ':  ' + formulaText(f.fid) + '   (solve for ' + sy(f.U) + ')');
+  lines.push('Values: ' + freeKnowns().map(function(s){ return sy(s) + ' = ' + valLabel(f.vals[s]); }).join(', '));
+  lines.push('Steps:');
+  lines.push('  1. Plug in:  ' + eqText(b.eq0));
+  b.moves.forEach(function(m, i){ lines.push('  ' + (i + 2) + '. ' + m.op + ' ' + m.label + ' on both sides:  ' + m.text); });
+  if (b.flipped) lines.push('     (flipped so ' + sy(f.U) + ' is on the left:  ' + eqText(b.eq) + ')');
+  lines.push('Rearranged formula:  ' + eqText(b.eq, true));
+  lines.push('Answer:  ' + ansText(b));
+  var s = senseText(b); if (s) lines.push('Check:  ' + s);
+  lines.push(''); lines.push(PAGE);
+  return lines.join('\n');
+}
+function freePrint(){
+  var f = S.free, b = f.b, P = document.getElementById('print');
+  var txt = freeSummary().split('\n');
+  P.innerHTML = '<h2>Gas Law Calculations: Free Form</h2><p><b>' + esc(LAW[f.fid].name) + '</b></p>' + formulaHTML(f.fid) +
+    '<p>' + txt.slice(2).map(esc).join('<br>').replace(/ {2}/g, '&nbsp;&nbsp;') + '</p><p><b>Rearranged formula:</b></p>' + eqHTML(b.eq, {sym:true}) +
+    '<p style="font-size:18pt"><b>Answer: ' + esc(ansText(b)) + '</b></p>';
+  window.print();
+}
+
+/* ===================================================================
+   RENDER + ACTIONS
+   =================================================================== */
+function render(){
+  ensureValid();
+  if (!unlocked(S.tab)) S.tab = 'learn';
+  renderTabs();
+  if (S.tab === 'learn') renderLearn();
+  else if (S.tab === 'guided') renderGuided();
+  else if (S.tab === 'prac') renderPractice();
+  else renderFree();
+  fitEqs();
+}
+function goTab(t){
+  if (!unlocked(t)){ modal('<h3>🔒 ' + esc(LOCKMSG[t]) + '</h3><p>The parts unlock in order: Learn → Guided → Practice. Free Form is always open.</p><div class="mbtns"><button class="big" data-act="close">OK</button></div>'); return; }
+  S.tab = t; LV.pick = null; LV.wrong = null; save(); render();
+  if (t === 'learn') startStop();
+  LEFT.scrollTop = 0;
+}
+function startStop(){ LV.pick = null; LV.wrong = null; render(); playFrames(); }
+
+var ACT = {
+  tab:function(a){ goTab(a); },
+  close:function(){ closeModal(); KP = null; },
+  /* learn */
+  lstop:function(a){ S.learn.cur = a; save(); startStop(); },
+  lopt:function(a){
+    var st = stopById(S.learn.cur), o = st.opts[+a];
+    if (o.ok){ LV.pick = +a; LV.wrong = null; S.learn.done[st.id] = 1; save(); }
+    else LV.wrong = +a;
+    render();
+  },
+  lnext:function(){ var l = ids(visL()), i = l.indexOf(S.learn.cur); if (i < l.length - 1){ S.learn.cur = l[i + 1]; save(); startStop(); } else goTab('guided'); },
+  /* board */
+  law:function(a){ var b = curBoard(); if (b) pickLaw(b, a); },
+  kel:function(a){ var b = curBoard(); if (b) doKelvin(b, a); },
+  chip:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; b.sel = b.sel === a ? null : a; b.fb = null; render(); },
+  slot:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; if (!b.sel){ if (!b.fills[a]){ b.fb = {ok:false, title:'', why:'Tap a value first, then tap its slot.'}; render(); } return; } placeChip(b, b.sel, a); },
+  op:function(a){ var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return; b.op = b.op === a ? null : a; b.fb = null; render(); },
+  schip:function(a){
+    var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return;
+    var c = solveChips(b.eq, b.p.U)[+a]; if (!c) return;
+    if (!b.op){ b.fb = {ok:false, title:'', why:'Tap an operation first (+ − × ÷), then a number.'}; render(); return; }
+    doMove(b, b.op, c.ids);
+  },
+  undo:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) undo(b); },
+  calc:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) calc(b); },
+  showme:function(){ var b = curBoard(); if (b) showMe(b); },
+  /* guided */
+  gprob:function(a){ S.guided.cur = a; S.guided.b = null; save(); render(); },
+  gnext:function(){ var l = ids(visG()), i = l.indexOf(S.guided.cur); if (i < l.length - 1){ S.guided.cur = l[i + 1]; S.guided.b = null; save(); render(); } else goTab('prac'); },
+  /* practice */
+  plvl:function(a){ S.prac.lvl = a; S.prac.b = null; save(); render(); },
+  pnext:function(a){
+    var pr = S.prac, l = ids(visP()), i = l.indexOf(pr.lvl);
+    if (a === 'lvl' && i < l.length - 1) pr.lvl = l[i + 1];
+    newPracProblem(); save(); render();
+    if (cntDone(visP(), pr.done) === l.length && !pr.cardShown){ pr.cardShown = 1; save(); openCard(); }
+  },
+  card:function(){ S.prac.cardShown = 1; save(); openCard(); },
+  cardcopy:function(){
+    var c = cardData(), text = cardText(c), cv = cardCanvas(c);
+    try {
+      if (navigator.clipboard && window.ClipboardItem){
+        cv.toBlob(function(blob){
+          navigator.clipboard.write([new ClipboardItem({'image/png':blob, 'text/plain':new Blob([text], {type:'text/plain'})})]).then(function(){ cardMsg('✓ Copied (picture + text). Paste it into Google Classroom or an email.'); },
+            function(){ copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text (this browser blocked the picture; use ⬇ Save PNG for it).' : 'Copy was blocked. Use ⬇ Save PNG instead.'); }); });
+        });
+        return;
+      }
+    } catch(e){}
+    copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text. Use ⬇ Save PNG for the picture.' : 'Copy was blocked. Use ⬇ Save PNG instead.'); });
+  },
+  cardpng:function(){
+    var cv = cardCanvas(cardData());
+    cv.toBlob(function(blob){ var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'gas-law-calculations-card.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000); cardMsg('✓ Saved the PNG to your Downloads.'); });
+  },
+  cardmail:function(){ gmail('Gas Law Calculations: Completion Card', cardText(cardData())); },
+  /* free */
+  fstep:function(a){ var st = +a, f = S.free; if (st >= f.step) return; if (st === 1) freeReset(1); else if (st === 2){ f.U = null; f.vals = {}; f.b = null; f.step = 2; } else { f.b = null; f.step = 3; } save(); render(); },
+  fpick:function(a){ var f = S.free; f.fid = a; f.U = null; f.vals = {}; f.b = null; f.step = 2; save(); render(); },
+  fvar:function(a){ var f = S.free; f.U = a; f.vals = {}; f.b = null; f.step = 3; save(); render(); },
+  funit:function(a){
+    var p = a.split(':'), f = S.free;
+    if (p[0] === 'T' && f.units.T !== p[1]) Object.keys(f.vals).forEach(function(s){ if (FORMULAS[f.fid].q[s] === 'temp') delete f.vals[s]; });
+    f.units[p[0]] = p[1];
+    Object.keys(f.vals).forEach(function(s){ if (FORMULAS[f.fid].q[s] !== 'temp') f.vals[s].unit = unitFor(s); });
+    save(); render();
+  },
+  fslot:function(a){ if (S.free.step !== 3 || a === S.free.U) return; openKeypad(a); },
+  kp:function(a){ if (KP) kpKey(a); },
+  fgo:function(){
+    var f = S.free; if (!freeKnowns().every(function(s){ return f.vals[s]; })) return;
+    var giv = {}; freeKnowns().forEach(function(s){ var g = f.vals[s]; giv[s] = {val:g.val, txt:g.txt, unit:g.unit, from:g.from}; });
+    f.b = newBoard('free', {fid:f.fid, U:f.U, givens:giv, aunit:unitFor(f.U)}); f.step = 4; save(); render();
+  },
+  fagain:function(){ var f = S.free; f.vals = {}; f.b = null; f.step = 3; save(); render(); },
+  fnew:function(){ freeReset(1); save(); render(); },
+  fcopy:function(){ copyText(freeSummary(), function(ok){ var el = document.getElementById('fmsg'); if (el) el.textContent = ok ? '✓ Copied. Paste it into your lab or homework.' : 'Copy was blocked by this browser.'; }); },
+  fmail:function(){ gmail('Gas Law Calculations: ' + LAW[S.free.fid].name, freeSummary()); },
+  fprint:function(){ freePrint(); }
+};
+
+COMBOBOX.addEventListener('change', function(){
+  S.combo = COMBOBOX.checked;
+  ensureValid(); save(); render();
+  if (S.tab === 'learn') playFrames();
+  toast(S.combo ? 'Combined gas law ON: a new Learn stop, Guided problem and Practice level were added' : 'Combined gas law OFF: those parts are hidden');
+});
+var suppressClick = false;
+document.addEventListener('click', function(e){
+  if (suppressClick) return;
+  var el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  var fn = ACT[el.dataset.act]; if (fn) fn(el.dataset.arg, el);
+});
+document.addEventListener('keydown', function(e){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.slot[data-act]')){ e.preventDefault(); e.target.click(); }
+  if (e.key === 'Escape') ACT.close();
+});
+/* drag a chip onto a slot */
+var drag = null;
+document.addEventListener('pointerdown', function(e){
+  var c = e.target.closest('.chip[data-act="chip"]'); if (!c || c.disabled) return;
+  drag = {el:c, sym:c.dataset.arg, x:e.clientX, y:e.clientY, ghost:null};
+});
+document.addEventListener('pointermove', function(e){
+  if (!drag) return;
+  if (!drag.ghost){
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 10) return;
+    var gh = drag.el.cloneNode(true); gh.classList.add('sel'); gh.classList.remove('glow');
+    gh.style.cssText = 'position:fixed;pointer-events:none;z-index:80;opacity:.92;margin:0';
+    document.body.appendChild(gh); drag.ghost = gh;
+  }
+  drag.ghost.style.left = (e.clientX - 30) + 'px'; drag.ghost.style.top = (e.clientY - 25) + 'px';
+});
+function endDrag(e, cancel){
+  if (!drag) return; var d = drag; drag = null;
+  if (!d.ghost) return;
+  d.ghost.remove(); suppressClick = true; setTimeout(function(){ suppressClick = false; }, 60);
+  if (cancel) return;
+  var el = document.elementFromPoint(e.clientX, e.clientY), s = el && el.closest('[data-act="slot"]'), b = curBoard();
+  if (s && b && b.phase === 'plug'){ b.sel = d.sym; placeChip(b, d.sym, s.dataset.arg); }
+}
+document.addEventListener('pointerup', function(e){ endDrag(e, false); });
+document.addEventListener('pointercancel', function(e){ endDrag(e, true); });
+window.addEventListener('resize', function(){ fitEqs(); });
+
+/* ---------- start ---------- */
+if (Q.get('mode') === 'free') S.tab = 'free';
+render();
+if (S.tab === 'learn') playFrames();
+var anyProgress = cntDone(STOPS, S.learn.done) || cntDone(GP, S.guided.done) || Object.keys(S.prac.count).length || S.free.fid;
+if (hadSave && anyProgress) setTimeout(function(){ toast('Welcome back — you’re right where you left off'); }, 300);
+window.__S = function(){ return S; };
+window.__T = {gen:gen, newBoard:newBoard, pickLaw:pickLaw, doKelvin:doKelvin, placeChip:placeChip, doMove:doMove, calc:calc, nextMove:nextMove, nextC:nextC, render:render};
+})();
+
+</script>
+</body>
+</html>
