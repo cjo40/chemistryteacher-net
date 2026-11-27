@@ -248,7 +248,7 @@
         "background radiation",
         "nuclear chemistry"
       ],
-      "about": "Students learn what alpha, beta and gamma radiation are, why ionizing and penetrating power are opposites, and how charged plates bend each type. In the Shielding Lab they block each source with skin, paper, wood, aluminum, lead or concrete and watch a Geiger counter (with real background radiation), then use those skills to identify mystery sources, including one that gives off both beta and gamma.",
+      "about": "Students learn what alpha, beta and gamma radiation are, why ionizing and penetrating power are opposites, and how charged plates bend each type. In the Shielding Lab they block each known source with paper, aluminum, lead or concrete, watch a Geiger counter (with real background radiation) and fill in counts-per-minute data tables, then test three mystery sources the same way to identify what each gives off, including one that gives off both beta and gamma.",
       "how": [
         "Work through the 8 Learn stops (Back/Next or tap a numbered stop).",
         "In the Lab, choose a source and drag one shield into the slot. Readings record automatically.",
