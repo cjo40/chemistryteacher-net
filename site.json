@@ -143,7 +143,23 @@
     "/graph-interpretation": "/reading-graphs",
     "/interpreting-data": "/reading-graphs",
     "/graph-bellringer": "/reading-graphs",
-    "/graph-warm-up": "/reading-graphs"
+    "/graph-warm-up": "/reading-graphs",
+    "/gas-law-calculations-practice": "/gas-law-calculations",
+    "/gas-law-problems": "/gas-law-calculations",
+    "/gas-law-practice": "/gas-law-calculations",
+    "/gas-law-calculator": "/gas-law-calculations",
+    "/gas-law-calculation": "/gas-law-calculations",
+    "/boyles-law": "/gas-law-calculations",
+    "/boyles-law-problems": "/gas-law-calculations",
+    "/charles-law": "/gas-law-calculations",
+    "/charles-law-problems": "/gas-law-calculations",
+    "/charless-law": "/gas-law-calculations",
+    "/gay-lussacs-law": "/gas-law-calculations",
+    "/gay-lussac-law": "/gas-law-calculations",
+    "/gay-lussacs-law-problems": "/gas-law-calculations",
+    "/combined-gas-law": "/gas-law-calculations",
+    "/combined-gas-law-problems": "/gas-law-calculations",
+    "/celsius-to-kelvin-gas-laws": "/gas-law-calculations"
   },
   "activities": {
     "dimensional-analysis": {
@@ -907,6 +923,42 @@
         "Teachers: add ?day=12 to the link to show a certain graph (for a sub or a demo). ⚙ Settings has Start today over and Reset all graphs."
       ],
       "classroom": "Use it as a 5–8 minute bellringer at the start of class: post the link once and students open it every day. Walk around and check the score badge and dots in the header, then go over the trickiest question on the projector. Everyone gets the same graph on the same day, so it works well for a quick class discussion.",
+      "bar": "tl"
+    },
+    "gas-law-calculations": {
+      "name": "Gas Law Calculations",
+      "title": "Gas Law Calculations Practice: Boyle's, Charles' & Gay-Lussac's Law Problems (with Combined Gas Law)",
+      "description": "Free step-by-step gas law problem practice: pick the law, convert °C to Kelvin, plug values into P₁V₁ = P₂V₂, V₁/T₁ = V₂/T₂ or P₁/T₁ = P₂/T₂, and solve. Optional combined gas law. Mistakes are explained.",
+      "unit": "Gases",
+      "order": 2,
+      "card": "Step-by-step gas law problems: which law? → °C to Kelvin → 1 = start, 2 = final → get the unknown alone. A teacher switch at the top adds the combined gas law.",
+      "topics": [
+        "Boyle's law calculations",
+        "Charles' law calculations",
+        "Gay-Lussac's law calculations",
+        "combined gas law (optional)",
+        "P₁V₁ = P₂V₂",
+        "V₁/T₁ = V₂/T₂",
+        "P₁/T₁ = P₂/T₂",
+        "P₁V₁/T₁ = P₂V₂/T₂",
+        "which gas law to use",
+        "what stays constant",
+        "converting °C to Kelvin (K = °C + 273)",
+        "start (1) vs final (2) values",
+        "direct vs inverse relationships",
+        "solving for T₂ on the bottom",
+        "atm, kPa, mmHg, L, mL"
+      ],
+      "about": "Students can name the gas laws but get stuck on the problems: which law, which number is P₁ and which is P₂, forgetting Kelvin, and solving for T when it's on the bottom. Each problem walks through up to four steps on the same equation board used in Solving for a Variable. Which law? asks what changes and what stays the same. Kelvin has students add 273 to every °C value, and subtracting or leaving it in °C is named as a mistake. Plug in has students tap each value into its slot; a value in the wrong slot bounces back with the reason (\"2.50 atm is the FINAL pressure — the problem says 'squeezed until' — so it goes in P₂\"). Solve has students tap × ÷ + − and the app does it to both sides, shows what cancels, and explains any wrong move with Undo. A Before → After picture of the gas (piston or sealed can, pressure gauge, thermometer, flame or ice) shows the two states with \"?\" on the unknown. After calculating it shows direct/inverse arrows (\"P ↑ V ↓ — inverse, makes sense ✓\"). The app does the arithmetic and rounds to 3 significant figures; answers are graded on value only. A big WITH / WITHOUT Combined Gas Law checkbox at the top lets the teacher include or leave out the combined gas law, and it can be read from across the room. Turning it on adds a Learn stop, a Guided problem, a Practice level and a choice in the Mixed level. Learn has 7 stops (8 with combined). Guided works 3 (or 4) problems together with the right button glowing. Practice has 4 (or 5) levels — Boyle's, Charles', Gay-Lussac's, [combined], then Mixed, where students must pick the law. New random numbers in atm, kPa, mmHg, L and mL, often with °C temperatures. 3 correct in a row with no mistakes unlocks the next level, and Show me plays the solution after 2 misses. Free Form solves any homework or lab problem with an on-screen keypad and K or °C input. Progress saves on the device, tabs show % complete, and the completion card (copy, PNG or email) shows the combined-law setting and mistakes by type. No student names are collected.",
+      "how": [
+        "Teachers: check or uncheck WITH / WITHOUT Combined Gas Law at the top before students start (or link with ?combined=on or ?combined=off).",
+        "Learn: go through the stops and answer each yellow question box.",
+        "Guided: do every tap yourself — the glowing button and the 👉 hint show what's next and why.",
+        "Practice: pick the law (Mixed level), add 273 to °C temperatures, tap each value into its slot (1 = before the change, 2 = after), then tap an operation and a number to get the unknown alone. Get 3 in a row with no mistakes to unlock the next level.",
+        "Free Form: pick the law and the unknown, choose units, type values on the keypad, solve, then Copy, Email using Google or Print the steps.",
+        "Teachers: ?unlock=all opens every part for a demo, ?mode=free opens Free Form directly, and ?email=you@school.org fills in your address on the email buttons."
+      ],
+      "classroom": "Use after the Gas Law Lab: do Learn and Guided together on the projector, then let students work through Practice on their own. Leave the combined gas law off the first day and turn it on later. Walk around and check the WITH/WITHOUT switch and the green ✓ 100% tabs. Students can use Free Form for lab and homework gas law calculations.",
       "bar": "tl"
     }
   }
