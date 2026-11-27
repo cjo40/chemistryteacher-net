@@ -6,7 +6,7 @@ Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosti
 
 <!-- ACTIVITIES:START (made by make_readme.py from site.json; edit site.json, not this list) -->
 
-## All activities (24)
+## All activities (25)
 
 Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones) and needs no login. Open them at [chemistryteacher.net](https://chemistryteacher.net).
 
@@ -55,6 +55,12 @@ Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones
 |---|---|---|
 | **[Gas Law Lab](https://chemistryteacher.net/gas-laws)** | A syringe in a water bath: change pressure, volume and temperature, collect data, graph it, and find absolute zero. | gas laws, Boyle's law, Charles's law, Gay-Lussac's law, combined gas law, absolute zero, pressure volume temperature |
 | **[Gas Law Calculations](https://chemistryteacher.net/gas-law-calculations)** | Step-by-step gas law problems: which law? → °C to Kelvin → 1 = start, 2 = final → get the unknown alone. A teacher switch at the top adds the combined gas law. | Boyle's law calculations, Charles' law calculations, Gay-Lussac's law calculations, combined gas law (optional), P₁V₁ = P₂V₂, V₁/T₁ = V₂/T₂, P₁/T₁ = P₂/T₂, P₁V₁/T₁ = P₂V₂/T₂ |
+
+### Solutions
+
+| Activity | What students do | Topics |
+|---|---|---|
+| **[Molarity & Dilution Calculations](https://chemistryteacher.net/molarity-dilution)** | Step-by-step molarity (M = n/V) and dilution (M₁V₁ = M₂V₂) problems: grams → moles and mL → L with dimensional analysis, plug in, get the unknown alone. A big switch at the top picks Molarity or Dilution. | molarity calculations, M = n / V (moles ÷ liters), dilution calculations, M₁V₁ = M₂V₂, grams to moles with dimensional analysis, moles to grams (grams needed to make a solution), mL to L conversion, conversion factors and canceling units |
 
 ### Energy & Thermochemistry
 

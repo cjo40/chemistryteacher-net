@@ -13,6 +13,7 @@
     "Atomic Structure",
     "Bonding & Naming",
     "Gases",
+    "Solutions",
     "Energy & Thermochemistry",
     "More Activities"
   ],
@@ -159,7 +160,25 @@
     "/gay-lussacs-law-problems": "/gas-law-calculations",
     "/combined-gas-law": "/gas-law-calculations",
     "/combined-gas-law-problems": "/gas-law-calculations",
-    "/celsius-to-kelvin-gas-laws": "/gas-law-calculations"
+    "/celsius-to-kelvin-gas-laws": "/gas-law-calculations",
+    "/molarity": "/molarity-dilution",
+    "/molarity-calculations": "/molarity-dilution",
+    "/molarity-problems": "/molarity-dilution",
+    "/molarity-practice": "/molarity-dilution",
+    "/molarity-calculator": "/molarity-dilution",
+    "/dilution": "/molarity-dilution",
+    "/dilutions": "/molarity-dilution",
+    "/dilution-calculations": "/molarity-dilution",
+    "/dilution-problems": "/molarity-dilution",
+    "/dilution-practice": "/molarity-dilution",
+    "/m1v1-m2v2": "/molarity-dilution",
+    "/m1v1m2v2": "/molarity-dilution",
+    "/molarity-and-dilution": "/molarity-dilution",
+    "/molarity-dilution-calculations": "/molarity-dilution",
+    "/solution-concentration": "/molarity-dilution",
+    "/molar-concentration": "/molarity-dilution",
+    "/grams-to-molarity": "/molarity-dilution",
+    "/stock-solution": "/molarity-dilution"
   },
   "activities": {
     "dimensional-analysis": {
@@ -959,6 +978,41 @@
         "Teachers: ?unlock=all opens every part for a demo, ?mode=free opens Free Form directly, and ?email=you@school.org fills in your address on the email buttons."
       ],
       "classroom": "Use after the Gas Law Lab: do Learn and Guided together on the projector, then let students work through Practice on their own. Leave the combined gas law off the first day and turn it on later. Walk around and check the WITH/WITHOUT switch and the green ✓ 100% tabs. Students can use Free Form for lab and homework gas law calculations.",
+      "bar": "tl"
+    },
+    "molarity-dilution": {
+      "name": "Molarity & Dilution Calculations",
+      "title": "Molarity & Dilution Calculations Practice: M = n/V and M₁V₁ = M₂V₂ Problems Step by Step",
+      "description": "Free step-by-step molarity and dilution practice: convert grams to moles and mL to L with dimensional analysis, plug into M = n/V or M₁V₁ = M₂V₂, and solve. Includes grams needed, stock solutions and water added. Mistakes are explained.",
+      "unit": "Solutions",
+      "order": 1,
+      "card": "Step-by-step molarity (M = n/V) and dilution (M₁V₁ = M₂V₂) problems: grams → moles and mL → L with dimensional analysis, plug in, get the unknown alone. A big switch at the top picks Molarity or Dilution.",
+      "topics": [
+        "molarity calculations",
+        "M = n / V (moles ÷ liters)",
+        "dilution calculations",
+        "M₁V₁ = M₂V₂",
+        "grams to moles with dimensional analysis",
+        "moles to grams (grams needed to make a solution)",
+        "mL to L conversion",
+        "conversion factors and canceling units",
+        "solving for V on the bottom",
+        "stock (1) vs diluted (2) solutions",
+        "making a solution from stock",
+        "how much water to add (V₂ − V₁)",
+        "matching volume units in dilution",
+        "concentration and molar mass"
+      ],
+      "about": "Students can say \"moles over liters\" but get stuck on real problems: grams instead of moles, mL instead of L, which number is the stock, and how much water to add. A big MOLARITY / DILUTION switch at the top (orange on navy, aqua on teal) picks the topic and can be read from across the room; each topic keeps its own progress. Unit changes are done the way chemistry class does them, with dimensional analysis: start with what you're given over 1, tap the conversion factor that goes in the box (1 mol / molar mass g, 1 L / 1000 mL, 1000 mL / 1 L), and the canceled units are crossed out in red. A factor turned upside down is named as a mistake (\"grams are on top twice, so nothing cancels\"). Then students tap each value into its slot in M = n / V or M₁V₁ = M₂V₂ (a value in the wrong slot bounces back with the reason) and get the unknown alone on the same equation board used in Solving for a Variable. Finishing steps cover grams needed (moles × molar mass g / 1 mol), answers in mL, and water added = V₂ − V₁. Pictures show a beaker where the dots are moles of solute and darker color means more concentrated (CuSO₄ blue, NiCl₂ green, KMnO₄ purple and more), a stock → diluted strip with M ↓ V ↑ arrows, an mL ⇄ L graduated cylinder, and 1-mol scoops for grams ⇄ moles. The app does the arithmetic and rounds to 3 significant figures; answers are graded on value only. Molarity: Learn has 8 stops, Guided works 6 problems, Practice has 5 levels (find M, find n, find V, grams ⇄ moles, mixed). Dilution: Learn has 8 stops, Guided works 4 problems, Practice has 4 levels (find M, find V, make it from stock, mixed with mL and L). 3 correct in a row with no mistakes unlocks the next level, and Show me plays the solution after 2 misses. Free Form solves any homework or lab problem with an on-screen keypad, grams or moles, and mL or L. Progress saves on the device, tabs show % complete, and the completion card (copy, PNG or email) shows the topic and mistakes by type. No student names are collected.",
+      "how": [
+        "Teachers: set the MOLARITY / DILUTION switch at the top before students start (or link with ?topic=molarity or ?topic=dilution).",
+        "Learn: go through the stops and answer each yellow question box.",
+        "Guided: do every tap yourself. The glowing button and the 👉 hint show what's next and why.",
+        "Practice: change grams to moles and mL to L by tapping the conversion factor that cancels the units, tap each value into its slot (dilution: 1 = stock, 2 = diluted), then tap an operation and a number to get the unknown alone. Get 3 in a row with no mistakes to unlock the next level.",
+        "Free Form: pick the unknown, choose units (mol or g, L or mL), type values on the keypad, solve, then Copy, Email using Google or Print the steps.",
+        "Teachers: ?unlock=all opens every part for a demo, ?mode=free opens Free Form directly, and ?email=you@school.org fills in your address on the email buttons."
+      ],
+      "classroom": "Do Molarity Learn and Guided together on the projector, then let students work through Practice on their own. Switch to Dilution on another day. Walk around and check the color of the switch at the top (orange = Molarity, aqua = Dilution) and the green ✓ 100% tabs. Students can use Free Form for lab and homework solution calculations.",
       "bar": "tl"
     }
   }
