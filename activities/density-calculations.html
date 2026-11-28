@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Density Calculations Trainer (D = m/V, Displacement &amp; L × W × H)</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#eef1f5;color:#15191e;-webkit-tap-highlight-color:transparent;font-size:16px}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default}
+/* header */
+header{display:flex;align-items:center;gap:10px;min-height:56px;padding:5px 10px 5px 64px;background:#1f3a5f;color:#fff;flex-wrap:wrap}
+header h1{font-size:1.05rem;margin:0;font-weight:700;line-height:1.15}
+header h1 small{display:block;font-weight:500;font-size:.75rem;opacity:.85}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{min-height:46px;min-width:96px;padding:3px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.35);background:#2d4f7c;color:#fff;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.tab small{font-weight:600;font-size:.74rem;opacity:.95;margin-top:2px}
+.tab.on{background:#fff;color:#1f3a5f;border-color:#fff}
+.tab.full{background:#1d7a35;border-color:#9fe0b0;color:#fff}
+.tab.full.on{box-shadow:0 0 0 3px #fff inset}
+.tab.lock{opacity:.62}
+.cband{margin:8px 0;padding:6px 12px;border-radius:10px;font-weight:900;letter-spacing:.03em}
+.solcard{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.solcard .gl{text-align:left;font-size:1.02rem}
+.solcard .gst{text-align:left;text-transform:none;font-size:.85rem;letter-spacing:0}
+.sm{color:#7a8692;font-weight:700;font-size:.85rem}
+.garr{display:flex;flex-direction:column;align-items:center}
+.garr small{font-size:.72rem;font-weight:900;color:#2b6cb0;letter-spacing:.02em}
+.vcard .eq{font-size:1.4rem}
+/* dimensional analysis: units shown full size so students see them cancel */
+.du .u{font-size:.68em;font-weight:800;color:#2b6cb0;margin-left:.14em;position:relative;display:inline-block}
+.du .u.cu{color:#b3261e}
+.du .u.cu::after{content:"";position:absolute;left:50%;width:1.5em;margin-left:-.75em;top:50%;border-top:.15em solid #b3261e;transform:rotate(-35deg)}
+.dabox{display:inline-flex;align-items:center;justify-content:center;min-width:2.6em;min-height:2.2em;border:.07em dashed #f29d12;border-radius:.2em;background:#fff7e6;color:#c56a00;font-weight:900}
+.daq{margin:6px 0}
+.qtext .daq .eq{font-size:1.5rem;justify-content:flex-start;display:flex}
+.kbtn .dab{font-size:1.15rem;display:inline-flex}
+.opt .eq.dab{font-size:1.1rem;display:inline-flex}
+.mtab .eq.da{font-size:1rem}
+/* layout */
+main{height:calc(100% - 56px);display:grid;grid-template-columns:minmax(380px,44%) 1fr;gap:12px;padding:10px 12px}
+.col{overflow:auto;min-height:0;padding-bottom:6px}
+.panel{background:#fff;border:1px solid #d5dbe2;border-radius:14px;padding:12px}
+#right .panel{min-height:100%;display:flex;flex-direction:column;gap:10px}
+/* step pills */
+.pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.pills .lbl{font-weight:700;color:#3b4652;margin-right:2px;font-size:.9rem}
+.pill{min-width:44px;min-height:40px;padding:2px 10px;border-radius:20px;border:2px solid #b9c3ce;background:#fff;font-weight:700;color:#3b4652}
+.pill.cur{border-color:#1f3a5f;background:#1f3a5f;color:#fff}
+.pill.done{border-color:#1d7a35;color:#1d7a35;background:#e6f4ea}
+.pill.cur.done{background:#1d7a35;color:#fff}
+.pill:disabled{opacity:.45}
+.pill.cur:disabled,.pill.done:disabled{opacity:1}
+.streak{margin-left:auto;display:flex;gap:4px;align-items:center;font-size:.85rem;font-weight:700;color:#3b4652}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid #1d7a35;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff}
+.dot.on{background:#1d7a35}
+/* gray reference boxes */
+.gray{background:#eceff3;border:1px solid #cfd6de;border-radius:10px;padding:8px 12px;color:#26303a}
+.gray .t{font-size:.75rem;font-weight:800;letter-spacing:.04em;color:#5a6672;text-transform:uppercase;margin-bottom:2px}
+.teach{font-size:1.02rem;line-height:1.4;margin:0 0 8px}
+.story{margin-bottom:8px;font-size:1rem;line-height:1.38}
+.showclue .clue{color:#b3141a;text-decoration:underline;text-decoration-color:#d4202a;text-decoration-thickness:2px;text-underline-offset:3px;font-weight:700}
+.clue{text-decoration:none}
+/* question box */
+.qbox{border:5px solid #f29d12;border-radius:14px;background:#fffdf7;overflow:hidden;margin-bottom:8px}
+.qhead{background:#f29d12;color:#2b1a00;font-weight:800;font-size:.85rem;letter-spacing:.04em;padding:4px 10px}
+.qbody{padding:8px 12px 10px}
+.qtext{font-size:1.22rem;font-weight:800;line-height:1.3}
+.kw{color:#b3141a;text-decoration:underline;text-decoration-color:#d4202a;text-decoration-thickness:3px;text-underline-offset:3px}
+.qhint{font-size:.92rem;color:#4a5560;margin-top:3px}
+.ans{border:2px dashed #9aa6b2;border-radius:10px;padding:5px 8px 7px;margin-top:6px;background:#fff}
+.anslbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#6a7682;margin-bottom:5px}
+.row{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.row+.row{margin-top:7px}
+.opt{min-height:48px;padding:6px 14px;border-radius:10px;border:2px solid #9aa6b2;background:#f7f9fb;font-weight:700;font-size:1.05rem;display:inline-flex;align-items:center;gap:6px}
+.opt:hover:not(:disabled){border-color:#1f3a5f}
+.opt.right{background:#e6f4ea;border-color:#1d7a35;color:#145a27}
+.opt.wrong{background:#fdecea;border-color:#b3261e;color:#8c1d18}
+.lawopt{flex-direction:column;align-items:flex-start;gap:2px;padding:6px 12px}
+.lawopt .mini .eq{font-size:1rem}
+.opbtn{min-width:52px;min-height:46px;border-radius:10px;border:2px solid #1f3a5f;background:#fff;font-size:1.45rem;font-weight:800;color:#1f3a5f}
+.opbtn.sel{background:#1f3a5f;color:#fff}
+.kbtn{min-height:52px;min-width:110px;padding:6px 16px;border-radius:10px;border:2px solid #1f3a5f;background:#fff;font-size:1.25rem;font-weight:800;color:#1f3a5f}
+.kbtn.wrong{background:#fdecea;border-color:#b3261e;color:#8c1d18}
+.undo{min-height:46px;padding:4px 12px;border-radius:10px;border:2px solid #6a7682;background:#fff;font-weight:700;margin-left:auto}
+.chip{min-height:46px;padding:4px 12px;border-radius:12px;border:2px solid #2b6cb0;background:#eef5fd;font-weight:800;font-size:1.12rem;color:#123;display:inline-flex;align-items:baseline;gap:4px;touch-action:none;user-select:none;-webkit-user-select:none}
+.chip small,.tk small{font-size:.62em;color:#66727e;font-weight:600}
+.chip.sel{background:#2b6cb0;color:#fff;border-color:#174a80}
+.chip.sel small{color:#dbe8f7}
+.chip.used{display:none}
+.chip.grp{border-style:double;border-width:4px}
+.big{min-height:52px;padding:6px 22px;border-radius:12px;border:none;background:#1f3a5f;color:#fff;font-weight:800;font-size:1.15rem}
+.big.green{background:#1d7a35}
+.big.ghost{background:#fff;color:#1f3a5f;border:2px solid #1f3a5f}
+.big:disabled{opacity:.45}
+.nextrow{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 8px}
+.fb{margin-top:8px;border-radius:10px;padding:7px 10px;font-size:.98rem;line-height:1.35}
+.fb.bad{background:#fdecea;border:2px solid #b3261e;color:#6f1510}
+.fb.good{background:#e6f4ea;border:2px solid #1d7a35;color:#0f4720}
+.fb.note{background:#fff7e6;border:2px solid #f29d12;color:#5a3a00}
+.fb b{display:block}
+.doneline{background:#e6f4ea;border:1px solid #8fcca0;border-left:6px solid #1d7a35;color:#0f4720;border-radius:8px;padding:4px 10px;font-weight:700;font-size:.92rem;margin-bottom:6px}
+.measuring *,.measuring *::after{animation:none!important;transition:none!important}
+.dl2{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+.glow{animation:glow 1.1s ease-in-out infinite;position:relative;z-index:1}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(242,157,18,.9)}50%{box-shadow:0 0 0 7px rgba(242,157,18,.35)}}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* equation board */
+.boardt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.boardt h2{margin:0;font-size:1rem;color:#1f3a5f}
+.fcard{display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
+.fcard.moved{background:#fff7e6;border-color:#f29d12}
+.fcard .t{line-height:1.15}
+.fcard .eq{font-size:1.8rem;gap:.25em}
+.ann{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05}
+.ann .ar{color:#c8102e;font-size:.7em;font-weight:900;line-height:.9}
+.ann .al{color:#c8102e;font-size:.5em;font-weight:800;white-space:nowrap;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.ann .al em{font-style:normal;text-transform:uppercase;font-size:.85em;letter-spacing:.03em}
+.chip .role{font-style:normal;font-size:.62em;font-weight:800;color:#fff;background:#c8102e;border-radius:6px;padding:1px 5px;margin-left:3px;text-transform:uppercase;letter-spacing:.03em;align-self:center}
+.chip.sel .role{background:#fff;color:#c8102e}
+.eqwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:120px;border:2px solid #e1e6ec;border-radius:14px;background:#fbfcfe;padding:10px 6px;overflow:hidden}
+.eq{display:flex;align-items:center;justify-content:center;gap:.3em;font-size:2.3rem;font-weight:700;white-space:nowrap;max-width:100%}
+.eqs{padding:0 .15em;color:#1f3a5f}
+.side{display:inline-flex;align-items:center;gap:.18em}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.fn,.fd{display:flex;align-items:center;gap:.18em;padding:0 .2em}
+.fn{border-bottom:.08em solid currentColor;padding-bottom:.08em}
+.fd{padding-top:.08em}
+.times{color:#5d6975;font-weight:600;font-size:.8em}
+.tk{display:inline-flex;align-items:baseline;gap:.12em;transition:opacity .5s}
+.tk small{font-size:.42em}
+.tile{display:inline-flex;align-items:center;justify-content:center;min-width:1.25em;padding:0 .22em;height:1.3em;border-radius:.22em;background:#6a2fb0;color:#fff;font-weight:800;font-size:.92em}
+.symtk{font-style:italic;font-weight:700;color:#26303a}
+.cst{color:#1f3a5f}
+.x{position:relative;opacity:.35}
+.x::after{content:"";position:absolute;left:-4%;right:-4%;top:50%;border-top:.09em solid #b3261e;transform:rotate(-18deg)}
+.nw{animation:pop .5s}
+@keyframes pop{0%{transform:scale(1.5);color:#c56a00}100%{transform:scale(1)}}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:2.1em;min-height:1.45em;padding:0 .2em;border:.07em dashed #6a7682;border-radius:.2em;background:#fff;cursor:pointer;color:#7a8692;font-style:italic;font-size:.95em}
+.slot.filled{border-style:solid;border-color:#2b6cb0;background:#eef5fd;color:#123;font-style:normal}
+.slot.unk{border-color:#6a2fb0;background:#f5effc}
+.slot.tgt{outline:.1em solid #f29d12}
+.paren{color:#5d6975;font-weight:500}
+.status.bad{color:#b3261e}
+.status{font-size:1.15rem;font-weight:800;color:#1d7a35;text-align:center;min-height:1.6em}
+.answer{font-size:1.9rem;font-weight:800;text-align:center;color:#0f4720;background:#e6f4ea;border:2px solid #1d7a35;border-radius:12px;padding:6px}
+.answer small{font-size:.55em;color:#2d5d3a}
+.sense{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;background:#f1faf3;border:2px dashed #1d7a35;border-radius:12px;padding:6px 10px;color:#0f4720;font-weight:700}
+.sense .arw{font-size:1.6rem;font-weight:900;white-space:nowrap}
+.sense .arw i{font-style:normal;color:#b3141a}
+.flipnote{font-size:.85rem;color:#5a6672;font-weight:600;margin-top:4px}
+/* before -> after gas pictures */
+.strip{display:flex;align-items:stretch;justify-content:center;gap:6px;flex-wrap:wrap}
+.gs{flex:1 1 0;min-width:140px;max-width:250px;border:2px solid #d5dbe2;border-radius:12px;background:#fbfcfe;padding:4px 6px 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.gs.after{border-color:#c9b3e6;background:#fbf8ff}
+.gst{font-size:.72rem;font-weight:900;letter-spacing:.06em;color:#5a6672;text-transform:uppercase}
+.gl{font-size:.95rem;font-weight:800;line-height:1.3;color:#15191e}
+.gl .sm{color:#7a8692;font-weight:700;font-size:.85rem}
+.gl .tile{font-size:.9rem;height:1.4em}
+.garr{align-self:center;font-size:2rem;color:#1f3a5f;font-weight:900}
+.gsvg{display:block;max-width:100%;height:auto}
+.gsvg .pt{animation:jig .6s ease-in-out infinite alternate}
+.gsvg.fast .pt{animation-duration:.28s}
+.gsvg.slow .pt{animation-duration:1.15s}
+@keyframes jig{0%{transform:translate(0,0)}100%{transform:translate(3px,-3px)}}
+/* learn visuals */
+.vis{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.vcard{border:2px solid #d5dbe2;border-radius:12px;padding:10px 16px;background:#fbfcfe;min-width:260px}
+.vcard.ok{border-color:#1d7a35;background:#f1faf3}
+.vcard .h{font-weight:800;margin-bottom:6px}
+.vcard .eq{font-size:1.8rem}
+.lcards{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.lcard{flex:1 1 0;min-width:150px;max-width:230px;border:2px solid #d5dbe2;border-radius:12px;background:#fbfcfe;padding:6px 8px 8px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.lcard .h{font-weight:900;color:#1f3a5f}
+.lcard .eq{font-size:1.2rem}
+.lcard .same{font-size:.85rem;font-weight:800;color:#5a6672;background:#eceff3;border-radius:8px;padding:2px 8px}
+.lcard .rel{font-size:1.15rem;font-weight:900;color:#b3141a}
+.lcard .rel small{display:block;font-size:.72rem;color:#5a6672;letter-spacing:.05em;text-transform:uppercase}
+.mtab{border-collapse:collapse;font-size:1rem;width:100%;max-width:600px}
+.mtab td,.mtab th{border:1px solid #d5dbe2;padding:6px 8px;text-align:left;vertical-align:middle}
+.mtab th{background:#eceff3;font-size:.85rem}
+.mtab .w{color:#8c1d18;background:#fdf3f2}
+.mtab .r{color:#145a27;background:#f1faf3}
+.mtab .eq{font-size:1.1rem;justify-content:flex-start;display:inline-flex;vertical-align:middle}
+.mini{display:inline-flex;vertical-align:middle}
+.mini .eq{font-size:1rem;gap:.2em}
+.mini .tk small{font-size:.6em}
+.opt.sm{min-height:44px;padding:4px 10px;font-size:.95rem}
+.opt .eq{font-size:1.25rem}
+.qtext .eq{font-size:1em;display:inline-flex}
+.frame{font-size:.95rem;font-weight:800;color:#c56a00;min-height:1.4em}
+.storyhl{font-size:1.05rem;line-height:1.5;text-align:left;max-width:560px}
+.storyhl span{border-radius:4px;padding:0 2px;transition:background .3s}
+.storyhl .on1{background:#dbeaf8;outline:2px solid #2b6cb0}
+.storyhl .on2{background:#efe4fb;outline:2px solid #6a2fb0}
+/* modal + toast + keypad */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:10px}
+.mbox{background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:96vh;overflow:auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.mbox h3{margin:0 0 8px;color:#1f3a5f}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1f3a5f;color:#fff;padding:10px 18px;border-radius:24px;font-weight:700;z-index:60;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:opacity .6s}
+.kp{max-width:360px}
+.kpd{font-size:1.9rem;font-weight:800;border:2px solid #9aa6b2;border-radius:10px;padding:6px 10px;min-height:56px;text-align:right;background:#fbfcfe;overflow:auto;white-space:nowrap}
+.kpd small{font-size:.5em;color:#66727e}
+.kpg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.kpg button{min-height:56px;border-radius:10px;border:2px solid #b9c3ce;background:#f7f9fb;font-size:1.35rem;font-weight:800}
+.kpg .ok{background:#1d7a35;color:#fff;border-color:#1d7a35}
+.kperr{color:#8c1d18;font-weight:700;min-height:1.3em;margin-top:6px}
+.card{border:3px solid #1f3a5f;border-radius:14px;padding:12px 16px}
+.card table{border-collapse:collapse;width:100%}
+.card td{padding:4px 6px;border-bottom:1px solid #e1e6ec}
+.card td:last-child{text-align:right;font-weight:800}
+.units{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;font-weight:700}
+.units .lb{min-width:96px}
+.units .opt{min-height:44px;padding:4px 12px;font-size:.95rem}
+.units .opt.sel{background:#1f3a5f;color:#fff;border-color:#1f3a5f}
+#print{display:none}
+@media (max-width:900px){
+  main{display:block;height:auto}
+  .col{overflow:visible}
+  #right{margin-top:10px}
+  .eq{font-size:1.8rem}
+}
+@media print{
+  header,main,.modal,.toast{display:none!important}
+  #print{display:block;padding:20px;font-size:14pt}
+  #print .eq{font-size:20pt;justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== density additions ===== */
+.kbtn small{display:block;font-size:.72rem;font-weight:800;color:#5a6672;margin-top:2px}
+.kbtn.wrong small{color:#8c1d18}
+.kbtn.two{line-height:1.15;padding:5px 14px}
+.dragtip{font-size:.82rem;color:#5a6672;font-weight:700;margin-top:6px}
+/* volume-method slider (big + color-coded so the teacher can read it from across the room) */
+.vsw{display:flex;gap:4px;padding:4px;border-radius:16px;border:3px solid #1f3a5f;background:#dfe5ec;min-height:64px;width:100%;cursor:pointer}
+.vsw:focus-visible{outline:3px solid #f29d12;outline-offset:2px}
+.vsw .seg{flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px 10px;border-radius:12px;color:#5a6672;line-height:1.05;transition:background .2s,color .2s}
+.vsw .seg b{font-size:1.3rem;font-weight:900;letter-spacing:.04em}
+.vsw .seg small{font-size:.8rem;font-weight:800;margin-top:3px}
+.vm-disp .vsw .s-disp{background:#2b6cb0;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.vm-lwh .vsw .s-lwh{background:#f29d12;color:#2b1a00;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.vswlbl{font-size:.75rem;font-weight:900;letter-spacing:.06em;color:#5a6672;text-transform:uppercase;margin-bottom:-4px}
+/* lab bench */
+.bench{width:100%;height:auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none;border:2px solid #e1e6ec;border-radius:14px;background:#fbfcfe}
+.bench .ldrag{cursor:grab}
+.bench .ldrag:active{cursor:grabbing}
+.bench .hot{animation:hot 1.1s ease-in-out infinite}
+@keyframes hot{0%,100%{opacity:1}50%{opacity:.45}}
+.drop{animation:drop 1.1s cubic-bezier(.5,0,.8,1) both}
+@keyframes drop{from{transform:translateY(var(--dy0))}to{transform:none}}
+.rise{animation:rise .7s ease-out 1s both}
+@keyframes rise{from{transform:translateY(var(--rz))}to{transform:none}}
+.bob{animation:bob 1.6s ease-in-out 1.2s infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(3px)}}
+.ntab{border-collapse:collapse;width:100%;font-size:.9rem;margin-top:8px}
+.ntab th,.ntab td{border:1px solid #d5dbe2;padding:4px 6px;text-align:left}
+.ntab th{background:#eceff3;font-size:.75rem;text-transform:uppercase;letter-spacing:.03em}
+.ntab tr.cur td{background:#fff7e6}
+.ntab td.ok{color:#145a27;font-weight:800}
+.idgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px}
+.idgrid .opt{flex-direction:column;align-items:flex-start;gap:0;min-height:52px;padding:4px 10px}
+.idgrid .opt small{font-weight:700;color:#5a6672;font-size:.8rem}
+.dtab{border-collapse:collapse;font-size:.92rem}
+.dtab td,.dtab th{border:1px solid #d5dbe2;padding:3px 8px}
+.dtab th{background:#eceff3}
+.lcards .lcard svg{max-width:100%}
+.lsmall .eq{font-size:1.8rem}
+.late{animation:late .4s ease 1.7s both}
+@keyframes late{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Density<small>Calculations Trainer · D = m / V</small></h1>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main>
+  <section class="col" id="left"></section>
+  <section class="col" id="right"></section>
+</main>
+<div id="print"></div>
+<script>
+/* ===== EQUATION ENGINE (no DOM) ===== */
+var SYMS = {M1:'M₁',M2:'M₂',V1:'V₁',V2:'V₂',T1:'T₁',T2:'T₂',P1:'P₁',P2:'P₂',dT:'ΔT',dH:'ΔH',H:'[H⁺]',OH:'[OH⁻]',PY:'% yield',act:'actual',theo:'theoretical'};
+function sy(s){ return SYMS[s] || s; }
+var SUPM = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':''};
+function sup(s){ return String(s).split('').map(function(c){ return SUPM[c] !== undefined ? SUPM[c] : c; }).join(''); }
+function fmt3(x){
+  if (!isFinite(x) || isNaN(x)) return '—';
+  if (x === 0) return '0';
+  var a = Math.abs(x);
+  if (a >= 1e5 || a < 1e-3){ var p = x.toExponential(2).split('e'); return p[0] + '×10' + sup(parseInt(p[1], 10)); }
+  if (a >= 1000) return String(Math.round(Number(x.toPrecision(3))));
+  var s = Number(x).toPrecision(3);
+  if (s.indexOf('e') >= 0) s = String(Number(s));
+  if (s.indexOf('.') < 0 && /0$/.test(s)) s += '.';
+  return s;
+}
+function r3(x){ return Number(Number(x).toPrecision(3)); }
+
+var CONSTS = {
+  'c:R':  {val:0.0821, txt:'0.0821', unit:'L·atm/mol·K', name:'R'},
+  'c:NA': {val:6.02e23, txt:'6.02×10²³', unit:'/mol', name:'6.02×10²³'},
+  'c:100':{val:100, txt:'100', unit:'', name:'100'},
+  'c:14': {val:14, txt:'14', unit:'', name:'14'}
+};
+
+/* quantity types: name + whether a slot's unit is a ___ unit */
+var QT = {
+  density:'density', mass:'mass', volume:'volume', molarity:'concentration (molarity)', moles:'moles',
+  heat:'energy (heat)', sheat:'specific heat', dtemp:'temperature change', temp:'temperature',
+  pressure:'pressure', mm:'molar mass', count:'particle count', dh:'heat per gram', pct:'percent',
+  ph:'pH', poh:'pOH', conc:'concentration'
+};
+
+/* formulas: L/R templates; vars: sym -> quantity type */
+var FORMULAS = {
+  density: {name:'Density', grp:'Measurement & Math', L:{k:'f',num:['D']}, R:{k:'f',num:['m'],den:['V']}, q:{D:'density',m:'mass',V:'volume'}}
+};
+function formulaSyms(fid){ return Object.keys(FORMULAS[fid].q); }
+
+function F(num, den){ return {k:'f', num:num || [], den:den || []}; }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+/* build an equation side from a template; mk(sym) -> factor */
+function buildSide(t, mk){
+  if (t.k === 'f') return F(t.num.map(mk), (t.den || []).map(mk));
+  if (t.k === 's') return {k:'s', t:t.t.map(function(p){ return {s:p[0], f:F([mk(p[1])])}; })};
+  if (t.k === 'l') return {k:'l', a:F([mk(t.a)])};
+}
+function constFactor(sym){ var c = CONSTS[sym]; return {id:sym, sym:sym, val:c.val, txt:c.txt, unit:c.unit, k:1}; }
+/* values: sym -> {val,txt,unit}; U = unknown sym */
+function buildEq(fid, values, U){
+  var fo = FORMULAS[fid];
+  function mk(sym){
+    if (sym.indexOf('c:') === 0) return constFactor(sym);
+    if (sym === U) return {id:sym, sym:sym, v:1};
+    var g = values[sym];
+    return {id:sym, sym:sym, val:g.val, txt:g.txt, unit:g.unit};
+  }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+
+/* ---------- searching ---------- */
+function locIn(side, id){
+  if (!side) return null;
+  if (side.k === 'f'){
+    var i;
+    for (i = 0; i < side.num.length; i++) if (side.num[i].id === id) return {w:'num'};
+    for (i = 0; i < side.den.length; i++) if (side.den[i].id === id) return {w:'den'};
+    var all = side.num.concat(side.den);
+    for (i = 0; i < all.length; i++) if (all[i].w && locIn(all[i].w, id)) return {w:'wrap'};
+    return null;
+  }
+  if (side.k === 's'){
+    for (var j = 0; j < side.t.length; j++){
+      var t = side.t[j], r = locIn(t.f, id);
+      if (r){
+        if (r.w === 'num' && t.f.num.length === 1 && t.f.den.length === 0) return {w: t.s > 0 ? 'plus' : 'minus'};
+        return {w:'deep'};
+      }
+    }
+    return null;
+  }
+  if (side.k === 'l') return locIn(side.a, id) ? {w:'log'} : null;
+  if (side.k === 'p') return locIn(side.a, id) ? {w:'pow'} : null;
+  return null;
+}
+function locate(eq, id){
+  var r = locIn(eq.L, id); if (r){ r.sd = 'L'; return r; }
+  r = locIn(eq.R, id); if (r){ r.sd = 'R'; return r; }
+  return null;
+}
+function findFactor(eq, id){
+  var found = null;
+  function walk(side){
+    if (!side || found) return;
+    if (side.k === 'f'){ side.num.concat(side.den).forEach(function(f){ if (found) return; if (f.w) walk(f.w); else if (f.id === id) found = f; }); }
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return found;
+}
+/* every plain factor in order (L then R) */
+function allFactors(eq){
+  var out = [];
+  function walk(side){
+    if (side.k === 'f') side.num.concat(side.den).forEach(function(f){ if (f.w) walk(f.w); else out.push(f); });
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return out;
+}
+function isAlone(side, U){ return side.k === 'f' && side.num.length === 1 && side.den.length === 0 && side.num[0].id === U && !side.num[0].w; }
+function aloneSide(eq, U){ if (isAlone(eq.L, U)) return 'L'; if (isAlone(eq.R, U)) return 'R'; return null; }
+
+/* ---------- applying a move to BOTH sides ---------- */
+function simplify(side){
+  if (side.k === 'f'){
+    side.num = side.num.filter(function(f){ return !f.x; });
+    side.den = side.den.filter(function(f){ return !f.x; });
+    side.num.concat(side.den).forEach(function(f){ delete f.nw; if (f.w) f.w = simplify(f.w); });
+    if (side.num.length === 1 && side.den.length === 0 && side.num[0].w) return side.num[0].w;
+    return side;
+  }
+  if (side.k === 's'){
+    side.t = side.t.filter(function(t){ return !t.x; });
+    side.t.forEach(function(t){ delete t.nw; t.f = simplify(t.f); });
+    if (side.t.length === 1 && side.t[0].s === 1) { var f = side.t[0].f; return f.k ? f : F([{id:'w', w:f}]); }
+    if (side.t.length === 0) return F([{id:'zero', sym:'0', val:0, txt:'0', unit:'', k:1}]);
+    return side;
+  }
+  if (side.k === 'l' || side.k === 'p'){ delete side.nw; side.a = simplify(side.a); return side; }
+  return side;
+}
+function asFrac(S){ return S.k === 'f' ? S : F([{id:'w', w:S}]); }
+/* op: '×','÷','+','−','p10'; ids: factor ids (group = several). Returns {mid,out,cancels} */
+function applyOp(eq, op, ids){
+  var mid = clone(eq), cancels = [], cs = [];
+  ['L','R'].forEach(function(sd){
+    var S = mid[sd];
+    if (op === 'p10'){
+      if (S.k === 'l'){ var a = S.a; a.num.forEach(function(f){ f.nw = 1; }); mid[sd] = a; cancels.push('log'); }
+      else mid[sd] = {k:'p', a:S, nw:1};
+      return;
+    }
+    if (op === '×' || op === '÷'){
+      S = asFrac(S);
+      ids.forEach(function(id){
+        var fac = clone(findFactor(eq, id)); delete fac.x; fac.nw = 1;
+        var same = op === '×' ? S.den : S.num, other = op === '×' ? S.num : S.den;
+        var hit = null;
+        for (var i = 0; i < same.length; i++) if (same[i].id === id && !same[i].x){ hit = same[i]; break; }
+        if (hit){ hit.x = 1; fac.x = 1; cancels.push(id); cs.push(sd); }
+        other.push(fac);
+      });
+      mid[sd] = S;
+      return;
+    }
+    var sg = op === '+' ? 1 : -1;
+    var fac2 = clone(findFactor(eq, ids[0])); delete fac2.x; fac2.nw = 1;
+    if (S.k !== 's') S = {k:'s', t:[{s:1, f:asFrac(S)}]};
+    var hit2 = null;
+    S.t.forEach(function(t){
+      if (!hit2 && !t.x && t.s === -sg && t.f.k === 'f' && t.f.den.length === 0 && t.f.num.length === 1 && t.f.num[0].id === fac2.id) hit2 = t;
+    });
+    var nt = {s:sg, f:F([fac2]), nw:1};
+    if (hit2){ hit2.x = 1; nt.x = 1; cancels.push(fac2.id); cs.push(sd); }
+    S.t.push(nt);
+    mid[sd] = S;
+  });
+  return {mid:mid, out:{L:simplify(clone(mid.L)), R:simplify(clone(mid.R))}, cancels:cancels, cs:cs};
+}
+
+/* ---------- judging a move ---------- */
+function chipLabel(eq, ids){
+  if (ids.length > 1) return '(' + ids.map(function(id){ var f = findFactor(eq, id); return f.v ? sy(f.sym) : f.txt; }).join(' × ') + ')';
+  var f = findFactor(eq, ids[0]);
+  if (!f) return '?';
+  return f.v ? sy(f.sym) : f.txt;
+}
+function judge(eq, op, ids, res, U){
+  var u = sy(U), uL = locate(eq, U), uSd = uL.sd, uSide = eq[uSd];
+  function bad(type, title, why){ return {ok:false, type:type, title:title, why:why}; }
+  if (op === 'p10'){
+    if (res.cancels.indexOf('log') >= 0) return {ok:true};
+    return bad('opposite', 'Mistake: 10⁻ˣ with no −log', '10⁻ˣ only undoes −log, and there is no −log here. Tap ↶ Undo.');
+  }
+  if (uSide.k === 'l') return bad('opposite', 'Mistake: ' + u + ' is stuck inside −log', 'Nothing can reach ' + u + ' until the −log is gone. 10⁻ˣ undoes −log. Tap ↶ Undo and try 10⁻ˣ.');
+  if (res.cancels.indexOf(U) >= 0 && op !== '×'){
+    if (op === '÷') return bad('opposite', 'Mistake: divided by the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+    return bad('opposite', 'Mistake: subtracted the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+  }
+  if (res.cancels.length > 0 && (op === '×' || op === '÷' || res.cs.indexOf(uSd) >= 0)) return {ok:true};
+  var x = chipLabel(eq, ids), L = locate(eq, ids[0]), onU = L && L.sd === uSd, isVar = ids[0] === U && ids.length === 1;
+  var uDen = uSide.k === 'f' && uSide.den.some(function(f){ return f.id === U; });
+  if (uDen && onU && !isVar && L.w === 'num') return bad('nohelp', 'Mistake: work on ' + u + ' first', x + ' is on top, but ' + u + ' is on the bottom. Bring ' + u + ' up first: × ' + u + ' on both sides. Tap ↶ Undo.');
+  var nohelp = bad('nohelp', "Mistake: that move doesn't help", x + " isn't on " + u + "'s side, so that just adds clutter. Tap ↶ Undo and work on what's next to " + u + '.');
+  if (op === '×' || op === '÷'){
+    if (uSide.k === 's'){
+      if (!onU) return nohelp;
+      var und = L.w === 'minus' ? '+' : '−';
+      return bad('opposite', 'Mistake: ' + (op === '×' ? 'multiplied' : 'divided') + ' instead of ' + (und === '−' ? 'subtracting' : 'adding'),
+        x + ' is ' + (L.w === 'minus' ? 'subtracted from ' : 'added to ') + u + ', not multiplied. To undo ' + (und === '−' ? '+' : '−') + ' you ' + und + '. Tap ↶ Undo and try ' + und + ' ' + x + '.');
+    }
+    if (isVar){
+      if (op === '×') return bad('opposite', 'Mistake: ' + u + ' is already on top', u + ' is already on top, so × ' + u + ' just makes ' + u + ' × ' + u + '. Tap ↶ Undo.');
+      return bad('opposite', 'Mistake: divided by ' + u + ' again', u + ' is already on the bottom. To bring it up, × ' + u + '. Tap ↶ Undo and try × ' + u + '.');
+    }
+    if (!onU) return nohelp;
+    if (op === '×') return bad('opposite', 'Mistake: multiplied when you should divide', 'You multiplied by ' + x + ', but ' + x + ' was already multiplying ' + u + '. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+    return bad('opposite', 'Mistake: divided when you should multiply', x + ' was already dividing ' + u + " (it's on the bottom). To undo ÷ you ×. Tap ↶ Undo and try × " + x + '.');
+  }
+  /* + or − */
+  var verb = op === '+' ? 'added' : 'subtracted';
+  if (uSide.k === 's'){
+    if (!onU) return nohelp;
+    if (L.w === 'plus') return bad('opposite', 'Mistake: added when you should subtract', x + ' was already added to ' + u + '. To undo + you −. Tap ↶ Undo and try − ' + x + '.');
+    if (L.w === 'minus') return bad('opposite', 'Mistake: subtracted when you should add', x + ' was already subtracted from ' + u + '. To undo − you +. Tap ↶ Undo and try + ' + x + '.');
+    return nohelp;
+  }
+  if (isVar) return bad('opposite', 'Mistake: ' + verb + ' ' + u, 'Adding or subtracting ' + u + " won't get it alone. Tap ↶ Undo.");
+  if (!onU) return nohelp;
+  if (L.w === 'den') return bad('opposite', 'Mistake: ' + verb + ' instead of multiplying', x + ' is dividing ' + u + ', not added to it. To undo ÷ you ×. Tap ↶ Undo and try × ' + x + '.');
+  return bad('opposite', 'Mistake: ' + verb + ' instead of dividing', x + ' is multiplying ' + u + ', not added to it. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+}
+
+/* ---------- best next move + hint ---------- */
+function nextMove(eq, U){
+  var L = locate(eq, U); if (!L) return null;
+  var S = eq[L.sd];
+  if (isAlone(S, U)) return null;
+  if (S.k === 'l') return {op:'p10', ids:[], why: sy(U) + ' is inside −log. 10⁻ˣ undoes −log, so tap 10⁻ˣ.'};
+  if (S.k === 's'){
+    for (var i = 0; i < S.t.length; i++){
+      var t = S.t[i];
+      if (!(t.f.num.length === 1 && t.f.num[0].id === U)){
+        var f = t.f.num[0], o = t.s > 0 ? '−' : '+';
+        return {op:o, ids:[f.id], why: f.txt + ' is ' + (t.s > 0 ? 'added to ' : 'subtracted from ') + sy(U) + '. To undo ' + (t.s > 0 ? '+ you −' : '− you +') + ': ' + o + ' ' + f.txt + ' on both sides.'};
+      }
+    }
+  }
+  if (S.k === 'f'){
+    if (S.den.some(function(f){ return f.id === U; })) return {op:'×', ids:[U], why: sy(U) + ' is on the bottom. Multiply both sides by ' + sy(U) + ' to bring it up.'};
+    if (S.den.length){ var d = S.den[0]; return {op:'×', ids:[d.id], why: d.txt + ' is dividing ' + sy(U) + " (it's on the bottom). To undo ÷ you ×: multiply both sides by " + d.txt + '.'}; }
+    var o2 = S.num.filter(function(f){ return f.id !== U; });
+    if (o2.length >= 2) return {op:'÷', ids:o2.map(function(f){ return f.id; }), group:true,
+      why: o2.map(function(f){ return f.txt; }).join(' and ') + ' are all multiplying ' + sy(U) + '. Divide both sides by all of them at once (or one at a time).'};
+    if (o2.length === 1) return {op:'÷', ids:[o2[0].id], why: o2[0].txt + ' is multiplying ' + sy(U) + '. To undo × you ÷: divide both sides by ' + o2[0].txt + '.'};
+  }
+  return null;
+}
+
+/* chips available in the solve step */
+function solveChips(eq, U){
+  var out = [], seen = {};
+  allFactors(eq).forEach(function(f){
+    if (seen[f.id]) return; seen[f.id] = 1;
+    if (f.v){ var L = locate(eq, U); if (L && eq[L.sd].k === 'f' && eq[L.sd].den.some(function(d){ return d.id === U; })) out.push({ids:[f.id]}); return; }
+    out.push({ids:[f.id]});
+  });
+  var L2 = locate(eq, U);
+  if (L2){
+    var S = eq[L2.sd];
+    if (S.k === 'f' && !S.den.some(function(d){ return d.id === U; })){
+      var o = S.num.filter(function(f){ return f.id !== U && !f.w; });
+      if (o.length >= 2) out.push({ids:o.map(function(f){ return f.id; }), group:true});
+    }
+  }
+  return out;
+}
+
+/* ---------- evaluating ---------- */
+function ev(S){
+  if (S.k === 'f'){ var v = 1; S.num.forEach(function(f){ v *= fv(f); }); S.den.forEach(function(f){ v /= fv(f); }); return v; }
+  if (S.k === 's') return S.t.reduce(function(a, t){ return a + t.s * ev(t.f); }, 0);
+  if (S.k === 'l') return -Math.log10(ev(S.a));
+  if (S.k === 'p') return Math.pow(10, -ev(S.a));
+}
+function fv(f){ return f.w ? ev(f.w) : f.val; }
+
+/* ---------- plain-text form (for copy/email) ---------- */
+function facText(f, symMode){
+  if (f.w) return '(' + sideText(f.w, symMode) + ')';
+  if (f.v) return sy(f.sym);
+  if (symMode) return f.k ? CONSTS[f.id].name : sy(f.sym);
+  return f.txt;
+}
+function prodText(arr, symMode){ return arr.length ? arr.map(function(f){ return facText(f, symMode); }).join(' × ') : '1'; }
+function sideText(S, symMode){
+  if (S.k === 'f'){
+    if (!S.den.length) return prodText(S.num, symMode);
+    var n = prodText(S.num, symMode), d = prodText(S.den, symMode);
+    if (S.num.length > 1) n = '(' + n + ')';
+    if (S.den.length > 1) d = '(' + d + ')';
+    return n + ' / ' + d;
+  }
+  if (S.k === 's') return S.t.map(function(t, i){ var tx = sideText(t.f, symMode); return i === 0 ? (t.s < 0 ? '−' + tx : tx) : (t.s < 0 ? ' − ' : ' + ') + tx; }).join('');
+  if (S.k === 'l') return '−log(' + sideText(S.a, symMode) + ')';
+  if (S.k === 'p') return '10^−(' + sideText(S.a, symMode) + ')';
+}
+function eqText(eq, symMode){ return sideText(eq.L, symMode) + ' = ' + sideText(eq.R, symMode); }
+
+if (typeof module !== 'undefined' && module.exports) module.exports = {FORMULAS:FORMULAS, CONSTS:CONSTS, buildEq:buildEq, applyOp:applyOp, judge:judge, nextMove:nextMove, solveChips:solveChips, ev:ev, eqText:eqText, aloneSide:aloneSide, fmt3:fmt3, locate:locate, sy:sy};
+
+</script>
+<script>
+/* ===== APP ===== */
+(function(){
+'use strict';
+var Q = new URLSearchParams(location.search);
+var UNLOCK = Q.get('unlock') === 'all';
+var EMAIL = Q.get('email') || '';
+var KEY = 'ctn-density-calculations-v1';
+var LEFT = document.getElementById('left'), RIGHT = document.getElementById('right'), TABS = document.getElementById('tabs');
+var PAGE = 'chemistryteacher.net/density-calculations';
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function R(a, b){ return a + Math.random() * (b - a); }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function shuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function G(v, unit, role, clue){ v = r3(v); return {val:v, txt:fmt3(v), unit:unit || '', role:role || '', clue:clue || ''}; }
+function G1(v, unit){ v = Math.round(v * 10) / 10; return {val:v, txt:v.toFixed(1), unit:unit || ''}; }
+function T(g){ return g.txt + (g.unit ? ' ' + g.unit : ''); }
+function num(o, k){ return o[k] || 0; }
+function r5(x){ return Math.max(5, Math.round(x / 5) * 5); }
+function clamp(x, a, b){ return Math.max(a, Math.min(b, x)); }
+function nice(x){ return String(Number(Number(x).toPrecision(4))); }
+function has(v){ return v !== null && v !== undefined; }
+function t1(x){ return (Math.round(x * 10) / 10).toFixed(1); }
+
+var QT = {density:'density', mass:'mass', volume:'volume'};
+var MU = {D:'g/mL', m:'g', V:'mL'};
+var PRE = {disp:1, lwh:1}, POST = {};
+function isPP(ph){ return !!(PRE[ph] || POST[ph]); }
+
+/* ---------- materials (densities in g/cm³ = g/mL) ---------- */
+var MATS = [
+  {id:'al', f:'aluminum', d:2.70, col:'#c3ccd5', k:'metal'},
+  {id:'fe', f:'iron', d:7.87, col:'#7d838b', k:'metal'},
+  {id:'cu', f:'copper', d:8.96, col:'#c8743a', k:'metal'},
+  {id:'zn', f:'zinc', d:7.14, col:'#a7b0b9', k:'metal'},
+  {id:'brass', f:'brass', d:8.50, col:'#c9a227', k:'metal'},
+  {id:'pb', f:'lead', d:11.3, col:'#5f6670', k:'metal'},
+  {id:'ag', f:'silver', d:10.5, col:'#d7dbe0', k:'metal'},
+  {id:'au', f:'gold', d:19.3, col:'#e0b228', k:'metal'},
+  {id:'ti', f:'titanium', d:4.51, col:'#8e98a3', k:'metal'},
+  {id:'glass', f:'glass', d:2.50, col:'#a9d8e6', k:'other'},
+  {id:'granite', f:'granite', d:2.75, col:'#9a8f86', k:'rock'},
+  {id:'pvc', f:'PVC plastic', d:1.38, col:'#e4e7ea', k:'other'},
+  {id:'ice', f:'ice', d:0.917, col:'#d6f1ff', k:'float'},
+  {id:'pine', f:'pine wood', d:0.500, col:'#d9a86c', k:'float'},
+  {id:'oak', f:'oak wood', d:0.750, col:'#b07a43', k:'float'},
+  {id:'cork', f:'cork', d:0.240, col:'#c69c6d', k:'float'}
+];
+var LIQS = [
+  {f:'water', d:1.00, col:'#9cd3f5'}, {f:'ethanol', d:0.789, col:'#dff0fb'}, {f:'mercury', d:13.6, col:'#a7adb5'}, {f:'olive oil', d:0.918, col:'#d1bd45'},
+  {f:'glycerin', d:1.26, col:'#e6f2f8'}, {f:'corn syrup', d:1.38, col:'#e8b04a'}, {f:'seawater', d:1.03, col:'#7fc4e8'}, {f:'gasoline', d:0.740, col:'#f5e08a'}];
+function matById(id){ for (var i = 0; i < MATS.length; i++) if (MATS[i].id === id) return MATS[i]; return MATS[0]; }
+var SINKERS = MATS.filter(function(m){ return m.d > 1.1; });
+
+/* ===================================================================
+   PICTURES: blocks, nuggets, bolts, graduated cylinders, beaker
+   =================================================================== */
+var UID = 0;
+var BPTS = (function(){ var a = [], s = 11; function rnd(){ s = (s * 9301 + 49297) % 233280; return s / 233280; } for (var i = 0; i < 40; i++) a.push([rnd(), rnd()]); return a; })();
+function P(a){ return a.map(function(q){ return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' '); }
+/* oblique box. o: L W H (any units), col, lab {L,W,H}, hi ('L'|'W'|'H'), grid, dots, q */
+function boxShape(o, VW, VH, pad){
+  var L = o.L, W = o.W, H = o.H, col = o.col || '#c3ccd5', k = .55, c = .82, sn = .57;
+  pad = pad === undefined ? 34 : pad;
+  var s = Math.min((VW - 2 * pad) / (L + W * k * c), (VH - 2 * pad) / (H + W * k * sn));
+  if (o.maxs) s = Math.min(s, o.maxs);
+  var lw = L * s, hh = H * s, dx = W * s * k * c, dy = W * s * k * sn;
+  var x0 = (VW - (lw + dx)) / 2, y0 = (VH - (hh + dy)) / 2 + dy, sw = o.thin ? 1.6 : 2.5;
+  var top = [[x0, y0], [x0 + dx, y0 - dy], [x0 + lw + dx, y0 - dy], [x0 + lw, y0]];
+  var side = [[x0 + lw, y0], [x0 + lw + dx, y0 - dy], [x0 + lw + dx, y0 - dy + hh], [x0 + lw, y0 + hh]];
+  var h = '<polygon points="' + P(top) + '" fill="' + col + '"/><polygon points="' + P(top) + '" fill="#fff" fill-opacity=".38" stroke="#1f3a5f" stroke-width="' + sw + '" stroke-linejoin="round"/>' +
+    '<polygon points="' + P(side) + '" fill="' + col + '"/><polygon points="' + P(side) + '" fill="#000" fill-opacity=".16" stroke="#1f3a5f" stroke-width="' + sw + '" stroke-linejoin="round"/>' +
+    '<rect x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + lw.toFixed(1) + '" height="' + hh.toFixed(1) + '" fill="' + col + '" stroke="#1f3a5f" stroke-width="' + sw + '"/>';
+  if (o.grid){
+    var gl = '', i;
+    for (i = 1; i < L; i++){ var gx = x0 + i * s; gl += 'M' + gx.toFixed(1) + ' ' + y0.toFixed(1) + 'V' + (y0 + hh).toFixed(1) + 'M' + gx.toFixed(1) + ' ' + y0.toFixed(1) + 'l' + dx.toFixed(1) + ' ' + (-dy).toFixed(1); }
+    for (i = 1; i < H; i++){ var gy = y0 + i * s; gl += 'M' + x0.toFixed(1) + ' ' + gy.toFixed(1) + 'H' + (x0 + lw).toFixed(1) + 'l' + dx.toFixed(1) + ' ' + (-dy).toFixed(1); }
+    for (i = 1; i < W; i++){ var fx = x0 + i * dx / W, fy = y0 - i * dy / W; gl += 'M' + fx.toFixed(1) + ' ' + fy.toFixed(1) + 'h' + lw.toFixed(1) + 'v' + hh.toFixed(1); }
+    h += '<path d="' + gl + '" fill="none" stroke="#1f3a5f" stroke-width="1" stroke-opacity=".45"/>';
+  }
+  var nd = Math.min(o.dots || 0, BPTS.length);
+  for (var d = 0; d < nd; d++){ var q = BPTS[d]; h += '<circle cx="' + (x0 + 7 + q[0] * (lw - 14)).toFixed(1) + '" cy="' + (y0 + 7 + q[1] * (hh - 14)).toFixed(1) + '" r="3.6" fill="#1f3a5f" fill-opacity=".8"/>'; }
+  var E = {L:[[x0, y0 + hh], [x0 + lw, y0 + hh]], H:[[x0, y0], [x0, y0 + hh]], W:[[x0 + lw, y0 + hh], [x0 + lw + dx, y0 + hh - dy]]};
+  if (o.hi && E[o.hi]) h += '<line x1="' + E[o.hi][0][0].toFixed(1) + '" y1="' + E[o.hi][0][1].toFixed(1) + '" x2="' + E[o.hi][1][0].toFixed(1) + '" y2="' + E[o.hi][1][1].toFixed(1) + '" stroke="#f29d12" stroke-width="7" stroke-linecap="round"/>';
+  var lab = o.lab || {}, fs = o.fs || 14;
+  function T2(x, y, t, anc, on){ return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="' + anc + '" font-size="' + (on ? fs + 2 : fs) + '" font-weight="900" fill="' + (on ? '#c56a00' : '#1f3a5f') + '">' + esc(t) + '</text>'; }
+  if (lab.L) h += T2(x0 + lw / 2, y0 + hh + fs + 5, lab.L, 'middle', o.hi === 'L');
+  if (lab.H) h += T2(x0 - 7, y0 + hh / 2 + 5, lab.H, 'end', o.hi === 'H');
+  if (lab.W) h += T2(x0 + lw + dx / 2 + 9, y0 + hh - dy / 2 + fs, lab.W, 'start', o.hi === 'W');
+  if (o.q) h += '<text x="' + (x0 + lw / 2).toFixed(1) + '" y="' + (y0 + hh / 2 + 12).toFixed(1) + '" text-anchor="middle" font-size="34" font-weight="900" fill="#6a2fb0">?</text>';
+  return h;
+}
+function boxSVG(o, w){ var VW = o.VW || 240, VH = o.VH || 170, pad = has(o.pad) ? o.pad : (o.lab && (o.lab.H || o.lab.W) && String(o.lab.H || o.lab.W).length > 5 ? 70 : 34); return '<svg viewBox="0 0 ' + VW + ' ' + VH + '" width="' + w + '" class="gsvg" role="img" aria-label="rectangular block">' + boxShape(o, VW, VH, pad) + '</svg>'; }
+/* lumpy nugget / rock */
+var BLOBF = [1, .8, .96, .74, 1.04, .84, .98, .78, .92, .88];
+function blob(cx, cy, rx, ry, col, rock){
+  var pts = BLOBF.map(function(f, i){ var a = i / BLOBF.length * Math.PI * 2; return [cx + Math.cos(a) * rx * f, cy + Math.sin(a) * ry * f]; });
+  function mid(a, b){ return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; }
+  var n = pts.length, m0 = mid(pts[n - 1], pts[0]), d = 'M' + m0[0].toFixed(1) + ' ' + m0[1].toFixed(1);
+  for (var i = 0; i < n; i++){ var p = pts[i], m = mid(p, pts[(i + 1) % n]); d += ' Q' + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + ' ' + m[0].toFixed(1) + ' ' + m[1].toFixed(1); }
+  var h = '<path d="' + d + 'Z" fill="' + col + '" stroke="#1f3a5f" stroke-width="2.5"/>';
+  h += '<ellipse cx="' + (cx - rx * .3).toFixed(1) + '" cy="' + (cy - ry * .35).toFixed(1) + '" rx="' + (rx * .28).toFixed(1) + '" ry="' + (ry * .16).toFixed(1) + '" fill="#fff" fill-opacity=".45"/>';
+  if (rock) h += '<circle cx="' + (cx + rx * .25) + '" cy="' + (cy + ry * .15) + '" r="' + (rx * .08) + '" fill="#1f3a5f" fill-opacity=".35"/><circle cx="' + (cx - rx * .15) + '" cy="' + (cy + ry * .35) + '" r="' + (rx * .06) + '" fill="#fff" fill-opacity=".5"/>';
+  return h;
+}
+function boltShape(cx, cy, sc, col){
+  var hw = 16 * sc, hh = 34 * sc, sl = 62 * sc, sh = 15 * sc, x0 = cx - (hw + sl) / 2, h = '';
+  h += '<rect x="' + (x0 + hw - 1) + '" y="' + (cy - sh / 2) + '" width="' + sl + '" height="' + sh + '" rx="' + (3 * sc) + '" fill="' + col + '" stroke="#1f3a5f" stroke-width="2.5"/>';
+  for (var t = x0 + hw + 6 * sc; t < x0 + hw + sl - 3 * sc; t += 6 * sc) h += '<line x1="' + t.toFixed(1) + '" y1="' + (cy - sh / 2).toFixed(1) + '" x2="' + (t + 4 * sc).toFixed(1) + '" y2="' + (cy + sh / 2).toFixed(1) + '" stroke="#1f3a5f" stroke-width="1.5" stroke-opacity=".6"/>';
+  h += '<rect x="' + x0 + '" y="' + (cy - hh / 2) + '" width="' + hw + '" height="' + hh + '" rx="' + (2 * sc) + '" fill="' + col + '" stroke="#1f3a5f" stroke-width="2.5"/>' +
+    '<line x1="' + x0 + '" x2="' + (x0 + hw) + '" y1="' + (cy - hh / 6) + '" y2="' + (cy - hh / 6) + '" stroke="#1f3a5f" stroke-width="1.5"/><line x1="' + x0 + '" x2="' + (x0 + hw) + '" y1="' + (cy + hh / 6) + '" y2="' + (cy + hh / 6) + '" stroke="#1f3a5f" stroke-width="1.5"/>';
+  return h;
+}
+/* inner drawing of a sample in a 240×170 box */
+function shapeInner(kind, col, dims, o){
+  o = o || {};
+  if (kind === 'irr') return blob(120, 88, 82, 56, col, o.rock);
+  if (kind === 'bolt') return boltShape(120, 85, 2.4, col);
+  var dm = dims || {L:3, W:2, H:1.6};
+  return boxShape({L:dm.L, W:dm.W, H:dm.H, col:col, lab:o.lab, hi:o.hi, q:o.q, thin:o.thin}, 240, 170, o.pad === undefined ? 30 : o.pad);
+}
+function shapeSVG(kind, col, dims, w, o){ return '<svg viewBox="0 0 240 170" width="' + w + '" class="gsvg" role="img" aria-label="sample">' + shapeInner(kind, col, dims, o) + '</svg>'; }
+
+/* graduated cylinder. o: lv (mL), cap, liq (color), obj {kind,col,dims,at:'bottom'|'float'|'top'}, read [values], band [a,b],
+   drop (animate the object falling in), rise (animate the water rising from this level) */
+var CX1 = 84, CX2 = 144, CB = 302, CTOP = 42;
+function cylY(v, cap){ return CB - v * (CB - CTOP) / cap; }
+function cylInner(o){
+  var cap = o.cap || 100, id = 'cp' + (++UID), lv = o.lv || 0, ly = cylY(lv, cap), col = o.liq || '#9cd3f5';
+  var s = '<defs><clipPath id="' + id + '"><rect x="' + (CX1 + 1) + '" y="12" width="' + (CX2 - CX1 - 2) + '" height="' + (CB - 12) + '"/></clipPath></defs>';
+  if (o.band){ var b0 = cylY(o.band[0], cap), b1 = cylY(o.band[1], cap); s += '<rect x="' + (CX1 + 1) + '" y="' + b1 + '" width="' + (CX2 - CX1 - 2) + '" height="' + (b0 - b1) + '" fill="#f29d12" fill-opacity=".35"/>'; }
+  var rz = has(o.rise) ? (cylY(o.rise, cap) - ly) : 0;
+  if (lv > 0) s += '<g clip-path="url(#' + id + ')"><g' + (has(o.rise) ? ' class="rise" style="--rz:' + rz.toFixed(1) + 'px"' : '') + '>' +
+    '<rect x="' + CX1 + '" y="' + (ly - 5).toFixed(1) + '" width="' + (CX2 - CX1) + '" height="' + (CB - ly + 300).toFixed(1) + '" fill="' + col + '" fill-opacity="' + (o.band ? '.55' : '.85') + '"/>' +
+    '<path d="M' + CX1 + ' ' + (ly - 5).toFixed(1) + ' Q' + ((CX1 + CX2) / 2) + ' ' + (ly + 5).toFixed(1) + ' ' + CX2 + ' ' + (ly - 5).toFixed(1) + 'Z" fill="#fff" stroke="#2b6cb0" stroke-width="1.6"/></g></g>';
+  if (o.obj){
+    var ob = o.obj, ow = ob.kind === 'block' ? 50 : 54, oh = ow * 170 / 240, oy;
+    if (ob.at === 'top') oy = -10;
+    else if (ob.at === 'float') oy = ly - oh * .55;
+    else oy = CB - oh + 4;
+    var gy = ob.at === 'float' && ob.drop ? -10 - oy : -12 - oy;
+    s += '<g' + (ob.drop ? ' class="drop" style="--dy0:' + gy.toFixed(1) + 'px"' : '') + '><g' + (ob.at === 'float' ? ' class="bob"' : '') + '><svg x="' + ((CX1 + CX2) / 2 - ow / 2) + '" y="' + oy.toFixed(1) + '" width="' + ow + '" height="' + oh.toFixed(1) + '" viewBox="0 0 240 170" overflow="visible">' + shapeInner(ob.kind, ob.col, ob.dims, {pad:20, thin:true}) + '</svg></g></g>';
+  }
+  for (var v = 0; v <= cap + 1e-9; v += cap / 50){
+    var yy = cylY(v, cap), major = Math.abs((v / (cap / 10)) - Math.round(v / (cap / 10))) < 1e-6;
+    s += '<line x1="' + CX1 + '" x2="' + (CX1 + (major ? 13 : 7)) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) + '" stroke="#3b4652" stroke-width="' + (major ? 1.8 : 1) + '"/>';
+    if (major && v > 0) s += '<text x="' + (CX1 - 8) + '" y="' + (yy + 4).toFixed(1) + '" text-anchor="end" font-size="12" font-weight="700" fill="#3b4652">' + nice(v) + '</text>';
+  }
+  s += '<text x="' + (CX1 - 8) + '" y="' + (CTOP - 12) + '" text-anchor="end" font-size="13" font-weight="900" fill="#1f3a5f">mL</text>';
+  s += '<path d="M' + (CX1 - 7) + ' 22 Q' + CX1 + ' 24 ' + CX1 + ' 31 V' + CB + ' H' + CX2 + ' V31 Q' + CX2 + ' 24 ' + (CX2 + 7) + ' 22" fill="none" stroke="#1f3a5f" stroke-width="4" stroke-linejoin="round"/>' +
+    '<rect x="' + (CX1 - 24) + '" y="' + CB + '" width="' + (CX2 - CX1 + 48) + '" height="12" rx="4" fill="#1f3a5f"/>';
+  var reads = o.read || [];
+  var ys = reads.map(function(r){ return cylY(r, cap); });
+  reads.forEach(function(r, i){
+    var yy = ys[i], ty = yy + 6;
+    if (i > 0 && Math.abs(ty - (ys[0] + 6)) < 20) ty = ys[0] + 6 + (yy < ys[0] ? -20 : 20);
+    s += '<g' + (has(o.rise) && i === 0 ? ' class="late"' : '') + '><line x1="' + (CX2 - 10) + '" x2="' + (CX2 + 10) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) + '" stroke="#f29d12" stroke-width="3.5"/>' +
+      '<text x="' + (CX2 + 13) + '" y="' + ty.toFixed(1) + '" font-size="17" font-weight="900" fill="#c56a00">' + esc(t1(r)) + '<tspan font-size="12"> mL</tspan></text></g>';
+  });
+  return s;
+}
+function cylSVG(o, w){ return '<svg viewBox="0 0 230 320" width="' + (w || 150) + '" class="gsvg" role="img" aria-label="graduated cylinder">' + cylInner(o) + '</svg>'; }
+function capFor(v){ var C2 = [10, 25, 50, 100, 250, 500, 1000, 2000]; for (var i = 0; i < C2.length; i++) if (v <= C2[i] * .9) return C2[i]; return Math.ceil(v / 900) * 1000; }
+/* sink-or-float beaker */
+function floatSVG(w){
+  var s = '<svg viewBox="0 0 420 250" width="' + (w || 380) + '" class="gsvg" role="img" aria-label="objects sinking and floating in water">';
+  s += '<rect x="44" y="70" width="332" height="162" fill="#9cd3f5" fill-opacity=".8"/>';
+  s += '<path d="M30 18 L38 28 V230 Q38 238 46 238 H374 Q382 238 382 230 V28 L390 18" fill="none" stroke="#1f3a5f" stroke-width="4"/>';
+  s += '<text x="372" y="64" text-anchor="end" font-size="13" font-weight="900" fill="#2b6cb0">water 1.00 g/mL</text>';
+  function item(x, y, inner, lbl, sub){ return '<svg x="' + (x - 34) + '" y="' + y + '" width="68" height="48" viewBox="0 0 240 170" overflow="visible">' + inner + '</svg><text x="' + x + '" y="' + (lbl[1]) + '" text-anchor="middle" font-size="13" font-weight="900" fill="#1f3a5f">' + esc(lbl[0]) + '</text><text x="' + x + '" y="' + (lbl[1] + 15) + '" text-anchor="middle" font-size="12" font-weight="800" fill="#c56a00">' + esc(sub) + '</text>'; }
+  s += item(80, 40, boxShape({L:3, W:2, H:1.4, col:'#c69c6d', thin:true}, 240, 170, 20), ['cork', 34], '0.24');
+  s += item(150, 52, boxShape({L:3, W:2, H:1.6, col:'#d9a86c', thin:true}, 240, 170, 20), ['wood', 120], '0.50');
+  s += item(220, 66, boxShape({L:2.4, W:2, H:2, col:'#d6f1ff', thin:true}, 240, 170, 20), ['ice', 134], '0.92');
+  s += item(290, 186, boxShape({L:3, W:2, H:1.4, col:'#c3ccd5', thin:true}, 240, 170, 20), ['aluminum', 176], '2.70');
+  s += item(350, 190, boxShape({L:2.6, W:2, H:1.2, col:'#5f6670', thin:true}, 240, 170, 20), ['lead', 176], '11.3');
+  s += '<text x="210" y="248" text-anchor="middle" font-size="12" font-weight="800" fill="#5a6672">densities in g/cm³</text>';
+  return s + '</svg>';
+}
+
+/* ===================================================================
+   LEARN DATA
+   =================================================================== */
+function fr(n, d){ return '<span class="frac"><span class="fn">' + n + '</span><span class="fd">' + d + '</span></span>'; }
+function tl(s){ return '<span class="tile">' + s + '</span>'; }
+function sv(s){ return '<span class="symtk">' + s + '</span>'; }
+function nu(n, u){ return '<span class="tk"><b>' + n + '</b>' + (u ? '<small>' + u + '</small>' : '') + '</span>'; }
+function X(s){ return '<span class="tk x">' + s + '</span>'; }
+function NW(s){ return '<span class="tk nw">' + s + '</span>'; }
+var TM = '<span class="times">×</span>';
+function E(l, r){ return '<div class="eq">' + l + '<span class="eqs">=</span>' + r + '</div>'; }
+function inl(h){ return '<span style="display:inline-flex;vertical-align:middle;font-size:.9em">' + h + '</span>'; }
+function rw(name, w, r){ return '<tr><td><b>' + name + '</b></td><td class="w">✗ ' + w + '</td><td class="r">✓ ' + r + '</td></tr>'; }
+function eqLine(h){ return '<span class="eq" style="font-size:1.2rem;display:inline-flex">' + h + '</span>'; }
+
+var WHAT_FR = [
+  {cap:'Two blocks, the SAME size: 10.0 cm³ each', a:0, b:0},
+  {cap:'A: 10.0 g ÷ 10.0 cm³ = 1.00 g/cm³', a:1, b:0},
+  {cap:'B: 30.0 g ÷ 10.0 cm³ = 3.00 g/cm³. Three times the mass in the same space: denser!', a:1, b:1}];
+var DISP_FR = [
+  {cap:'Read the water first (at the bottom of the curve): 40.0 mL', lv:40, read:[40]},
+  {cap:'Tilt the cylinder and slide the rock in gently', lv:40, at:'top', read:[40]},
+  {cap:'The rock pushes the water up to 47.5 mL', lv:47.5, at:'bottom', read:[47.5]},
+  {cap:'Rock’s volume = final − initial = 47.5 − 40.0 = 7.5 mL ✓', lv:47.5, at:'bottom', read:[47.5, 40], band:[40, 47.5]}];
+var LWH_FR = [
+  {cap:'Measure the LENGTH: 4.00 cm', hi:'L', lab:{L:'L = 4.00 cm'}},
+  {cap:'Measure the WIDTH: 3.00 cm', hi:'W', lab:{L:'L = 4.00 cm', W:'W = 3.00 cm'}},
+  {cap:'Measure the HEIGHT: 2.00 cm', hi:'H', lab:{L:'L = 4.00 cm', W:'W = 3.00 cm', H:'H = 2.00 cm'}},
+  {cap:'V = L × W × H = 4.00 × 3.00 × 2.00 = 24.0 cm³ (24 little 1-cm cubes)', grid:true, lab:{L:'4.00 cm', W:'3.00 cm', H:'2.00 cm'}}];
+var STOPS = [
+  {id:'what', title:'What is density?',
+   teach:'<b>Density (D)</b> is how much <b>mass</b> is packed into each unit of <b>volume</b>: <b>D = m ÷ V</b>. A lead block feels much heavier than a wood block the same size because lead packs more mass into the same space.',
+   q:'Two blocks are the same size. Block A has a mass of 10 g. Block B has a mass of 30 g. Which is denser?',
+   qh:'Two blocks are the <span class="kw">same size</span>. Block A has a mass of 10 g. Block B has a mass of <span class="kw">30 g</span>. Which is denser?', hint:'Same volume. Which one packs more mass into it?',
+   opts:[
+     {lbl:'Block B', ok:1, why:'B packs 30 g into the same space where A has only 10 g. More mass in the same volume = denser.'},
+     {lbl:'Block A', t:'Mistake: backwards', why:'A has less mass in the same space, so A is LESS dense. B is denser.'},
+     {lbl:'They’re the same', t:'Mistake: same size isn’t same density', why:'They have the same volume, but B has 3× the mass. Same volume, more mass = denser.'}],
+   take:'D = m ÷ V. More mass in the same space = denser.', nframes:WHAT_FR.length,
+   custom:function(k){
+     var f = WHAT_FR[k];
+     function card(n, dots, m, show, col){ return '<div class="lcard"><div class="h">Block ' + n + '</div>' + boxSVG({L:2.2, W:2.2, H:2.2, col:col, dots:dots, lab:{L:'10.0 cm³'}, fs:22}, 160) + '<div><b>m = ' + m + ' g</b></div><div class="rel">' + (show ? (n === 'A' ? '1.00' : '3.00') + ' g/cm³' : '&nbsp;') + '<small>density</small></div></div>'; }
+     return '<div class="vis"><div class="frame">' + esc(f.cap) + '</div><div class="lcards">' + card('A', 6, '10.0', f.a, '#e7c493') + card('B', 18, '30.0', f.b, '#9aa6b2') + '</div>' +
+       '<div class="vcard"><div class="h">Density</div>' + formulaHTML('density', MU) + '</div>' + dotsHTML(WHAT_FR.length) + '</div>';
+   }},
+  {id:'units', title:'Units: g/mL = g/cm³',
+   teach:'Mass is in <b>grams (g)</b>. Volume is in <b>mL</b> (read on a graduated cylinder) or <b>cm³</b> (from a ruler). <b>1 mL = 1 cm³</b> exactly: a cube 1 cm on each side holds 1 mL. So density is in <b>g/mL</b> or <b>g/cm³</b>, and they mean the same thing.',
+   q:'A block’s volume is 12.5 cm³. What is its volume in mL?',
+   qh:'A block’s volume is <span class="kw">12.5 cm³</span>. What is its volume in mL?', hint:'How many mL is 1 cm³?',
+   opts:[
+     {lbl:'12.5 mL', ok:1, why:'1 cm³ = 1 mL exactly, so 12.5 cm³ = 12.5 mL. Same number, no math needed.'},
+     {lbl:'12,500 mL', t:'Mistake: multiplied by 1000', why:'That’s the L → mL factor. cm³ and mL are the SAME size: 12.5 cm³ = 12.5 mL.'},
+     {lbl:'0.0125 mL', t:'Mistake: divided by 1000', why:'No conversion factor here. 1 cm³ = 1 mL, so 12.5 cm³ = 12.5 mL.'}],
+   take:'1 mL = 1 cm³, so g/mL = g/cm³.',
+   vis:function(){
+     return '<div class="vis"><div class="vcard"><div class="h">A cube 1 cm on each side, filled with water</div>' + boxSVG({L:1, W:1, H:1, col:'#9cd3f5', lab:{L:'1 cm', W:'1 cm', H:'1 cm'}, fs:17, VW:240, VH:190, pad:40}, 240) +
+       '<div class="row" style="justify-content:center;gap:16px;font-weight:900;font-size:1.1rem"><span>1 cm × 1 cm × 1 cm = 1 cm³</span><span style="color:#2b6cb0">holds exactly 1 mL</span></div></div>' +
+       '<div class="vcard ok"><div class="h">Same size, so</div><div class="eq" style="font-size:1.5rem">' + nu('1', 'mL') + '<span class="eqs">=</span>' + nu('1', 'cm³') + '</div><div style="margin-top:4px;font-weight:800">g/mL = g/cm³</div></div></div>'; }},
+  {id:'float', title:'Sink or float?',
+   teach:'Water’s density is <b>1.00 g/mL</b>. An object that is <b>less dense than water floats</b>. One that is <b>more dense sinks</b>. Size doesn’t matter: a tiny pebble and a huge boulder of the same rock both sink.',
+   q:'A plastic toy has a density of 0.85 g/cm³. In water, it will…',
+   qh:'A plastic toy has a density of <span class="kw">0.85 g/cm³</span>. In water, it will…', hint:'Compare 0.85 to water’s 1.00.',
+   opts:[
+     {lbl:'float', ok:1, why:'0.85 is less than water’s 1.00, so the toy floats.'},
+     {lbl:'sink', t:'Mistake: backwards', why:'Only objects MORE dense than 1.00 g/mL sink. 0.85 is less, so it floats.'},
+     {lbl:'it depends on its size', t:'Mistake: size doesn’t change density', why:'A big or small piece of the same plastic has the same density, 0.85 g/cm³. It floats either way.'}],
+   take:'Less than 1.00 g/mL floats; more than 1.00 sinks.',
+   vis:function(){ return '<div class="vis">' + floatSVG(480) + '<div class="row" style="justify-content:center;gap:12px;font-weight:800"><span>less than 1.00 → floats</span><span>more than 1.00 → sinks</span></div></div>'; }},
+  {id:'disp', title:'Volume by water displacement',
+   teach:'An <b>irregular</b> object (a rock, a bolt) has no single length, width and height. Read the water in a graduated cylinder, slide the object in, and read it again. The water rises by the object’s volume: <b>V = final − initial</b>.',
+   q:'The water starts at 40.0 mL. A rock is slid in and the water rises to 47.5 mL. What is the rock’s volume?',
+   qh:'The water starts at <span class="kw">40.0 mL</span>. A rock is slid in and the water rises to <span class="kw">47.5 mL</span>. What is the rock’s volume?', hint:'Final − initial',
+   opts:[
+     {lbl:'7.5 mL', ok:1, why:'47.5 − 40.0 = 7.5 mL. The rise in the water is the rock’s volume.'},
+     {lbl:'47.5 mL', t:'Mistake: used the final reading', why:'47.5 mL is the water AND the rock together. Subtract the water: 47.5 − 40.0 = 7.5 mL.'},
+     {lbl:'87.5 mL', t:'Mistake: added the readings', why:'The 40.0 mL of water is already part of the 47.5 mL. Subtract: 47.5 − 40.0 = 7.5 mL.'}],
+   take:'Displacement: V = final − initial.', nframes:DISP_FR.length,
+   custom:function(k){
+     var f = DISP_FR[k], o = {lv:f.lv, read:f.read, band:f.band};
+     if (f.at) o.obj = {kind:'irr', col:'#9a8f86', at:f.at};
+     return '<div class="vis"><div class="frame">' + esc(f.cap) + '</div><div class="row" style="justify-content:center;gap:16px">' + cylSVG(o, 190) +
+       (f.band ? '<div class="vcard ok"><div class="h">Rock’s volume</div><div class="eq" style="font-size:1.25rem">' + nu('47.5', 'mL') + '<span class="eqs">−</span>' + nu('40.0', 'mL') + '<span class="eqs">=</span>' + nu('7.5', 'mL') + '</div></div>' : '') + '</div>' + dotsHTML(DISP_FR.length) + '</div>';
+   }},
+  {id:'lwh', title:'Volume of a box: L × W × H',
+   teach:'A <b>regular</b> shape like a rectangular block can be measured with a ruler. Measure the <b>length</b>, <b>width</b> and <b>height</b> in cm and multiply: <b>V = L × W × H</b>. cm × cm × cm = <b>cm³</b>.',
+   q:'A block is 6.00 cm long, 2.00 cm wide and 1.50 cm high. What is its volume?',
+   qh:'A block is <span class="kw">6.00 cm</span> long, <span class="kw">2.00 cm</span> wide and <span class="kw">1.50 cm</span> high. What is its volume?', hint:'Multiply all three sides.',
+   opts:[
+     {lbl:'18.0 cm³', ok:1, why:'6.00 × 2.00 × 1.50 = 18.0 cm³.'},
+     {lbl:'9.50 cm', t:'Mistake: added the sides', why:'6.00 + 2.00 + 1.50 = 9.50 cm is a length, not a volume. Multiply: 6.00 × 2.00 × 1.50 = 18.0 cm³.'},
+     {lbl:'12.0 cm²', t:'Mistake: left out a side', why:'6.00 × 2.00 is only the area of one face (cm²). × the height too: 18.0 cm³.'}],
+   take:'Box: V = L × W × H (cm³).', nframes:LWH_FR.length,
+   custom:function(k){
+     var f = LWH_FR[k];
+     return '<div class="vis"><div class="frame">' + esc(f.cap) + '</div>' + boxSVG({L:4, W:3, H:2, col:'#e7c493', hi:f.hi, lab:f.lab, grid:f.grid, fs:15, VW:300, VH:200}, 330) +
+       (f.grid ? '<div class="vcard ok"><div class="eq" style="font-size:1.25rem">' + nu('4.00', 'cm') + TM + nu('3.00', 'cm') + TM + nu('2.00', 'cm') + '<span class="eqs">=</span>' + nu('24.0', 'cm³') + '</div></div>' : '') + dotsHTML(LWH_FR.length) + '</div>';
+   }},
+  {id:'which', title:'Which way to find volume?',
+   teach:'<b>Regular box</b> → ruler, L × W × H. <b>Irregular shape</b> → water displacement. <b>Floats</b> → it won’t go all the way under water, so the rise is too small: use L × W × H. <b>A liquid</b> → just read it in a graduated cylinder.',
+   q:'You need the volume of a small irregular rock. What should you do?',
+   qh:'You need the volume of a small <span class="kw">irregular rock</span>. What should you do?', hint:'Can you measure one length, width and height of a lumpy rock?',
+   opts:[
+     {lbl:'Water displacement', ok:1, why:'An irregular shape has no single L, W and H. The water rise (final − initial) gives its volume.'},
+     {lbl:'Ruler: L × W × H', t:'Mistake: no flat sides', why:'A lumpy rock doesn’t have one length, width and height. Use water displacement.'},
+     {lbl:'Put it on the balance', t:'Mistake: a balance measures mass', why:'A balance gives the mass in grams, not the volume. Use water displacement for the volume.'}],
+   take:'Box → L × W × H. Irregular → displacement. Floats → L × W × H.',
+   vis:function(){
+     function cd(h, pic, how){ return '<div class="lcard"><div class="h">' + h + '</div>' + pic + '<div class="same">' + how + '</div></div>'; }
+     return '<div class="vis"><div class="lcards">' +
+       cd('Regular box', shapeSVG('block', '#c3ccd5', {L:3, W:2, H:1.4}, 140), '📏 L × W × H') +
+       cd('Irregular rock', shapeSVG('irr', '#9a8f86', null, 140, {rock:true}), '💧 displacement') +
+       cd('Floats (wood)', cylSVG({lv:60, obj:{kind:'block', col:'#d9a86c', at:'float', dims:{L:3, W:2, H:1.4}}}, 90), '📏 L × W × H') +
+       cd('A liquid', cylSVG({lv:35, liq:'#d1bd45'}, 90), 'read the cylinder') + '</div></div>'; }},
+  {id:'solveD', title:'Find D: plug in, then calculate',
+   teach:'<b>Step 1:</b> plug each number into its slot: grams in <b>m</b>, mL or cm³ in <b>V</b>. <b>Step 2:</b> D is already alone, so just calculate <b>mass ÷ volume</b>.',
+   q:'27.0 g of a metal has a volume of 10.0 cm³. What is its density?',
+   qh:'<span class="kw">27.0 g</span> of a metal has a volume of <span class="kw">10.0 cm³</span>. What is its density?', hint:'D = m ÷ V. Mass on top, volume on the bottom.',
+   opts:[
+     {lbl:'2.70 g/cm³', ok:1, why:'27.0 g ÷ 10.0 cm³ = 2.70 g/cm³. That matches aluminum.'},
+     {lbl:'270 g/cm³', t:'Mistake: multiplied', why:'27.0 × 10.0 = 270. Density is mass DIVIDED by volume: 27.0 ÷ 10.0 = 2.70 g/cm³.'},
+     {lbl:'0.370 g/cm³', t:'Mistake: divided upside down', why:'10.0 ÷ 27.0 is volume ÷ mass. Mass goes on top: 27.0 ÷ 10.0 = 2.70 g/cm³.'}],
+   take:'D alone? Plug in, then m ÷ V.',
+   frames:[
+     {cap:'Density', l:sv('D'), r:fr(sv('m'), sv('V'))},
+     {cap:'Step 1: plug in 27.0 g and 10.0 cm³', l:tl('D'), r:fr(nu('27.0', 'g'), nu('10.0', 'cm³'))},
+     {cap:'D is already alone ✓', l:tl('D'), r:fr(nu('27.0', 'g'), nu('10.0', 'cm³'))},
+     {cap:'= Calculate: 2.70 g/cm³', l:tl('D'), r:nu('2.70', 'g/cm³')}]},
+  {id:'solveM', title:'Find m: get it alone',
+   teach:'When <b>m</b> is the unknown, it’s on top, divided by V. Do the <b>same thing to both sides</b>: × V undoes ÷ V.',
+   q:'In 2.70 = m / 5.00, what undoes the ÷ 5.00?',
+   qh:'In ' + inl(E(nu('2.70'), fr(tl('m'), nu('5.00')))) + ', what <span class="kw">undoes</span> the ÷ 5.00?', hint:'5.00 is on the bottom: it’s dividing m.',
+   opts:[
+     {lbl:'× 5.00 both sides', ok:1, why:'× undoes ÷. The 5.00s cancel and m is alone.'},
+     {lbl:'÷ 5.00 both sides', t:'Mistake: divided when you should multiply', why:'5.00 is already dividing m. Dividing again just stacks another 5.00 on the bottom.'},
+     {lbl:'− 5.00 both sides', t:'Mistake: subtracted instead of multiplying', why:'5.00 is dividing, not added. The opposite of ÷ is ×.'}],
+   take:'Find m: × V on both sides.',
+   frames:[
+     {cap:'Aluminum (2.70 g/cm³), 5.00 cm³. Find m', l:nu('2.70', 'g/cm³'), r:fr(tl('m'), nu('5.00', 'cm³'))},
+     {cap:'× 5.00 on BOTH sides: the 5.00s on the right cancel', l:nu('2.70') + TM + NW(nu('5.00')), r:fr(tl('m') + TM + X(nu('5.00')), X(nu('5.00')))},
+     {cap:'m is alone! ✓', l:tl('m'), r:nu('2.70') + TM + nu('5.00')},
+     {cap:'= Calculate: 13.5 g', l:tl('m'), r:nu('13.5', 'g')}]},
+  {id:'solveV', title:'Unknown on the BOTTOM: V',
+   teach:'When <b>V</b> is the unknown, it’s on the bottom. First <b>× V</b> on both sides to bring it up. Then <b>÷ D</b> to get V alone.',
+   q:'In 0.789 = 50.0 / V, what’s the first move?',
+   qh:'In ' + inl(E(nu('0.789'), fr(nu('50.0'), tl('V')))) + ', what’s the <span class="kw">first move</span>?', hint:'Where is V? On top or on the bottom?',
+   opts:[
+     {lbl:'× V both sides', ok:1, why:'V is on the bottom, so × V brings it up.'},
+     {lbl:'÷ V both sides', t:'Mistake: divided when you should multiply', why:'V is already dividing (it’s on the bottom). To undo ÷ you ×.'},
+     {lbl:'× 50.0 both sides', t:'Mistake: worked on the wrong number', why:'Work on V first: it’s on the bottom, so × V.'}],
+   take:'Unknown on the bottom? × by it first.',
+   frames:[
+     {cap:'50.0 g of ethanol (0.789 g/mL). V is on the bottom', l:nu('0.789', 'g/mL'), r:fr(nu('50.0', 'g'), tl('V'))},
+     {cap:'× V on BOTH sides: the Vs on the right cancel', l:nu('0.789') + TM + NW(tl('V')), r:fr(nu('50.0') + TM + X(tl('V')), X(tl('V')))},
+     {cap:'÷ 0.789 on BOTH sides: the 0.789s on the left cancel', l:fr(X(nu('0.789')) + TM + tl('V'), X(nu('0.789'))), r:fr(nu('50.0'), NW(nu('0.789')))},
+     {cap:'V is alone! = Calculate: 63.4 mL', l:tl('V'), r:nu('63.4', 'mL')}]},
+  {id:'mistakes', title:'Common mistakes',
+   teach:'Watch out for these four.',
+   q:'A rock makes the water rise from 30.0 mL to 36.0 mL. A student used V = 36.0 mL. What’s the mistake?',
+   qh:'A rock makes the water rise from <b>30.0 mL</b> to <b>36.0 mL</b>. A student used <b>V = 36.0 mL</b>. <span class="kw">What’s the mistake?</span>', hint:'Look at the second row of the table.',
+   opts:[
+     {lbl:'Used the final reading', ok:1, why:'36.0 mL is the water AND the rock. The rock’s volume is 36.0 − 30.0 = 6.0 mL.'},
+     {lbl:'Divided upside down', t:'Not this one', why:'Nothing has been divided yet. The problem is the volume: use final − initial.'},
+     {lbl:'Added the sides', t:'Not this one', why:'There are no sides here: it’s displacement. The volume is final − initial = 6.0 mL.'}],
+   take:'Learn complete!',
+   vis:function(){
+     return '<div class="vis"><table class="mtab"><tr><th>Mistake</th><th>Wrong</th><th>Right</th></tr>' +
+       rw('Divided upside down', E(sv('D'), fr(sv('V'), sv('m'))), E(sv('D'), fr(sv('m'), sv('V')))) +
+       rw('Used the final reading', 'V = 47.5 mL', 'V = 47.5 − 40.0 = 7.5 mL') +
+       rw('Added the sides', '2.00 + 3.00 + 4.00 = 9.00', '2.00 × 3.00 × 4.00 = 24.0 cm³') +
+       rw('Multiplied m × V', '27.0 × 10.0 = 270', '27.0 ÷ 10.0 = 2.70 g/cm³') + '</table></div>'; }}
+];
+
+/* ===================================================================
+   GUIDED DATA
+   =================================================================== */
+var GP = [
+  {id:'g1', short:'Find D', fid:'density', U:'D', aunit:'g/cm³', kind:'block', mat:'al', col:'#c3ccd5', dims:{L:4, W:2.5, H:2},
+   givens:{m:G(54.0, 'g'), V:G(20.0, 'cm³')},
+   story:'A block of aluminum has a mass of <b>54.0 g</b> and a volume of <b>20.0 cm³</b>. What is its <b>density</b>, D?',
+   tip:'D is already alone in D = m / V. Plug in, then calculate.', done:'54.0 g ÷ 20.0 cm³ = 2.70 g/cm³. More than water’s 1.00, so aluminum sinks.'},
+  {id:'g2', short:'Displacement', fid:'density', U:'D', aunit:'g/mL', kind:'irr', rock:true, mat:'granite', col:'#9a8f86',
+   givens:{m:G(45.0, 'g'), Vi:G1(50.0, 'mL'), Vf:G1(67.0, 'mL')},
+   story:'A rock has a mass of <b>45.0 g</b>. It is slid into a graduated cylinder, and the water rises from <b>50.0 mL</b> to <b>67.0 mL</b>. What is the rock’s <b>density</b>?',
+   tip:'First find the rock’s volume: final − initial.', done:'V = 67.0 − 50.0 = 17.0 mL. D = 45.0 g ÷ 17.0 mL = 2.65 g/mL.'},
+  {id:'g3', short:'L × W × H', fid:'density', U:'D', aunit:'g/cm³', kind:'block', mat:'pine', col:'#d9a86c',
+   givens:{m:G(25.0, 'g'), L:G(5.00, 'cm'), W:G(4.00, 'cm'), H:G(2.50, 'cm')},
+   story:'A wood block is <b>5.00 cm</b> long, <b>4.00 cm</b> wide and <b>2.50 cm</b> high. Its mass is <b>25.0 g</b>. What is its <b>density</b>? Will it float?',
+   tip:'First find the volume: L × W × H.', done:'V = 5.00 × 4.00 × 2.50 = 50.0 cm³. D = 25.0 ÷ 50.0 = 0.500 g/cm³: less than water, so it floats.'},
+  {id:'g4', short:'Find m', fid:'density', U:'m', aunit:'g', kind:'liq', col:'#a7adb5', liqName:'mercury',
+   givens:{D:G(13.6, 'g/mL'), V:G(15.0, 'mL')},
+   story:'Mercury has a density of <b>13.6 g/mL</b>. What is the <b>mass</b> of <b>15.0 mL</b> of mercury?',
+   tip:'m is on top, over V. × V on both sides gets m alone.', done:'m = 13.6 × 15.0 = 204 g. That’s heavy for about one tablespoon!'},
+  {id:'g5', short:'Find V', fid:'density', U:'V', aunit:'mL', kind:'liq', col:'#dff0fb', liqName:'ethanol',
+   givens:{D:G(0.789, 'g/mL'), m:G(100, 'g')},
+   story:'Ethanol has a density of <b>0.789 g/mL</b>. What <b>volume</b> of ethanol has a mass of <b>100. g</b>?',
+   tip:'V ends up on the bottom. × V first to bring it up.', done:'V = 100. ÷ 0.789 = 127 mL. Ethanol is less dense than water, so 100 g takes up more than 100 mL.'},
+  {id:'g6', short:'Box → mass', fid:'density', U:'m', aunit:'g', kind:'block', mat:'au', col:'#e0b228',
+   givens:{D:G(19.3, 'g/cm³'), L:G(10.0, 'cm'), W:G(4.00, 'cm'), H:G(2.00, 'cm')},
+   story:'A gold bar is <b>10.0 cm</b> long, <b>4.00 cm</b> wide and <b>2.00 cm</b> high. The density of gold is <b>19.3 g/cm³</b>. What is the bar’s <b>mass</b>?',
+   tip:'Find V = L × W × H first. Then get m alone.', done:'V = 80.0 cm³. m = 19.3 × 80.0 = 1540 g, about 3.4 pounds!'}
+];
+
+/* ===================================================================
+   PRACTICE DATA + GENERATORS
+   =================================================================== */
+var LEV = [{id:'D', name:'Find the density (D)'}, {id:'m', name:'Find the mass (m)'}, {id:'V', name:'Find the volume (V)'}, {id:'vol', name:'Volume first: displacement or L × W × H'}, {id:'mix', name:'Mixed'}];
+function fillS(story, giv){ return story.replace(/\{(\w+)\}/g, function(m, s){ return giv[s] ? '<b>' + esc(T(giv[s])) + '</b>' : m; }); }
+function shapeOf(m){ return m.id === 'granite' ? 'rock' : m.id === 'glass' ? 'glass marble' : m.id === 'fe' ? 'bolt' : pick(['nugget', 'chunk', 'lump']); }
+function genDen(U, o){
+  o = o || {};
+  var vol = U === 'V' ? null : (o.vol || null), liq = !vol && (has(o.liq) ? o.liq : Math.random() < (U === 'D' ? .3 : .45));
+  var mat, kind = 'block', VU, g = {}, V, F, shape = 'block', unk = false, dims = null, col;
+  if (liq){
+    mat = pick(LIQS); kind = 'liq'; VU = 'mL'; col = mat.col;
+    V = Math.random() < .6 ? r3(R(5, 95)) : r5(R(100, 500));
+    F = '<b>' + mat.f + '</b>';
+  } else {
+    if (vol === 'disp'){
+      mat = pick(SINKERS); shape = shapeOf(mat); kind = shape === 'bolt' ? 'bolt' : 'irr'; VU = 'mL';
+      var vi = pick([20, 25, 30, 35, 40, 45, 50, 55, 60]), dv = Math.round(R(25, 300)) / 10;
+      g.Vi = G1(vi, 'mL'); g.Vf = G1(vi + dv, 'mL'); V = dv;
+    } else if (vol === 'lwh'){
+      mat = pick(MATS); VU = 'cm³';
+      var Ld = Math.round(R(20, 90)) / 10, Wd = Math.round(R(10, 60)) / 10, Hd = Math.round(R(5, 40)) / 10;
+      g.L = G(Ld, 'cm'); g.W = G(Wd, 'cm'); g.H = G(Hd, 'cm'); V = r3(Ld * Wd * Hd); dims = {L:Ld, W:Wd, H:Hd};
+    } else {
+      mat = pick(MATS); VU = Math.random() < .5 ? 'cm³' : 'mL';
+      if (mat.k !== 'float' && Math.random() < .5){ shape = shapeOf(mat); kind = shape === 'bolt' ? 'bolt' : 'irr'; }
+      V = r3(R(2, 120));
+    }
+    col = mat.col;
+    unk = U === 'D' && mat.k === 'metal' && Math.random() < .4;
+    F = unk ? 'an <b>unknown metal</b>' : '<b>' + mat.f + '</b>';
+  }
+  var m = r3(mat.d * V), st, aunit;
+  if (U === 'D'){ g.m = G(m, 'g'); if (!vol) g.V = G(V, VU); aunit = 'g/' + VU; }
+  else if (U === 'm'){ g.D = G(mat.d, 'g/' + VU); if (!vol) g.V = G(V, VU); aunit = 'g'; }
+  else { g.D = G(mat.d, 'g/' + VU); g.m = G(m, 'g'); aunit = VU; }
+  var obj = kind === 'liq' ? mat.f : shape === 'block' ? 'block of ' + F : unk ? shape + ' of ' + F : shape === 'rock' ? 'granite rock' : shape === 'glass marble' ? 'glass marble' : shape + ' of ' + F;
+  var A = /^[aeiou]/i.test(obj.replace(/<[^>]+>/g, '')) ? 'An ' : 'A ';
+  if (U === 'D'){
+    if (kind === 'liq') st = pick(['{V} of ' + F + ' has a mass of {m}. What is the <b>density</b> of ' + mat.f + '?', 'A graduated cylinder holds {V} of ' + F + '. The ' + mat.f + ' has a mass of {m}. What is its <b>density</b>?']);
+    else if (vol === 'disp') st = A + obj + ' has a mass of {m}. It is slid into a graduated cylinder, and the water rises from {Vi} to {Vf}. What is its <b>density</b>?';
+    else if (vol === 'lwh') st = 'A rectangular block of ' + F + ' measures {L} long, {W} wide and {H} high. Its mass is {m}. What is its <b>density</b>?';
+    else st = pick([A + obj + ' has a mass of {m} and a volume of {V}. What is its <b>density</b>, D?', 'What is the <b>density</b> of ' + (unk ? 'an unknown metal' : '<b>' + mat.f + '</b>') + ' if {V} of it has a mass of {m}?']);
+  } else if (U === 'm'){
+    var dS = kind === 'liq' ? mat.f : mat.f + ' (density {D})';
+    if (kind === 'liq') st = pick(['The density of ' + F + ' is {D}. What is the <b>mass</b> of {V} of ' + mat.f + '?', 'A beaker holds {V} of ' + F + ' ({D}). What is the <b>mass</b> of the ' + mat.f + '?']);
+    else if (vol === 'disp') st = A + shape + ' of <b>' + dS + '</b> is slid into a graduated cylinder. The water rises from {Vi} to {Vf}. What is its <b>mass</b>?';
+    else if (vol === 'lwh') st = 'A block of <b>' + mat.f + '</b> is {L} long, {W} wide and {H} high. The density of ' + mat.f + ' is {D}. What is the block’s <b>mass</b>?';
+    else st = 'The density of <b>' + mat.f + '</b> is {D}. What is the <b>mass</b> of a ' + shape + ' of ' + mat.f + ' with a volume of {V}?';
+  } else {
+    if (kind === 'liq') st = pick(['How many <b>mL</b> of ' + F + ' have a mass of {m}? The density of ' + mat.f + ' is {D}.', 'The density of ' + F + ' is {D}. What <b>volume</b> of ' + mat.f + ' has a mass of {m}?']);
+    else st = 'A ' + shape + ' of <b>' + mat.f + '</b> has a mass of {m}. The density of ' + mat.f + ' is {D}. What is its <b>volume</b>?';
+  }
+  var p = {fid:'density', U:U, givens:g, aunit:aunit, kind:kind, col:col, dims:dims, matName:unk ? '' : mat.f, rock:mat.id === 'granite', liqName:kind === 'liq' ? mat.f : '', story:fillS(st, g)};
+  if (unk) p.unk = mat.id;
+  return p;
+}
+function gen(lvl, idx){
+  var p;
+  if (lvl === 'D') p = genDen('D', {});
+  else if (lvl === 'm') p = genDen('m', {});
+  else if (lvl === 'V') p = genDen('V', {});
+  else if (lvl === 'vol') p = genDen(idx % 3 === 2 ? 'm' : 'D', {vol:idx % 2 === 0 ? 'disp' : 'lwh'});
+  else {
+    var U = pick(['D', 'm', 'V'].filter(function(x){ return x !== C.prac.last; })); C.prac.last = U;
+    p = genDen(U, {vol:U !== 'V' && Math.random() < .45 ? pick(['disp', 'lwh']) : null});
+  }
+  p.order = shuffle(['D', 'm', 'V'].filter(function(s){ return s !== p.U; }));
+  return p;
+}
+var MIS = [['disp','Displacement: didn’t do final − initial'],['lwh','L × W × H: added the sides or left one out'],['slot','Value in the wrong slot'],['opposite','Opposite operation (× vs ÷)'],['nohelp','Move that didn’t help'],['method','Lab: wrong volume method (floats / no flat sides)'],['ident','Lab: wrong material match'],['showme','“Show me” used']];
+var TD = {title:'Density Calculations', name:'Density', fid:'density', stops:STOPS, gp:GP, levels:LEV, mis:MIS, sub:'D = m / V'};
+/* ---------- equation HTML (same as Solving for a Variable) ---------- */
+function roleOf(sym){ return /1$/.test(sym) ? 'stock' : /2$/.test(sym) ? 'diluted' : ''; }
+function tokHTML(f, o){
+  o = o || {};
+  if (f.slot) return slotHTML(f, o);
+  if (f.w) return '<span class="paren">(</span>' + sideHTML(f.w, o) + '<span class="paren">)</span>';
+  var cls = 'tk' + (f.x ? ' x' : '') + (f.nw ? ' nw' : '');
+  if (f.v) return annotate('<span class="' + cls + '"><span class="tile">' + esc(sy(f.sym)) + '</span></span>', f, o);
+  if (o.sym) return annotate('<span class="' + cls + ' symtk">' + esc(sy(f.sym)) + '</span>', f, o);
+  return '<span class="' + cls + '"><b>' + esc(f.txt) + '</b>' + (f.unit ? '<small>' + esc(f.unit) + '</small>' : '') + '</span>';
+}
+function annotate(html, f, o){
+  if (!o.units || f.k || f.w || o.units[f.sym] === undefined) return html;
+  var unit = o.units[f.sym], role = roleOf(f.sym);
+  if (!unit && !role) return html;
+  var lbl = '<span class="al">' + (role ? '<em>' + role + '</em>' : '') + esc(unit || '') + '</span>';
+  if (o.pos === 'num') return '<span class="ann">' + lbl + '<span class="ar">↓</span>' + html + '</span>';
+  return '<span class="ann">' + html + '<span class="ar">↑</span>' + lbl + '</span>';
+}
+function withPos(o, pos){ var c = {}; for (var k in (o || {})) c[k] = o[k]; c.pos = pos; return c; }
+function prodHTML(arr, o){ return arr.length ? arr.map(function(f){ return tokHTML(f, o); }).join('<span class="times">×</span>') : '<span class="tk"><b>1</b></span>'; }
+function sideHTML(S0, o){
+  if (S0.k === 'f'){
+    if (!S0.den.length) return '<span class="side">' + prodHTML(S0.num, withPos(o, (o && o.pos) || 'flat')) + '</span>';
+    return '<span class="frac"><span class="fn">' + prodHTML(S0.num, withPos(o, 'num')) + '</span><span class="fd">' + prodHTML(S0.den, withPos(o, 'den')) + '</span></span>';
+  }
+  if (S0.k === 's'){
+    return '<span class="side">' + S0.t.map(function(t, i){
+      var sign = i === 0 ? (t.s < 0 ? '−' : '') : (t.s < 0 ? '−' : '+');
+      var inner = (sign ? '<span class="eqs">' + sign + '</span>' : '') + sideHTML(t.f, o);
+      return (t.x || t.nw) ? '<span class="tk' + (t.x ? ' x' : '') + (t.nw ? ' nw' : '') + '">' + inner + '</span>' : inner;
+    }).join('') + '</span>';
+  }
+  return '';
+}
+function eqHTML(eq, o){ return '<div class="eq">' + sideHTML(eq.L, o) + '<span class="eqs">=</span>' + sideHTML(eq.R, o) + '</div>'; }
+function symEq(fid){
+  var fo = FORMULAS[fid];
+  function mk(sym){ return {id:sym, sym:sym, txt:sy(sym)}; }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+function formulaHTML(fid, units){ return eqHTML(symEq(fid), {sym:true, units:units}); }
+function formulaText(fid){ return eqText(symEq(fid), true); }
+function tmplSyms(fid){
+  var fo = FORMULAS[fid];
+  return fo.L.num.concat(fo.L.den || [], fo.R.num, fo.R.den || []);
+}
+function boardUnits(b){
+  var u = {};
+  tmplSyms(b.p.fid).forEach(function(s){ u[s] = s === b.p.U ? (b.p.aunit || '') : (b.p.givens[s] ? b.p.givens[s].unit : ''); });
+  return u;
+}
+function fcardHTML(inner, moved, label){
+  return '<div class="gray fcard' + (moved ? ' moved' : '') + '"><span class="t" style="margin:0">' + (label || (moved ? 'Formula,<br>rearranged' : 'Formula')) + '</span>' +
+    '<div class="eq">' + inner.replace(/^<div class="eq">|<\/div>$/g, '') + '</div></div>';
+}
+var SLOTCTX = null;
+function slotHTML(f){
+  var c = SLOTCTX, sym = f.sym, U = c.U, filled = c.fills[sym], cls = 'slot', inner = esc(sy(sym));
+  if (filled){
+    cls += ' filled';
+    if (filled === 'U'){ cls += ' unk'; inner = '<span class="tile">' + esc(sy(U)) + '</span>'; }
+    else { var g = c.vals[filled]; inner = '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small style="font-size:.42em;color:#66727e">' + esc(g.unit) + '</small>' : ''); }
+  }
+  if (c.glow === sym) cls += ' glow';
+  if (c.shake === sym) cls += ' shake';
+  if (c.sel && !filled) cls += ' tgt';
+  return '<span class="' + cls + '" role="button" tabindex="0" data-act="' + (c.act || 'slot') + '" data-arg="' + sym + '" aria-label="slot ' + esc(sy(sym)) + '">' + inner + '</span>';
+}
+function templateHTML(fid, ctx){
+  SLOTCTX = ctx;
+  var fo = FORMULAS[fid];
+  function mk(sym){ return {id:sym, sym:sym, slot:1}; }
+  var h = eqHTML({L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)});
+  SLOTCTX = null;
+  return h;
+}
+function chipHTML(g, extra){ return '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small>' + esc(g.unit) + '</small>' : '') + (extra || ''); }
+
+/* ---------- UI helpers ---------- */
+function qbox(head, qtext, hint, ansHTML, fbH, extra){
+  return '<div class="qbox"><div class="qhead">❓ ' + head + '</div><div class="qbody"><div class="qtext">' + qtext + '</div>' +
+    (hint ? '<div class="qhint">' + hint + '</div>' : '') +
+    (ansHTML ? '<div class="ans"><div class="anslbl">✎ YOUR ANSWER</div>' + ansHTML + '</div>' : '') +
+    (fbH || '') + (extra || '') + '</div></div>';
+}
+function fbHTML(fb){
+  if (!fb) return '';
+  var cls = fb.note ? 'note' : fb.ok ? 'good' : 'bad', mk = fb.note ? '' : fb.ok ? '✓ ' : '✗ ';
+  return '<div class="fb ' + cls + '" role="status">' + (fb.title ? '<b>' + mk + esc(fb.title) + '</b>' : '') + (fb.why ? esc(fb.why) : '') + (fb.html || '') + '</div>';
+}
+function toast(msg){
+  var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity = '0'; }, 3200); setTimeout(function(){ t.remove(); }, 4000);
+}
+var modalEl = null;
+function modal(html){
+  closeModal();
+  modalEl = document.createElement('div'); modalEl.className = 'modal';
+  modalEl.innerHTML = '<div class="mbox" role="dialog" aria-modal="true">' + html + '</div>';
+  modalEl.addEventListener('click', function(e){ if (e.target === modalEl) closeModal(); });
+  document.body.appendChild(modalEl);
+}
+function closeModal(){ if (modalEl){ modalEl.remove(); modalEl = null; } }
+function copyText(text, done){
+  function fallback(){
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(true); } catch(e){ done(false); } ta.remove();
+  }
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback); else fallback(); } catch(e){ fallback(); }
+}
+function gmail(subject, body){
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.open(url, '_blank', 'noopener');
+}
+function fitEqs(){
+  document.body.classList.add('measuring');
+  document.querySelectorAll('.eqwrap .eq').forEach(function(el){
+    el.style.fontSize = '';
+    var fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while (el.scrollWidth > el.clientWidth + 1 && fs > 13 && n < 40){ fs -= 1.5; el.style.fontSize = fs + 'px'; n++; }
+  });
+  document.body.classList.remove('measuring');
+}
+
+/* ===================================================================
+   STATE
+   =================================================================== */
+var SAMP = [
+  {id:'A', name:'Silver block', kind:'block', mat:'al', col:'#c3ccd5', m:25.40, dims:{L:3.20, W:2.10, H:1.40}, Vi:40.0, Vf:49.4},
+  {id:'B', name:'Wood block', kind:'block', mat:'pine', col:'#d9a86c', m:24.70, dims:{L:5.20, W:3.80, H:2.50}, Vi:40.0, Vf:64.7, floats:true},
+  {id:'C', name:'Reddish nugget', kind:'irr', mat:'cu', col:'#c8743a', m:58.24, Vi:50.0, Vf:56.5},
+  {id:'D', name:'Gray bolt', kind:'bolt', mat:'fe', col:'#7d838b', m:29.91, Vi:50.0, Vf:53.8}
+];
+var IDLIST = ['cork', 'pine', 'oak', 'ice', 'pvc', 'glass', 'al', 'granite', 'zn', 'fe', 'brass', 'cu', 'ag', 'pb', 'au'];
+function sampById(id){ for (var i = 0; i < SAMP.length; i++) if (SAMP[i].id === id) return SAMP[i]; return null; }
+function labFresh(){ var s = {}; SAMP.forEach(function(x){ s[x.id] = {step:'mass', dims:{}, fills:{}}; }); return {mode:'disp', cur:null, s:s, done:{}, rx:215, dim:'L', snap:false, float:false, last:null}; }
+function fresh(){
+  return {tab:'learn', learn:{cur:'', done:{}}, lab:labFresh(), guided:{cur:'', done:{}, b:null},
+    prac:{lvl:'', streak:{}, done:{}, count:{}, b:null, cardShown:0, last:null},
+    free:{step:1, U:null, vals:{}, units:{V:'mL', vm:'typed'}, b:null}, mis:{}, unl:{}};
+}
+var S, C, hadSave = false;
+try { var raw = localStorage.getItem(KEY); if (raw){ S = JSON.parse(raw); hadSave = true; } } catch(e){}
+function okS(t){ return t && t.learn && t.lab && t.lab.s && t.guided && t.prac && t.free && t.mis && typeof t.learn.done === 'object'; }
+if (!okS(S)){ S = fresh(); hadSave = false; }
+C = S;
+[C.guided.b, C.prac.b, C.free.b].forEach(function(b){ if (b){ b.anim = null; b.busy = false; if (b.auto){ b.auto = false; b.dead = true; } } });
+var saveT = null;
+function flush(){ clearTimeout(saveT); try { localStorage.setItem(KEY, JSON.stringify(S, function(k, v){ return k === 'anim' ? undefined : v; })); } catch(e){} }
+function save(){ clearTimeout(saveT); saveT = setTimeout(flush, 250); }
+window.addEventListener('pagehide', flush);
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') flush(); });
+
+/* ---------- progress ---------- */
+function ids(list){ return list.map(function(x){ return x.id; }); }
+function cntDone(list, done){ return list.reduce(function(n, x){ return n + (done[x.id] ? 1 : 0); }, 0); }
+function pct(which){
+  if (which === 'learn') return Math.round(cntDone(TD.stops, C.learn.done) / TD.stops.length * 100);
+  if (which === 'lab') return Math.round(cntDone(SAMP, C.lab.done) / SAMP.length * 100);
+  if (which === 'guided') return Math.round(cntDone(TD.gp, C.guided.done) / TD.gp.length * 100);
+  if (which === 'prac') return Math.round(cntDone(TD.levels, C.prac.done) / TD.levels.length * 100);
+  return 0;
+}
+var PREV = {lab:'learn', guided:'lab', prac:'guided'};
+function unlocked(t){
+  if (UNLOCK || t === 'learn' || t === 'free') return true;
+  C.unl = C.unl || {};
+  if (C.unl[t]) return true;
+  var ok = pct(PREV[t]) === 100;
+  if (ok) C.unl[t] = 1;
+  return ok;
+}
+function firstOpen(list, done){ for (var i = 0; i < list.length; i++) if (!done[list[i].id]) return list[i].id; return list[list.length - 1].id; }
+function ensureValid(){
+  if (ids(TD.stops).indexOf(C.learn.cur) < 0) C.learn.cur = firstOpen(TD.stops, C.learn.done);
+  if (ids(TD.gp).indexOf(C.guided.cur) < 0){ C.guided.cur = firstOpen(TD.gp, C.guided.done); C.guided.b = null; }
+  if (ids(TD.levels).indexOf(C.prac.lvl) < 0){ C.prac.lvl = firstOpen(TD.levels, C.prac.done); C.prac.b = null; }
+}
+var TABDEF = [['learn','1 Learn'],['lab','2 Lab'],['guided','3 Guided'],['prac','4 Practice'],['free','5 Free Form']];
+var LOCKMSG = {lab:'Finish Learn first', guided:'Finish the Lab first', prac:'Finish Guided first'};
+function renderTabs(){
+  TABS.innerHTML = TABDEF.map(function(d){
+    var t = d[0], on = C.tab === t, lk = !unlocked(t), p = t === 'free' ? null : pct(t);
+    var cls = 'tab' + (on ? ' on' : '') + (p === 100 ? ' full' : '') + (lk ? ' lock' : '');
+    var sub = lk ? '🔒 ' + LOCKMSG[t] : (p === null ? 'always open' : (p === 100 ? '✓ 100%' : p + '%'));
+    return '<button class="' + cls + '" data-act="tab" data-arg="' + t + '"' + (on ? ' aria-current="page"' : '') + '>' + d[1] + '<small>' + sub + '</small></button>';
+  }).join('');
+}
+
+/* ===================================================================
+   PART 1: LEARN
+   =================================================================== */
+var LV = {pick:null, wrong:null, frame:0, timer:null, hold:0};
+function stopById(id){ var L = TD.stops; for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i]; return L[0]; }
+function dotsHTML(n){ return '<div class="row" style="justify-content:center;gap:6px" aria-hidden="true">' + Array.apply(null, Array(n)).map(function(x, k){ return '<span class="dot' + (k <= LV.frame ? ' on' : '') + '"></span>'; }).join('') + '</div><div class="qhint">The animation repeats. Watch it as many times as you need.</div>'; }
+function framesHTML(stop){
+  var f = stop.frames[Math.min(LV.frame, stop.frames.length - 1)];
+  return '<div class="vis"><div class="frame">' + f.cap + '</div><div class="eqwrap" style="flex:0 0 auto;min-height:150px;width:100%">' + (f.h || E(f.l, f.r)) + '</div>' + dotsHTML(stop.frames.length) + '</div>';
+}
+function nFrames(st){ return st.nframes || (st.frames ? st.frames.length : 0); }
+function playFrames(){
+  clearInterval(LV.timer); LV.frame = 0; LV.hold = 0;
+  var stop = stopById(C.learn.cur), n = nFrames(stop);
+  if (!n) return;
+  LV.timer = setInterval(function(){
+    if (C.tab !== 'learn' || C.learn.cur !== stop.id){ clearInterval(LV.timer); return; }
+    if (LV.frame >= n - 1){ if (++LV.hold < 2) return; LV.hold = 0; LV.frame = 0; }
+    else LV.frame++;
+    renderLearnRight(); fitEqs();
+  }, 1900);
+}
+function renderLearnRight(){
+  var st = stopById(C.learn.cur), body;
+  if (st.custom) body = st.custom(Math.min(LV.frame, st.nframes - 1));
+  else if (st.frames) body = framesHTML(st);
+  else body = st.vis();
+  RIGHT.innerHTML = '<div class="panel"><div class="boardt"><h2>' + esc(st.title) + '</h2></div>' + body + '</div>';
+}
+function renderLearn(){
+  var list = TD.stops, i = ids(list).indexOf(C.learn.cur), st = list[i], done = C.learn.done[st.id];
+  var pills = '<div class="pills"><span class="lbl">Learn</span>' + list.map(function(s, k){
+    var en = UNLOCK || k === 0 || C.learn.done[list[k - 1].id] || C.learn.done[s.id];
+    return '<button class="pill' + (k === i ? ' cur' : '') + (C.learn.done[s.id] ? ' done' : '') + '" data-act="lstop" data-arg="' + s.id + '"' + (en ? '' : ' disabled') + '>' + (C.learn.done[s.id] ? '✓' : k + 1) + '</button>';
+  }).join('') + '</div>';
+  var prev = i > 0 && C.learn.done[list[i - 1].id] ? '<div class="doneline">✓ ' + esc(list[i - 1].take) + '</div>' : '';
+  var opts = '<div class="row">' + st.opts.map(function(o, k){
+    var cls = 'opt' + ((done && o.ok) || LV.pick === k ? ' right' : '') + (LV.wrong === k ? ' wrong' : '');
+    var mark = cls.indexOf('right') >= 0 ? '✓ ' : cls.indexOf('wrong') >= 0 ? '✗ ' : '';
+    return '<button class="' + cls + '" data-act="lopt" data-arg="' + k + '"' + (done ? ' disabled' : '') + '>' + mark + (o.h || esc(o.lbl)) + '</button>';
+  }).join('') + '</div>';
+  var fb = null;
+  if (LV.wrong !== null && !done){ var w = st.opts[LV.wrong]; fb = {ok:false, title:w.t, why:w.why}; }
+  if (done){ var r = st.opts.filter(function(o){ return o.ok; })[0]; fb = {ok:true, title:'Right!', why:r.why}; }
+  var last = i === list.length - 1;
+  var next = done ? '<div class="nextrow"><button class="big" data-act="lnext">' + (last ? 'Go to the Lab ▶' : 'Next ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + prev + '<p class="teach">' + st.teach + '</p>' + qbox('QUESTION ' + (i + 1) + ' OF ' + list.length, st.qh || st.q, st.hint, opts, fbHTML(fb)) + next;
+  renderLearnRight();
+}
+
+/* ===================================================================
+   SHARED BOARD (Guided, Practice, Free Form)
+   steps: [volume: displacement | L × W × H] → plug → solve
+   =================================================================== */
+var STEPNAME = {disp:'Volume: displacement', lwh:'Volume: L × W × H', plug:'Plug in', solve:'Solve'};
+function newBoard(mode, p){
+  if (!p.g0) p.g0 = clone(p.givens); else p.givens = clone(p.g0);
+  var steps = [], g = p.givens;
+  if (g.Vi) steps.push('disp');
+  if (g.L) steps.push('lwh');
+  if (mode !== 'free') steps.push('plug');
+  steps.push('solve');
+  var b = {mode:mode, p:p, steps:steps, phase:steps[0], kdone:[], pwrong:null, fills:{}, sel:null, eq:null, eq0:null, hist:[], moves:[], locked:false, op:null, fb:null, miss:0, ans:null, fin:null, flipped:false, shown:false, auto:false, ord:shuffle([0, 1, 2])};
+  if (b.phase === 'solve') finishPlug(b);
+  return b;
+}
+function curBoard(){ return C.tab === 'guided' ? C.guided.b : C.tab === 'prac' ? C.prac.b : C.tab === 'free' ? C.free.b : null; }
+function uName(b){ return sy(b.p.U); }
+function mistake(b, type){
+  if (b) b.miss++;
+  if (!b || b.mode !== 'free') C.mis[type] = (C.mis[type] || 0) + 1;
+  if (b && b.mode === 'prac') C.prac.streak[C.prac.lvl] = 0;
+}
+function advance(b){
+  var i = b.steps.indexOf(b.phase);
+  b.phase = b.steps[i + 1]; b.fb = null; b.pwrong = null;
+  if (b.phase === 'solve' && !b.eq) finishPlug(b);
+}
+function stepNo(b){ var i = b.phase === 'done' ? b.steps.length - 1 : b.steps.indexOf(b.phase); return 'STEP ' + (i + 1) + ' OF ' + b.steps.length + ' — ' + STEPNAME[b.steps[i]].toUpperCase(); }
+function vUnit(p){ return p.U === 'V' ? p.aunit : (p.givens.V ? p.givens.V.unit : p.givens.L ? 'cm³' : 'mL'); }
+
+/* --- volume steps (before the equation) --- */
+function ppDef(b){
+  var ph = b.phase, g = b.p.givens;
+  if (ph === 'disp'){
+    var a = g.Vi, z = g.Vf, v = t1(z.val - a.val);
+    return {right:'sub', btns:[['sub', 'final − initial', z.txt + ' − ' + a.txt], ['final', 'just the final reading', z.txt + ' mL'], ['add', 'final + initial', z.txt + ' + ' + a.txt]],
+      q:'The object’s volume is how much the <span class="kw">water rose</span>. Water before: <b>' + esc(T(a)) + '</b>. After the object went in: <b>' + esc(T(z)) + '</b>. What is the object’s volume?',
+      hint:'The water that was already there isn’t part of the object.',
+      why:'V = final − initial = ' + z.txt + ' − ' + a.txt + ' = ' + v + ' mL.'};
+  }
+  if (ph === 'lwh'){
+    var L = g.L, W = g.W, H = g.H, vv = fmt3(r3(L.val * W.val * H.val));
+    return {right:'mul', btns:[['mul', 'L × W × H', L.txt + ' × ' + W.txt + ' × ' + H.txt], ['add', 'L + W + H', L.txt + ' + ' + W.txt + ' + ' + H.txt], ['two', 'L × W', L.txt + ' × ' + W.txt]],
+      q:'A box’s volume is <span class="kw">length × width × height</span>. L = <b>' + esc(T(L)) + '</b>, W = <b>' + esc(T(W)) + '</b>, H = <b>' + esc(T(H)) + '</b>. What is the volume?',
+      hint:'cm × cm × cm = cm³',
+      why:'V = L × W × H = ' + L.txt + ' × ' + W.txt + ' × ' + H.txt + ' = ' + vv + ' cm³.'};
+  }
+  return null;
+}
+function ppWrong(b, key){
+  var g = b.p.givens;
+  if (b.phase === 'disp'){
+    var a = g.Vi, z = g.Vf, v = t1(z.val - a.val);
+    return key === 'final' ? {type:'disp', title:'Mistake: used the final reading', why:z.txt + ' mL is the water AND the object together. Subtract the ' + a.txt + ' mL of water that was already there: ' + z.txt + ' − ' + a.txt + ' = ' + v + ' mL.'}
+      : {type:'disp', title:'Mistake: added the readings', why:'The starting ' + a.txt + ' mL of water is already part of the ' + z.txt + ' mL. Subtract it: final − initial.'};
+  }
+  var L = g.L, W = g.W, H = g.H;
+  return key === 'add' ? {type:'lwh', title:'Mistake: added the sides', why:L.txt + ' + ' + W.txt + ' + ' + H.txt + ' = ' + fmt3(L.val + W.val + H.val) + ' cm is a length, not a volume. Multiply all three: L × W × H.'}
+    : {type:'lwh', title:'Mistake: left out the height', why:L.txt + ' × ' + W.txt + ' = ' + fmt3(L.val * W.val) + ' cm² is only the area of one face. Multiply by the height too: L × W × H.'};
+}
+function doPP(b, key){
+  if (!isPP(b.phase) || (b.auto && !b.autoOK)) return;
+  var d = ppDef(b), ph = b.phase, p = b.p, g = p.givens;
+  if (key === d.right){
+    if (ph === 'disp'){
+      var vx = Math.round((g.Vf.val - g.Vi.val) * 10) / 10, vt = vx.toFixed(1);
+      g.V = {val:vx, txt:vt, unit:'mL', from:g.Vf.txt + ' − ' + g.Vi.txt + ' mL'};
+      b.kdone.push('V = ' + esc(g.Vf.txt + ' − ' + g.Vi.txt + ' = ' + vt) + ' mL');
+      b.vline = 'V = final − initial = ' + g.Vf.txt + ' − ' + g.Vi.txt + ' = ' + vt + ' mL';
+      b.dispShow = {Vi:g.Vi.val, Vf:g.Vf.val};
+      delete g.Vi; delete g.Vf;
+    } else {
+      var lv = r3(g.L.val * g.W.val * g.H.val);
+      g.V = {val:lv, txt:fmt3(lv), unit:'cm³', from:g.L.txt + ' × ' + g.W.txt + ' × ' + g.H.txt + ' cm'};
+      b.kdone.push('V = ' + esc(g.L.txt + ' × ' + g.W.txt + ' × ' + g.H.txt + ' = ' + fmt3(lv)) + ' cm³');
+      b.vline = 'V = L × W × H = ' + g.L.txt + ' × ' + g.W.txt + ' × ' + g.H.txt + ' = ' + fmt3(lv) + ' cm³';
+      b.dims = {L:g.L.val, W:g.W.val, H:g.H.val};
+      delete g.L; delete g.W; delete g.H;
+    }
+    b.pwrong = null; b.fb = null;
+    advance(b);
+  } else {
+    var w = ppWrong(b, key);
+    b.pwrong = key; b.fb = {ok:false, title:w.title, why:w.why};
+    mistake(b, w.type);
+  }
+  save(); render();
+}
+/* --- step: plug in --- */
+function slotReason(b, chip, slot){
+  var U = b.p.U, u = sy(U), fq = FORMULAS[b.p.fid].q;
+  if (chip === 'U') return {type:'slot', why:'That slot gets a number. The ' + u + ' tile goes in ' + u + '’s slot: ' + u + ' is what you’re finding.'};
+  var g = b.p.givens[chip];
+  if (slot === U) return {type:'slot', why:u + ' is the unknown, so nothing is given for it. Put the purple ' + u + ' tile there.'};
+  return {type:'slot', why:g.unit + ' is a ' + QT[fq[chip]] + ' unit, so ' + T(g) + ' goes in ' + sy(chip) + '.'};
+}
+function placeChip(b, chip, slot){
+  if (b.phase !== 'plug' || (b.auto && !b.autoOK) || b.fills[slot]) return;
+  var ok = chip === slot || (chip === 'U' && slot === b.p.U);
+  if (!ok){
+    var r = slotReason(b, chip, slot);
+    b.fb = {ok:false, title:r.title || 'Mistake: wrong slot', why:r.why};
+    b.shake = slot; b.sel = null; mistake(b, r.type);
+  } else {
+    b.fills[slot] = chip; b.sel = null; b.fb = null; b.shake = null;
+    if (tmplSyms(b.p.fid).every(function(s){ return b.fills[s]; })) advance(b);
+  }
+  save(); render();
+  setTimeout(function(){ if (b.shake){ b.shake = null; } }, 450);
+}
+function finishPlug(b){
+  b.eq = buildEq(b.p.fid, b.p.givens, b.p.U);
+  b.eq0 = clone(b.eq); b.hist = []; b.moves = []; b.phase = 'solve'; b.op = null; b.locked = false;
+  normalize(b);
+}
+function normalize(b){
+  if (aloneSide(b.eq, b.p.U) === 'R'){ var t = b.eq.L; b.eq.L = b.eq.R; b.eq.R = t; b.flipped = true; }
+}
+/* --- step: solve --- */
+function doMove(b, op, ids2){
+  if (b.locked || (b.auto && !b.autoOK) || b.phase !== 'solve' || b.busy) return;
+  var before = b.eq, res = applyOp(before, op, ids2), j = judge(before, op, ids2, res, b.p.U);
+  b.hist.push(before); b.flipHist = b.flipHist || []; b.flipHist.push(b.flipped);
+  b.moves.push({op:op, label:chipLabel(before, ids2), ok:j.ok, text:eqText(res.out)});
+  b.anim = res.mid; b.eq = res.out; b.op = null;
+  if (!j.ok){ b.locked = true; b.fb = {ok:false, title:j.title, why:j.why}; mistake(b, j.type); }
+  else b.fb = null;
+  save(); render();
+  b.busy = true;
+  setTimeout(function(){ b.anim = null; b.busy = false; normalize(b); save(); if (curBoard() === b) render(); }, b.mode === 'guided' ? 1500 : 800);
+}
+function undo(b){
+  if (!b.hist.length || b.phase !== 'solve') return;
+  b.eq = b.hist.pop(); b.moves.pop(); b.flipped = b.flipHist && b.flipHist.length ? b.flipHist.pop() : false;
+  b.locked = false; b.fb = null; b.op = null; b.anim = null;
+  save(); render();
+}
+function calc(b){
+  if (b.phase !== 'solve' || b.locked || !aloneSide(b.eq, b.p.U)) return;
+  var v = ev(b.eq.R);
+  if (!isFinite(v) || isNaN(v) || v <= 0){ b.fb = {ok:false, title:'That can’t be calculated', why:'Check the values: you can’t divide by 0, and every value must be above 0.'}; render(); return; }
+  b.ans = v; b.fb = null;
+  finish(b); save(); render();
+}
+function finish(b){
+  b.phase = 'done'; b.fb = null;
+  if (b.mode === 'guided') C.guided.done[C.guided.cur] = 1;
+  if (b.mode === 'prac') pracScore(b);
+}
+function ansText(b){ return uName(b) + ' = ' + fmt3(b.ans) + (b.p.aunit ? ' ' + b.p.aunit : ''); }
+/* numbers behind the pictures */
+function dVals(sp){
+  var g = sp.givens, v = {};
+  ['D','m','V'].forEach(function(s){ if (g[s]) v[s] = g[s].val; });
+  if (!has(v.V) && g.Vi && g.Vf) v.V = g.Vf.val - g.Vi.val;
+  if (!has(v.V) && g.L) v.V = g.L.val * g.W.val * g.H.val;
+  if (has(sp.ans)) v[sp.U] = sp.ans;
+  else if (sp.U === 'D') v.D = v.m / v.V; else if (sp.U === 'm') v.m = v.D * v.V; else v.V = v.m / v.D;
+  return v;
+}
+function floatWord(D, kind){
+  if (Math.abs(D - 1) < .005) return 'same as water (1.00)';
+  if (kind === 'liq') return D < 1 ? 'less dense than water (1.00)' : 'denser than water (1.00)';
+  return D < 1 ? 'less than water (1.00) → floats' : 'more than water (1.00) → sinks';
+}
+function closestMat(D){ var best = null, bd = 1e9; IDLIST.forEach(function(id){ var m = matById(id), d = Math.abs(Math.log(m.d / D)); if (d < bd){ bd = d; best = m; } }); return best; }
+/* “does it make sense?” */
+function senseHTML(b){
+  if (!has(b.ans)) return '';
+  var v = dVals(boardSpec(b)), vu = vUnit(b.p);
+  return '<div class="sense"><span>Check: ' + esc(fmt3(v.m)) + ' g ÷ ' + esc(fmt3(v.V)) + ' ' + esc(vu) + ' = ' + esc(fmt3(v.D)) + ' g/' + esc(vu) + ' ✓</span><span class="arw" style="font-size:1rem">' + esc(floatWord(v.D, b.p.kind)) + '</span></div>';
+}
+function senseText(b){ var v = dVals(boardSpec(b)); return 'D = ' + fmt3(v.D) + ' g/' + vUnit(b.p) + ': ' + floatWord(v.D, b.p.kind) + '.'; }
+
+/* expected next action (Guided glow + Show me) */
+function expect(b){
+  if (isPP(b.phase)){ var d = ppDef(b); return {kind:'pp', key:d.right, why:d.why}; }
+  if (b.phase === 'plug'){
+    var order = tmplSyms(b.p.fid), fq = FORMULAS[b.p.fid].q;
+    for (var i = 0; i < order.length; i++){
+      var s = order[i];
+      if (!b.fills[s]){
+        var chip = s === b.p.U ? 'U' : s, why;
+        if (chip === 'U') why = sy(s) + ' is what you’re finding, so its slot gets the purple ' + sy(s) + ' tile.';
+        else { var gg = b.p.givens[s]; why = T(gg) + ' is the ' + QT[fq[s]] + ', so it goes in ' + sy(s) + '.'; }
+        return {kind:'plug', chip:chip, slot:s, why:why};
+      }
+    }
+    return null;
+  }
+  if (b.phase === 'solve'){
+    if (b.locked) return {kind:'undo', why:'Tap ↶ Undo to take that move back.'};
+    if (aloneSide(b.eq, b.p.U)) return {kind:'calc', why:uName(b) + ' is alone. Tap = Calculate and the app does the math.'};
+    var mv = nextMove(b.eq, b.p.U);
+    if (mv) return {kind:'move', op:mv.op, ids:mv.ids, why:mv.why};
+  }
+  return null;
+}
+
+/* ----- board left (question box) ----- */
+function doneLines(b){
+  var parts = [];
+  if (b.kdone.length) parts.push('✓ ' + b.kdone.join(' · '));
+  if (b.eq0 && b.mode !== 'free') parts.push('<span>✓ Plugged in: <span class="mini">' + eqHTML(b.eq0) + '</span></span>');
+  var okm = (b.moves || []).filter(function(m){ return m.ok; });
+  if (okm.length) parts.push('✓ ' + okm.map(function(m, k){ return 'Move ' + (k + 1) + ': ' + m.op + '&nbsp;' + esc(m.label); }).join(' · '));
+  return parts.length ? '<div class="doneline dl2">' + parts.map(function(p){ return '<span>' + p + '</span>'; }).join('') + '</div>' : '';
+}
+function boardLeft(b){
+  var u = uName(b), ex = b.mode === 'guided' ? expect(b) : null, h = '';
+  var ci = b.phase === 'done' ? b.steps.length : b.steps.indexOf(b.phase);
+  if (b.mode !== 'free') h += '<div class="pills"><span class="lbl">Step</span>' + b.steps.map(function(s, k){
+    var dn = k < ci;
+    return '<button class="pill' + (k === ci ? ' cur' : '') + (dn ? ' done' : '') + '" disabled>' + (dn ? '✓ ' : (k + 1) + ' ') + STEPNAME[s] + '</button>';
+  }).join('') + '</div>';
+  h += doneLines(b);
+  var head = stepNo(b);
+  if (isPP(b.phase)){
+    var d = ppDef(b), btns = (b.ord || [0, 1, 2]).map(function(i){ return d.btns[i]; });
+    var kb = '<div class="row">' + btns.map(function(k){
+      return '<button class="kbtn two' + (b.pwrong === k[0] ? ' wrong' : '') + (ex && ex.key === k[0] ? ' glow' : '') + '" data-act="pp" data-arg="' + k[0] + '"' + (b.auto ? ' disabled' : '') + '>' + esc(k[1]) + '<small>' + esc(k[2]) + '</small></button>';
+    }).join('') + '</div>';
+    return h + qbox(head, d.q, ex ? '👉 ' + esc(ex.why) : esc(d.hint), kb, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'plug'){
+    var order = b.mode === 'guided' ? tmplSyms(b.p.fid).filter(function(x){ return x !== b.p.U; }) : (b.p.order || tmplSyms(b.p.fid).filter(function(x){ return x !== b.p.U; }));
+    var list = order.filter(function(c){ return b.p.givens[c]; }).concat(['U']);
+    var row = '<div class="row">' + list.map(function(c){
+      var used = c === 'U' ? b.fills[b.p.U] : b.fills[c];
+      var cls = 'chip' + (used ? ' used' : '') + (b.sel === c ? ' sel' : '') + (ex && ex.chip === c && b.sel !== c ? ' glow' : '');
+      var inner = c === 'U' ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(u) + '</span><small>unknown</small>' : chipHTML(b.p.givens[c]);
+      return '<button class="' + cls + '" data-act="chip" data-arg="' + c + '"' + (used || b.auto ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    var hint = ex ? '👉 ' + esc(b.sel === ex.chip ? 'Now tap the ' + sy(ex.slot) + ' slot in the formula. ' + ex.why : 'Tap the glowing chip (or drag it to its slot). ' + ex.why) :
+      (b.sel ? 'Now tap its slot in the formula (or drag it there).' : 'Tap a value, then tap its slot, or drag it there. Match the units: g/mL or g/cm³ → D, g → m, mL or cm³ → V.');
+    return h + qbox(head, 'Put each value in its <span class="kw">slot</span>.', hint, row, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'done'){
+    var gp = b.mode === 'guided' ? gpById(C.guided.cur) : null;
+    var msg = b.mode === 'prac' ? b.pmsg : gp ? gp.done : '';
+    return h + qbox(head, '<span class="kw">Done!</span>', 'The app did the arithmetic for you, rounded to 3 significant figures.', '', fbHTML({ok:true, title:ansText(b), why:msg || ''}));
+  }
+  var alone = aloneSide(b.eq, b.p.U) && !b.anim, qt, hint2, ans = '';
+  var dis = b.locked || b.auto || b.busy;
+  if (alone && !b.locked){
+    qt = '<span class="kw">' + esc(u) + ' is alone!</span> ✓';
+    hint2 = ex ? '👉 ' + esc(ex.why) : 'Tap = Calculate. The app does the math.';
+    ans = '<div class="row"><button class="big green' + (ex && ex.kind === 'calc' ? ' glow' : '') + '" data-act="calc"' + (b.auto ? ' disabled' : '') + '>= Calculate</button>' +
+      '<button class="undo" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+  } else {
+    qt = 'Get <span class="kw">' + esc(u) + '</span> alone. Do the same thing to <span class="kw">BOTH sides</span>.';
+    hint2 = ex ? '👉 ' + esc(ex.why) : (b.locked ? 'Tap ↶ Undo to take that move back.' : b.op ? 'Now tap a number to ' + opName(b.op) + ' both sides by.' : 'Tap an operation, then a number. Or drag a number onto + − × ÷.');
+    var row1 = '<div class="row">' + ['+','−','×','÷'].map(function(o){
+      var gl = ex && ex.kind === 'move' && ex.op === o && b.op !== o;
+      return '<button class="opbtn' + (b.op === o ? ' sel' : '') + (gl ? ' glow' : '') + '" data-act="op" data-arg="' + o + '"' + (dis ? ' disabled' : '') + ' aria-label="' + opName(o) + '">' + o + '</button>';
+    }).join('') + '<button class="undo' + (b.locked ? ' glow' : '') + '" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+    var chips2 = solveChips(b.eq, b.p.U);
+    var row2 = '<div class="row">' + chips2.map(function(c, k){
+      var fac = c.group ? null : findFactor(b.eq, c.ids[0]);
+      var inner = c.group ? '<b>' + esc(chipLabel(b.eq, c.ids)) + '</b><small>both</small>' : fac.v ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(sy(fac.sym)) + '</span>' : chipHTML(fac);
+      var gl = ex && ex.kind === 'move' && b.op === ex.op && ex.ids.join() === c.ids.join();
+      return '<button class="chip' + (c.group ? ' grp' : '') + (gl ? ' glow' : '') + '" data-act="schip" data-arg="' + k + '"' + (dis ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    ans = row1 + row2;
+  }
+  return h + qbox(head, qt, hint2, ans, fbHTML(b.fb), showMeBtn(b));
+}
+function opName(o){ return {'+':'add','−':'subtract','×':'multiply','÷':'divide'}[o]; }
+function showMeBtn(b){
+  if (b.mode !== 'prac' || b.miss < 2 || b.phase === 'done' || b.auto) return '';
+  return '<div class="row" style="margin-top:8px"><button class="big ghost" data-act="showme">👀 Show me</button><span class="qhint">Two misses: watch the solution step by step.</span></div>';
+}
+
+/* ----- board right ----- */
+function boardSpec(b){ return {fid:b.p.fid, U:b.p.U, givens:b.p.givens, ans:has(b.ans) ? b.ans : null, aunit:b.p.aunit, kind:b.p.kind}; }
+function objCard(b, w){
+  var p = b.p, sp = boardSpec(b), v = dVals(sp), U = p.U, solved = has(b.ans), g = p.givens, vu = vUnit(p), fig;
+  if (p.kind === 'liq'){ var cap = capFor(v.V); fig = cylSVG({lv:v.V, cap:cap, liq:p.col || '#9cd3f5'}, Math.round(w * .62)); }
+  else fig = shapeSVG(p.kind, p.col || '#c3ccd5', b.dims || p.dims || (g.L ? {L:g.L.val, W:g.W.val, H:g.H.val} : null), w, {rock:p.rock, q:!solved && U !== 'D' && p.kind === 'block'});
+  function line(s){
+    var lbl = s;
+    if (s === U){
+      if (!solved) return '<div><span class="tile">' + s + '</span> = ?</div>';
+      return '<div>' + lbl + ' = <span style="color:#6a2fb0">' + esc(fmt3(b.ans) + ' ' + p.aunit) + '</span></div>';
+    }
+    if (s === 'V' && !g.V){
+      if (g.Vi) return '<div>V = ? <span class="sm">(water ' + esc(g.Vi.txt) + ' → ' + esc(g.Vf.txt) + ' mL)</span></div>';
+      if (g.L) return '<div>V = ? <span class="sm">(' + esc(g.L.txt + ' × ' + g.W.txt + ' × ' + g.H.txt) + ' cm)</span></div>';
+    }
+    var gg = g[s];
+    if (!gg) return '';
+    return '<div>' + lbl + ' = ' + (gg.from ? '<span class="sm">' + esc(gg.from) + ' →</span> ' : '') + esc(T(gg)) + '</div>';
+  }
+  var name = p.kind === 'liq' ? (p.liqName || 'liquid') : p.unk ? 'unknown metal' : p.matName || (p.mat ? matById(p.mat).f : 'the sample');
+  return '<div class="solcard">' + fig + '<div class="gl"><div class="gst">' + esc(name) + '</div>' + line('m') + line('V') + line('D') +
+    '<div class="sm" style="margin-top:4px">D = mass ÷ volume<br>water = 1.00 g/mL</div></div></div>';
+}
+function dispStrip(vi, vf, kind, col, w){
+  var cap = capFor(vf);
+  return '<div class="strip"><div class="gs"><div class="gst">Before</div>' + cylSVG({lv:vi, cap:cap, read:[vi]}, w) + '<div class="gl">' + esc(t1(vi)) + ' mL</div></div>' +
+    '<div class="garr" aria-hidden="true">➜<small>+ object</small></div>' +
+    '<div class="gs after"><div class="gst">After</div>' + cylSVG({lv:vf, cap:cap, read:[vf, vi], band:[vi, vf], obj:{kind:kind === 'block' ? 'block' : kind, col:col, at:'bottom'}}, w) + '<div class="gl">' + esc(t1(vf)) + ' mL</div></div></div>';
+}
+function boardRight(b){
+  var p = b.p, g = p.givens, pre = !!PRE[b.phase];
+  var h = '<div class="panel"><div class="boardt"><h2>The sample</h2></div>' + objCard(b, pre ? 150 : 128) + senseHTML(b);
+  if (b.phase === 'disp') return h + '<div class="vis">' + dispStrip(g.Vi.val, g.Vf.val, p.kind, p.col, 120) + '<div class="gray" style="font-weight:800">Object’s volume = how much the water rose = final − initial</div></div></div>';
+  if (b.phase === 'lwh') return h + '<div class="vis">' + boxSVG({L:g.L.val, W:g.W.val, H:g.H.val, col:p.col, lab:{L:'L = ' + T(g.L), W:'W = ' + T(g.W), H:'H = ' + T(g.H)}, fs:15, VW:320, VH:200}, 330) + '<div class="gray" style="font-weight:800">Volume of a box = L × W × H · cm × cm × cm = cm³</div></div></div>';
+  var fEq = null, okMoves = (b.moves || []).filter(function(m){ return m.ok; }).length;
+  if (b.phase !== 'plug' && okMoves) fEq = b.locked ? b.hist[b.hist.length - 1] : (b.anim || b.eq);
+  var fInner = fEq ? eqHTML(fEq, {sym:true, units:boardUnits(b)}) : formulaHTML(p.fid, boardUnits(b));
+  var u = uName(b);
+  h += '<div class="boardt"><h2>Equation board</h2>' + fcardHTML(fInner, !!fEq, b.mode === 'free' && b.phase === 'done' ? 'Rearranged<br>formula<br>(for your notes)' : '') + '</div>';
+  var main;
+  if (b.phase === 'plug'){
+    var ex = b.mode === 'guided' ? expect(b) : null;
+    main = templateHTML(p.fid, {U:p.U, fills:b.fills, vals:g, sel:b.sel, glow:ex && b.sel === ex.chip ? ex.slot : null, shake:b.shake});
+  } else main = eqHTML(b.anim || b.eq);
+  h += '<div class="eqwrap" data-drop="eq">' + main + (b.flipped && !b.anim && b.phase !== 'plug' ? '<div class="flipnote">(same thing, just flipped so ' + esc(u) + ' is on the left)</div>' : '') + '</div>';
+  var alone = b.phase !== 'plug' && !b.anim && aloneSide(b.eq, p.U) && !b.locked;
+  if (!has(b.ans)) h += '<div class="status' + (b.locked && !alone ? ' bad' : '') + '">' + (alone ? esc(u) + ' is alone! ✓' : b.phase === 'plug' ? 'Plug in: D (g/mL or g/cm³), m (g), V (mL or cm³)' : b.locked ? '✗ Tap ↶ Undo' : '') + '</div>';
+  else h += '<div class="answer">' + esc(u) + ' = ' + esc(fmt3(b.ans)) + (p.aunit ? ' <small>' + esc(p.aunit) + '</small>' : '') + '</div>';
+  return h + '</div>';
+}
+
+/* ===================================================================
+   PART 2: LAB  (balance + graduated cylinder or ruler; drag or tap)
+   =================================================================== */
+var LA = {anim:null};
+var DN = {L:'LENGTH', W:'WIDTH', H:'HEIGHT'};
+var PXCM = 50, BX = 190, RY = 262;
+function labCur(){ var L = C.lab; return L.cur ? {s:sampById(L.cur), ls:L.s[L.cur]} : null; }
+function lsV(sm, ls){ return ls.method === 'disp' ? {val:Math.round((sm.Vf - sm.Vi) * 10) / 10, txt:t1(sm.Vf - sm.Vi), unit:'mL'} : {val:r3(sm.dims.L * sm.dims.W * sm.dims.H), txt:fmt3(r3(sm.dims.L * sm.dims.W * sm.dims.H)), unit:'cm³'}; }
+function rulerStart(){ return 214 + Math.round(Math.random() * 28); }
+function labStart(id){
+  var L = C.lab;
+  if (L.cur || L.done[id]) return;
+  L.cur = id; L.last = null;
+  var ls = L.s[id] = {step:'vol', dims:{}, fills:{}, m:sampById(id).m};
+  L.dim = 'L'; L.snap = false; L.float = false; L.rx = rulerStart();
+  LA.anim = 'bal'; ls.fb = null;
+  save(); render();
+}
+function dropInCyl(){
+  var c = labCur(); if (!c || c.ls.step !== 'vol' || C.lab.mode !== 'disp' || C.lab.float) return;
+  if (c.s.floats){ C.lab.float = true; LA.anim = 'drop'; mistake(null, 'method'); save(); render(); return; }
+  c.ls.method = 'disp'; c.ls.step = 'volq'; c.ls.ord = shuffle([0, 1, 2]); c.ls.fb = null; c.ls.wq = null;
+  LA.anim = 'drop'; save(); render();
+}
+function labTakeOut(){ C.lab.float = false; save(); render(); }
+function rulerDrop(nx){
+  var L = C.lab; L.rx = nx;
+  if (Math.abs(nx + 10 - BX) <= 10){ L.rx = BX - 10; L.snap = true; }
+  save(); render();
+}
+function labRecord(){
+  var c = labCur(), L = C.lab; if (!c || !L.snap) return;
+  c.ls.dims[L.dim] = c.s.dims[L.dim];
+  var nxt = ['L', 'W', 'H'].filter(function(d){ return !has(c.ls.dims[d]); })[0];
+  L.snap = false; L.rx = rulerStart();
+  if (nxt) L.dim = nxt;
+  else { c.ls.method = 'lwh'; c.ls.step = 'volq'; c.ls.ord = shuffle([0, 1, 2]); c.ls.fb = null; c.ls.wq = null; }
+  save(); render();
+}
+function volqOpts(sm, ls){
+  if (ls.method === 'disp'){
+    var a = t1(sm.Vi), z = t1(sm.Vf);
+    return [{lbl:'final − initial', sub:z + ' − ' + a + ' = ' + t1(sm.Vf - sm.Vi) + ' mL', ok:1},
+      {lbl:'just the final reading', sub:z + ' mL', t:'Mistake: used the final reading', why:z + ' mL is the water AND the sample together. Subtract the ' + a + ' mL of water that was already there.', type:'disp'},
+      {lbl:'final + initial', sub:z + ' + ' + a + ' = ' + t1(sm.Vf + sm.Vi) + ' mL', t:'Mistake: added the readings', why:'The ' + a + ' mL of water is already part of the final reading. Subtract it: final − initial.', type:'disp'}];
+  }
+  var d = sm.dims, L = d.L.toFixed(2), W = d.W.toFixed(2), H = d.H.toFixed(2);
+  return [{lbl:'L × W × H', sub:L + ' × ' + W + ' × ' + H + ' = ' + fmt3(r3(d.L * d.W * d.H)) + ' cm³', ok:1},
+    {lbl:'L + W + H', sub:L + ' + ' + W + ' + ' + H + ' = ' + fmt3(d.L + d.W + d.H) + ' cm', t:'Mistake: added the sides', why:'Adding gives a length (cm), not a volume. Multiply all three: L × W × H.', type:'lwh'},
+    {lbl:'L × W', sub:L + ' × ' + W + ' = ' + fmt3(d.L * d.W) + ' cm²', t:'Mistake: left out the height', why:'L × W is only the area of one face (cm²). Multiply by the height too.', type:'lwh'}];
+}
+function labVolq(k){
+  var c = labCur(); if (!c || c.ls.step !== 'volq') return;
+  var o = volqOpts(c.s, c.ls)[k];
+  if (o.ok){ c.ls.step = 'calc'; c.ls.fills = {}; c.ls.sel = null; c.ls.fb = null; c.ls.wq = null; c.ls.V = lsV(c.s, c.ls); }
+  else { c.ls.wq = k; c.ls.fb = {ok:false, title:o.t, why:o.why}; mistake(null, o.type); }
+  save(); render();
+}
+function labVals(c){ return {m:{txt:c.s.m.toFixed(2), unit:'g', val:c.s.m}, V:c.ls.V}; }
+function placeLab(chip, slot){
+  var c = labCur(); if (!c || c.ls.step !== 'calc' || c.ls.fills[slot]) return;
+  var ok = chip === slot || (chip === 'U' && slot === 'D'), vals = labVals(c);
+  if (!ok){
+    var why = chip === 'U' ? 'That slot gets a number. The purple D tile goes in D’s slot: D is what you’re finding.' :
+      slot === 'D' ? 'D is the unknown, so nothing is given for it. Put the purple D tile there.' :
+      chip === 'm' ? 'g is a mass unit, so ' + T(vals.m) + ' goes in m.' : vals.V.unit + ' is a volume unit, so ' + T(vals.V) + ' goes in V.';
+    c.ls.fb = {ok:false, title:'Mistake: wrong slot', why:why}; c.ls.sel = null; c.ls.shake = slot; mistake(null, 'slot');
+  } else { c.ls.fills[slot] = chip; c.ls.sel = null; c.ls.fb = null; c.ls.shake = null; }
+  save(); render();
+  setTimeout(function(){ if (c.ls.shake) c.ls.shake = null; }, 450);
+}
+function labCalc(){
+  var c = labCur(); if (!c || c.ls.step !== 'calc' || !['D', 'm', 'V'].every(function(s){ return c.ls.fills[s]; })) return;
+  c.ls.D = c.s.m / c.ls.V.val; c.ls.step = 'id'; c.ls.fb = null; c.ls.wq = null;
+  save(); render();
+}
+function labId(id){
+  var c = labCur(); if (!c || c.ls.step !== 'id') return;
+  var best = closestMat(c.ls.D), m = matById(id), du = 'g/' + c.ls.V.unit;
+  if (best.id === id){
+    c.ls.mat = id; c.ls.step = 'done'; C.lab.done[c.s.id] = 1;
+    C.lab.last = 'Sample ' + c.s.id + ' is ' + m.f + ' (' + fmt3(m.d) + ' g/cm³). ' + (m.d < 1 ? 'Less dense than water: it floats.' : 'Denser than water: it sinks.');
+    C.lab.cur = null; C.lab.float = false; C.lab.snap = false;
+    save(); render();
+    if (pct('lab') === 100) toast('Lab complete! Guided is unlocked.');
+  } else {
+    c.ls.wq = id; mistake(null, 'ident');
+    c.ls.fb = {ok:false, title:'Not a match', why:'Your density is ' + fmt3(c.ls.D) + ' ' + du + '. ' + m.f + ' is ' + fmt3(m.d) + ' g/cm³, which isn’t close. Find the density closest to ' + fmt3(c.ls.D) + '.'};
+    save(); render();
+  }
+}
+function setVM(mode){
+  if (mode !== 'disp' && mode !== 'lwh') mode = C.lab.mode === 'disp' ? 'lwh' : 'disp';
+  if (C.lab.mode === mode) return;
+  C.lab.mode = mode; C.lab.float = false; C.lab.snap = false; C.lab.rx = rulerStart();
+  var c = labCur();
+  if (c && c.ls.step !== 'vol' && c.ls.step !== 'mass') toast('This sample’s volume is already measured. The switch is for the next sample.');
+  save(); render();
+}
+
+/* ----- bench drawing (viewBox 660 × 420) ----- */
+function nestShape(s, x, y, w, o){ var h = w * 170 / 240; return '<svg x="' + (x - w / 2).toFixed(1) + '" y="' + (y - h / 2).toFixed(1) + '" width="' + w + '" height="' + h.toFixed(1) + '" viewBox="0 0 240 170" overflow="visible">' + shapeInner(s.kind, s.col, s.dims, o || {pad:22, thin:true}) + '</svg>'; }
+function trayHTML(dragOK){
+  var h = '<text x="79" y="18" text-anchor="middle" font-size="12" font-weight="900" fill="#5a6672" letter-spacing="1">SAMPLE TRAY</text>';
+  SAMP.forEach(function(s, i){
+    var cy = 72 + i * 96, done = C.lab.done[s.id], cur = C.lab.cur === s.id, can = dragOK && !done;
+    h += '<rect x="12" y="' + (cy - 44) + '" width="134" height="90" rx="10" fill="' + (cur ? '#fff7e6' : '#eef1f5') + '" stroke="' + (cur ? '#f29d12' : '#cfd6de') + '" stroke-width="2"/>';
+    if (!cur) h += '<g' + (can ? ' class="ldrag" data-k="samp" data-id="' + s.id + '"' : '') + ' opacity="' + (done ? '.4' : '1') + '">' + (can ? '<rect x="14" y="' + (cy - 42) + '" width="130" height="66" fill="transparent"/>' : '') + nestShape(s, 79, cy - 10, 96) + '</g>';
+    else h += '<text x="79" y="' + (cy - 4) + '" text-anchor="middle" font-size="12" font-weight="800" fill="#c56a00">(in use)</text>';
+    h += '<text x="79" y="' + (cy + 38) + '" text-anchor="middle" font-size="12.5" font-weight="900" fill="#1f3a5f">' + s.id + ' · ' + esc(s.name) + '</text>';
+    if (done) h += '<text x="132" y="' + (cy - 24) + '" text-anchor="middle" font-size="20" font-weight="900" fill="#1d7a35">✓</text>';
+  });
+  return h;
+}
+function balanceHTML(sm, drag, hot){
+  var read = sm ? sm.m.toFixed(2) : '0.00';
+  var h = '<text x="545" y="190" text-anchor="middle" font-size="12" font-weight="900" fill="#5a6672" letter-spacing="1">BALANCE</text>';
+  if (hot) h += '<rect class="hot" x="446" y="200" width="198" height="118" rx="12" fill="#fff7e6" stroke="#f29d12" stroke-width="3" stroke-dasharray="8 5"/><text x="545" y="262" text-anchor="middle" font-size="14" font-weight="900" fill="#c56a00">drop a sample here</text>';
+  h += '<rect x="440" y="330" width="210" height="76" rx="12" fill="#2d3b4c"/><rect x="470" y="346" width="150" height="40" rx="6" fill="#b9f6c9" stroke="#0f4720" stroke-width="2"/>' +
+    '<text x="608" y="376" text-anchor="end" font-size="26" font-weight="900" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#0f4720">' + read + ' g</text>' +
+    '<rect x="536" y="318" width="18" height="14" fill="#6a7682"/><rect x="452" y="310" width="186" height="11" rx="5" fill="#9aa6b2" stroke="#5a6672" stroke-width="1.5"/>';
+  if (sm) h += '<g' + (drag ? ' class="ldrag" data-k="bal"' : '') + '>' + (drag ? '<rect x="470" y="225" width="150" height="85" fill="transparent"/>' : '') + nestShape(sm, 545, 276, 128) + '</g>';
+  return h;
+}
+function cylHTML(o){ return '<svg x="180" y="40" width="230" height="320" viewBox="0 0 230 320" overflow="visible">' + cylInner(o) + '</svg>'; }
+function rulerHTML(rx, drag){
+  var len = 8 * PXCM, h = '<g' + (drag ? ' class="ldrag" data-k="ruler"' : '') + ' transform="translate(' + rx + ',0)">';
+  h += '<rect x="0" y="' + RY + '" width="' + (len + 20) + '" height="52" rx="4" fill="#f6e7a8" stroke="#8a6d00" stroke-width="2"/>';
+  for (var mm = 0; mm <= 80; mm++){
+    var x = 10 + mm * PXCM / 10, tl2 = mm % 10 === 0 ? 20 : mm % 5 === 0 ? 14 : 8;
+    h += '<line x1="' + x + '" x2="' + x + '" y1="' + RY + '" y2="' + (RY + tl2) + '" stroke="#3b3000" stroke-width="' + (mm % 10 === 0 ? 1.8 : 1) + '"/>';
+    if (mm % 10 === 0) h += '<text x="' + x + '" y="' + (RY + 36) + '" text-anchor="middle" font-size="14" font-weight="800" fill="#3b3000">' + (mm / 10) + '</text>';
+  }
+  h += '<text x="' + (len + 6) + '" y="' + (RY + 48) + '" text-anchor="end" font-size="11" font-weight="800" fill="#3b3000">cm</text>';
+  if (drag) h += '<text x="' + (len / 2 + 10) + '" y="' + (RY + 49) + '" text-anchor="middle" font-size="11" font-weight="800" fill="#8a6d00">⟷ drag me</text>';
+  return h + '</g>';
+}
+function benchSVG(){
+  var L = C.lab, c = labCur(), sm = c && c.s, ls = c && c.ls, mode = L.mode, h = '', anim = LA.anim; LA.anim = null;
+  var view = !c ? 'idle' : ls.step === 'vol' ? (mode === 'disp' ? 'disp' : 'ruler') : ls.method === 'disp' ? 'dispDone' : 'lwhDone';
+  h += trayHTML(!c);
+  if (view === 'idle' || view === 'disp' || view === 'dispDone'){
+    var o = {lv:40, read:[40]};
+    if (view === 'disp'){
+      o = {lv:sm.Vi, read:[sm.Vi]};
+      if (L.float){ o = {lv:sm.Vf, read:[sm.Vf, sm.Vi], obj:{kind:sm.kind, col:sm.col, dims:sm.dims, at:'float', drop:anim === 'drop'}}; if (anim === 'drop') o.rise = sm.Vi; }
+    } else if (view === 'dispDone'){
+      o = {lv:sm.Vf, read:[sm.Vf, sm.Vi], band:ls.step === 'volq' ? null : [sm.Vi, sm.Vf], obj:{kind:sm.kind, col:sm.col, dims:sm.dims, at:'bottom', drop:anim === 'drop'}};
+      if (anim === 'drop') o.rise = sm.Vi;
+    }
+    if (view === 'idle' && mode !== 'disp') h += '<text x="295" y="190" text-anchor="middle" font-size="40">📏</text><text x="295" y="225" text-anchor="middle" font-size="15" font-weight="900" fill="#c56a00">Ruler ready.</text><text x="295" y="246" text-anchor="middle" font-size="13" font-weight="800" fill="#3b4652">Weigh a sample first.</text>';
+    else h += cylHTML(o);
+    if (view === 'disp' && !L.float) h += '<rect class="hot" x="252" y="34" width="86" height="40" rx="8" fill="none" stroke="#2b6cb0" stroke-width="3" stroke-dasharray="7 5"/><text x="295" y="28" text-anchor="middle" font-size="13" font-weight="900" fill="#2b6cb0">drop it in here ↓</text>';
+    if (L.float && view === 'disp') h += '<text x="295" y="24" text-anchor="middle" font-size="15" font-weight="900" fill="#b3261e">It floats!</text>';
+    h += balanceHTML(view === 'disp' && !L.float ? sm : null, view === 'disp' && !L.float, view === 'idle' && pct('lab') < 100);
+  } else if (view === 'ruler'){
+    if (sm.kind !== 'block'){
+      h += nestShape(sm, 400, 150, 190, {pad:20}) + rulerHTML(L.rx, false) +
+        '<text x="400" y="66" text-anchor="middle" font-size="18" font-weight="900" fill="#b3261e">No flat sides to measure!</text><text x="400" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#3b4652">Slide the switch to 💧 DISPLACEMENT</text>';
+    } else {
+      var d = L.dim, len = sm.dims[d] * PXCM, other = d === 'H' ? sm.dims.W : sm.dims.H, bh = Math.min(110, other * PXCM * .9);
+      h += '<text x="' + BX + '" y="' + (RY - bh - 12) + '" font-size="15" font-weight="900" fill="#c56a00">Measuring the ' + DN[d] + '</text>';
+      h += '<rect x="' + BX + '" y="' + (RY - bh) + '" width="' + len + '" height="' + bh + '" fill="' + sm.col + '" stroke="#1f3a5f" stroke-width="2.5"/>' +
+        '<line x1="' + BX + '" x2="' + (BX + len) + '" y1="' + (RY - 2) + '" y2="' + (RY - 2) + '" stroke="#f29d12" stroke-width="5"/>';
+      if (sm.id === 'B') for (var gi = 1; gi < 5; gi++) h += '<path d="M' + (BX + 4) + ' ' + (RY - bh + gi * bh / 5) + ' q' + (len / 2) + ' ' + (gi % 2 ? 6 : -6) + ' ' + (len - 8) + ' 0" fill="none" stroke="#8a5a2b" stroke-opacity=".5" stroke-width="1.5"/>';
+      h += '<line x1="' + BX + '" x2="' + BX + '" y1="' + (RY - bh - 6) + '" y2="' + (RY + 26) + '" stroke="#1f3a5f" stroke-width="1.5" stroke-dasharray="4 3"/>';
+      h += rulerHTML(L.rx, !L.snap);
+      if (L.snap){
+        var rx2 = BX + len, val = sm.dims[d].toFixed(2);
+        h += '<line x1="' + rx2 + '" x2="' + rx2 + '" y1="' + (RY - bh - 6) + '" y2="' + (RY + 30) + '" stroke="#c56a00" stroke-width="2.5" stroke-dasharray="5 3"/>' +
+          '<rect x="' + (rx2 - 62) + '" y="' + (RY + 60) + '" width="124" height="36" rx="10" fill="#fff7e6" stroke="#f29d12" stroke-width="3"/><text x="' + rx2 + '" y="' + (RY + 85) + '" text-anchor="middle" font-size="20" font-weight="900" fill="#c56a00">' + val + ' cm</text>' +
+          '<text x="' + BX + '" y="' + (RY + 82) + '" text-anchor="middle" font-size="13" font-weight="900" fill="#1d7a35">0 ✓</text>';
+      } else {
+        h += '<text x="' + BX + '" y="' + (RY + 82) + '" text-anchor="middle" font-size="13" font-weight="900" fill="#2b6cb0">line up 0 here ↑</text>';
+      }
+      h += '<svg x="440" y="4" width="216" height="135" viewBox="0 0 320 200">' + boxShape({L:sm.dims.L, W:sm.dims.W, H:sm.dims.H, col:sm.col, hi:d, thin:true, lab:labDims(ls), fs:17}, 320, 200, 66) + '</svg>';
+    }
+  } else {
+    h += '<svg x="170" y="40" width="480" height="270" viewBox="0 0 320 180">' + boxShape({L:sm.dims.L, W:sm.dims.W, H:sm.dims.H, col:sm.col, lab:labDims(ls), fs:13}, 320, 180, 62) + '</svg>';
+  }
+  return '<svg id="bench" class="bench" viewBox="0 0 660 420" role="img" aria-label="lab bench">' + h + '</svg>';
+}
+function labDims(ls){ var o = {}; ['L', 'W', 'H'].forEach(function(d){ if (has(ls.dims[d])) o[d] = d + ' = ' + ls.dims[d].toFixed(2) + ' cm'; }); return o; }
+
+/* ----- lab left panel ----- */
+function notebook(){
+  var rows = SAMP.map(function(s){
+    var ls = C.lab.s[s.id] || {}, st = ls.step || 'mass', cur = C.lab.cur === s.id;
+    var m = st !== 'mass' ? s.m.toFixed(2) + ' g' : '';
+    var V = ls.V ? T(ls.V) : '', meth = ls.method === 'disp' ? '💧 displacement' : ls.method === 'lwh' ? '📏 L × W × H' : '';
+    var D = has(ls.D) ? fmt3(ls.D) + ' g/' + ls.V.unit : '', mat = ls.mat ? matById(ls.mat).f : '';
+    return '<tr class="' + (cur ? 'cur' : '') + '"><td><b>' + s.id + '</b></td><td>' + m + '</td><td>' + esc(V) + '</td><td>' + meth + '</td><td>' + esc(D) + '</td><td class="' + (mat ? 'ok' : '') + '">' + (mat ? '✓ ' + esc(mat) : '') + '</td></tr>';
+  }).join('');
+  return '<div class="gray"><div class="t">Lab notebook</div><table class="ntab"><tr><th>Sample</th><th>Mass</th><th>Volume</th><th>How</th><th>Density</th><th>Material</th></tr>' + rows + '</table></div>';
+}
+function renderLab(){
+  var L = C.lab, c = labCur(), h = '', allDone = pct('lab') === 100;
+  h += '<div class="pills"><span class="lbl">Samples</span>' + SAMP.map(function(s){ return '<button class="pill' + (L.cur === s.id ? ' cur' : '') + (L.done[s.id] ? ' done' : '') + '" disabled>' + (L.done[s.id] ? '✓ ' : '') + s.id + '</button>'; }).join('') + '<span class="streak">' + cntDone(SAMP, L.done) + ' of ' + SAMP.length + ' identified</span></div>';
+  if (L.last) h += '<div class="doneline">✓ ' + esc(L.last) + '</div>';
+  if (!c){
+    if (allDone) h += qbox('LAB COMPLETE', '<span class="kw">All 4 samples identified!</span> ✓', 'You used both ways to find volume: water displacement and L × W × H.', '', '', '<div class="nextrow" style="margin-top:8px"><button class="big green" data-act="tab" data-arg="guided">Go to Guided ▶</button></div>');
+    else h += '<p class="teach">Find each sample’s <b>density</b>, then use it to <b>identify</b> what it’s made of. Measure the <b>mass first</b> (while the sample is dry), then the <b>volume</b>. The big switch above the bench picks how you find the volume.</p>' +
+      qbox('STEP 1 — MASS', 'Drag a sample from the tray onto the <span class="kw">balance</span>.', 'Or just tap a sample. Do them in any order.', '', '');
+  } else {
+    var s = c.s, ls = c.ls, head = 'SAMPLE ' + s.id + ' · ' + s.name.toUpperCase();
+    h += '<div class="doneline">✓ Mass: ' + s.m.toFixed(2) + ' g' + (ls.V ? ' · Volume: ' + esc(T(ls.V)) : '') + (has(ls.D) ? ' · D = ' + esc(fmt3(ls.D) + ' g/' + ls.V.unit) : '') + '</div>';
+    if (ls.step === 'vol'){
+      if (L.mode === 'disp'){
+        if (L.float) h += qbox(head + ' — VOLUME', 'It <span class="kw">floats</span>!', '', '', fbHTML({ok:false, title:'Displacement won’t work here', why:'Part of the block is above the water, so the water only rose ' + t1(s.Vf - s.Vi) + ' mL. That isn’t the whole block’s volume. Slide the switch to L × W × H and measure it with the ruler.'}), '<div class="nextrow" style="margin-top:8px"><button class="big ghost" data-act="lout">Take it out ↩</button></div>');
+        else h += qbox(head + ' — VOLUME', 'Water in the cylinder: <span class="kw">' + t1(s.Vi) + ' mL</span>. Drag the sample from the balance into the <span class="kw">graduated cylinder</span>.', 'Or tap the sample on the balance. Read the water at the bottom of the curve.', '', '');
+      } else {
+        if (s.kind !== 'block') h += qbox(head + ' — VOLUME', 'This sample has <span class="kw">no flat sides</span>.', '', '', fbHTML({note:true, title:'A ruler won’t work', why:'A lumpy shape has no single length, width and height. Slide the switch at the top of the bench to 💧 DISPLACEMENT.'}));
+        else {
+          var got = ['L', 'W', 'H'].filter(function(d){ return has(ls.dims[d]); }).map(function(d){ return d + ' = ' + ls.dims[d].toFixed(2) + ' cm'; }).join(' · ');
+          if (L.snap) h += qbox(head + ' — VOLUME', '<span class="kw">' + DN[L.dim] + ' = ' + s.dims[L.dim].toFixed(2) + ' cm</span> ✓', 'The 0 is lined up, so the reading at the other end is the ' + DN[L.dim].toLowerCase() + '.' + (got ? ' So far: ' + got : ''), '', '', '<div class="nextrow" style="margin-top:8px"><button class="big green glow" data-act="lrec">Record ' + DN[L.dim].toLowerCase() + ' ▶</button></div>');
+          else h += qbox(head + ' — VOLUME', 'Measure the <span class="kw">' + DN[L.dim] + '</span>: drag the ruler sideways until its <b>0</b> lines up with the left end of the block.', got ? 'So far: ' + got : 'L, then W, then H.', '', '');
+        }
+      }
+    } else if (ls.step === 'volq'){
+      var op = volqOpts(s, ls), q = ls.method === 'disp' ? 'The water went from <b>' + t1(s.Vi) + ' mL</b> to <b>' + t1(s.Vf) + ' mL</b>. What is the <span class="kw">sample’s volume</span>?' :
+        'L = <b>' + s.dims.L.toFixed(2) + ' cm</b>, W = <b>' + s.dims.W.toFixed(2) + ' cm</b>, H = <b>' + s.dims.H.toFixed(2) + ' cm</b>. What is the <span class="kw">volume</span>?';
+      var row = '<div class="row">' + (ls.ord || [0, 1, 2]).map(function(i){ var o = op[i]; return '<button class="kbtn two' + (ls.wq === i ? ' wrong' : '') + '" data-act="lvq" data-arg="' + i + '">' + esc(o.lbl) + '<small>' + esc(o.sub) + '</small></button>'; }).join('') + '</div>';
+      h += qbox(head + ' — VOLUME', q, ls.method === 'disp' ? 'The water that was already there isn’t part of the sample.' : 'cm × cm × cm = cm³', row, fbHTML(ls.fb));
+    } else if (ls.step === 'calc'){
+      var all = ['D', 'm', 'V'].every(function(x){ return ls.fills[x]; }), vals = labVals(c);
+      var chips = ['m', 'V', 'U'].map(function(k){
+        var used = k === 'U' ? ls.fills.D : ls.fills[k];
+        var inner = k === 'U' ? '<span class="tile" style="font-size:1rem;height:1.6em">D</span><small>unknown</small>' : chipHTML(vals[k]);
+        return '<button class="chip' + (used ? ' used' : '') + (ls.sel === k ? ' sel' : '') + '" data-act="lchip" data-arg="' + k + '"' + (used ? ' disabled' : '') + '>' + inner + '</button>';
+      }).join('');
+      var tpl = templateHTML('density', {U:'D', fills:ls.fills, vals:vals, sel:ls.sel, shake:ls.shake, act:'lslot'});
+      h += qbox(head + ' — DENSITY', all ? '<span class="kw">D is alone!</span> ✓ Calculate it.' : 'Put each value in its <span class="kw">slot</span> (tap, or drag).', all ? 'mass ÷ volume' : 'g → m, ' + ls.V.unit + ' → V, the purple tile → D.',
+        (all ? '' : '<div class="row">' + chips + '</div>') + '<div class="eqwrap lsmall" style="min-height:96px;margin-top:8px">' + tpl + '</div>' + (all ? '<div class="nextrow" style="margin-top:8px"><button class="big green glow" data-act="lcalc">= Calculate</button></div>' : ''), fbHTML(ls.fb));
+    } else if (ls.step === 'id'){
+      var du = 'g/' + ls.V.unit;
+      var grid = '<div class="idgrid">' + IDLIST.map(function(id){ var m = matById(id); return '<button class="opt' + (ls.wq === id ? ' wrong' : '') + '" data-act="lid" data-arg="' + id + '">' + esc(m.f) + '<small>' + fmt3(m.d) + ' g/cm³</small></button>'; }).join('') + '</div>';
+      h += qbox(head + ' — IDENTIFY', 'D = <span class="kw">' + esc(fmt3(ls.D)) + ' ' + du + '</span>. Which material is it?', 'Pick the density closest to yours (g/mL = g/cm³).', grid, fbHTML(ls.fb));
+    }
+  }
+  h += notebook();
+  LEFT.innerHTML = h;
+  RIGHT.innerHTML = '<div class="panel vm-' + L.mode + '"><div class="vswlbl">Find the volume by</div>' +
+    '<button class="vsw" role="switch" aria-checked="' + (L.mode === 'lwh') + '" aria-label="Volume method: displacement or length times width times height" data-act="lmode" data-arg="toggle">' +
+    '<span class="seg s-disp" data-act="lmode" data-arg="disp"><b>💧 DISPLACEMENT</b><small>V = final − initial</small></span>' +
+    '<span class="seg s-lwh" data-act="lmode" data-arg="lwh"><b>📏 L × W × H</b><small>V = length × width × height</small></span></button>' +
+    benchSVG() + '<div class="qhint" style="text-align:center">Drag with a finger or the mouse. Tapping works too.</div></div>';
+}
+
+/* ===================================================================
+   PART 3: GUIDED
+   =================================================================== */
+function gpById(id){ var L = TD.gp; for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i]; return L[0]; }
+function guidedBoard(){
+  var g = C.guided;
+  if (!g.b || g.b.gi !== g.cur || g.b.dead){ g.b = newBoard('guided', clone(gpById(g.cur))); g.b.gi = g.cur; }
+  return g.b;
+}
+function renderGuided(){
+  var g = C.guided, list = TD.gp, i = ids(list).indexOf(g.cur), gp = list[i], b = guidedBoard();
+  var pills = '<div class="pills"><span class="lbl">Problem</span>' + list.map(function(p, k){
+    var en = UNLOCK || k === 0 || g.done[list[k - 1].id] || g.done[p.id];
+    return '<button class="pill' + (k === i ? ' cur' : '') + (g.done[p.id] ? ' done' : '') + '" data-act="gprob" data-arg="' + p.id + '"' + (en ? '' : ' disabled') + '>' + (g.done[p.id] ? '✓ ' : '') + (k + 1) + ' ' + esc(p.short) + '</button>';
+  }).join('') + '</div>';
+  var story = '<div class="gray story"><div class="t">Problem ' + (i + 1) + ' of ' + list.length + ' · We do it together</div>' + gp.story + '<div class="qhint" style="margin-top:4px">💡 ' + esc(gp.tip) + '</div></div>';
+  var next = b.phase === 'done' ? '<div class="nextrow"><button class="big" data-act="gnext">' + (i < list.length - 1 ? 'Next problem ▶' : 'Go to Practice ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + story + boardLeft(b) + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+
+/* ===================================================================
+   PART 4: PRACTICE
+   =================================================================== */
+function lvlName(id){ var L = TD.levels; for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i].name; return ''; }
+function newPracProblem(){
+  var pr = C.prac, idx = num(pr.count, pr.lvl); pr.count[pr.lvl] = idx + 1;
+  pr.b = newBoard('prac', gen(pr.lvl, idx)); pr.b.lvl = pr.lvl;
+}
+function pracScore(b){
+  var pr = C.prac, l = pr.lvl;
+  if (b.shown){ b.pmsg = 'That one was a demo, so it doesn’t count. Try a new one.'; return; }
+  if (b.miss === 0){
+    pr.streak[l] = Math.min(3, num(pr.streak, l) + 1);
+    if (pr.streak[l] >= 3 && !pr.done[l]){ pr.done[l] = 1; b.pmsg = 'No mistakes! Level complete ✓'; b.lvlDone = 1; }
+    else b.pmsg = pr.done[l] ? 'No mistakes! (This level is already complete.)' : 'No mistakes! Streak: ' + pr.streak[l] + ' of 3.';
+  } else b.pmsg = 'Solved, but there was a mistake, so the streak starts over. You need 3 in a row with no mistakes.';
+  b.pmsg += ' Check: ' + senseText(b);
+  if (b.p.unk){ var m = matById(b.p.unk); b.pmsg += ' The unknown metal matches ' + m.f + ' (' + fmt3(m.d) + ' g/cm³).'; }
+}
+function renderPractice(){
+  var pr = C.prac;
+  if (!pr.b || pr.b.lvl !== pr.lvl || pr.b.dead) newPracProblem();
+  var b = pr.b, l = pr.lvl, list = TD.levels, li = ids(list).indexOf(l), sk = num(pr.streak, l);
+  var pills = '<div class="pills"><span class="lbl">Level</span>' + list.map(function(n, k){
+    var en = UNLOCK || k === 0 || pr.done[list[k - 1].id] || pr.done[n.id];
+    return '<button class="pill' + (k === li ? ' cur' : '') + (pr.done[n.id] ? ' done' : '') + '" data-act="plvl" data-arg="' + n.id + '"' + (en ? '' : ' disabled') + ' title="' + esc(n.name) + '">' + (pr.done[n.id] ? '✓' : 'L' + (k + 1)) + '</button>';
+  }).join('') + '<span class="streak" aria-label="streak ' + sk + ' of 3">' + (pr.done[l] ? '✓ done' : 'Streak') + [0,1,2].map(function(i){ return '<span class="dot' + (i < sk ? ' on' : '') + '">' + (i < sk ? '✓' : '') + '</span>'; }).join('') + '</span></div>';
+  var story = '<div class="gray story"><div class="t">Level ' + (li + 1) + ' of ' + list.length + ' · ' + esc(lvlName(l)) + '</div>' + b.p.story + '</div>';
+  var next = '', allDone = cntDone(list, pr.done) === list.length;
+  if (b.phase === 'done'){
+    if (b.lvlDone && li < list.length - 1) next = '<button class="big green" data-act="pnext" data-arg="lvl">Next level ▶</button>';
+    else if (b.lvlDone && allDone) next = '<button class="big green" data-act="card">🏆 See completion card</button>';
+    else next = '<button class="big" data-act="pnext">Next problem ▶</button>';
+    next = '<div class="nextrow">' + next + (allDone && !b.lvlDone ? '<button class="big ghost" data-act="card">🏆 Completion card</button>' : '') + '</div>';
+  } else if (allDone) next = '<div class="nextrow"><button class="big ghost" data-act="card">🏆 Completion card</button></div>';
+  LEFT.innerHTML = pills + story + boardLeft(b) + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+async function showMe(b){
+  C.mis.showme = (C.mis.showme || 0) + 1; b.shown = true; b.auto = true; b.autoOK = true;
+  b.p.givens = clone(b.p.g0); b.kdone = []; b.pwrong = null; b.ans = null; b.fin = null; b.dims = null; b.vline = null;
+  b.phase = b.steps[0]; b.fills = {}; b.sel = null; b.eq = null; b.eq0 = null; b.hist = []; b.moves = []; b.locked = false; b.op = null; b.flipped = false;
+  b.fb = {ok:true, title:'Watch', why:'Here is the solution, one step at a time.'};
+  render();
+  function gone(){ return C.prac.b !== b || C.tab !== 'prac'; }
+  while (PRE[b.phase]){
+    await wait(1600); if (gone()) return;
+    var d = ppDef(b); doPP(b, d.right); b.fb = {ok:true, title:'Watch', why:d.why}; render();
+  }
+  await wait(1000); if (gone()) return;
+  b.fb = {ok:true, title:'Watch', why:'Plug in: grams in m, mL or cm³ in V, g/mL or g/cm³ in D.'}; render();
+  var order = tmplSyms(b.p.fid);
+  for (var i = 0; i < order.length; i++){
+    await wait(700); if (gone()) return;
+    var s = order[i]; b.sel = s === b.p.U ? 'U' : s; render(); await wait(500); if (gone()) return;
+    b.fills[s] = b.sel; b.sel = null; render();
+  }
+  await wait(600); if (gone()) return;
+  finishPlug(b); b.fb = {ok:true, title:'Watch', why:'Now get ' + uName(b) + ' alone.'}; render();
+  var guard = 0;
+  while (!aloneSide(b.eq, b.p.U) && guard++ < 8){
+    await wait(1300); if (gone()) return;
+    var mv = nextMove(b.eq, b.p.U); if (!mv) break;
+    doMove(b, mv.op, mv.ids);
+    b.fb = {ok:true, title:mv.op + ' ' + b.moves[b.moves.length - 1].label + ' on both sides', why:mv.why}; render();
+    await wait(900);
+  }
+  await wait(1000); if (gone()) return;
+  calc(b);
+  b.auto = false; b.autoOK = false; render();
+}
+
+/* ----- completion card ----- */
+function cardData(){
+  var d = new Date();
+  return {when:d.toLocaleDateString(undefined, {weekday:'short', year:'numeric', month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'}),
+    learn:pct('learn'), lab:pct('lab'), guided:pct('guided'), prac:pct('prac'), mis:C.mis};
+}
+function cardParts(c){ return [['Learn', c.learn], ['Lab', c.lab], ['Guided', c.guided], ['Practice', c.prac]]; }
+function cardText(c){
+  return TD.title + ' — Completion Card\n' + c.when + '\nD = m / V · volume by displacement and L × W × H\n' + cardParts(c).map(function(r){ return r[0] + ': ' + r[1] + '%'; }).join('   ') + '\n\nMistakes by type:\n' +
+    TD.mis.map(function(m){ return '  • ' + m[1] + ': ' + (c.mis[m[0]] || 0); }).join('\n') + '\n\n' + PAGE;
+}
+function cardCanvas(c){
+  var cv = document.createElement('canvas'); cv.width = 900; cv.height = 720;
+  var x = cv.getContext('2d'), F2 = 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+  x.fillStyle = '#fff'; x.fillRect(0, 0, 900, 720);
+  x.fillStyle = '#1f3a5f'; x.fillRect(0, 0, 900, 90);
+  x.fillStyle = '#fff'; x.font = 'bold 34px ' + F2; x.fillText(TD.title, 30, 52);
+  x.font = '20px ' + F2; x.fillText('Completion Card · ' + c.when, 30, 80);
+  x.fillStyle = '#f29d12'; x.fillRect(30, 104, 840, 40);
+  x.fillStyle = '#2b1a00'; x.font = 'bold 22px ' + F2; x.fillText('D = m / V   ·   volume by displacement and L × W × H', 46, 132);
+  var y = 196;
+  cardParts(c).forEach(function(r, i){
+    var bx = 30 + i * 212; x.fillStyle = r[1] === 100 ? '#1d7a35' : '#6a7682'; x.fillRect(bx, y - 34, 200, 64);
+    x.fillStyle = '#fff'; x.font = 'bold 21px ' + F2; x.fillText(r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%'), bx + 14, y + 7);
+  });
+  y = 278; x.fillStyle = '#1f3a5f'; x.font = 'bold 24px ' + F2; x.fillText('Mistakes by type', 30, y);
+  TD.mis.forEach(function(m, i){
+    var yy = y + 40 + i * 40; x.fillStyle = '#15191e'; x.font = '21px ' + F2; x.fillText(m[1], 50, yy);
+    x.font = 'bold 22px ' + F2; x.fillText(String(c.mis[m[0]] || 0), 820, yy);
+    x.strokeStyle = '#e1e6ec'; x.lineWidth = 1; x.beginPath(); x.moveTo(40, yy + 13); x.lineTo(860, yy + 13); x.stroke();
+  });
+  x.fillStyle = '#5a6672'; x.font = '18px ' + F2; x.fillText(PAGE, 30, 702);
+  x.strokeStyle = '#1f3a5f'; x.lineWidth = 6; x.strokeRect(3, 3, 894, 714);
+  return cv;
+}
+function openCard(){
+  var c = cardData();
+  var rows = TD.mis.map(function(m){ return '<tr><td>' + esc(m[1]) + '</td><td>' + (c.mis[m[0]] || 0) + '</td></tr>'; }).join('');
+  modal('<div class="card"><h3>🏆 ' + esc(TD.title) + ': Completion Card</h3><div>' + esc(c.when) + '</div>' +
+    '<div class="cband" style="background:#f29d12;color:#2b1a00">D = m / V · volume by displacement and L × W × H</div>' +
+    '<div class="row" style="margin:10px 0">' + cardParts(c).map(function(r){ return '<span class="opt ' + (r[1] === 100 ? 'right' : '') + '">' + r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%') + '</span>'; }).join('') + '</div>' +
+    '<b>Mistakes by type</b><table>' + rows + '</table></div><div id="cardmsg" class="qhint" style="min-height:1.3em;margin-top:6px"></div>' +
+    '<div class="mbtns"><button class="big" data-act="cardcopy">📋 Copy</button><button class="big" data-act="cardpng">⬇ Save PNG</button><button class="big" data-act="cardmail">✉ Email using Google</button><button class="big ghost" data-act="close">Close</button></div>');
+}
+function cardMsg(t){ var el = document.getElementById('cardmsg'); if (el) el.textContent = t; }
+
+/* ===================================================================
+   PART 5: FREE FORM
+   =================================================================== */
+var FVARS = [['D', 'density'], ['m', 'mass'], ['V', 'volume']];
+var FNAME = {D:'D', m:'m', V:'V', Vi:'water before', Vf:'water after', L:'length (L)', W:'width (W)', H:'height (H)'};
+function freeReset(step){ var f = C.free; if (step <= 1){ f.U = null; f.vals = {}; } f.b = null; f.step = step; }
+function fVU(){ var f = C.free; return f.U !== 'V' && f.units.vm === 'lwh' ? 'cm³' : f.U !== 'V' && f.units.vm === 'disp' ? 'mL' : f.units.V; }
+function fUnit(sym){
+  if (sym === 'D') return 'g/' + fVU();
+  if (sym === 'm') return 'g';
+  if (sym === 'L' || sym === 'W' || sym === 'H') return 'cm';
+  if (sym === 'Vi' || sym === 'Vf') return 'mL';
+  return fVU();
+}
+function freeKnowns(){
+  var f = C.free, k = ['D', 'm', 'V'].filter(function(s){ return s !== f.U; });
+  if (f.U !== 'V' && f.units.vm !== 'typed'){
+    var i = k.indexOf('V'); k.splice(i, 1);
+    k = k.concat(f.units.vm === 'disp' ? ['Vi', 'Vf'] : ['L', 'W', 'H']);
+  }
+  return k;
+}
+var KP = null;
+function openKeypad(sym){
+  var g = C.free.vals[sym];
+  KP = {sym:sym, m:'', e:'', neg:false, eneg:false, em:false, err:''};
+  if (g && g.raw){ KP.m = g.raw.m; KP.e = g.raw.e; KP.neg = g.raw.neg; KP.eneg = g.raw.eneg; KP.em = g.raw.em; }
+  drawKeypad();
+}
+function kpStr(){ var s = (KP.neg ? '−' : '') + (KP.m || ''); if (KP.em) s += '×10' + sup((KP.eneg ? '-' : '') + (KP.e || '')) + (KP.e ? '' : '▯'); return s; }
+function drawKeypad(){
+  var u = fUnit(KP.sym);
+  var keys = ['7','8','9','⌫','4','5','6','±','1','2','3','×10ⁿ','0','.','',''];
+  modal('<div class="kp"><h3>Enter ' + esc(FNAME[KP.sym]) + ' (' + esc(u) + ')</h3><div class="kpd">' + esc(kpStr() || ' ') + ' <small>' + esc(u) + '</small></div>' +
+    '<div class="kpg">' + keys.map(function(k){ return k ? '<button data-act="kp" data-arg="' + k + '">' + k + '</button>' : ''; }).join('') +
+    '<button class="ok" data-act="kp" data-arg="OK" style="grid-column:span 2">OK</button></div><div class="kperr">' + esc(KP.err) + '</div>' +
+    '<div class="mbtns"><button class="big ghost" data-act="close">Cancel</button></div></div>');
+}
+function kpKey(k){
+  KP.err = '';
+  if (/^\d$/.test(k)){ if (KP.em){ if (KP.e.length < 3) KP.e += k; } else if (KP.m.replace('.', '').length < 10) KP.m += k; }
+  else if (k === '.'){ if (!KP.em && KP.m.indexOf('.') < 0) KP.m = (KP.m || '0') + '.'; }
+  else if (k === '±'){ if (KP.em) KP.eneg = !KP.eneg; else KP.neg = !KP.neg; }
+  else if (k === '×10ⁿ'){ if (!KP.em){ if (!KP.m) KP.m = '1'; KP.em = true; } }
+  else if (k === '⌫'){ if (KP.em){ if (KP.e) KP.e = KP.e.slice(0, -1); else if (KP.eneg) KP.eneg = false; else KP.em = false; } else if (KP.m) KP.m = KP.m.slice(0, -1); else KP.neg = false; }
+  else if (k === 'OK'){
+    var mv = parseFloat(KP.m);
+    if (!KP.m || isNaN(mv)){ KP.err = 'Type a number first.'; drawKeypad(); return; }
+    if (KP.em && !KP.e){ KP.err = 'Type the power of 10 (or tap ⌫).'; drawKeypad(); return; }
+    var val = (KP.neg ? -1 : 1) * mv * Math.pow(10, KP.em ? (KP.eneg ? -1 : 1) * parseInt(KP.e, 10) : 0);
+    if (val <= 0){ KP.err = 'This value must be above 0.'; drawKeypad(); return; }
+    var txt = (KP.neg ? '−' : '') + KP.m + (KP.em ? '×10' + sup((KP.eneg ? '-' : '') + KP.e) : '');
+    C.free.vals[KP.sym] = {val:val, txt:txt, unit:fUnit(KP.sym), raw:{m:KP.m, e:KP.e, neg:KP.neg, eneg:KP.eneg, em:KP.em}};
+    KP = null; closeModal(); save(); render(); return;
+  }
+  drawKeypad();
+}
+function unitRow(lbl, key, opts, note, labels){
+  return '<div class="units"><span class="lb">' + lbl + '</span>' + opts.map(function(u, i){ return '<button class="opt' + (C.free.units[key] === u ? ' sel' : '') + '" data-act="funit" data-arg="' + key + ':' + u + '">' + (labels ? labels[i] : u) + '</button>'; }).join('') + (note ? '<span class="qhint">' + note + '</span>' : '') + '</div>';
+}
+function renderFree(){
+  var f = C.free, h = '', right = '', fid = 'density';
+  var names = ['Solve for', 'Values', 'Solve'];
+  h += '<div class="pills"><span class="lbl">Step</span>' + names.map(function(n, k){
+    var st = k + 1;
+    return '<button class="pill' + (st === f.step ? ' cur' : '') + (st < f.step ? ' done' : '') + '" data-act="fstep" data-arg="' + st + '"' + (st < f.step ? '' : ' disabled') + '>' + (st < f.step ? '✓ ' : st + ' ') + n + '</button>';
+  }).join('') + '</div>';
+  var fu = {D:'g/' + fVU(), m:'g', V:fVU()};
+  if (f.step === 1){
+    var a1 = '<div class="row">' + FVARS.map(function(v){ return '<button class="opt" data-act="fvar" data-arg="' + v[0] + '"><span class="tile" style="font-size:1.05rem;height:1.6em">' + esc(v[0]) + '</span><small style="color:#66727e">' + v[1] + '</small></button>'; }).join('') + '</div>';
+    h += qbox('STEP 1 OF 3 — SOLVE FOR', 'Which variable are you <span class="kw">solving for</span>?', 'For homework or lab calculations: pick the unknown (the one you don’t have a number for), type your numbers, then solve it step by step.', a1, '');
+    right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(fid, MU)) + '</div><div class="eqwrap">' + formulaHTML(fid) + '</div></div>';
+  } else {
+    h += '<div class="doneline">✓ Density: <span class="mini">' + formulaHTML(fid) + '</span>' + (f.U ? ' · solve for ' + esc(f.U) : '') + '</div>';
+    if (f.step === 2){
+      var unitsH = '';
+      if (f.U !== 'V') unitsH += unitRow('Volume from:', 'vm', ['typed', 'disp', 'lwh'], f.units.vm === 'disp' ? 'Type the water before and after. V = after − before is done for you.' : f.units.vm === 'lwh' ? 'Type the length, width and height in cm. V = L × W × H is done for you.' : '', ['I know V', '💧 Displacement', '📏 L × W × H']);
+      if (f.U === 'V' || f.units.vm === 'typed') unitsH += unitRow('Volume unit:', 'V', ['mL', 'cm³'], '1 mL = 1 cm³');
+      var kn = freeKnowns(), all = kn.every(function(s){ return f.vals[s]; });
+      var rows = '<div class="row">' + kn.map(function(s){
+        var g = f.vals[s];
+        return '<button class="opt" data-act="fslot" data-arg="' + s + '">' + esc(FNAME[s]) + ' = ' + (g ? '<b>' + esc(g.txt + ' ' + g.unit) + '</b>' : '<span style="color:#8a96a2">tap to type</span> <small style="color:#66727e">' + esc(fUnit(s)) + '</small>') + '</button>';
+      }).join('') + '</div>';
+      h += qbox('STEP 2 OF 3 — VALUES', 'Type the <span class="kw">values you know</span>.', 'Pick how you got the volume first. Then tap a value and type the number.', unitsH + rows, f.err ? fbHTML({ok:false, title:'Check your numbers', why:f.err}) : '');
+      h += '<div class="nextrow"><button class="big" data-act="fgo"' + (all ? '' : ' disabled') + '>Next ▶</button></div>';
+      var ctx = {U:f.U, fills:{}, vals:f.vals, act:'fslot'};
+      ['D', 'm', 'V'].forEach(function(s){ if (s !== f.U && f.vals[s] && kn.indexOf(s) >= 0) ctx.fills[s] = s; }); ctx.fills[f.U] = 'U';
+      var extra = '';
+      if (f.U !== 'V' && f.units.vm === 'disp') extra = '<div class="vis" style="flex:0 0 auto">' + (f.vals.Vi && f.vals.Vf && f.vals.Vf.val > f.vals.Vi.val ? dispStrip(f.vals.Vi.val, f.vals.Vf.val, 'irr', '#9a8f86', 110) : cylSVG({lv:f.vals.Vi ? Math.min(f.vals.Vi.val, 99) : 50, read:f.vals.Vi ? [f.vals.Vi.val] : []}, 110)) + '<div class="gray" style="font-weight:800">V = water after − water before</div></div>';
+      if (f.U !== 'V' && f.units.vm === 'lwh'){ var dd = {L:f.vals.L ? f.vals.L.val : 4, W:f.vals.W ? f.vals.W.val : 3, H:f.vals.H ? f.vals.H.val : 2}; extra = '<div class="vis" style="flex:0 0 auto">' + boxSVG({L:dd.L, W:dd.W, H:dd.H, col:'#e7c493', lab:{L:f.vals.L ? 'L = ' + f.vals.L.txt + ' cm' : 'L', W:f.vals.W ? 'W = ' + f.vals.W.txt + ' cm' : 'W', H:f.vals.H ? 'H = ' + f.vals.H.txt + ' cm' : 'H'}, VW:320, VH:190}, 300) + '<div class="gray" style="font-weight:800">V = L × W × H</div></div>'; }
+      right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(fid, fu)) + '</div><div class="eqwrap">' + templateHTML(fid, ctx) + '</div><div class="status">' + (f.U !== 'V' && f.units.vm !== 'typed' ? 'V is worked out from your measurements.' : 'Tap an empty slot to type its value.') + '</div>' + extra + '</div>';
+    } else {
+      var b = f.b;
+      h += boardLeft(b).replace(/STEP 1 OF 1/g, 'STEP 3 OF 3');
+      if (b.phase === 'done'){
+        h += '<div class="nextrow"><button class="big" data-act="fcopy">📋 Copy</button><button class="big" data-act="fmail">✉ Email using Google</button><button class="big" data-act="fprint">🖨 Print</button></div>' +
+          '<div class="nextrow"><button class="big ghost" data-act="fagain">↻ Same unknown, new numbers</button><button class="big ghost" data-act="fnew">New problem</button></div><div id="fmsg" class="qhint"></div>';
+      }
+      right = boardRight(b);
+    }
+  }
+  LEFT.innerHTML = h;
+  RIGHT.innerHTML = right;
+}
+function freeSummary(){
+  var f = C.free, b = f.b, lines = [];
+  lines.push(TD.title + ' — Free Form');
+  lines.push('Formula: ' + formulaText('density') + '   (solve for ' + f.U + ')');
+  lines.push('Values: ' + freeKnowns().map(function(s){ return FNAME[s] + ' = ' + f.vals[s].txt + ' ' + f.vals[s].unit; }).join(', '));
+  lines.push('Steps:');
+  var k = 1;
+  if (b.vline) lines.push('  ' + (k++) + '. ' + b.vline);
+  lines.push('  ' + (k++) + '. Plug in:  ' + eqText(b.eq0));
+  b.moves.forEach(function(m){ lines.push('  ' + (k++) + '. ' + m.op + ' ' + m.label + ' on both sides:  ' + m.text); });
+  if (b.flipped) lines.push('     (flipped so ' + f.U + ' is on the left:  ' + eqText(b.eq) + ')');
+  lines.push('Rearranged formula:  ' + eqText(b.eq, true));
+  lines.push('Answer:  ' + ansText(b));
+  lines.push('Check:  ' + senseText(b));
+  lines.push(''); lines.push(PAGE);
+  return lines.join('\n');
+}
+function freePrint(){
+  var f = C.free, b = f.b, P = document.getElementById('print');
+  var txt = freeSummary().split('\n');
+  P.innerHTML = '<h2>' + esc(TD.title) + ': Free Form</h2>' + formulaHTML('density') +
+    '<p>' + txt.slice(2).map(esc).join('<br>').replace(/ {2}/g, '&nbsp;&nbsp;') + '</p><p><b>Rearranged formula:</b></p>' + eqHTML(b.eq, {sym:true}) +
+    '<p style="font-size:18pt"><b>Answer: ' + esc(ansText(b)) + '</b></p>';
+  window.print();
+}
+
+/* ===================================================================
+   RENDER + ACTIONS
+   =================================================================== */
+function render(){
+  ensureValid();
+  if (!unlocked(C.tab)) C.tab = 'learn';
+  renderTabs();
+  if (C.tab === 'learn') renderLearn();
+  else if (C.tab === 'lab') renderLab();
+  else if (C.tab === 'guided') renderGuided();
+  else if (C.tab === 'prac') renderPractice();
+  else renderFree();
+  fitEqs();
+}
+function goTab(t){
+  if (!unlocked(t)){ modal('<h3>🔒 ' + esc(LOCKMSG[t]) + '</h3><p>The parts unlock in order: Learn → Lab → Guided → Practice. Free Form is always open.</p><div class="mbtns"><button class="big" data-act="close">OK</button></div>'); return; }
+  C.tab = t; LV.pick = null; LV.wrong = null; closeModal(); save(); render();
+  if (t === 'learn') startStop();
+  LEFT.scrollTop = 0;
+}
+function startStop(){ LV.pick = null; LV.wrong = null; render(); playFrames(); }
+
+var ACT = {
+  tab:function(a){ goTab(a); },
+  close:function(){ closeModal(); KP = null; },
+  /* learn */
+  lstop:function(a){ C.learn.cur = a; save(); startStop(); },
+  lopt:function(a){
+    var st = stopById(C.learn.cur), o = st.opts[+a];
+    if (o.ok){ LV.pick = +a; LV.wrong = null; C.learn.done[st.id] = 1; save(); }
+    else LV.wrong = +a;
+    render();
+  },
+  lnext:function(){ var l = ids(TD.stops), i = l.indexOf(C.learn.cur); if (i < l.length - 1){ C.learn.cur = l[i + 1]; save(); startStop(); } else goTab('lab'); },
+  /* lab */
+  lmode:function(a){ setVM(a); },
+  lout:function(){ labTakeOut(); },
+  lrec:function(){ labRecord(); },
+  lvq:function(a){ labVolq(+a); },
+  lchip:function(a){ var c = labCur(); if (!c || c.ls.step !== 'calc') return; c.ls.sel = c.ls.sel === a ? null : a; c.ls.fb = null; render(); },
+  lslot:function(a){ var c = labCur(); if (!c || c.ls.step !== 'calc') return; if (!c.ls.sel){ if (!c.ls.fills[a]){ c.ls.fb = {ok:false, title:'', why:'Tap a value first, then tap its slot (or drag it there).'}; render(); } return; } placeLab(c.ls.sel, a); },
+  lcalc:function(){ labCalc(); },
+  lid:function(a){ labId(a); },
+  /* board */
+  pp:function(a){ var b = curBoard(); if (b && !b.auto) doPP(b, a); },
+  chip:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; b.sel = b.sel === a ? null : a; b.fb = null; render(); },
+  slot:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; if (!b.sel){ if (!b.fills[a]){ b.fb = {ok:false, title:'', why:'Tap a value first, then tap its slot.'}; render(); } return; } placeChip(b, b.sel, a); },
+  op:function(a){ var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return; b.op = b.op === a ? null : a; b.fb = null; render(); },
+  schip:function(a){
+    var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return;
+    var c = solveChips(b.eq, b.p.U)[+a]; if (!c) return;
+    if (!b.op){ b.fb = {ok:false, title:'', why:'Tap an operation first (+ − × ÷), then a number. Or drag the number onto an operation.'}; render(); return; }
+    doMove(b, b.op, c.ids);
+  },
+  undo:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) undo(b); },
+  calc:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) calc(b); },
+  showme:function(){ var b = curBoard(); if (b) showMe(b); },
+  /* guided */
+  gprob:function(a){ C.guided.cur = a; C.guided.b = null; save(); render(); },
+  gnext:function(){ var l = ids(TD.gp), i = l.indexOf(C.guided.cur); if (i < l.length - 1){ C.guided.cur = l[i + 1]; C.guided.b = null; save(); render(); } else goTab('prac'); },
+  /* practice */
+  plvl:function(a){ C.prac.lvl = a; C.prac.b = null; save(); render(); },
+  pnext:function(a){
+    var pr = C.prac, l = ids(TD.levels), i = l.indexOf(pr.lvl);
+    if (a === 'lvl' && i < l.length - 1) pr.lvl = l[i + 1];
+    newPracProblem(); save(); render();
+    if (cntDone(TD.levels, pr.done) === l.length && !pr.cardShown){ pr.cardShown = 1; save(); openCard(); }
+  },
+  card:function(){ C.prac.cardShown = 1; save(); openCard(); },
+  cardcopy:function(){
+    var c = cardData(), text = cardText(c), cv = cardCanvas(c);
+    try {
+      if (navigator.clipboard && window.ClipboardItem){
+        cv.toBlob(function(blob){
+          navigator.clipboard.write([new ClipboardItem({'image/png':blob, 'text/plain':new Blob([text], {type:'text/plain'})})]).then(function(){ cardMsg('✓ Copied (picture + text). Paste it into Google Classroom or an email.'); },
+            function(){ copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text (this browser blocked the picture; use ⬇ Save PNG for it).' : 'Copy was blocked. Use ⬇ Save PNG instead.'); }); });
+        });
+        return;
+      }
+    } catch(e){}
+    copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text. Use ⬇ Save PNG for the picture.' : 'Copy was blocked. Use ⬇ Save PNG instead.'); });
+  },
+  cardpng:function(){
+    var c = cardData(), cv = cardCanvas(c);
+    cv.toBlob(function(blob){ var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'density-calculations-card.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000); cardMsg('✓ Saved the PNG to your Downloads.'); });
+  },
+  cardmail:function(){ gmail(TD.title + ': Completion Card', cardText(cardData())); },
+  /* free */
+  fstep:function(a){ var st = +a, f = C.free; if (st >= f.step) return; if (st === 1) freeReset(1); else { f.b = null; f.step = 2; } save(); render(); },
+  fvar:function(a){ var f = C.free; f.U = a; f.b = null; f.step = 2; f.err = ''; delete f.vals[a]; save(); render(); },
+  funit:function(a){
+    var p = a.split(':'), f = C.free;
+    f.units[p[0]] = p[1]; f.err = '';
+    Object.keys(f.vals).forEach(function(s){ f.vals[s].unit = fUnit(s); });
+    save(); render();
+  },
+  fslot:function(a){ if (C.free.step !== 2 || a === C.free.U) return; if (freeKnowns().indexOf(a) < 0) return; openKeypad(a); },
+  kp:function(a){ if (KP) kpKey(a); },
+  fgo:function(){
+    var f = C.free, kn = freeKnowns();
+    if (!kn.every(function(s){ return f.vals[s]; })) return;
+    var giv = {}, vline = null, vu = fVU();
+    if (f.U !== 'D') giv.D = {val:f.vals.D.val, txt:f.vals.D.txt, unit:fUnit('D')};
+    if (f.U !== 'm') giv.m = {val:f.vals.m.val, txt:f.vals.m.txt, unit:'g'};
+    if (f.U !== 'V'){
+      if (f.units.vm === 'disp'){
+        var a = f.vals.Vi, z = f.vals.Vf;
+        if (!(z.val > a.val)){ f.err = 'The water after must be higher than the water before.'; render(); return; }
+        var v = z.val - a.val;
+        giv.V = {val:v, txt:nice(v), unit:'mL', from:z.txt + ' − ' + a.txt + ' mL'};
+        vline = 'V = water after − water before = ' + z.txt + ' − ' + a.txt + ' = ' + nice(v) + ' mL';
+      } else if (f.units.vm === 'lwh'){
+        var v2 = f.vals.L.val * f.vals.W.val * f.vals.H.val;
+        giv.V = {val:v2, txt:nice(v2), unit:'cm³', from:f.vals.L.txt + ' × ' + f.vals.W.txt + ' × ' + f.vals.H.txt + ' cm'};
+        vline = 'V = L × W × H = ' + f.vals.L.txt + ' × ' + f.vals.W.txt + ' × ' + f.vals.H.txt + ' = ' + nice(v2) + ' cm³';
+      } else giv.V = {val:f.vals.V.val, txt:f.vals.V.txt, unit:vu};
+    }
+    f.err = '';
+    var aunit = f.U === 'D' ? 'g/' + vu : f.U === 'm' ? 'g' : vu;
+    f.b = newBoard('free', {fid:'density', U:f.U, givens:giv, aunit:aunit, kind:f.units.vm === 'lwh' ? 'block' : 'irr', col:'#9a8f86', rock:true});
+    if (vline){ f.b.vline = vline; f.b.kdone.push(esc(vline)); if (f.units.vm === 'lwh') f.b.dims = {L:f.vals.L.val, W:f.vals.W.val, H:f.vals.H.val}; }
+    f.step = 3; save(); render();
+  },
+  fagain:function(){ var f = C.free; f.vals = {}; f.b = null; f.step = 2; save(); render(); },
+  fnew:function(){ freeReset(1); save(); render(); },
+  fcopy:function(){ copyText(freeSummary(), function(ok){ var el = document.getElementById('fmsg'); if (el) el.textContent = ok ? '✓ Copied. Paste it into your lab or homework.' : 'Copy was blocked by this browser.'; }); },
+  fmail:function(){ gmail(TD.title + ': Free Form', freeSummary()); },
+  fprint:function(){ freePrint(); }
+};
+
+var suppressClick = false;
+document.addEventListener('click', function(e){
+  if (suppressClick){ e.preventDefault(); return; }
+  var el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  var fn = ACT[el.dataset ? el.dataset.act : el.getAttribute('data-act')]; if (fn) fn(el.getAttribute('data-arg'), el);
+});
+document.addEventListener('keydown', function(e){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.slot[data-act]')){ e.preventDefault(); e.target.click(); }
+  if (e.key === 'Escape') ACT.close();
+});
+function noClick(){ suppressClick = true; setTimeout(function(){ suppressClick = false; }, 80); }
+
+/* ---------- drag a chip: onto a slot (plug in), or onto + − × ÷ (solve) ---------- */
+var drag = null;
+document.addEventListener('pointerdown', function(e){
+  var c = e.target.closest('.chip[data-act="chip"],.chip[data-act="lchip"],.chip[data-act="schip"]'); if (!c || c.disabled) return;
+  drag = {el:c, act:c.dataset.act, arg:c.dataset.arg, x:e.clientX, y:e.clientY, ghost:null};
+});
+document.addEventListener('pointermove', function(e){
+  if (!drag) return;
+  if (!drag.ghost){
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 10) return;
+    var gh = drag.el.cloneNode(true); gh.classList.add('sel'); gh.classList.remove('glow');
+    gh.style.cssText = 'position:fixed;pointer-events:none;z-index:80;opacity:.92;margin:0';
+    document.body.appendChild(gh); drag.ghost = gh;
+    document.querySelectorAll('.opbtn,.slot').forEach(function(o){ o.classList.add('glowable'); });
+  }
+  drag.ghost.style.left = (e.clientX - 30) + 'px'; drag.ghost.style.top = (e.clientY - 25) + 'px';
+  e.preventDefault();
+});
+function endDrag(e, cancel){
+  if (!drag) return; var d = drag; drag = null;
+  if (!d.ghost) return;
+  d.ghost.remove(); noClick();
+  if (cancel) return;
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el) return;
+  if (d.act === 'chip'){ var s = el.closest('[data-act="slot"]'), b = curBoard(); if (s && b && b.phase === 'plug'){ b.sel = d.arg; placeChip(b, d.arg, s.dataset.arg); } return; }
+  if (d.act === 'lchip'){ var s2 = el.closest('[data-act="lslot"]'), c = labCur(); if (s2 && c && c.ls.step === 'calc'){ c.ls.sel = d.arg; placeLab(d.arg, s2.dataset.arg); } return; }
+  var b2 = curBoard(); if (!b2 || b2.locked || b2.busy || b2.auto) return;
+  var ch = solveChips(b2.eq, b2.p.U)[+d.arg]; if (!ch) return;
+  var opb = el.closest('.opbtn[data-act="op"]');
+  if (opb){ doMove(b2, opb.dataset.arg, ch.ids); return; }
+  if (el.closest('[data-drop="eq"]') && b2.op){ doMove(b2, b2.op, ch.ids); return; }
+  b2.fb = {ok:false, title:'', why:'Drop the number onto + − × or ÷ (or tap an operation first, then the number).'}; render();
+}
+document.addEventListener('pointerup', function(e){ endDrag(e, false); });
+document.addEventListener('pointercancel', function(e){ endDrag(e, true); });
+
+/* ---------- lab bench dragging (samples + ruler) ---------- */
+var LD = null;
+function svgPt(svg, e){ var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); }
+document.addEventListener('pointerdown', function(e){
+  var el = e.target.closest && e.target.closest('#bench .ldrag'); if (!el) return;
+  var svg = document.getElementById('bench'); if (!svg) return;
+  LD = {el:el, k:el.getAttribute('data-k'), id:el.getAttribute('data-id'), p0:svgPt(svg, e), moved:false, svg:svg, base:C.lab.rx, nx:C.lab.rx};
+  try { el.setPointerCapture(e.pointerId); } catch(x){}
+  e.preventDefault();
+});
+document.addEventListener('pointermove', function(e){
+  if (!LD) return;
+  var p = svgPt(LD.svg, e), dx = p.x - LD.p0.x, dy = p.y - LD.p0.y;
+  if (!LD.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+  LD.moved = true;
+  if (LD.k === 'ruler'){ LD.nx = clamp(LD.base + dx, 140, 250); LD.el.setAttribute('transform', 'translate(' + LD.nx.toFixed(1) + ',0)'); }
+  else LD.el.setAttribute('transform', 'translate(' + dx.toFixed(1) + ',' + dy.toFixed(1) + ')');
+  e.preventDefault();
+});
+function labPointerEnd(e, cancel){
+  if (!LD) return; var d = LD; LD = null; noClick();
+  if (cancel){ render(); return; }
+  var p = svgPt(d.svg, e);
+  if (!d.moved){
+    if (d.k === 'samp') labStart(d.id);
+    else if (d.k === 'bal') dropInCyl();
+    else toast('Drag the ruler sideways to line up the 0.');
+    return;
+  }
+  if (d.k === 'samp'){ if (p.x >= 420 && p.y >= 150) labStart(d.id); else render(); }
+  else if (d.k === 'bal'){ if (p.x >= 190 && p.x <= 420 && p.y <= 380) dropInCyl(); else render(); }
+  else rulerDrop(d.nx);
+}
+document.addEventListener('pointerup', function(e){ labPointerEnd(e, false); });
+document.addEventListener('pointercancel', function(e){ labPointerEnd(e, true); });
+window.addEventListener('resize', function(){ fitEqs(); });
+
+/* ---------- start ---------- */
+var MQ = Q.get('mode');
+if (MQ === 'free') C.tab = 'free';
+else if (MQ === 'lab' && unlocked('lab')) C.tab = 'lab';
+render();
+if (C.tab === 'learn') playFrames();
+var anyProgress = cntDone(TD.stops, C.learn.done) || cntDone(SAMP, C.lab.done) || cntDone(TD.gp, C.guided.done) || Object.keys(C.prac.count).length || C.free.U;
+if (hadSave && anyProgress) setTimeout(function(){ toast('Welcome back — you’re right where you left off'); }, 300);
+window.__S = function(){ return S; };
+window.__T = {gen:gen, newBoard:newBoard, doPP:doPP, ppDef:ppDef, placeChip:placeChip, doMove:doMove, calc:calc, nextMove:nextMove, render:render, expect:expect, tmplSyms:tmplSyms, aloneSide:aloneSide, labStart:labStart, dropInCyl:dropInCyl, rulerDrop:rulerDrop, labRecord:labRecord, labVolq:labVolq, placeLab:placeLab, labCalc:labCalc, labId:labId, setVM:setVM, volqOpts:volqOpts, closestMat:closestMat, C:function(){ return C; }};
+})();
+</script>
+</body>
+</html>
