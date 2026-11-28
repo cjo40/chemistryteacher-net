@@ -203,7 +203,24 @@
     "/oh-to-poh": "/ph-calculations",
     "/ph-scale": "/ph-calculations",
     "/negative-log": "/ph-calculations",
-    "/ph-poh-h-oh": "/ph-calculations"
+    "/ph-poh-h-oh": "/ph-calculations",
+    "/density": "/density-calculations",
+    "/density-calculation": "/density-calculations",
+    "/density-problems": "/density-calculations",
+    "/density-practice": "/density-calculations",
+    "/density-lab": "/density-calculations",
+    "/density-calculator": "/density-calculations",
+    "/d-m-v": "/density-calculations",
+    "/mass-volume-density": "/density-calculations",
+    "/water-displacement": "/density-calculations",
+    "/displacement": "/density-calculations",
+    "/displacement-method": "/density-calculations",
+    "/volume-by-displacement": "/density-calculations",
+    "/lwh": "/density-calculations",
+    "/length-width-height": "/density-calculations",
+    "/volume-of-a-box": "/density-calculations",
+    "/sink-or-float": "/density-calculations",
+    "/identify-unknown-metal": "/density-calculations"
   },
   "activities": {
     "dimensional-analysis": {
@@ -934,7 +951,7 @@
       "title": "Graph of the Day: Reading & Interpreting Graphs Bellringer (35 Daily Graph Questions)",
       "description": "Free daily bellringer for reading and interpreting graphs: one graph, a short description and 5 multiple-choice questions each day, with 35 science and everyday graphs. Read values, find max and min, trends, change, slope, best-fit predictions.",
       "unit": "Measurement & Math",
-      "order": 6,
+      "order": 7,
       "card": "A 5-minute daily warm-up: one graph and 5 questions. Wrong answers name the mistake, and red guide lines on the graph show where the answer comes from. 35 graphs, picked by the date so the whole class sees the same one.",
       "topics": [
         "reading graphs",
@@ -1073,6 +1090,39 @@
         "Teachers: ?unlock=all opens every part for a demo, ?mode=free opens Free Form directly, and ?email=you@school.org fills in your address on the email buttons."
       ],
       "classroom": "Do Learn and Guided together on the projector, then let students work through Practice on their own. Walk around and check for the green ✓ 100% tabs and the level pills. The calculator box under each answer shows the exact TI-30XIIS keys, so students can check their own calculator work. Students can use Free Form for homework and titration lab pH calculations.",
+      "bar": "tl"
+    },
+    "density-calculations": {
+      "name": "Density Calculations",
+      "title": "Density Calculations Practice: D = m/V, Water Displacement & L × W × H Volume, Step by Step",
+      "description": "Free step-by-step density practice: find density, mass or volume with D = m/V, get volume by water displacement (final − initial) or L × W × H, and identify materials in a drag-and-drop lab with a balance, graduated cylinder and ruler. Mistakes are explained.",
+      "unit": "Measurement & Math",
+      "order": 6,
+      "card": "Step-by-step density problems (D = m/V): find D, m or V, with volume by water displacement or L × W × H. Includes a drag-and-drop lab with a balance, graduated cylinder and ruler where students identify 4 mystery samples.",
+      "topics": [
+        "density calculations",
+        "D = m / V (mass ÷ volume)",
+        "solving for mass and volume",
+        "volume by water displacement (final − initial)",
+        "volume of a box (L × W × H)",
+        "1 mL = 1 cm³ (g/mL = g/cm³)",
+        "sink or float (compared to water, 1.00 g/mL)",
+        "choosing a volume method (regular, irregular, floats)",
+        "balance, graduated cylinder and ruler readings",
+        "identifying a material by its density",
+        "unknown on the bottom (solving for V)",
+        "common density mistakes"
+      ],
+      "about": "Students can say \"mass over volume\" but get stuck when the volume isn't handed to them, or when the unknown is m or V. This trainer uses the same tap-to-answer equation board as Solving for a Variable. Learn has 10 animated stops: what density is (same-size blocks with more or less mass), 1 mL = 1 cm³, sink or float compared to water (1.00 g/mL), water displacement (V = final − initial), L × W × H, which volume method to use (regular box, irregular shape, something that floats, a liquid), finding D, finding m, finding V when it's on the bottom, and common mistakes. The Lab is a drag-and-drop bench with a sample tray, a balance and a big DISPLACEMENT / L × W × H switch (blue / orange, readable from across the room). Students drag each of 4 mystery samples onto the balance for its mass, then find the volume: drop it in a graduated cylinder (the water rises and both readings show) or drag a ruler to line up 0 and measure L, W and H. The wood block floats, so displacement won't work, and the nugget and bolt have no flat sides, so the ruler won't work; students have to use both methods. They pick the right volume calculation, drag m and V into D = m / V, calculate, then identify the material from a density table (cork to gold). Guided works 6 problems together (find D, displacement, L × W × H and will it float, mass of mercury, volume of ethanol, gold bar mass). Practice has 5 levels (find D, find m, find V, volume first by displacement or L × W × H, mixed) with randomly generated problems, metals, rocks, woods, plastics and liquids, and some unknown metals to identify. Wrong moves are named (used the final reading, added the sides, divided when you should multiply) and explained. 3 correct in a row with no mistakes unlocks the next level, and Show me plays the solution after 2 misses. Every value can be tapped or dragged into its slot, and numbers can be dragged onto + − × ÷. The app does the arithmetic and rounds to 3 significant figures; answers are graded on value only. Free Form solves any homework or lab problem with an on-screen keypad, with volume typed in, from water before/after, or from L, W and H. Progress saves on the device, tabs show % complete, and the completion card (copy, PNG or email) shows Learn, Lab, Guided and Practice progress and mistakes by type. No student names are collected.",
+      "how": [
+        "Learn: go through the 10 stops and answer each yellow question box.",
+        "Lab: drag a sample onto the balance (mass first, while it's dry). Set the switch to DISPLACEMENT and drag the sample into the cylinder, or to L × W × H and drag the ruler until 0 lines up with the block. Then pick the volume calculation, drag m and V into D = m / V, calculate, and identify the material. Tapping works too.",
+        "Guided: do every tap yourself. The glowing button and the 👉 hint show what's next and why.",
+        "Practice: find the volume first if needed (final − initial or L × W × H), tap or drag each value into its slot, then tap an operation and a number (or drag the number onto + − × ÷) to get the unknown alone. Get 3 in a row with no mistakes to unlock the next level.",
+        "Free Form: pick the unknown, choose how you got the volume, type values on the keypad, solve, then Copy, Email using Google or Print the steps.",
+        "Teachers: ?unlock=all opens every part for a demo, ?mode=lab or ?mode=free opens that part directly, and ?email=you@school.org fills in your address on the email buttons."
+      ],
+      "classroom": "Do Learn together on the projector, then let students do the Lab in pairs before Guided and Practice. Walk around and check the color of the switch above the bench (blue = displacement, orange = L × W × H), the lab notebook table, and the green ✓ 100% tabs. Pair it with a real density lab: students can check their own data in Free Form.",
       "bar": "tl"
     }
   }
