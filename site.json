@@ -14,6 +14,7 @@
     "Bonding & Naming",
     "Gases",
     "Solutions",
+    "Acids & Bases",
     "Energy & Thermochemistry",
     "More Activities"
   ],
@@ -178,7 +179,31 @@
     "/solution-concentration": "/molarity-dilution",
     "/molar-concentration": "/molarity-dilution",
     "/grams-to-molarity": "/molarity-dilution",
-    "/stock-solution": "/molarity-dilution"
+    "/stock-solution": "/molarity-dilution",
+    "/ph": "/ph-calculations",
+    "/ph-calculation": "/ph-calculations",
+    "/ph-calculations-practice": "/ph-calculations",
+    "/ph-problems": "/ph-calculations",
+    "/ph-practice": "/ph-calculations",
+    "/ph-calculator": "/ph-calculations",
+    "/ph-and-poh": "/ph-calculations",
+    "/ph-poh": "/ph-calculations",
+    "/poh": "/ph-calculations",
+    "/poh-calculations": "/ph-calculations",
+    "/calculating-ph": "/ph-calculations",
+    "/calculate-ph": "/ph-calculations",
+    "/h-concentration": "/ph-calculations",
+    "/hydrogen-ion-concentration": "/ph-calculations",
+    "/hydroxide-ion-concentration": "/ph-calculations",
+    "/ph-to-h": "/ph-calculations",
+    "/h-to-ph": "/ph-calculations",
+    "/ph-to-poh": "/ph-calculations",
+    "/poh-to-ph": "/ph-calculations",
+    "/poh-to-oh": "/ph-calculations",
+    "/oh-to-poh": "/ph-calculations",
+    "/ph-scale": "/ph-calculations",
+    "/negative-log": "/ph-calculations",
+    "/ph-poh-h-oh": "/ph-calculations"
   },
   "activities": {
     "dimensional-analysis": {
@@ -1013,6 +1038,41 @@
         "Teachers: ?unlock=all opens every part for a demo, ?mode=free opens Free Form directly, and ?email=you@school.org fills in your address on the email buttons."
       ],
       "classroom": "Do Molarity Learn and Guided together on the projector, then let students work through Practice on their own. Switch to Dilution on another day. Walk around and check the color of the switch at the top (orange = Molarity, aqua = Dilution) and the green ✓ 100% tabs. Students can use Free Form for lab and homework solution calculations.",
+      "bar": "tl"
+    },
+    "ph-calculations": {
+      "name": "pH Calculations",
+      "title": "pH Calculations Practice: pH, pOH, [H⁺] and [OH⁻] Conversions Step by Step",
+      "description": "Free step-by-step pH practice: convert [H⁺] to pH, pH to [H⁺], pH to pOH, pOH to pH, pOH to [OH⁻] and [OH⁻] to pOH. Pick the formula, plug in, use 10⁻ˣ to undo −log, and decide acidic or basic. Mistakes are explained.",
+      "unit": "Acids & Bases",
+      "order": 0,
+      "card": "Step-by-step pH, pOH, [H⁺] and [OH⁻] conversions: pick the formula, plug in, undo −log with 10⁻ˣ or subtract from 14, then decide acidic or basic. Shows the TI-30XIIS keys for every answer.",
+      "topics": [
+        "pH calculations",
+        "pH = −log[H⁺]",
+        "pOH = −log[OH⁻]",
+        "pH + pOH = 14",
+        "[H⁺] to pH",
+        "pH to [H⁺] (10⁻ᵖᴴ)",
+        "pH to pOH",
+        "pOH to [OH⁻]",
+        "[OH⁻] to pOH",
+        "10⁻ˣ undoes −log",
+        "acidic, neutral or basic",
+        "the pH scale",
+        "estimating pH from the exponent",
+        "logs on a TI-30XIIS calculator",
+        "multi-step: [H⁺] to [OH⁻]"
+      ],
+      "about": "Students memorize pH = −log[H⁺] but freeze when the unknown is the concentration, mix up H⁺ with OH⁻, add instead of subtracting from 14, and read a low pOH as acidic. This trainer uses the same equation board and tap-to-answer input as Solving for a Variable. Every problem has four steps: pick the formula (H⁺ goes with pH, OH⁻ goes with pOH, pH and pOH connect with 14), tap each value into its slot, get the unknown alone by doing the same thing to both sides (the 10⁻ˣ button undoes −log), then decide whether the solution is acidic, neutral or basic. Wrong moves are shown and named (\"[H⁺] is stuck inside −log\", \"added when you should subtract\", \"pOH runs backwards\"). A road map strip shows [H⁺] ⇄ pH ⇄ pOH ⇄ [OH⁻] with the given value in orange, the unknown in purple and the arrow being used lit up, and finishes by filling in all four values. A pH scale with pOH numbers underneath marks the answer, and the exact TI-30XIIS key sequence ((−) LOG, 2nd 10ˣ, 2nd EE) is shown with the unrounded calculator answer. Learn has 8 stops (pH scale, road map, −log, estimating from the exponent, 10⁻ˣ, pH + pOH = 14, calculator keys, common mistakes), Guided works 3 problems, and Practice has 7 levels: [H⁺] → pH, [OH⁻] → pOH, pH → pOH, pOH → pH, pH → [H⁺], pOH → [OH⁻], and all six mixed, with real solutions like lemon juice, rainwater, blood, seawater, ammonia and drain cleaner. 3 correct in a row with no mistakes unlocks the next level, and Show me plays the solution after 2 misses. The app does the arithmetic (pH and pOH to 2 decimal places, concentrations to 3 significant figures); answers are graded on value only. Free Form solves any homework or lab problem, including multi-step ones like [H⁺] → [OH⁻], with an on-screen keypad. Progress saves on the device, tabs show % complete, and the completion card (copy, PNG or email) shows mistakes by type. No student names are collected.",
+      "how": [
+        "Learn: go through the stops and answer each yellow question box.",
+        "Guided: do every tap yourself. The glowing button and the 👉 hint show what's next and why.",
+        "Practice: pick the formula, tap each value into its slot, tap 10⁻ˣ (or an operation and a number) to get the unknown alone, tap = Calculate, then choose acidic, neutral or basic. Get 3 in a row with no mistakes to unlock the next level.",
+        "Free Form: pick what you have and what you want, type your value on the keypad, solve each step, then Copy, Email using Google or Print the steps.",
+        "Teachers: ?unlock=all opens every part for a demo, ?mode=free opens Free Form directly, and ?email=you@school.org fills in your address on the email buttons."
+      ],
+      "classroom": "Do Learn and Guided together on the projector, then let students work through Practice on their own. Walk around and check for the green ✓ 100% tabs and the level pills. The calculator box under each answer shows the exact TI-30XIIS keys, so students can check their own calculator work. Students can use Free Form for homework and titration lab pH calculations.",
       "bar": "tl"
     }
   }

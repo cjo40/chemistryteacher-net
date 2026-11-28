@@ -6,7 +6,7 @@ Free for classroom use. Please link to ChemistryTeacher.net rather than re-hosti
 
 <!-- ACTIVITIES:START (made by make_readme.py from site.json; edit site.json, not this list) -->
 
-## All activities (25)
+## All activities (26)
 
 Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones) and needs no login. Open them at [chemistryteacher.net](https://chemistryteacher.net).
 
@@ -61,6 +61,12 @@ Every activity is free, runs in any browser (Chromebooks, Windows, iPads, phones
 | Activity | What students do | Topics |
 |---|---|---|
 | **[Molarity & Dilution Calculations](https://chemistryteacher.net/molarity-dilution)** | Step-by-step molarity (M = n/V) and dilution (M₁V₁ = M₂V₂) problems: grams → moles and mL → L with dimensional analysis, plug in, get the unknown alone. A big switch at the top picks Molarity or Dilution. | molarity calculations, M = n / V (moles ÷ liters), dilution calculations, M₁V₁ = M₂V₂, grams to moles with dimensional analysis, moles to grams (grams needed to make a solution), mL to L conversion, conversion factors and canceling units |
+
+### Acids & Bases
+
+| Activity | What students do | Topics |
+|---|---|---|
+| **[pH Calculations](https://chemistryteacher.net/ph-calculations)** | Step-by-step pH, pOH, [H⁺] and [OH⁻] conversions: pick the formula, plug in, undo −log with 10⁻ˣ or subtract from 14, then decide acidic or basic. Shows the TI-30XIIS keys for every answer. | pH calculations, pH = −log[H⁺], pOH = −log[OH⁻], pH + pOH = 14, [H⁺] to pH, pH to [H⁺] (10⁻ᵖᴴ), pH to pOH, pOH to [OH⁻] |
 
 ### Energy & Thermochemistry
 
