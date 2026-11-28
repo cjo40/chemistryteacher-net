@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pH Calculations Trainer: pH, pOH, [H⁺] and [OH⁻]</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#eef1f5;color:#15191e;-webkit-tap-highlight-color:transparent;font-size:16px}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default}
+/* header */
+header{display:flex;align-items:center;gap:10px;min-height:56px;padding:5px 10px 5px 64px;background:#1f3a5f;color:#fff}
+header h1{font-size:1.05rem;margin:0;font-weight:700;line-height:1.15}
+header h1 small{display:block;font-weight:500;font-size:.75rem;opacity:.85}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{min-height:46px;min-width:96px;padding:3px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.35);background:#2d4f7c;color:#fff;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.tab small{font-weight:600;font-size:.74rem;opacity:.95;margin-top:2px}
+.tab.on{background:#fff;color:#1f3a5f;border-color:#fff}
+.tab.full{background:#1d7a35;border-color:#9fe0b0;color:#fff}
+.tab.full.on{box-shadow:0 0 0 3px #fff inset}
+.tab.lock{opacity:.62}
+/* layout */
+main{height:calc(100% - 56px);display:grid;grid-template-columns:minmax(380px,44%) 1fr;gap:12px;padding:10px 12px}
+.col{overflow:auto;min-height:0;padding-bottom:6px}
+.panel{background:#fff;border:1px solid #d5dbe2;border-radius:14px;padding:12px}
+#right .panel{min-height:100%;display:flex;flex-direction:column;gap:10px}
+/* step pills */
+.pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.pills .lbl{font-weight:700;color:#3b4652;margin-right:2px;font-size:.9rem}
+.pill{min-width:44px;min-height:40px;padding:2px 10px;border-radius:20px;border:2px solid #b9c3ce;background:#fff;font-weight:700;color:#3b4652}
+.pill.cur{border-color:#1f3a5f;background:#1f3a5f;color:#fff}
+.pill.done{border-color:#1d7a35;color:#1d7a35;background:#e6f4ea}
+.pill.cur.done{background:#1d7a35;color:#fff}
+.pill:disabled{opacity:.45}
+.pill.cur:disabled,.pill.done:disabled{opacity:1}
+.streak{margin-left:auto;display:flex;gap:4px;align-items:center;font-size:.85rem;font-weight:700;color:#3b4652}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid #1d7a35;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff}
+.dot.on{background:#1d7a35}
+/* gray reference boxes */
+.gray{background:#eceff3;border:1px solid #cfd6de;border-radius:10px;padding:8px 12px;color:#26303a}
+.gray .t{font-size:.75rem;font-weight:800;letter-spacing:.04em;color:#5a6672;text-transform:uppercase;margin-bottom:2px}
+.teach{font-size:1.02rem;line-height:1.4;margin:0 0 8px}
+.story{margin-bottom:8px;font-size:1rem;line-height:1.38}
+/* question box */
+.qbox{border:5px solid #f29d12;border-radius:14px;background:#fffdf7;overflow:hidden;margin-bottom:8px}
+.qhead{background:#f29d12;color:#2b1a00;font-weight:800;font-size:.85rem;letter-spacing:.04em;padding:4px 10px}
+.qbody{padding:8px 12px 10px}
+.qtext{font-size:1.22rem;font-weight:800;line-height:1.3}
+.kw{color:#b3141a;text-decoration:underline;text-decoration-color:#d4202a;text-decoration-thickness:3px;text-underline-offset:3px}
+.qhint{font-size:.92rem;color:#4a5560;margin-top:3px}
+.ans{border:2px dashed #9aa6b2;border-radius:10px;padding:5px 8px 7px;margin-top:6px;background:#fff}
+.anslbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:#6a7682;margin-bottom:5px}
+.row{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.row+.row{margin-top:7px}
+.opt{min-height:48px;padding:6px 14px;border-radius:10px;border:2px solid #9aa6b2;background:#f7f9fb;font-weight:700;font-size:1.05rem;display:inline-flex;align-items:center;gap:6px}
+.opt:hover:not(:disabled){border-color:#1f3a5f}
+.opt.right{background:#e6f4ea;border-color:#1d7a35;color:#145a27}
+.opt.wrong{background:#fdecea;border-color:#b3261e;color:#8c1d18}
+.fopt{flex-direction:column;align-items:flex-start;gap:2px;padding:6px 12px}
+.fopt .nm{font-size:.8rem;font-weight:800;color:#5a6672;letter-spacing:.03em}
+.fopt .eq{font-size:1.3rem}
+.abopt{min-width:118px;justify-content:center;font-size:1.15rem;min-height:54px;border-width:3px}
+.abopt.acid{border-color:#d7261e}
+.abopt.neut{border-color:#3fae49}
+.abopt.base{border-color:#4b3fa8}
+.opbtn{min-width:52px;min-height:46px;border-radius:10px;border:2px solid #1f3a5f;background:#fff;font-size:1.45rem;font-weight:800;color:#1f3a5f}
+.opbtn.sel{background:#1f3a5f;color:#fff}
+.opbtn.p10{font-size:1.05rem;min-width:64px}
+.undo{min-height:46px;padding:4px 12px;border-radius:10px;border:2px solid #6a7682;background:#fff;font-weight:700;margin-left:auto}
+.chip{min-height:46px;padding:4px 12px;border-radius:12px;border:2px solid #2b6cb0;background:#eef5fd;font-weight:800;font-size:1.12rem;color:#123;display:inline-flex;align-items:baseline;gap:4px;touch-action:none;user-select:none;-webkit-user-select:none}
+.chip small,.tk small{font-size:.62em;color:#66727e;font-weight:600}
+.chip.sel{background:#2b6cb0;color:#fff;border-color:#174a80}
+.chip.sel small{color:#dbe8f7}
+.chip.used{display:none}
+.chip.grp{border-style:double;border-width:4px}
+.big{min-height:52px;padding:6px 22px;border-radius:12px;border:none;background:#1f3a5f;color:#fff;font-weight:800;font-size:1.15rem}
+.big.green{background:#1d7a35}
+.big.ghost{background:#fff;color:#1f3a5f;border:2px solid #1f3a5f}
+.big:disabled{opacity:.45}
+.nextrow{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 8px}
+.fb{margin-top:8px;border-radius:10px;padding:7px 10px;font-size:.98rem;line-height:1.35}
+.fb.bad{background:#fdecea;border:2px solid #b3261e;color:#6f1510}
+.fb.good{background:#e6f4ea;border:2px solid #1d7a35;color:#0f4720}
+.fb b{display:block}
+.doneline{background:#e6f4ea;border:1px solid #8fcca0;border-left:6px solid #1d7a35;color:#0f4720;border-radius:8px;padding:4px 10px;font-weight:700;font-size:.92rem;margin-bottom:6px}
+.measuring *,.measuring *::after{animation:none!important;transition:none!important}
+.dl2{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+.glow{animation:glow 1.1s ease-in-out infinite;position:relative;z-index:1}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(242,157,18,.9)}50%{box-shadow:0 0 0 7px rgba(242,157,18,.35)}}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* equation board */
+.boardt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.boardt h2{margin:0;font-size:1rem;color:#1f3a5f}
+.fcard{display:inline-flex;align-items:center;gap:8px;font-size:1.05rem}
+.fcard.moved{background:#fff7e6;border-color:#f29d12}
+.fcard .t{line-height:1.15}
+.fcard .eq{font-size:1.8rem;gap:.25em}
+.ann{display:inline-flex;flex-direction:column;align-items:center;line-height:1.05}
+.ann .ar{color:#c8102e;font-size:.7em;font-weight:900;line-height:.9}
+.ann .al{color:#c8102e;font-size:.5em;font-weight:800;white-space:nowrap;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.eqwrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:150px;border:2px solid #e1e6ec;border-radius:14px;background:#fbfcfe;padding:10px 6px;overflow:hidden}
+.eq{display:flex;align-items:center;justify-content:center;gap:.3em;font-size:2.3rem;font-weight:700;white-space:nowrap;max-width:100%}
+.eqs{padding:0 .15em;color:#1f3a5f}
+.side{display:inline-flex;align-items:center;gap:.18em}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.fn,.fd{display:flex;align-items:center;gap:.18em;padding:0 .2em}
+.fn{border-bottom:.08em solid currentColor;padding-bottom:.08em}
+.fd{padding-top:.08em}
+.times{color:#5d6975;font-weight:600;font-size:.8em}
+.tk{display:inline-flex;align-items:baseline;gap:.12em;transition:opacity .5s}
+.tk small{font-size:.42em}
+.tile{display:inline-flex;align-items:center;justify-content:center;min-width:1.25em;padding:0 .22em;height:1.3em;border-radius:.22em;background:#6a2fb0;color:#fff;font-weight:800;font-size:.92em}
+.symtk{font-style:italic;font-weight:700;color:#26303a}
+.cst{color:#1f3a5f}
+.x{position:relative;opacity:.35}
+.x::after{content:"";position:absolute;left:-4%;right:-4%;top:50%;border-top:.09em solid #b3261e;transform:rotate(-18deg)}
+.nw{animation:pop .5s}
+@keyframes pop{0%{transform:scale(1.5);color:#c56a00}100%{transform:scale(1)}}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:2.1em;min-height:1.45em;padding:0 .2em;border:.07em dashed #6a7682;border-radius:.2em;background:#fff;cursor:pointer;color:#7a8692;font-style:italic;font-size:.95em}
+.slot.filled{border-style:solid;border-color:#2b6cb0;background:#eef5fd;color:#123;font-style:normal}
+.slot.unk{border-color:#6a2fb0;background:#f5effc}
+.slot.tgt{outline:.1em solid #f29d12}
+.paren{color:#5d6975;font-weight:500}
+.pw{display:inline-flex;align-items:flex-start}
+.pw sup{font-size:.55em;display:inline-flex;align-items:center;gap:.1em;margin-top:-.2em}
+.status.bad{color:#b3261e}
+.status{font-size:1.15rem;font-weight:800;color:#1d7a35;text-align:center;min-height:1.6em}
+.answer{font-size:1.9rem;font-weight:800;text-align:center;color:#0f4720;background:#e6f4ea;border:2px solid #1d7a35;border-radius:12px;padding:6px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.answer small{font-size:.55em;color:#2d5d3a}
+.flipnote{font-size:.85rem;color:#5a6672;font-weight:600;margin-top:4px}
+/* acid / base tag */
+.abtag{display:inline-block;font-size:.95rem;font-weight:900;letter-spacing:.06em;padding:3px 10px;border-radius:8px;color:#fff;vertical-align:middle}
+.abtag.acid{background:#d7261e}
+.abtag.neut{background:#2e8b3d}
+.abtag.base{background:#4b3fa8}
+/* road map: [H+] <-> pH <-> pOH <-> [OH-] */
+.road{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:4px}
+.rbox{border:2px solid #b9c3ce;border-radius:10px;padding:4px 3px;text-align:center;background:#fff;min-width:0}
+.rbox .nm{font-weight:800;font-size:1.08rem;color:#26303a}
+.rbox .vv{font-size:.8rem;font-weight:800;color:#5a6672;min-height:1.25em;line-height:1.2}
+.rbox .ty{font-size:.66rem;font-weight:700;color:#8a96a2;text-transform:uppercase;letter-spacing:.03em}
+.rbox.give{border-color:#f29d12;background:#fff7e6;box-shadow:0 0 0 2px #f29d12}
+.rbox.want{border-color:#6a2fb0;background:#f5effc;box-shadow:0 0 0 2px #6a2fb0}
+.rbox.want .vv{color:#6a2fb0}
+.rbox.mid{border-color:#2b6cb0;background:#eef5fd}
+.rarr{display:flex;flex-direction:column;gap:3px;font-size:.72rem;font-weight:800;color:#8a96a2;text-align:center}
+.rarr span{white-space:nowrap;padding:1px 5px;border-radius:6px;border:1px solid #d5dbe2;background:#fbfcfe}
+.rarr span.on{background:#c8102e;border-color:#c8102e;color:#fff}
+.roadnote{font-size:.8rem;color:#5a6672;font-weight:700;text-align:center;margin-top:3px}
+.roadwrap{border:2px solid #e1e6ec;border-radius:14px;padding:6px 8px;background:#fbfcfe}
+.roadwrap .t{font-size:.72rem;font-weight:800;letter-spacing:.05em;color:#5a6672;text-transform:uppercase;margin-bottom:4px}
+/* pH scale */
+.scalew{border:2px solid #e1e6ec;border-radius:14px;padding:6px 14px 6px 48px;background:#fbfcfe}
+.scalew .t{font-size:.72rem;font-weight:800;letter-spacing:.05em;color:#5a6672;text-transform:uppercase;margin:0 0 0 -38px}
+.sbar::before{content:"pH";position:absolute;left:-36px;top:5px;font-size:.8rem;font-weight:900;color:#26303a}
+.scale{position:relative;margin:34px 0 4px}
+.scale.lo{margin-bottom:40px}
+.sbar{position:relative;height:28px;border-radius:8px;background:linear-gradient(90deg,#c81e1e 0%,#e8551f 14%,#f4a12a 28%,#f2d33b 40%,#8cc63f 50%,#2e9e4f 58%,#1f8f9a 70%,#2b6cb0 82%,#4b3fa8 92%,#6a2fb0 100%)}
+.sn{position:absolute;top:5px;transform:translateX(-50%);font-size:.78rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55)}
+.spoh{position:relative;height:16px;margin-top:2px}
+.spoh span{position:absolute;transform:translateX(-50%);font-size:.66rem;font-weight:700;color:#7a8692}
+.spoh b{position:absolute;left:-36px;font-size:.7rem;color:#7a8692}
+.sabc{display:flex;justify-content:space-between;font-size:.72rem;font-weight:900;letter-spacing:.05em;margin-top:1px}
+.sabc .a{color:#c81e1e}.sabc .n{color:#2e9e4f}.sabc .b{color:#4b3fa8}
+.smk{position:absolute;top:-30px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2}
+.smk .c{background:#15191e;color:#fff;font-size:.74rem;font-weight:800;border-radius:6px;padding:1px 6px;white-space:nowrap}
+.smk .ln{width:3px;height:36px;background:#15191e;margin-top:1px;border-radius:2px}
+.smk.dn{top:auto;bottom:-48px;flex-direction:column-reverse}
+.smk.dn .ln{height:30px;margin:0 0 1px;background:#4a5560}
+.smk.dn .c{background:#4a5560}
+.smk.main .c{background:#c8102e;font-size:.85rem}
+.smk.main .ln{background:#c8102e;width:4px}
+.smk.nw .c{animation:pop .5s}
+/* calculator keys */
+.keys{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;margin-top:4px}
+.key{min-width:34px;height:36px;padding:0 6px;border-radius:7px;background:#3b4652;color:#fff;font-weight:800;font-size:.85rem;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 0 #1b2128}
+.key i{font-style:normal;font-size:.62rem;color:#f6c343;margin-bottom:2px}
+.key.kn{background:#f4f6f8;color:#15191e;box-shadow:0 2px 0 #9aa6b2;border:1px solid #b9c3ce}
+.key.k2{background:#f6c343;color:#2b1a00;box-shadow:0 2px 0 #b98a14}
+.key.ke{background:#1f3a5f}
+.readout{font-family:ui-monospace,Consolas,monospace;font-weight:800;background:#d9e4d2;border:2px solid #8aa07c;border-radius:6px;padding:2px 8px;display:inline-block;margin-top:5px}
+/* learn visuals */
+.vis{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.vis .scalew,.vis .roadwrap{width:100%}
+.vcard{border:2px solid #d5dbe2;border-radius:12px;padding:10px 16px;background:#fbfcfe;min-width:260px}
+.vcard.ok{border-color:#1d7a35;background:#f1faf3}
+.vcard.no{border-color:#b3261e;background:#fdf3f2}
+.vcard .h{font-weight:800;margin-bottom:6px}
+.vcard .eq{font-size:1.6rem}
+.mtab{border-collapse:collapse;font-size:1rem;width:100%;max-width:620px}
+.mtab td,.mtab th{border:1px solid #d5dbe2;padding:6px 8px;text-align:left;vertical-align:middle}
+.mtab th{background:#eceff3;font-size:.85rem}
+.mtab .w{color:#8c1d18;background:#fdf3f2}
+.mtab .r{color:#145a27;background:#f1faf3}
+.mini{display:inline-flex;vertical-align:middle}
+.mini .eq{font-size:1rem;gap:.2em}
+.mini .tk small{font-size:.6em}
+.opt .eq{font-size:1.25rem}
+.qtext .eq{font-size:1em;display:inline-flex}
+.frame{font-size:.95rem;font-weight:800;color:#c56a00;min-height:1.4em}
+.nline{position:relative;width:100%;max-width:520px;height:118px;margin:6px auto}
+.nline .ax{position:absolute;left:4%;right:4%;top:58px;border-top:3px solid #1f3a5f}
+.nline .tkm{position:absolute;top:50px;width:3px;height:18px;background:#1f3a5f;transform:translateX(-50%)}
+.nline .lab{position:absolute;transform:translateX(-50%);font-weight:800;white-space:nowrap;font-size:.95rem}
+.nline .up{top:24px}.nline .dn{top:74px;color:#5a6672;font-size:.85rem}
+.nline .hit.up{top:0}.nline .hit.dn{top:96px}
+.nline .hit{color:#c8102e}
+/* modal + toast + keypad */
+.modal{position:fixed;inset:0;background:rgba(10,20,35,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:10px}
+.mbox{background:#fff;border-radius:16px;max-width:620px;width:100%;max-height:96vh;overflow:auto;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.mbox h3{margin:0 0 8px;color:#1f3a5f}
+.mbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1f3a5f;color:#fff;padding:10px 18px;border-radius:24px;font-weight:700;z-index:60;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:opacity .6s}
+.kp{max-width:360px}
+.kpd{font-size:1.9rem;font-weight:800;border:2px solid #9aa6b2;border-radius:10px;padding:6px 10px;min-height:56px;text-align:right;background:#fbfcfe;overflow:auto;white-space:nowrap}
+.kpd small{font-size:.5em;color:#66727e}
+.kpg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.kpg button{min-height:56px;border-radius:10px;border:2px solid #b9c3ce;background:#f7f9fb;font-size:1.35rem;font-weight:800}
+.kpg .ok{background:#1d7a35;color:#fff;border-color:#1d7a35}
+.kperr{color:#8c1d18;font-weight:700;min-height:1.3em;margin-top:6px}
+.card{border:3px solid #1f3a5f;border-radius:14px;padding:12px 16px}
+.card table{border-collapse:collapse;width:100%}
+.card td{padding:4px 6px;border-bottom:1px solid #e1e6ec}
+.card td:last-child{text-align:right;font-weight:800}
+.qpick{min-width:120px;min-height:64px;flex-direction:column;justify-content:center;gap:0;font-size:1.3rem}
+.qpick small{font-size:.72rem;color:#5a6672;font-weight:700}
+.qpick.sel{background:#fff7e6;border-color:#f29d12;box-shadow:0 0 0 2px #f29d12}
+#print{display:none}
+@media (max-width:900px){
+  main{display:block;height:auto}
+  .col{overflow:visible}
+  #right{margin-top:10px}
+  .eq{font-size:1.8rem}
+}
+@media print{
+  header,main,.modal,.toast{display:none!important}
+  #print{display:block;padding:20px;font-size:14pt}
+  #print .eq{font-size:20pt;justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>pH Calculations<small>pH ⇄ [H⁺] · pH ⇄ pOH · pOH ⇄ [OH⁻]</small></h1>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main>
+  <section class="col" id="left"></section>
+  <section class="col" id="right"></section>
+</main>
+<div id="print"></div>
+<script>
+/* ===== EQUATION ENGINE (no DOM) — same engine as Solving for a Variable ===== */
+var SYMS = {H:'[H⁺]', OH:'[OH⁻]'};
+function sy(s){ return SYMS[s] || s; }
+var SUPM = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':''};
+function sup(s){ return String(s).split('').map(function(c){ return SUPM[c] !== undefined ? SUPM[c] : c; }).join(''); }
+function fmt3(x){
+  if (!isFinite(x) || isNaN(x)) return '—';
+  if (x === 0) return '0';
+  var a = Math.abs(x);
+  if (a >= 1e5 || a < 1e-3){ var p = x.toExponential(2).split('e'); return p[0] + '×10' + sup(parseInt(p[1], 10)); }
+  if (a >= 1000) return String(Math.round(Number(x.toPrecision(3))));
+  var s = Number(x).toPrecision(3);
+  if (s.indexOf('e') >= 0) s = String(Number(s));
+  if (s.indexOf('.') < 0 && /0$/.test(s)) s += '.';
+  return s;
+}
+/* pH-style numbers: 2 decimal places. Concentrations: scientific notation, 3 sig figs */
+function pTxt(v){ var s = Number(v).toFixed(2); if (s === '-0.00') s = '0.00'; return s.replace('-', '−'); }
+function sciParts(v, sig){
+  var e = Math.floor(Math.log10(v)), m = v / Math.pow(10, e), ms = m.toFixed(sig - 1);
+  if (parseFloat(ms) >= 10){ e++; ms = (v / Math.pow(10, e)).toFixed(sig - 1); }
+  return {m:ms, e:e};
+}
+function sciTxt(v, sig){
+  if (!(v > 0) || !isFinite(v)) return fmt3(v);
+  var p = sciParts(v, sig || 3);
+  return p.e === 0 ? p.m : p.m + '×10' + sup(p.e);
+}
+function fmtQ(v, q){ return q === 'conc' ? sciTxt(v, 3) : pTxt(v); }
+
+var CONSTS = {
+  'c:14': {val:14, txt:'14', unit:'', name:'14'}
+};
+var QT = {ph:'pH', poh:'pOH', conc:'concentration'};
+var FORMULAS = {
+  ph:    {name:'pH', L:{k:'f',num:['pH']}, R:{k:'l',a:'H'}, q:{pH:'ph',H:'conc'}, log:true},
+  poh:   {name:'pOH', L:{k:'f',num:['pOH']}, R:{k:'l',a:'OH'}, q:{pOH:'poh',OH:'conc'}, log:true},
+  phpoh: {name:'pH + pOH = 14', L:{k:'s',t:[[1,'pH'],[1,'pOH']]}, R:{k:'f',num:['c:14']}, q:{pH:'ph',pOH:'poh'}}
+};
+/* the six conversions (road-map arrows) */
+var CONV = {
+  'H>pH':   {fid:'ph',    give:'H',   want:'pH',  name:'[H⁺] → pH'},
+  'pH>H':   {fid:'ph',    give:'pH',  want:'H',   name:'pH → [H⁺]'},
+  'pH>pOH': {fid:'phpoh', give:'pH',  want:'pOH', name:'pH → pOH'},
+  'pOH>pH': {fid:'phpoh', give:'pOH', want:'pH',  name:'pOH → pH'},
+  'pOH>OH': {fid:'poh',   give:'pOH', want:'OH',  name:'pOH → [OH⁻]'},
+  'OH>pOH': {fid:'poh',   give:'OH',  want:'pOH', name:'[OH⁻] → pOH'}
+};
+var QOF = {H:'conc', OH:'conc', pH:'ph', pOH:'poh'};
+
+function F(num, den){ return {k:'f', num:num || [], den:den || []}; }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function buildSide(t, mk){
+  if (t.k === 'f') return F(t.num.map(mk), (t.den || []).map(mk));
+  if (t.k === 's') return {k:'s', t:t.t.map(function(p){ return {s:p[0], f:F([mk(p[1])])}; })};
+  if (t.k === 'l') return {k:'l', a:F([mk(t.a)])};
+}
+function constFactor(sym){ var c = CONSTS[sym]; return {id:sym, sym:sym, val:c.val, txt:c.txt, unit:c.unit, k:1}; }
+function buildEq(fid, values, U){
+  var fo = FORMULAS[fid];
+  function mk(sym){
+    if (sym.indexOf('c:') === 0) return constFactor(sym);
+    if (sym === U) return {id:sym, sym:sym, v:1};
+    var g = values[sym];
+    return {id:sym, sym:sym, val:g.val, txt:g.txt, unit:g.unit};
+  }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+function locIn(side, id){
+  if (!side) return null;
+  if (side.k === 'f'){
+    var i;
+    for (i = 0; i < side.num.length; i++) if (side.num[i].id === id) return {w:'num'};
+    for (i = 0; i < side.den.length; i++) if (side.den[i].id === id) return {w:'den'};
+    var all = side.num.concat(side.den);
+    for (i = 0; i < all.length; i++) if (all[i].w && locIn(all[i].w, id)) return {w:'wrap'};
+    return null;
+  }
+  if (side.k === 's'){
+    for (var j = 0; j < side.t.length; j++){
+      var t = side.t[j], r = locIn(t.f, id);
+      if (r){
+        if (r.w === 'num' && t.f.num.length === 1 && t.f.den.length === 0) return {w: t.s > 0 ? 'plus' : 'minus'};
+        return {w:'deep'};
+      }
+    }
+    return null;
+  }
+  if (side.k === 'l') return locIn(side.a, id) ? {w:'log'} : null;
+  if (side.k === 'p') return locIn(side.a, id) ? {w:'pow'} : null;
+  return null;
+}
+function locate(eq, id){
+  var r = locIn(eq.L, id); if (r){ r.sd = 'L'; return r; }
+  r = locIn(eq.R, id); if (r){ r.sd = 'R'; return r; }
+  return null;
+}
+function findFactor(eq, id){
+  var found = null;
+  function walk(side){
+    if (!side || found) return;
+    if (side.k === 'f'){ side.num.concat(side.den).forEach(function(f){ if (found) return; if (f.w) walk(f.w); else if (f.id === id) found = f; }); }
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return found;
+}
+function allFactors(eq){
+  var out = [];
+  function walk(side){
+    if (side.k === 'f') side.num.concat(side.den).forEach(function(f){ if (f.w) walk(f.w); else out.push(f); });
+    else if (side.k === 's') side.t.forEach(function(t){ walk(t.f); });
+    else walk(side.a);
+  }
+  walk(eq.L); walk(eq.R);
+  return out;
+}
+function isAlone(side, U){ return side.k === 'f' && side.num.length === 1 && side.den.length === 0 && side.num[0].id === U && !side.num[0].w; }
+function aloneSide(eq, U){ if (isAlone(eq.L, U)) return 'L'; if (isAlone(eq.R, U)) return 'R'; return null; }
+function simplify(side){
+  if (side.k === 'f'){
+    side.num = side.num.filter(function(f){ return !f.x; });
+    side.den = side.den.filter(function(f){ return !f.x; });
+    side.num.concat(side.den).forEach(function(f){ delete f.nw; if (f.w) f.w = simplify(f.w); });
+    if (side.num.length === 1 && side.den.length === 0 && side.num[0].w) return side.num[0].w;
+    return side;
+  }
+  if (side.k === 's'){
+    side.t = side.t.filter(function(t){ return !t.x; });
+    side.t.forEach(function(t){ delete t.nw; t.f = simplify(t.f); });
+    if (side.t.length === 1 && side.t[0].s === 1) { var f = side.t[0].f; return f.k ? f : F([{id:'w', w:f}]); }
+    if (side.t.length === 0) return F([{id:'zero', sym:'0', val:0, txt:'0', unit:'', k:1}]);
+    return side;
+  }
+  if (side.k === 'l' || side.k === 'p'){ delete side.nw; side.a = simplify(side.a); return side; }
+  return side;
+}
+function asFrac(S){ return S.k === 'f' ? S : F([{id:'w', w:S}]); }
+function applyOp(eq, op, ids){
+  var mid = clone(eq), cancels = [], cs = [];
+  ['L','R'].forEach(function(sd){
+    var S = mid[sd];
+    if (op === 'p10'){
+      if (S.k === 'l'){ var a = S.a; a.num.forEach(function(f){ f.nw = 1; }); mid[sd] = a; cancels.push('log'); }
+      else mid[sd] = {k:'p', a:S, nw:1};
+      return;
+    }
+    if (op === '×' || op === '÷'){
+      S = asFrac(S);
+      ids.forEach(function(id){
+        var fac = clone(findFactor(eq, id)); delete fac.x; fac.nw = 1;
+        var same = op === '×' ? S.den : S.num, other = op === '×' ? S.num : S.den;
+        var hit = null;
+        for (var i = 0; i < same.length; i++) if (same[i].id === id && !same[i].x){ hit = same[i]; break; }
+        if (hit){ hit.x = 1; fac.x = 1; cancels.push(id); cs.push(sd); }
+        other.push(fac);
+      });
+      mid[sd] = S;
+      return;
+    }
+    var sg = op === '+' ? 1 : -1;
+    var fac2 = clone(findFactor(eq, ids[0])); delete fac2.x; fac2.nw = 1;
+    if (S.k !== 's') S = {k:'s', t:[{s:1, f:asFrac(S)}]};
+    var hit2 = null;
+    S.t.forEach(function(t){
+      if (!hit2 && !t.x && t.s === -sg && t.f.k === 'f' && t.f.den.length === 0 && t.f.num.length === 1 && t.f.num[0].id === fac2.id) hit2 = t;
+    });
+    var nt = {s:sg, f:F([fac2]), nw:1};
+    if (hit2){ hit2.x = 1; nt.x = 1; cancels.push(fac2.id); cs.push(sd); }
+    S.t.push(nt);
+    mid[sd] = S;
+  });
+  return {mid:mid, out:{L:simplify(clone(mid.L)), R:simplify(clone(mid.R))}, cancels:cancels, cs:cs};
+}
+function chipLabel(eq, ids){
+  if (ids.length > 1) return '(' + ids.map(function(id){ var f = findFactor(eq, id); return f.v ? sy(f.sym) : f.txt; }).join(' × ') + ')';
+  var f = findFactor(eq, ids[0]);
+  if (!f) return '?';
+  return f.v ? sy(f.sym) : f.txt;
+}
+function judge(eq, op, ids, res, U){
+  var u = sy(U), uL = locate(eq, U), uSd = uL.sd, uSide = eq[uSd];
+  function bad(type, title, why){ return {ok:false, type:type, title:title, why:why}; }
+  if (op === 'p10'){
+    if (res.cancels.indexOf('log') >= 0) return {ok:true};
+    return bad('opposite', 'Mistake: 10⁻ˣ with no −log', '10⁻ˣ only undoes −log, and there is no −log here. Tap ↶ Undo.');
+  }
+  if (uSide.k === 'l') return bad('opposite', 'Mistake: ' + u + ' is stuck inside −log', 'Nothing can reach ' + u + ' until the −log is gone. 10⁻ˣ undoes −log. Tap ↶ Undo and try 10⁻ˣ.');
+  if (res.cancels.indexOf(U) >= 0 && op !== '×'){
+    if (op === '÷') return bad('opposite', 'Mistake: divided by the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+    return bad('opposite', 'Mistake: subtracted the unknown', 'That knocks ' + u + ' off its side. You want ' + u + ' alone, not gone. Tap ↶ Undo.');
+  }
+  if (res.cancels.length > 0 && (op === '×' || op === '÷' || res.cs.indexOf(uSd) >= 0)) return {ok:true};
+  var x = chipLabel(eq, ids), L = locate(eq, ids[0]), onU = L && L.sd === uSd, isVar = ids[0] === U && ids.length === 1;
+  var nohelp = bad('nohelp', "Mistake: that move doesn't help", x + " isn't on " + u + "'s side, so that just adds clutter. Tap ↶ Undo and work on what's next to " + u + '.');
+  if (op === '×' || op === '÷'){
+    if (uSide.k === 's'){
+      if (!onU) return nohelp;
+      var und = L.w === 'minus' ? '+' : '−';
+      return bad('opposite', 'Mistake: ' + (op === '×' ? 'multiplied' : 'divided') + ' instead of ' + (und === '−' ? 'subtracting' : 'adding'),
+        x + ' is ' + (L.w === 'minus' ? 'subtracted from ' : 'added to ') + u + ', not multiplied. To undo ' + (und === '−' ? '+' : '−') + ' you ' + und + '. Tap ↶ Undo and try ' + und + ' ' + x + '.');
+    }
+    if (isVar){
+      if (op === '×') return bad('opposite', 'Mistake: ' + u + ' is already on top', u + ' is already on top, so × ' + u + ' just makes ' + u + ' × ' + u + '. Tap ↶ Undo.');
+      return bad('opposite', 'Mistake: divided by ' + u + ' again', u + ' is already on the bottom. To bring it up, × ' + u + '. Tap ↶ Undo and try × ' + u + '.');
+    }
+    if (!onU) return nohelp;
+    if (op === '×') return bad('opposite', 'Mistake: multiplied when you should divide', 'You multiplied by ' + x + ', but ' + x + ' was already multiplying ' + u + '. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+    return bad('opposite', 'Mistake: divided when you should multiply', x + ' was already dividing ' + u + " (it's on the bottom). To undo ÷ you ×. Tap ↶ Undo and try × " + x + '.');
+  }
+  var verb = op === '+' ? 'added' : 'subtracted';
+  if (uSide.k === 's'){
+    if (!onU) return nohelp;
+    if (L.w === 'plus') return bad('opposite', 'Mistake: added when you should subtract', x + ' was already added to ' + u + '. To undo + you −. Tap ↶ Undo and try − ' + x + '.');
+    if (L.w === 'minus') return bad('opposite', 'Mistake: subtracted when you should add', x + ' was already subtracted from ' + u + '. To undo − you +. Tap ↶ Undo and try + ' + x + '.');
+    return nohelp;
+  }
+  if (isVar) return bad('opposite', 'Mistake: ' + verb + ' ' + u, 'Adding or subtracting ' + u + " won't get it alone. Tap ↶ Undo.");
+  if (!onU) return nohelp;
+  if (L.w === 'den') return bad('opposite', 'Mistake: ' + verb + ' instead of multiplying', x + ' is dividing ' + u + ', not added to it. To undo ÷ you ×. Tap ↶ Undo and try × ' + x + '.');
+  return bad('opposite', 'Mistake: ' + verb + ' instead of dividing', x + ' is multiplying ' + u + ', not added to it. To undo × you ÷. Tap ↶ Undo and try ÷ ' + x + '.');
+}
+function nextMove(eq, U){
+  var L = locate(eq, U); if (!L) return null;
+  var S = eq[L.sd];
+  if (isAlone(S, U)) return null;
+  if (S.k === 'l') return {op:'p10', ids:[], why: sy(U) + ' is inside −log. 10⁻ˣ undoes −log, so tap 10⁻ˣ.'};
+  if (S.k === 's'){
+    for (var i = 0; i < S.t.length; i++){
+      var t = S.t[i];
+      if (!(t.f.num.length === 1 && t.f.num[0].id === U)){
+        var f = t.f.num[0], o = t.s > 0 ? '−' : '+';
+        return {op:o, ids:[f.id], why: f.txt + ' is ' + (t.s > 0 ? 'added to ' : 'subtracted from ') + sy(U) + '. To undo ' + (t.s > 0 ? '+ you −' : '− you +') + ': ' + o + ' ' + f.txt + ' on both sides.'};
+      }
+    }
+  }
+  if (S.k === 'f'){
+    if (S.den.some(function(f){ return f.id === U; })) return {op:'×', ids:[U], why: sy(U) + ' is on the bottom. Multiply both sides by ' + sy(U) + ' to bring it up.'};
+    if (S.den.length){ var d = S.den[0]; return {op:'×', ids:[d.id], why: d.txt + ' is dividing ' + sy(U) + '. To undo ÷ you ×.'}; }
+    var o2 = S.num.filter(function(f){ return f.id !== U; });
+    if (o2.length === 1) return {op:'÷', ids:[o2[0].id], why: o2[0].txt + ' is multiplying ' + sy(U) + '. To undo × you ÷.'};
+  }
+  return null;
+}
+function solveChips(eq, U){
+  var out = [], seen = {};
+  allFactors(eq).forEach(function(f){
+    if (seen[f.id]) return; seen[f.id] = 1;
+    if (f.v){ var L = locate(eq, U); if (L && eq[L.sd].k === 'f' && eq[L.sd].den.some(function(d){ return d.id === U; })) out.push({ids:[f.id]}); return; }
+    out.push({ids:[f.id]});
+  });
+  return out;
+}
+function ev(S){
+  if (S.k === 'f'){ var v = 1; S.num.forEach(function(f){ v *= fv(f); }); S.den.forEach(function(f){ v /= fv(f); }); return v; }
+  if (S.k === 's') return S.t.reduce(function(a, t){ return a + t.s * ev(t.f); }, 0);
+  if (S.k === 'l') return -Math.log10(ev(S.a));
+  if (S.k === 'p') return Math.pow(10, -ev(S.a));
+}
+function fv(f){ return f.w ? ev(f.w) : f.val; }
+function facText(f, symMode){
+  if (f.w) return '(' + sideText(f.w, symMode) + ')';
+  if (f.v) return sy(f.sym);
+  if (symMode) return f.k ? CONSTS[f.id].name : sy(f.sym);
+  return f.txt;
+}
+function prodText(arr, symMode){ return arr.length ? arr.map(function(f){ return facText(f, symMode); }).join(' × ') : '1'; }
+function sideText(S, symMode){
+  if (S.k === 'f'){
+    if (!S.den.length) return prodText(S.num, symMode);
+    var n = prodText(S.num, symMode), d = prodText(S.den, symMode);
+    if (S.num.length > 1) n = '(' + n + ')';
+    if (S.den.length > 1) d = '(' + d + ')';
+    return n + ' / ' + d;
+  }
+  if (S.k === 's') return S.t.map(function(t, i){ var tx = sideText(t.f, symMode); return i === 0 ? (t.s < 0 ? '−' + tx : tx) : (t.s < 0 ? ' − ' : ' + ') + tx; }).join('');
+  if (S.k === 'l') return '−log(' + sideText(S.a, symMode) + ')';
+  if (S.k === 'p') return '10^−(' + sideText(S.a, symMode) + ')';
+}
+function eqText(eq, symMode){ return sideText(eq.L, symMode) + ' = ' + sideText(eq.R, symMode); }
+/* pH of a solution from whatever is known */
+function classify(ph){ return ph < 6.995 ? 'acid' : ph > 7.005 ? 'base' : 'neut'; }
+
+if (typeof module !== 'undefined' && module.exports) module.exports = {FORMULAS:FORMULAS, CONV:CONV, buildEq:buildEq, applyOp:applyOp, judge:judge, nextMove:nextMove, solveChips:solveChips, ev:ev, eqText:eqText, aloneSide:aloneSide, fmtQ:fmtQ, sciTxt:sciTxt, pTxt:pTxt, locate:locate, sy:sy, classify:classify};
+</script>
+<script>
+/* ===== APP ===== */
+(function(){
+'use strict';
+var Q = new URLSearchParams(location.search);
+var UNLOCK = Q.get('unlock') === 'all';
+var EMAIL = Q.get('email') || '';
+var KEY = 'ctn-ph-calculations-v1';
+var LEFT = document.getElementById('left'), RIGHT = document.getElementById('right'), TABS = document.getElementById('tabs');
+var PAGE = 'chemistryteacher.net/ph-calculations';
+var NSTOPS = 8, NGUIDED = 3, NLVL = 7;
+
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function R(a, b){ return a + Math.random() * (b - a); }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function T(g){ return g.txt + (g.unit ? ' ' + g.unit : ''); }
+function zeros(n){ var a = []; for (var i = 0; i < n; i++) a.push(0); return a; }
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ---------- given values ---------- */
+/* a pH or pOH value: 2 decimal places */
+function pG(v){ v = Number(Number(v).toFixed(2)); return {val:v, txt:pTxt(v), unit:''}; }
+/* a concentration from a textbook: 2 sig figs, usually ×10ⁿ, sometimes a plain decimal */
+function cG(x, plainOK){
+  var p = sciParts(x, 2), m = parseFloat(p.m), e = p.e;
+  var val = Number((m * Math.pow(10, e)).toPrecision(2));
+  var plain = plainOK && e >= -3 && e <= -1 && Math.random() < 0.3;
+  return {val:val, txt: plain ? val.toFixed(-e + 1) : p.m + '×10' + sup(e), unit:'M', sci:!plain, m:p.m, e:e};
+}
+/* exact given (for guided problems) */
+function cX(m, e){ return {val:Number((parseFloat(m) * Math.pow(10, e)).toPrecision(3)), txt:m + '×10' + sup(e), unit:'M', sci:true, m:m, e:e}; }
+/* carry an answer into the next link of a Free Form chain */
+function carry(v, q){
+  if (q === 'conc'){ var p = sciParts(v, 3); return {val:v, txt:sciTxt(v, 3), unit:'M', sci:p.e !== 0, m:p.m, e:p.e}; }
+  return {val:v, txt:pTxt(v), unit:''};
+}
+
+/* ---------- state ---------- */
+function fresh(){
+  return {tab:'learn',
+    learn:{cur:0, done:zeros(NSTOPS)},
+    guided:{cur:0, done:zeros(NGUIDED), b:null},
+    prac:{lvl:0, streak:zeros(NLVL), done:zeros(NLVL), count:zeros(NLVL), b:null, cardShown:0, last:null},
+    free:{step:1, have:null, want:null, vals:{}, bs:[], ci:0},
+    mis:{formula:0, slot:0, opposite:0, nohelp:0, ab:0, showme:0}};
+}
+function okState(s){ return s && s.learn && s.learn.done && s.learn.done.length === NSTOPS && s.guided && s.guided.done.length === NGUIDED && s.prac && s.prac.done.length === NLVL && s.free && s.free.bs && s.mis; }
+var S, hadSave = false;
+try { var raw = localStorage.getItem(KEY); if (raw){ S = JSON.parse(raw); hadSave = true; } } catch(e){}
+if (!okState(S)) { S = fresh(); hadSave = false; }
+[S.guided.b, S.prac.b].concat(S.free.bs).forEach(function(b){ if (b){ b.anim = null; b.busy = false; if (b.auto){ b.auto = false; b.dead = true; } } });
+var saveT = null;
+function flush(){ clearTimeout(saveT); try { localStorage.setItem(KEY, JSON.stringify(S, function(k, v){ return k === 'anim' ? undefined : v; })); } catch(e){} }
+function save(){ clearTimeout(saveT); saveT = setTimeout(flush, 250); }
+window.addEventListener('pagehide', flush);
+document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') flush(); });
+
+/* ---------- equation HTML ---------- */
+function tokHTML(f, o){
+  o = o || {};
+  if (f.slot) return slotHTML(f, o);
+  if (f.w) return '<span class="paren">(</span>' + sideHTML(f.w, o) + '<span class="paren">)</span>';
+  var cls = 'tk' + (f.x ? ' x' : '') + (f.nw ? ' nw' : '');
+  if (f.v) return annotate('<span class="' + cls + '"><span class="tile">' + esc(sy(f.sym)) + '</span></span>', f, o);
+  if (o.sym) return annotate('<span class="' + cls + ' symtk">' + esc(f.k ? (CONSTS[f.id] ? CONSTS[f.id].name : f.txt) : sy(f.sym)) + '</span>', f, o);
+  return '<span class="' + cls + (f.k ? ' cst' : '') + '"><b>' + esc(f.txt) + '</b>' + (f.unit ? '<small>' + esc(f.unit) + '</small>' : '') + '</span>';
+}
+function annotate(html, f, o){
+  if (!o.units || f.k || f.w || !o.units[f.sym]) return html;
+  return '<span class="ann">' + html + '<span class="ar">↑</span><span class="al">' + esc(o.units[f.sym]) + '</span></span>';
+}
+function withPos(o, pos){ var c = {}; for (var k in (o || {})) c[k] = o[k]; c.pos = pos; return c; }
+function prodHTML(arr, o){ return arr.length ? arr.map(function(f){ return tokHTML(f, o); }).join('<span class="times">×</span>') : '<span class="tk"><b>1</b></span>'; }
+function sideHTML(S0, o){
+  if (S0.k === 'f'){
+    if (!S0.den.length) return '<span class="side">' + prodHTML(S0.num, withPos(o, (o && o.pos) || 'flat')) + '</span>';
+    return '<span class="frac"><span class="fn">' + prodHTML(S0.num, withPos(o, 'num')) + '</span><span class="fd">' + prodHTML(S0.den, withPos(o, 'den')) + '</span></span>';
+  }
+  if (S0.k === 's'){
+    return '<span class="side">' + S0.t.map(function(t, i){
+      var sign = i === 0 ? (t.s < 0 ? '−' : '') : (t.s < 0 ? '−' : '+');
+      var inner = (sign ? '<span class="eqs">' + sign + '</span>' : '') + sideHTML(t.f, o);
+      return (t.x || t.nw) ? '<span class="tk' + (t.x ? ' x' : '') + (t.nw ? ' nw' : '') + '">' + inner + '</span>' : inner;
+    }).join('') + '</span>';
+  }
+  if (S0.k === 'l'){
+    var a = S0.a, single = a.k === 'f' && a.num.length === 1 && !a.den.length && (a.num[0].v || a.num[0].slot || a.num[0].sym === 'H' || a.num[0].sym === 'OH');
+    return '<span class="side"><span class="tk">−log</span>' + (single ? sideHTML(a, o) : '<span class="paren">(</span>' + sideHTML(a, o) + '<span class="paren">)</span>') + '</span>';
+  }
+  if (S0.k === 'p'){
+    var a2 = S0.a, one = a2.k === 'f' && a2.num.length === 1 && !a2.den.length;
+    return '<span class="pw' + (S0.nw ? ' nw' : '') + '"><span class="tk"><b>10</b></span><sup>−' + (one ? sideHTML(a2, o) : '(' + sideHTML(a2, o) + ')') + '</sup></span>';
+  }
+  return '';
+}
+function eqHTML(eq, o){ return '<div class="eq">' + sideHTML(eq.L, o) + '<span class="eqs">=</span>' + sideHTML(eq.R, o) + '</div>'; }
+function symEq(fid){
+  var fo = FORMULAS[fid];
+  function mk(sym){ return sym.indexOf('c:') === 0 ? {id:sym, sym:sym, k:1, txt:CONSTS[sym].txt} : {id:sym, sym:sym, txt:sy(sym)}; }
+  return {L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)};
+}
+function formulaHTML(fid, units){ return eqHTML(symEq(fid), {sym:true, units:units}); }
+function fUnits(fid){ var u = {}; Object.keys(FORMULAS[fid].q).forEach(function(s){ if (QOF[s] === 'conc') u[s] = 'M'; }); return u; }
+function fcardHTML(inner, moved, label){
+  return '<div class="gray fcard' + (moved ? ' moved' : '') + '"><span class="t" style="margin:0">' + (label || (moved ? 'Formula,<br>rearranged' : 'Formula')) + '</span>' +
+    '<div class="eq">' + inner.replace(/^<div class="eq">|<\/div>$/g, '') + '</div></div>';
+}
+function formulaText(fid){ return eqText(symEq(fid), true); }
+function tmplSyms(fid){
+  var fo = FORMULAS[fid], out = [];
+  function walk(t){
+    if (t.k === 'f') out = out.concat(t.num, t.den || []);
+    else if (t.k === 's') t.t.forEach(function(p){ out.push(p[1]); });
+    else out.push(t.a);
+  }
+  walk(fo.L); walk(fo.R);
+  return out.filter(function(s){ return s.indexOf('c:') !== 0; });
+}
+var SLOTCTX = null;
+function slotHTML(f, o){
+  var c = SLOTCTX, sym = f.sym, U = c.U, filled = c.fills[sym], cls = 'slot', inner = esc(sy(sym));
+  if (filled){
+    cls += ' filled';
+    if (filled === 'U'){ cls += ' unk'; inner = '<span class="tile">' + esc(sy(U)) + '</span>'; }
+    else { var g = c.vals[filled]; inner = '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small style="font-size:.42em;color:#66727e">' + esc(g.unit) + '</small>' : ''); }
+  }
+  if (c.glow === sym) cls += ' glow';
+  if (c.shake === sym) cls += ' shake';
+  if (c.sel && !filled) cls += ' tgt';
+  return '<span class="' + cls + '" role="button" tabindex="0" data-act="slot" data-arg="' + sym + '" aria-label="slot ' + esc(sy(sym)) + '">' + inner + '</span>';
+}
+function templateHTML(fid, ctx){
+  SLOTCTX = ctx;
+  var fo = FORMULAS[fid];
+  function mk(sym){ return sym.indexOf('c:') === 0 ? constFactor(sym) : {id:sym, sym:sym, slot:1}; }
+  var h = eqHTML({L:buildSide(fo.L, mk), R:buildSide(fo.R, mk)});
+  SLOTCTX = null;
+  return h;
+}
+function chipHTML(g, extra){ return '<b>' + esc(g.txt) + '</b>' + (g.unit ? '<small>' + esc(g.unit) + '</small>' : '') + (extra || ''); }
+
+/* ---------- road map: [H⁺] ⇄ pH ⇄ pOH ⇄ [OH⁻] ---------- */
+var ORD = ['H', 'pH', 'pOH', 'OH'];
+var ARR = [['H>pH', '−log ⟶', 'pH>H', '⟵ 10⁻ˣ'], ['pH>pOH', '14 − ⟶', 'pOH>pH', '⟵ 14 −'], ['pOH>OH', '10⁻ˣ ⟶', 'OH>pOH', '⟵ −log']];
+var TYPE = {H:'conc. (M)', pH:'', pOH:'', OH:'conc. (M)'};
+/* o: {give, want, arrows:[ids], vals:{sym:text}, mids:[syms], title} */
+function roadHTML(o){
+  o = o || {};
+  var arrows = o.arrows || [], vals = o.vals || {}, mids = o.mids || [];
+  var cells = [];
+  ORD.forEach(function(s, i){
+    var cls = 'rbox' + (o.give === s ? ' give' : '') + (o.want === s ? ' want' : '') + (mids.indexOf(s) >= 0 ? ' mid' : '');
+    var v = vals[s] !== undefined ? vals[s] : (o.want === s ? '?' : '');
+    cells.push('<div class="' + cls + '"><div class="nm">' + esc(sy(s)) + '</div><div class="vv">' + esc(v).replace(/×/g, '×<wbr>') + '</div>' + (TYPE[s] ? '<div class="ty">' + TYPE[s] + '</div>' : '<div class="ty">&nbsp;</div>') + '</div>');
+    if (i < 3){
+      var a = ARR[i];
+      cells.push('<div class="rarr"><span' + (arrows.indexOf(a[0]) >= 0 ? ' class="on"' : '') + '>' + a[1] + '</span><span' + (arrows.indexOf(a[2]) >= 0 ? ' class="on"' : '') + '>' + a[3] + '</span></div>');
+    }
+  });
+  return '<div class="roadwrap"><div class="t">' + (o.title || 'Road map') + '</div><div class="road">' + cells.join('') + '</div>' +
+    '<div class="roadnote">H⁺ goes with pH · OH⁻ goes with pOH · pH + pOH = 14</div></div>';
+}
+
+/* ---------- pH scale ---------- */
+/* o: {main:{ph, lbl}, marks:[{ph, lbl, dn}], title} */
+function scaleHTML(o){
+  o = o || {};
+  var nums = '', poh = '<b>pOH</b>', marks = '', i;
+  function pos(ph){ return (2.5 + Math.max(0, Math.min(14, ph)) / 14 * 95).toFixed(2) + '%'; }
+  for (i = 0; i <= 14; i++){ nums += '<span class="sn" style="left:' + pos(i) + '">' + i + '</span>'; poh += '<span style="left:' + pos(i) + '">' + (14 - i) + '</span>'; }
+  (o.marks || []).forEach(function(m){ marks += '<div class="smk' + (m.dn ? ' dn' : '') + '" style="left:' + pos(m.ph) + '"><span class="c">' + esc(m.lbl) + '</span><span class="ln"></span></div>'; });
+  if (o.main) marks += '<div class="smk main nw" style="left:' + pos(o.main.ph) + '"><span class="c">' + esc(o.main.lbl) + '</span><span class="ln"></span></div>';
+  var lo = (o.marks || []).some(function(m){ return m.dn; });
+  return '<div class="scalew"><div class="t">' + (o.title || 'pH scale') + '</div><div class="scale' + (lo ? ' lo' : '') + '"><div class="sbar">' + nums + marks + '</div><div class="spoh">' + poh + '</div>' +
+    '<div class="sabc"><span class="a">◀ ACIDIC</span><span class="n">NEUTRAL (7)</span><span class="b">BASIC ▶</span></div></div></div>';
+}
+var ABW = {acid:'Acidic', neut:'Neutral', base:'Basic'};
+function abTag(k){ return '<span class="abtag ' + k + '">' + ABW[k].toUpperCase() + '</span>'; }
+
+/* ---------- calculator keys (TI-30XIIS) ---------- */
+function keyCap(k){
+  var o = typeof k === 'string' ? {f:k} : k;
+  var cls = 'key' + (o.f === '2nd' ? ' k2' : /^[0-9.]$/.test(o.f) ? ' kn' : o.f === 'ENTER' ? ' ke' : '');
+  return '<span class="' + cls + '">' + (o.a ? '<i>' + esc(o.a) + '</i>' : '') + esc(o.f) + '</span>';
+}
+function keysHTML(list){ return '<div class="keys">' + list.map(keyCap).join('') + '</div>'; }
+function dk(s){ return String(s).replace('−', '-').split('').map(function(c){ return c === '-' ? '(−)' : c; }); }
+function numKeys(g){
+  if (g.sci) return dk(g.m).concat(['2nd', {f:'x⁻¹', a:'EE'}]).concat(g.e < 0 ? ['(−)'] : []).concat(dk(String(Math.abs(g.e))));
+  return dk(g.txt);
+}
+var K_LOG = ['(−)', 'LOG'], K_10X = ['2nd', {f:'LOG', a:'10ˣ'}, '(−)'];
+function keysFor(p){
+  var g = p.givens[p.give];
+  if (p.fid === 'phpoh') return ['1', '4', '−'].concat(dk(g.txt)).concat(['ENTER']);
+  if (p.want === 'pH' || p.want === 'pOH') return K_LOG.concat(numKeys(g)).concat([')', 'ENTER']);
+  return K_10X.concat(dk(g.txt)).concat([')', 'ENTER']);
+}
+function rawTxt(v, q){
+  if (q === 'conc'){ var p = sciParts(v, 7); return p.e === 0 ? p.m : p.m + '×10' + sup(p.e); }
+  return String(Number(v.toPrecision(7))).replace('-', '−');
+}
+function calcBox(b){
+  var q = QOF[b.p.want];
+  return '<div class="gray" style="margin-bottom:8px"><div class="t">🧮 On a TI-30XIIS calculator</div>' + keysHTML(keysFor(b.p)) +
+    '<div class="qhint">Yellow letters = press <b>2nd</b> first. The calculator shows about <span class="readout">' + esc(rawTxt(b.ans, q)) + '</span> → round to <b>' + esc(fmtQ(b.ans, q)) + '</b></div></div>';
+}
+
+/* ---------- UI helpers ---------- */
+function qbox(head, qtext, hint, ansHTML, fbH, extra){
+  return '<div class="qbox"><div class="qhead">❓ ' + head + '</div><div class="qbody"><div class="qtext">' + qtext + '</div>' +
+    (hint ? '<div class="qhint">' + hint + '</div>' : '') +
+    (ansHTML ? '<div class="ans"><div class="anslbl">✎ YOUR ANSWER</div>' + ansHTML + '</div>' : '') +
+    (fbH || '') + (extra || '') + '</div></div>';
+}
+function fbHTML(fb){
+  if (!fb) return '';
+  return '<div class="fb ' + (fb.ok ? 'good' : 'bad') + '" role="status">' + (fb.title ? '<b>' + (fb.ok ? '✓ ' : '✗ ') + esc(fb.title) + '</b>' : '') + (fb.why ? esc(fb.why) : '') + (fb.html || '') + '</div>';
+}
+function toast(msg){
+  var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity = '0'; }, 3200); setTimeout(function(){ t.remove(); }, 4000);
+}
+var modalEl = null;
+function modal(html){
+  closeModal();
+  modalEl = document.createElement('div'); modalEl.className = 'modal';
+  modalEl.innerHTML = '<div class="mbox" role="dialog" aria-modal="true">' + html + '</div>';
+  modalEl.addEventListener('click', function(e){ if (e.target === modalEl) closeModal(); });
+  document.body.appendChild(modalEl);
+}
+function closeModal(){ if (modalEl){ modalEl.remove(); modalEl = null; } }
+function copyText(text, done){
+  function fallback(){
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(true); } catch(e){ done(false); } ta.remove();
+  }
+  try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback); else fallback(); } catch(e){ fallback(); }
+}
+function gmail(subject, body){
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.open(url, '_blank', 'noopener');
+}
+function fitEqs(){
+  document.body.classList.add('measuring');
+  document.querySelectorAll('.eqwrap .eq').forEach(function(el){
+    el.style.fontSize = '';
+    var fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+    while (el.scrollWidth > el.clientWidth + 1 && fs > 13 && n < 40){ fs -= 1.5; el.style.fontSize = fs + 'px'; n++; }
+  });
+  document.body.classList.remove('measuring');
+}
+
+/* ---------- progress ---------- */
+function cnt(a){ return a.reduce(function(s, x){ return s + (x ? 1 : 0); }, 0); }
+function pct(which){
+  if (which === 'learn') return Math.round(cnt(S.learn.done) / NSTOPS * 100);
+  if (which === 'guided') return Math.round(cnt(S.guided.done) / NGUIDED * 100);
+  if (which === 'prac') return Math.round(cnt(S.prac.done) / NLVL * 100);
+  return 0;
+}
+function unlocked(t){
+  if (UNLOCK || t === 'learn' || t === 'free') return true;
+  if (t === 'guided') return pct('learn') === 100;
+  if (t === 'prac') return pct('guided') === 100;
+}
+var TABDEF = [['learn','1 Learn'],['guided','2 Guided'],['prac','3 Practice'],['free','4 Free Form']];
+var LOCKMSG = {guided:'Finish Learn first', prac:'Finish Guided first'};
+function renderTabs(){
+  TABS.innerHTML = TABDEF.map(function(d){
+    var t = d[0], on = S.tab === t, lk = !unlocked(t), p = t === 'free' ? null : pct(t);
+    var cls = 'tab' + (on ? ' on' : '') + (p === 100 ? ' full' : '') + (lk ? ' lock' : '');
+    var sub = lk ? '🔒 ' + LOCKMSG[t] : (p === null ? 'always open' : (p === 100 ? '✓ 100%' : p + '%'));
+    return '<button class="' + cls + '" data-act="tab" data-arg="' + t + '"' + (on ? ' aria-current="page"' : '') + '>' + d[1] + '<small>' + sub + '</small></button>';
+  }).join('');
+}
+
+/* ===================================================================
+   PART 1: LEARN
+   =================================================================== */
+function tl(s){ return '<span class="tile">' + s + '</span>'; }
+function sv(s){ return '<span class="symtk">' + s + '</span>'; }
+function nu(n, u){ return '<span class="tk"><b>' + n + '</b>' + (u ? '<small>' + u + '</small>' : '') + '</span>'; }
+function X(s){ return '<span class="tk x">' + s + '</span>'; }
+function NW(s){ return '<span class="tk nw">' + s + '</span>'; }
+function OP(s){ return '<span class="eqs">' + s + '</span>'; }
+function LG(s){ return '<span class="side"><span class="tk">−log</span>' + s + '</span>'; }
+function LGp(s){ return '<span class="side"><span class="tk">−log</span><span class="paren">(</span>' + s + '<span class="paren">)</span></span>'; }
+function P10(s, nw){ return '<span class="pw' + (nw ? ' nw' : '') + '"><span class="tk"><b>10</b></span><sup>−' + s + '</sup></span>'; }
+function E(l, r){ return '<div class="eq">' + l + '<span class="eqs">=</span>' + r + '</div>'; }
+function inl(h){ return '<span style="display:inline-flex;vertical-align:middle;font-size:.9em">' + h + '</span>'; }
+
+var LV = {pick:null, wrong:null, frame:0, timer:null, hold:0};
+var STOPS = [
+  {title:'The pH scale',
+   teach:'pH tells how acidic a solution is. Below 7 is <b>acidic</b>, exactly 7 is <b>neutral</b>, above 7 is <b>basic</b>. Each step of 1 means 10× more or less H⁺.',
+   q:'Lemon juice has a pH of 2.30. It is…', hint:'Find 2.30 on the scale.',
+   opts:[
+     {lbl:'Acidic', ok:1, why:'2.30 is below 7, so lemon juice is acidic.'},
+     {lbl:'Neutral', t:'Mistake: neutral is exactly 7', why:'Only pH 7 is neutral. 2.30 is below 7, so it is acidic.'},
+     {lbl:'Basic', t:'Mistake: wrong side of 7', why:'Basic is above 7. 2.30 is below 7, so it is acidic.'}],
+   take:'Below 7 acidic, 7 neutral, above 7 basic.',
+   vis:function(){ return '<div class="vis">' + scaleHTML({title:'Everyday pH values', marks:[{ph:2.3, lbl:'lemon 2.3'}, {ph:5.0, lbl:'coffee 5.0', dn:1}, {ph:7, lbl:'pure water 7'}, {ph:8.1, lbl:'seawater 8.1', dn:1}, {ph:11.5, lbl:'ammonia 11.5'}, {ph:12.6, lbl:'bleach 12.6', dn:1}]}) +
+     '<div class="vcard"><div class="h">pOH runs the other way</div>The small gray numbers under the bar are <b>pOH</b>. Low pOH = basic. pH + pOH = 14.</div></div>'; }},
+  {title:'Four numbers, one road map',
+   teach:'[H⁺] and [OH⁻] are concentrations in M. pH and pOH are the easy-to-read versions. <b>H⁺ goes with pH. OH⁻ goes with pOH.</b> pH and pOH connect with 14.',
+   q:'You know [OH⁻]. Which one can you get in <span class="kw">ONE step</span>?', hint:'Look at the road map: what is right next to [OH⁻]?',
+   opts:[
+     {lbl:'pOH', ok:1, why:'OH⁻ goes with pOH: pOH = −log[OH⁻]. They are next to each other on the road map.'},
+     {lbl:'pH', t:'Mistake: OH⁻ goes with pOH', why:'[OH⁻] connects to pOH, not pH. To reach pH you’d need two steps: [OH⁻] → pOH → pH.'},
+     {lbl:'[H⁺]', t:'Mistake: that’s the far end', why:'[H⁺] is at the other end of the road map, three steps away. [OH⁻] connects to pOH.'}],
+   take:'H⁺ ↔ pH, OH⁻ ↔ pOH, pH ↔ pOH.',
+   vis:function(){ return '<div class="vis">' + roadHTML({arrows:['H>pH','pH>H','pH>pOH','pOH>pH','pOH>OH','OH>pOH']}) +
+     '<div class="row" style="justify-content:center">' + ['ph','phpoh','poh'].map(function(f){ return '<div class="vcard" style="min-width:0">' + formulaHTML(f) + '</div>'; }).join('') + '</div></div>'; }},
+  {title:'Concentration → pH: use −log',
+   teach:'pH = −log[H⁺]. Plug in [H⁺] and pH is already alone, so just calculate. For 1×10⁻ⁿ M, the pH is n.',
+   q:'[H⁺] = 1×10⁻⁵ M. What is the <span class="kw">pH</span>?', hint:'Watch the animation.',
+   opts:[
+     {lbl:'5', ok:1, why:'−log(1×10⁻⁵) = 5. The exponent becomes the pH.'},
+     {lbl:'−5', t:'Mistake: forgot the − in −log', why:'log(1×10⁻⁵) is −5. The minus sign in −log flips it to +5. pH is almost never negative.'},
+     {lbl:'1×10⁻⁵', t:'Mistake: that’s the concentration', why:'1×10⁻⁵ M is the [H⁺] you started with. The pH is −log of it: 5.'}],
+   take:'−log turns a concentration into a pH.',
+   frames:[
+     {cap:'Formula: pH = −log[H⁺]', l:sv('pH'), r:LG(sv('[H⁺]'))},
+     {cap:'Step 1: plug in 1×10⁻⁵ M for [H⁺]', l:tl('pH'), r:LGp(NW(nu('1×10⁻⁵', 'M')))},
+     {cap:'pH is already alone! = Calculate', l:tl('pH'), r:LGp(nu('1×10⁻⁵', 'M'))},
+     {cap:'−log(1×10⁻⁵) = 5.00 ✓', l:tl('pH'), r:NW(nu('5.00'))},
+     {cap:'Same idea: [H⁺] = 3.2×10⁻⁴ M gives pH 3.49', l:tl('pH'), r:LGp(nu('3.2×10⁻⁴', 'M')) + OP('=') + nu('3.49')}]},
+  {title:'Estimate first',
+   teach:'Use the exponent to check your answer. [H⁺] = 3.2×10⁻⁴ is a bit MORE than 1×10⁻⁴, so the pH is a bit LESS than 4: between 3 and 4.',
+   q:'[OH⁻] = 6.0×10⁻⁹ M. The <span class="kw">pOH</span> is between…', hint:'Exponent −9. Is 6.0×10⁻⁹ more or less than 1×10⁻⁹?',
+   opts:[
+     {lbl:'8 and 9', ok:1, why:'6.0×10⁻⁹ is more than 1×10⁻⁹, so the pOH is a bit less than 9: it’s 8.22.'},
+     {lbl:'9 and 10', t:'Mistake: went the wrong way', why:'6.0×10⁻⁹ is MORE than 1×10⁻⁹. More OH⁻ means a smaller pOH, so it’s a bit less than 9.'},
+     {lbl:'−9 and −8', t:'Mistake: kept the negative', why:'The − in −log flips the sign. pOH is positive here: between 8 and 9.'}],
+   take:'Exponent −n → the p-value is between n − 1 and n.',
+   vis:function(){
+     function at(v){ return (4 + (v - 2) / 3 * 92) + '%'; }
+     var h = '<div class="nline"><div class="ax"></div>';
+     [[2, '1×10⁻²'], [3, '1×10⁻³'], [4, '1×10⁻⁴'], [5, '1×10⁻⁵']].forEach(function(t){
+       h += '<div class="tkm" style="left:' + at(t[0]) + '"></div><div class="lab up" style="left:' + at(t[0]) + '">pH ' + t[0] + '</div><div class="lab dn" style="left:' + at(t[0]) + '">' + t[1] + ' M</div>';
+     });
+     h += '<div class="tkm" style="left:' + at(3.49) + ';background:#c8102e"></div><div class="lab up hit" style="left:' + at(3.49) + '">pH 3.49</div><div class="lab dn hit" style="left:' + at(3.49) + '">3.2×10⁻⁴ M</div></div>';
+     return '<div class="vis"><div class="vcard"><div class="h">[H⁺] = 3.2×10⁻⁴ M lands between 10⁻³ and 10⁻⁴</div>' + h + '<div>So the pH lands between 3 and 4: <b>3.49</b></div></div>' +
+       '<div class="vcard ok"><div class="h">Quick check</div>Exponent −4 → pH just under 4 ✓ &nbsp; Exponent −9 → pOH just under 9 ✓<br><span class="qhint">(Only a 1.0 in front lands exactly on the whole number.)</span></div></div>'; }},
+  {title:'pH → concentration: use 10⁻ˣ',
+   teach:'If you know the pH and want [H⁺], [H⁺] is stuck inside −log. <b>10⁻ˣ undoes −log.</b> Do it to both sides: [H⁺] = 10⁻ᵖᴴ.',
+   q:'In 3.50 = −log[H⁺], what gets <span class="kw">[H⁺] alone</span>?', qh:'In ' + inl(E(nu('3.50'), LG(tl('[H⁺]')))) + ', what gets <span class="kw">[H⁺] alone</span>?', hint:'Watch the animation.',
+   opts:[
+     {lbl:'10⁻ˣ on both sides', ok:1, why:'10⁻ˣ undoes −log: [H⁺] = 10⁻³·⁵⁰ = 3.16×10⁻⁴ M.'},
+     {lbl:'÷ −log on both sides', t:'Mistake: −log isn’t a number', why:'You can’t divide by −log. It’s an action done to [H⁺]. Undo it with its opposite, 10⁻ˣ.'},
+     {lbl:'÷ 3.50 on both sides', t:'Mistake: 3.50 isn’t multiplying [H⁺]', why:'3.50 is the pH, on the other side. [H⁺] is inside −log, so undo the −log with 10⁻ˣ.'},
+     {lbl:'10ˣ on both sides', t:'Mistake: dropped the negative', why:'10³·⁵⁰ = 3160 M. That’s way too big for any solution. It must be 10 to the NEGATIVE pH.'}],
+   take:'10⁻ˣ undoes −log: [H⁺] = 10⁻ᵖᴴ.',
+   frames:[
+     {cap:'Start: [H⁺] is stuck inside −log', l:nu('3.50'), r:LG(tl('[H⁺]'))},
+     {cap:'10⁻ˣ on BOTH sides: it cancels the −log', l:P10(nu('3.50'), 1), r:'<span class="side">' + X('−log') + tl('[H⁺]') + '</span>'},
+     {cap:'[H⁺] is alone (flipped so it’s on the left)', l:tl('[H⁺]'), r:P10(nu('3.50'))},
+     {cap:'= Calculate: [H⁺] = 3.16×10⁻⁴ M ✓ (between 10⁻³ and 10⁻⁴)', l:tl('[H⁺]'), r:NW(nu('3.16×10⁻⁴', 'M'))}]},
+  {title:'pH + pOH = 14',
+   teach:'pH and pOH always add up to 14. Know one? Subtract it from 14. pOH runs backwards: <b>low pOH = basic</b>.',
+   q:'A solution has pH 4.20. What is its <span class="kw">pOH</span>?', hint:'Watch the animation.',
+   opts:[
+     {lbl:'9.80', ok:1, why:'14 − 4.20 = 9.80.'},
+     {lbl:'18.20', t:'Mistake: added instead of subtracting', why:'4.20 is already added to pOH. To undo + you −: pOH = 14 − 4.20 = 9.80.'},
+     {lbl:'4.20', t:'Mistake: pOH isn’t the same as pH', why:'They add up to 14. 4.20 + 4.20 is only 8.40. pOH = 14 − 4.20 = 9.80.'},
+     {lbl:'6.3×10⁻⁵', t:'Mistake: used 10⁻ˣ', why:'10⁻ˣ gives a concentration, not a pOH. pH and pOH connect with 14: 14 − 4.20 = 9.80.'}],
+   take:'pOH = 14 − pH and pH = 14 − pOH.',
+   frames:[
+     {cap:'Formula: pH + pOH = 14. Plug in pH = 4.20', l:nu('4.20') + OP('+') + tl('pOH'), r:nu('14')},
+     {cap:'− 4.20 on BOTH sides: the 4.20s on the left cancel', l:X('<b>4.20</b>') + OP('+') + tl('pOH') + X('<span class="eqs">−</span><b>4.20</b>'), r:nu('14') + OP('−') + NW('<b>4.20</b>')},
+     {cap:'pOH is alone', l:tl('pOH'), r:nu('14') + OP('−') + nu('4.20')},
+     {cap:'= Calculate: pOH = 9.80 ✓', l:tl('pOH'), r:NW(nu('9.80'))}]},
+  {title:'Your calculator (TI-30XIIS)',
+   teach:'<b>(−)</b> makes a number negative (it is not the minus key). <b>LOG</b> is log. <b>10ˣ</b> is 2nd LOG. <b>EE</b> is 2nd x⁻¹ and types “×10 to the”.',
+   q:'To type 3.2×10⁻⁴, which keys come <span class="kw">after 3.2</span>?', hint:'Look at the keys on the right.',
+   opts:[
+     {h:keysHTML(['2nd', {f:'x⁻¹', a:'EE'}, '(−)', '4']), ok:1, why:'2nd EE types ×10, then (−) 4 makes the exponent −4.'},
+     {h:keysHTML(['2nd', {f:'x⁻¹', a:'EE'}, '4']), t:'Mistake: forgot the negative', why:'That types 3.2×10⁴ (a huge number). The exponent needs (−) first: 2nd EE (−) 4.'},
+     {h:keysHTML(['2nd', {f:'x⁻¹', a:'EE'}, '−', '4']), t:'Mistake: minus key, not (−)', why:'The − key subtracts, so the calculator gives an error. Use the (−) negative key: 2nd EE (−) 4.'}],
+   take:'pH: (−) LOG … ENTER. [H⁺]: 2nd 10ˣ (−) … ENTER.',
+   vis:function(){
+     return '<div class="vis"><div class="vcard" style="text-align:left"><div class="h">[H⁺] = 3.2×10⁻⁴ M → pH = −log(3.2×10⁻⁴)</div>' + keysHTML(K_LOG.concat(['3', '.', '2', '2nd', {f:'x⁻¹', a:'EE'}, '(−)', '4', ')', 'ENTER'])) + '<div class="readout">3.494850022</div> → pH = <b>3.49</b></div>' +
+       '<div class="vcard" style="text-align:left"><div class="h">pH = 3.50 → [H⁺] = 10⁻³·⁵⁰</div>' + keysHTML(K_10X.concat(['3', '.', '5', '0', ')', 'ENTER'])) + '<div class="readout">3.16227766 ×10⁻⁴</div> → [H⁺] = <b>3.16×10⁻⁴ M</b></div>' +
+       '<div class="vcard" style="text-align:left"><div class="h">pH = 4.20 → pOH = 14 − 4.20</div>' + keysHTML(['1', '4', '−', '4', '.', '2', '0', 'ENTER']) + '<div class="readout">9.8</div> → pOH = <b>9.80</b></div>' +
+       '<div class="qhint">Yellow letters above a key = press <b>2nd</b> first.</div></div>'; }},
+  {title:'Common mistakes',
+   teach:'Watch out for these five.',
+   q:'For [H⁺] = 3.2×10⁻⁴ M, a student got pH = −3.49. <span class="kw">What’s the mistake?</span>', hint:'Compare it with the right answer in the table.',
+   opts:[
+     {lbl:'Forgot the − in −log', ok:1, why:'log(3.2×10⁻⁴) = −3.49. The − in −log makes it +3.49.'},
+     {lbl:'Mixed up H⁺ and OH⁻', t:'Not this one', why:'The student used [H⁺] for pH, which is right. The sign is wrong: they took log, not −log.'},
+     {lbl:'Added to 14', t:'Not this one', why:'There’s no 14 in this problem. The sign is wrong: they took log, not −log.'}],
+   take:'Learn complete!',
+   vis:function(){
+     function rw(name, w, r){ return '<tr><td><b>' + name + '</b></td><td class="w">✗ ' + w + '</td><td class="r">✓ ' + r + '</td></tr>'; }
+     return '<div class="vis"><table class="mtab"><tr><th>Mistake</th><th>Wrong</th><th>Right</th></tr>' +
+       rw('Forgot the − in −log', 'pH = −3.49', 'pH = 3.49') +
+       rw('Used 10ˣ, not 10⁻ˣ', '[H⁺] = 10³·⁵⁰ = 3160 M', '[H⁺] = 10⁻³·⁵⁰ = 3.16×10⁻⁴ M') +
+       rw('Mixed up H⁺ and OH⁻', 'pH = −log[OH⁻]', 'pOH = −log[OH⁻]') +
+       rw('Added to 14', 'pOH = 14 + 4.20 = 18.20', 'pOH = 14 − 4.20 = 9.80') +
+       rw('Read pOH like pH', 'pOH 3.00 → “acidic”', 'pOH 3.00 → pH 11.00 → basic') + '</table></div>'; }}
+];
+function framesHTML(stop){
+  var f = stop.frames[Math.min(LV.frame, stop.frames.length - 1)];
+  var dots = stop.frames.map(function(x, k){ return '<span class="dot' + (k <= LV.frame ? ' on' : '') + '"></span>'; }).join('');
+  return '<div class="vis"><div class="frame">' + f.cap + '</div><div class="eqwrap" style="flex:0 0 auto;min-height:150px;width:100%">' + E(f.l, f.r) + '</div>' +
+    '<div class="row" style="justify-content:center;gap:6px" aria-hidden="true">' + dots + '</div><div class="qhint">The animation repeats. Watch it as many times as you need.</div></div>';
+}
+function playFrames(){
+  clearInterval(LV.timer); LV.frame = 0; LV.hold = 0;
+  var stop = STOPS[S.learn.cur];
+  if (!stop.frames) return;
+  LV.timer = setInterval(function(){
+    if (S.tab !== 'learn' || STOPS[S.learn.cur] !== stop){ clearInterval(LV.timer); return; }
+    if (LV.frame >= stop.frames.length - 1){ if (++LV.hold < 2) return; LV.hold = 0; LV.frame = 0; }
+    else LV.frame++;
+    renderLearnRight(); fitEqs();
+  }, 1700);
+}
+function renderLearnRight(){
+  var st = STOPS[S.learn.cur];
+  var body = st.frames ? framesHTML(st) : st.vis();
+  RIGHT.innerHTML = '<div class="panel"><div class="boardt"><h2>' + esc(st.title) + '</h2></div>' + body + '</div>';
+}
+function renderLearn(){
+  var i = S.learn.cur, st = STOPS[i], done = S.learn.done[i];
+  var pills = '<div class="pills"><span class="lbl">Learn</span>' + STOPS.map(function(s, k){
+    var en = UNLOCK || k === 0 || S.learn.done[k - 1] || S.learn.done[k];
+    return '<button class="pill' + (k === i ? ' cur' : '') + (S.learn.done[k] ? ' done' : '') + '" data-act="lstop" data-arg="' + k + '"' + (en ? '' : ' disabled') + '>' + (S.learn.done[k] ? '✓' : k + 1) + '</button>';
+  }).join('') + '</div>';
+  var prev = i > 0 && S.learn.done[i - 1] ? '<div class="doneline">✓ ' + esc(STOPS[i - 1].take) + '</div>' : '';
+  var opts = '<div class="row">' + st.opts.map(function(o, k){
+    var cls = 'opt' + ((done && o.ok) || LV.pick === k ? ' right' : '') + (LV.wrong === k ? ' wrong' : '');
+    var mark = cls.indexOf('right') >= 0 ? '✓ ' : cls.indexOf('wrong') >= 0 ? '✗ ' : '';
+    var inner = o.h && !o.lbl ? o.h : esc(o.lbl || '');
+    return '<button class="' + cls + '" data-act="lopt" data-arg="' + k + '"' + (done ? ' disabled' : '') + '>' + mark + inner + '</button>';
+  }).join('') + '</div>';
+  var fb = null;
+  if (LV.wrong !== null && !done){ var w = st.opts[LV.wrong]; fb = {ok:false, title:w.t, why:w.why}; }
+  if (done){ var r = st.opts.filter(function(o){ return o.ok; })[0]; fb = {ok:true, title:'Right!', why:r.why}; }
+  var next = done ? '<div class="nextrow"><button class="big" data-act="lnext">' + (i < NSTOPS - 1 ? 'Next ▶' : 'Go to Guided ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + prev + '<p class="teach">' + st.teach + '</p>' + qbox('QUESTION ' + (i + 1) + ' OF ' + NSTOPS, st.qh || st.q, st.hint, opts, fbHTML(fb)) + next;
+  renderLearnRight();
+}
+
+/* ===================================================================
+   SHARED EQUATION BOARD (Guided, Practice, Free Form)
+   steps: Formula → Plug in → Solve → Acid or base?
+   =================================================================== */
+var STEPNAME = {formula:'Formula', plug:'Plug in', solve:'Solve', ab:'Acid or base?'};
+function mkProb(conv, g, story){
+  var C = CONV[conv], givens = {}; givens[C.give] = g;
+  return {conv:conv, fid:C.fid, U:C.want, give:C.give, want:C.want, givens:givens, aunit:QOF[C.want] === 'conc' ? 'M' : '', story:story};
+}
+function newBoard(mode, p){
+  var b = {mode:mode, p:p, steps: mode === 'free' ? ['plug','solve'] : ['formula','plug','solve','ab'], phase:'formula', fills:{}, sel:null, eq:null, eq0:null, hist:[], moves:[], locked:false, op:null, fb:null, miss:0, ans:null, flipped:false, shown:false, auto:false, fwrong:null, abWrong:null, abPick:null};
+  if (mode === 'free') finishPlug(b);
+  return b;
+}
+function curBoard(){ return S.tab === 'guided' ? S.guided.b : S.tab === 'prac' ? S.prac.b : S.tab === 'free' ? S.free.bs[S.free.ci] || null : null; }
+function fo(b){ return FORMULAS[b.p.fid]; }
+function uName(b){ return sy(b.p.U); }
+function mistake(b, type){
+  b.miss++;
+  if (b.mode !== 'free') S.mis[type] = (S.mis[type] || 0) + 1;
+  if (b.mode === 'prac') S.prac.streak[S.prac.lvl] = 0;
+}
+function gv(b){ return b.p.givens[b.p.give]; }
+/* --- step: which formula --- */
+function formulaWhy(p){
+  if (p.fid === 'phpoh') return 'You have ' + sy(p.give) + ' and want ' + sy(p.want) + '. No concentration here, so use pH + pOH = 14.';
+  var c = p.fid === 'ph' ? '[H⁺]' : '[OH⁻]', pp = p.fid === 'ph' ? 'pH' : 'pOH';
+  return 'You have ' + sy(p.give) + ' and want ' + sy(p.want) + '. ' + c.slice(1, -1) + ' goes with ' + pp + ': ' + pp + ' = −log' + c + '.';
+}
+function pickFormula(b, id){
+  if (b.phase !== 'formula' || (b.auto && !b.autoOK)) return;
+  var want = b.p.fid;
+  if (id === want){ b.fwrong = null; b.fb = null; b.phase = 'plug'; }
+  else {
+    b.fwrong = id;
+    var p = b.p, why;
+    if (want === 'phpoh') why = 'There’s no concentration in this problem. ' + sy(p.give) + ' and ' + sy(p.want) + ' connect with pH + pOH = 14.';
+    else if (id === 'phpoh') why = 'pH + pOH = 14 connects pH and pOH. This problem has a concentration (' + (want === 'ph' ? '[H⁺]' : '[OH⁻]') + '), so you need a −log formula.';
+    else if (want === 'poh') why = 'pH = −log[H⁺] is for H⁺. This problem has [OH⁻] and pOH. OH⁻ goes with pOH: pOH = −log[OH⁻].';
+    else why = 'pOH = −log[OH⁻] is for OH⁻. This problem has [H⁺] and pH. H⁺ goes with pH: pH = −log[H⁺].';
+    b.fb = {ok:false, title: want === 'phpoh' || id === 'phpoh' ? 'Mistake: wrong formula' : 'Mistake: mixed up H⁺ and OH⁻', why:why};
+    mistake(b, 'formula');
+  }
+  save(); render();
+}
+/* --- step: plug in --- */
+function slotReason(b, chip, slot){
+  var U = b.p.U, u = sy(U), fq = fo(b).q;
+  if (chip === 'U') return 'That slot gets a number. The ' + u + ' tile goes in ' + u + '’s slot: ' + u + ' is what you’re finding.';
+  var g = b.p.givens[chip];
+  if (slot === U) return u + ' is the unknown, so nothing is given for it. Put the purple ' + u + ' tile there.';
+  if (g.unit) return g.unit + ' is a ' + QT[fq[chip]] + ' unit, so ' + T(g) + ' goes in ' + sy(chip) + '.';
+  return T(g) + ' is the ' + QT[fq[chip]] + ', so it goes in ' + sy(chip) + '.';
+}
+function placeChip(b, chip, slot){
+  if (b.phase !== 'plug' || (b.auto && !b.autoOK) || b.fills[slot]) return;
+  var ok = chip === slot || (chip === 'U' && slot === b.p.U);
+  if (!ok){
+    b.fb = {ok:false, title:'Mistake: wrong slot', why:slotReason(b, chip, slot)};
+    b.shake = slot; b.sel = null; mistake(b, 'slot');
+  } else {
+    b.fills[slot] = chip; b.sel = null; b.fb = null; b.shake = null;
+    if (tmplSyms(b.p.fid).every(function(s){ return b.fills[s]; })) finishPlug(b);
+  }
+  save(); render();
+  setTimeout(function(){ if (b.shake){ b.shake = null; } }, 450);
+}
+function finishPlug(b){
+  b.eq = buildEq(b.p.fid, b.p.givens, b.p.U);
+  b.eq0 = clone(b.eq); b.hist = []; b.moves = []; b.phase = 'solve'; b.op = null; b.locked = false;
+  normalize(b);
+}
+function normalize(b){
+  if (aloneSide(b.eq, b.p.U) === 'R'){ var t = b.eq.L; b.eq.L = b.eq.R; b.eq.R = t; b.flipped = true; }
+}
+/* --- step: solve --- */
+function doMove(b, op, ids){
+  if (b.locked || (b.auto && !b.autoOK) || b.phase !== 'solve') return;
+  var before = b.eq, res = applyOp(before, op, ids), j = judge(before, op, ids, res, b.p.U);
+  b.hist.push(before); b.flipHist = b.flipHist || []; b.flipHist.push(b.flipped);
+  b.moves.push({op:op, label: op === 'p10' ? '' : chipLabel(before, ids), ok:j.ok, text:eqText(res.out)});
+  b.anim = res.mid; b.eq = res.out; b.op = null;
+  if (!j.ok){ b.locked = true; b.fb = {ok:false, title:j.title, why:j.why}; mistake(b, j.type); }
+  else b.fb = null;
+  save(); render();
+  b.busy = true;
+  setTimeout(function(){ b.anim = null; b.busy = false; normalize(b); save(); if (curBoard() === b) render(); }, b.mode === 'guided' ? 1500 : 800);
+}
+function undo(b){
+  if (!b.hist.length || b.phase !== 'solve') return;
+  b.eq = b.hist.pop(); b.moves.pop(); b.flipped = b.flipHist && b.flipHist.length ? b.flipHist.pop() : false;
+  b.locked = false; b.fb = null; b.op = null; b.anim = null;
+  save(); render();
+}
+function calc(b){
+  if (b.phase !== 'solve' || b.locked || !aloneSide(b.eq, b.p.U)) return;
+  var v = ev(b.eq.R);
+  if (!isFinite(v) || isNaN(v)){ b.fb = {ok:false, title:'That can’t be calculated', why:'Check the value: you can’t take the log of 0 or a negative number.'}; render(); return; }
+  b.ans = v; b.fb = null;
+  b.phase = b.mode === 'free' ? 'done' : 'ab';
+  save(); render();
+}
+function ansText(b){ return uName(b) + ' = ' + fmtQ(b.ans, QOF[b.p.U]) + (b.p.aunit ? ' ' + b.p.aunit : ''); }
+/* --- step: acid or base --- */
+function phOf(b){
+  var p = b.p;
+  function val(s){ return s === p.give ? gv(b).val : b.ans; }
+  if (p.give === 'pH' || p.want === 'pH') return val('pH');
+  if (p.give === 'pOH' || p.want === 'pOH') return 14 - val('pOH');
+  return null;
+}
+function abBasis(b){
+  var p = b.p, usePH = p.give === 'pH' || p.want === 'pH';
+  var v = usePH ? (p.give === 'pH' ? gv(b).val : b.ans) : (p.give === 'pOH' ? gv(b).val : b.ans);
+  return {q: usePH ? 'pH' : 'pOH', v:v, txt:pTxt(v)};
+}
+function abWhy(b){
+  var B = abBasis(b), k = classify(phOf(b));
+  if (B.q === 'pH'){
+    if (k === 'neut') return 'pH ' + B.txt + ' is exactly 7, so it’s neutral.';
+    return 'pH ' + B.txt + ' is ' + (k === 'acid' ? 'below' : 'above') + ' 7, so it’s ' + ABW[k].toLowerCase() + '.';
+  }
+  if (k === 'neut') return 'pOH ' + B.txt + ' is exactly 7, so it’s neutral.';
+  return 'pOH ' + B.txt + ' is ' + (k === 'base' ? 'below' : 'above') + ' 7. pOH runs backwards: ' + (k === 'base' ? 'low pOH = lots of OH⁻ = basic.' : 'high pOH = little OH⁻ = acidic.') + ' (pH = 14 − ' + B.txt + ' = ' + pTxt(14 - B.v) + ')';
+}
+function pickAB(b, k){
+  if (b.phase !== 'ab' || (b.auto && !b.autoOK)) return;
+  var want = classify(phOf(b)), B = abBasis(b);
+  if (k === want){
+    b.abWrong = null; b.abPick = k; b.fb = null; b.phase = 'done';
+    if (b.mode === 'guided') S.guided.done[S.guided.cur] = 1;
+    if (b.mode === 'prac') pracScore(b);
+  } else {
+    b.abWrong = k;
+    var title = 'Mistake: wrong side of 7';
+    if (k === 'neut') title = 'Mistake: neutral is exactly 7';
+    else if (B.q === 'pOH') title = 'Mistake: pOH runs backwards';
+    else if (b.p.give === 'pOH' || b.p.want === 'pOH'){ if (classify(14 - phOf(b)) === k) title = 'Mistake: read the pOH like a pH'; }
+    b.fb = {ok:false, title:title, why:abWhy(b)};
+    mistake(b, 'ab');
+  }
+  save(); render();
+}
+
+/* expected next action (Guided glow + Show me) */
+function expect(b){
+  if (b.phase === 'formula') return {kind:'formula', fid:b.p.fid, why:formulaWhy(b.p)};
+  if (b.phase === 'plug'){
+    var order = tmplSyms(b.p.fid);
+    for (var i = 0; i < order.length; i++){
+      var s = order[i];
+      if (!b.fills[s]){
+        var chip = s === b.p.U ? 'U' : s, why;
+        if (chip === 'U') why = sy(s) + ' is what you’re finding, so its slot gets the purple ' + sy(s) + ' tile.';
+        else { var g = b.p.givens[s]; why = T(g) + ' is the ' + QT[fo(b).q[s]] + ', so it goes in ' + sy(s) + '.'; }
+        return {kind:'plug', chip:chip, slot:s, why:why};
+      }
+    }
+    return null;
+  }
+  if (b.phase === 'solve'){
+    if (b.locked) return {kind:'undo', why:'Tap ↶ Undo to take that move back.'};
+    if (aloneSide(b.eq, b.p.U)) return {kind:'calc', why:uName(b) + ' is alone. Tap = Calculate and the app does the math.'};
+    var mv = nextMove(b.eq, b.p.U);
+    if (mv) return {kind:'move', op:mv.op, ids:mv.ids, why:mv.why};
+  }
+  if (b.phase === 'ab') return {kind:'ab', ab:classify(phOf(b)), why:abWhy(b)};
+  return null;
+}
+
+/* ----- board left (question box) ----- */
+function stepHead(b, prefix){
+  var ph = b.phase === 'done' ? b.steps[b.steps.length - 1] : b.phase, i = b.steps.indexOf(ph);
+  if (b.mode === 'free') return (prefix || 'STEP 4 OF 4') + ' — SOLVE';
+  return 'STEP ' + (i + 1) + ' OF ' + b.steps.length + ' — ' + STEPNAME[ph].toUpperCase();
+}
+function doneLines(b){
+  var parts = [];
+  if (b.mode !== 'free' && b.phase !== 'formula') parts.push('✓ Formula: <span class="mini">' + formulaHTML(b.p.fid) + '</span>');
+  if (b.eq0) parts.push('✓ Plugged in: <span class="mini">' + eqHTML(b.eq0) + '</span>');
+  var okm = b.moves.filter(function(m){ return m.ok; });
+  if (okm.length) parts.push('✓ ' + okm.map(function(m, i){ return 'Move ' + (i + 1) + ': ' + (m.op === 'p10' ? '10⁻ˣ' : m.op + '&nbsp;' + esc(m.label)); }).join(' · '));
+  if (b.ans !== null && (b.phase === 'ab' || b.phase === 'done')) parts.push('✓ ' + esc(ansText(b)));
+  return parts.length ? '<div class="doneline dl2">' + parts.map(function(p){ return '<span>' + p + '</span>'; }).join('') + '</div>' : '';
+}
+function boardLeft(b, prefix){
+  var u = uName(b), ex = b.mode === 'guided' ? expect(b) : null, h = '';
+  if (b.mode !== 'free'){
+    var ci = b.phase === 'done' ? b.steps.length : b.steps.indexOf(b.phase);
+    h += '<div class="pills"><span class="lbl">Step</span>' + b.steps.map(function(s, k){
+      var dn = k < ci;
+      return '<button class="pill' + (k === ci ? ' cur' : '') + (dn ? ' done' : '') + '" disabled>' + (dn ? '✓ ' : (k + 1) + ' ') + STEPNAME[s] + '</button>';
+    }).join('') + '</div>';
+  }
+  h += doneLines(b);
+  var head = stepHead(b, prefix);
+  if (b.phase === 'formula'){
+    var fopts = '<div class="row">' + ['ph','poh','phpoh'].map(function(id){
+      var cls = 'opt fopt' + (b.fwrong === id ? ' wrong' : '') + (ex && ex.fid === id ? ' glow' : '');
+      return '<button class="' + cls + '" data-act="fml" data-arg="' + id + '"' + (b.auto ? ' disabled' : '') + '><span class="nm">' + (b.fwrong === id ? '✗ ' : '') + (id === 'phpoh' ? 'pH ⇄ pOH' : id === 'ph' ? 'H⁺ ⇄ pH' : 'OH⁻ ⇄ pOH') + '</span>' + formulaHTML(id) + '</button>';
+    }).join('') + '</div>';
+    return h + qbox(head, 'You have <b>' + esc(sy(b.p.give)) + '</b>. You want <span class="kw">' + esc(sy(b.p.want)) + '</span>. Which <span class="kw">formula</span> connects them?',
+      ex ? '👉 ' + esc(ex.why) : 'Find them on the road map. What connects the two boxes?', fopts, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'plug'){
+    var order = b.p.order || Object.keys(b.p.givens);
+    var list = order.concat(['U']);
+    var row = '<div class="row">' + list.map(function(c){
+      var used = c === 'U' ? b.fills[b.p.U] : b.fills[c];
+      var cls = 'chip' + (used ? ' used' : '') + (b.sel === c ? ' sel' : '') + (ex && ex.chip === c && b.sel !== c ? ' glow' : '');
+      var inner = c === 'U' ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(u) + '</span><small>unknown</small>' : chipHTML(b.p.givens[c]);
+      return '<button class="' + cls + '" data-act="chip" data-arg="' + c + '"' + (used || b.auto ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    var hint = ex ? '👉 ' + esc(b.sel === ex.chip ? 'Now tap the ' + sy(ex.slot) + ' slot in the formula. ' + ex.why : 'Tap the glowing chip. ' + ex.why) :
+      (b.sel ? 'Now tap its slot in the formula (or drag it there).' : 'Tap a value, then tap its slot in the formula. The unknown gets the purple ' + esc(u) + ' tile.');
+    return h + qbox(head, 'Put each value in its <span class="kw">slot</span>.', hint, row, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'ab'){
+    var B = abBasis(b);
+    var abo = '<div class="row">' + ['acid','neut','base'].map(function(k){
+      var cls = 'opt abopt ' + k + (b.abWrong === k ? ' wrong' : '') + (ex && ex.ab === k ? ' glow' : '');
+      return '<button class="' + cls + '" data-act="ab" data-arg="' + k + '"' + (b.auto ? ' disabled' : '') + '>' + (b.abWrong === k ? '✗ ' : '') + ABW[k] + '</button>';
+    }).join('') + '</div>';
+    return h + qbox(head, 'Is this solution <span class="kw">acidic, neutral, or basic</span>?',
+      ex ? '👉 ' + esc(ex.why) : 'Use the ' + B.q + ' (' + esc(B.txt) + '). Is it below 7, 7, or above 7?' + (B.q === 'pOH' ? ' Careful: pOH runs backwards.' : ''), abo, fbHTML(b.fb), showMeBtn(b));
+  }
+  if (b.phase === 'done'){
+    var k = classify(phOf(b));
+    var extra = b.mode === 'guided' ? GP[S.guided.cur].after : '';
+    var msg = b.mode === 'prac' ? b.pmsg : extra;
+    var fbd = {ok:true, title:ansText(b), html:'<div style="margin:3px 0">' + abTag(k) + ' ' + esc(abWhy(b)) + '</div>' + (msg ? '<div>' + esc(msg) + '</div>' : '')};
+    if (b.mode === 'free') fbd = {ok:true, title:ansText(b), html:'<div style="margin:3px 0">' + abTag(k) + ' ' + esc(abWhy(b)) + '</div>'};
+    return h + qbox(head, '<span class="kw">' + esc(u) + ' is solved.</span> ✓', 'The app did the arithmetic. pH and pOH are rounded to 2 decimal places; concentrations to 3 significant figures.', '', fbHTML(fbd)) + calcBox(b);
+  }
+  /* solve */
+  var alone = aloneSide(b.eq, b.p.U) && !b.anim;
+  var dis = b.locked || b.auto || b.busy, ans, qt, hint2;
+  if (alone && !b.locked){
+    qt = '<span class="kw">' + esc(u) + ' is alone!</span> ✓';
+    hint2 = ex ? '👉 ' + esc(ex.why) : 'Tap = Calculate. The app does the math.';
+    ans = '<div class="row"><button class="big green' + (ex && ex.kind === 'calc' ? ' glow' : '') + '" data-act="calc"' + (b.auto ? ' disabled' : '') + '>= Calculate</button>' +
+      '<button class="undo" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+  } else {
+    qt = 'Get <span class="kw">' + esc(u) + '</span> alone. Do the same thing to <span class="kw">BOTH sides</span>.';
+    hint2 = ex ? '👉 ' + esc(ex.why) : (b.locked ? 'Tap ↶ Undo to take that move back.' : b.op ? 'Now tap a number to ' + opName(b.op) + ' both sides by.' : 'Tap 10⁻ˣ, or tap an operation and then a number.');
+    var ops = ['+','−','×','÷','p10'];
+    var row1 = '<div class="row">' + ops.map(function(o){
+      var g = ex && ex.kind === 'move' && ex.op === o && b.op !== o;
+      return '<button class="opbtn' + (o === 'p10' ? ' p10' : '') + (b.op === o ? ' sel' : '') + (g ? ' glow' : '') + '" data-act="op" data-arg="' + o + '"' + (dis ? ' disabled' : '') + ' aria-label="' + opName(o) + '">' + (o === 'p10' ? '10⁻ˣ' : o) + '</button>';
+    }).join('') + '<button class="undo' + (b.locked ? ' glow' : '') + '" data-act="undo"' + (b.hist.length && !b.auto ? '' : ' disabled') + '>↶ Undo</button></div>';
+    var chips2 = solveChips(b.eq, b.p.U);
+    var row2 = '<div class="row">' + chips2.map(function(c, k){
+      var fac = findFactor(b.eq, c.ids[0]);
+      var inner = fac.v ? '<span class="tile" style="font-size:1rem;height:1.6em">' + esc(sy(fac.sym)) + '</span>' : chipHTML(fac);
+      var g = ex && ex.kind === 'move' && b.op === ex.op && ex.ids.join() === c.ids.join();
+      return '<button class="chip' + (g ? ' glow' : '') + '" data-act="schip" data-arg="' + k + '"' + (dis ? ' disabled' : '') + '>' + inner + '</button>';
+    }).join('') + '</div>';
+    ans = row1 + row2;
+  }
+  return h + qbox(head, qt, hint2, ans, fbHTML(b.fb), showMeBtn(b));
+}
+function opName(o){ return {'+':'add','−':'subtract','×':'multiply','÷':'divide','p10':'10⁻ˣ (undo −log)'}[o]; }
+function showMeBtn(b){
+  if (b.mode !== 'prac' || b.miss < 2 || b.phase === 'done' || b.auto) return '';
+  return '<div class="row" style="margin-top:8px"><button class="big ghost" data-act="showme">👀 Show me</button><span class="qhint">Two misses: watch the solution step by step.</span></div>';
+}
+
+/* ----- board right (road map + equation board + pH scale) ----- */
+function roadFor(b, chain){
+  var p = b.p, vals = {}, k;
+  if (chain){
+    vals = chain.vals; return roadHTML({give:chain.give, want:chain.want, arrows:chain.arrows, vals:vals, mids:chain.mids, title:'Road map · your path'});
+  }
+  vals[p.give] = gv(b).txt;
+  if (b.ans !== null && (b.phase === 'ab' || b.phase === 'done')) vals[p.want] = fmtQ(b.ans, QOF[p.want]);
+  if (b.phase === 'done'){
+    var ph = phOf(b);
+    for (k = 0; k < ORD.length; k++){
+      var s = ORD[k];
+      if (vals[s] === undefined) vals[s] = s === 'pH' ? pTxt(ph) : s === 'pOH' ? pTxt(14 - ph) : s === 'H' ? sciTxt(Math.pow(10, -ph), 3) : sciTxt(Math.pow(10, ph - 14), 3);
+    }
+  }
+  return roadHTML({give:p.give, want:p.want, arrows: b.phase === 'formula' ? [] : [p.conv], vals:vals, title: b.phase === 'done' ? 'Road map · all four values' : 'Road map'});
+}
+function boardRight(b, chain){
+  var fEq = null, okMoves = (b.moves || []).filter(function(m){ return m.ok; }).length;
+  if (b.phase !== 'plug' && b.phase !== 'formula' && okMoves) fEq = b.locked ? b.hist[b.hist.length - 1] : (b.anim || b.eq);
+  var card = b.phase === 'formula' ? '<div class="gray fcard"><span class="t">Formula</span><div class="eq" style="color:#8a96a2">?</div></div>' :
+    fcardHTML(fEq ? eqHTML(fEq, {sym:true, units:fUnits(b.p.fid)}) : formulaHTML(b.p.fid, fUnits(b.p.fid)), !!fEq, b.mode === 'free' && b.phase === 'done' && okMoves ? 'Rearranged<br>formula' : '');
+  var u = uName(b), h = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + card + '</div>' + roadFor(b, chain);
+  var main;
+  if (b.phase === 'formula') main = '<div class="qhint" style="font-size:1.1rem;text-align:center">Orange box = what you have. Purple box = what you want.<br><b>Which formula connects them?</b><br><span style="font-size:.9rem">The formula shows up after you pick it.</span></div>';
+  else if (b.phase === 'plug'){
+    var ex = b.mode === 'guided' ? expect(b) : null;
+    main = templateHTML(b.p.fid, {U:b.p.U, fills:b.fills, vals:b.p.givens, sel:b.sel, glow:ex && b.sel === ex.chip ? ex.slot : null, shake:b.shake});
+  } else main = eqHTML(b.anim || b.eq);
+  h += '<div class="eqwrap">' + main + (b.flipped && !b.anim && b.phase !== 'formula' && b.phase !== 'plug' ? '<div class="flipnote">(same thing, just flipped so ' + esc(u) + ' is on the left)</div>' : '') + '</div>';
+  var alone = b.phase === 'solve' && !b.anim && aloneSide(b.eq, b.p.U) && !b.locked;
+  h += '<div class="status' + (b.locked && !alone ? ' bad' : '') + '">' + (alone ? esc(u) + ' is alone! ✓' : b.phase === 'plug' ? 'Step: plug in' : b.locked ? '✗ Tap ↶ Undo' : b.phase === 'ab' ? 'Acidic, neutral, or basic?' : '') + '</div>';
+  if (b.phase === 'ab' || b.phase === 'done'){
+    var k = classify(phOf(b));
+    h += '<div class="answer">' + esc(u) + ' = ' + esc(fmtQ(b.ans, QOF[b.p.U])) + (b.p.aunit ? ' <small>' + esc(b.p.aunit) + '</small>' : '') + (b.phase === 'done' ? abTag(k) : '') + '</div>';
+    var ph = phOf(b);
+    h += scaleHTML(b.phase === 'done' ? {main:{ph:ph, lbl:'pH ' + pTxt(ph)}, title:'pH scale'} : {title:'pH scale · where does it go?'});
+  }
+  return h + '</div>';
+}
+
+/* ===================================================================
+   PART 2: GUIDED
+   =================================================================== */
+var GP = [
+  {conv:'H>pH', g:cX('5.0', -3),
+   story:'Lemon juice has [H⁺] = <b>5.0×10⁻³ M</b>. Find its <b>pH</b>.',
+   tip:'H⁺ goes with pH. pH is already alone in pH = −log[H⁺], so plug in and calculate.',
+   after:'Check: exponent −3, so the pH should be just under 3. It is: 2.30 ✓'},
+  {conv:'pH>H', g:pG(5.60),
+   story:'Rainwater has a pH of <b>5.60</b>. Find its <b>[H⁺]</b>.',
+   tip:'[H⁺] is stuck inside −log. 10⁻ˣ undoes −log.',
+   after:'Check: pH 5.60 is between 5 and 6, so the exponent should be −6. It is: 2.51×10⁻⁶ ✓'},
+  {conv:'pH>pOH', g:pG(8.10),
+   story:'Seawater has a pH of <b>8.10</b>. Find its <b>pOH</b>.',
+   tip:'No concentration here, so use pH + pOH = 14. Then undo the + with −.',
+   after:'Check: pH + pOH = 8.10 + 5.90 = 14 ✓'}
+];
+function guidedBoard(){
+  var g = S.guided;
+  if (!g.b || g.b.gi !== g.cur || g.b.dead){ var gp = GP[g.cur]; g.b = newBoard('guided', mkProb(gp.conv, clone(gp.g), gp.story)); g.b.gi = g.cur; }
+  return g.b;
+}
+function renderGuided(){
+  var g = S.guided, b = guidedBoard(), gp = GP[g.cur];
+  var pills = '<div class="pills"><span class="lbl">Problem</span>' + GP.map(function(p, k){
+    var en = UNLOCK || k === 0 || g.done[k - 1] || g.done[k];
+    return '<button class="pill' + (k === g.cur ? ' cur' : '') + (g.done[k] ? ' done' : '') + '" data-act="gprob" data-arg="' + k + '"' + (en ? '' : ' disabled') + '>' + (g.done[k] ? '✓ ' : '') + (k + 1) + ' ' + CONV[p.conv].name + '</button>';
+  }).join('') + '</div>';
+  var story = '<div class="gray story"><div class="t">Problem ' + (g.cur + 1) + ' of ' + NGUIDED + ' · We do it together</div>' + gp.story + '<div class="qhint" style="margin-top:4px">💡 ' + esc(gp.tip) + '</div></div>';
+  var next = b.phase === 'done' ? '<div class="nextrow"><button class="big" data-act="gnext">' + (g.cur < NGUIDED - 1 ? 'Next problem ▶' : 'Go to Practice ▶') + '</button></div>' : '';
+  LEFT.innerHTML = pills + story + boardLeft(b) + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+
+/* ===================================================================
+   PART 3: PRACTICE
+   =================================================================== */
+var LEVELS = [
+  {conv:'H>pH',   name:'[H⁺] → pH'},
+  {conv:'OH>pOH', name:'[OH⁻] → pOH'},
+  {conv:'pH>pOH', name:'pH → pOH'},
+  {conv:'pOH>pH', name:'pOH → pH'},
+  {conv:'pH>H',   name:'pH → [H⁺]'},
+  {conv:'pOH>OH', name:'pOH → [OH⁻]'},
+  {conv:'mixed',  name:'Mixed: all six'}
+];
+/* [name, lowest pH, highest pH] */
+var CTX = [
+  ['stomach acid',1.2,2.0],['lemon juice',2.0,2.4],['vinegar',2.4,3.0],['a cola',2.5,3.2],['orange juice',3.3,4.0],['tomato juice',4.1,4.6],
+  ['black coffee',4.8,5.2],['rainwater',5.0,5.8],['milk',6.4,6.8],['human blood',7.35,7.45],['seawater',7.9,8.3],['a baking soda solution',8.2,8.6],
+  ['soapy water',9.5,10.4],['milk of magnesia',10.2,10.6],['household ammonia',11.0,11.8],['bleach',12.3,12.8],['drain cleaner',13.0,13.8],
+  ['an unknown solution',1.0,13.5],['a lab solution',1.5,13.0]
+];
+var ASK = {pH:['Find its <b>pH</b>.','What is its <b>pH</b>?','Calculate the <b>pH</b>.'], pOH:['Find its <b>pOH</b>.','What is its <b>pOH</b>?','Calculate the <b>pOH</b>.'],
+  H:['Find its <b>[H⁺]</b>.','What is the <b>H⁺ concentration</b>, [H⁺]?','Calculate <b>[H⁺]</b>.'], OH:['Find its <b>[OH⁻]</b>.','What is the <b>OH⁻ concentration</b>, [OH⁻]?','Calculate <b>[OH⁻]</b>.']};
+function gen(conv){
+  var c = pick(CTX), ph = R(c[1], c[2]), C = CONV[conv], g, has;
+  if (C.give === 'H'){ g = cG(Math.pow(10, -ph), true); has = 'has [H⁺] = <b>' + T(g) + '</b>'; }
+  else if (C.give === 'OH'){ g = cG(Math.pow(10, ph - 14), true); has = 'has [OH⁻] = <b>' + T(g) + '</b>'; }
+  else if (C.give === 'pH'){ g = pG(ph); has = 'has a pH of <b>' + g.txt + '</b>'; }
+  else { g = pG(14 - ph); has = 'has a pOH of <b>' + g.txt + '</b>'; }
+  var lead = /^(a|an) /.test(c[0]) ? cap(c[0]) : cap(c[0]);
+  if (Math.random() < 0.5 && !/^(a|an) /.test(c[0])) lead = 'A sample of ' + c[0];
+  var p = mkProb(conv, g, lead + ' ' + has + '. ' + pick(ASK[C.want]));
+  p.order = [C.give];
+  return p;
+}
+function newPracProblem(){
+  var pr = S.prac, L = LEVELS[pr.lvl], conv = L.conv;
+  if (conv === 'mixed'){ var keys = Object.keys(CONV).filter(function(k){ return k !== pr.last; }); conv = pick(keys); }
+  pr.last = conv; pr.count[pr.lvl]++;
+  pr.b = newBoard('prac', gen(conv)); pr.b.lvl = pr.lvl;
+}
+function pracScore(b){
+  var pr = S.prac, l = pr.lvl;
+  if (b.shown){ b.pmsg = 'That one was a demo, so it doesn’t count. Try a new one.'; return; }
+  if (b.miss === 0){
+    pr.streak[l] = Math.min(3, pr.streak[l] + 1);
+    if (pr.streak[l] >= 3 && !pr.done[l]){ pr.done[l] = 1; b.pmsg = 'No mistakes! Level ' + (l + 1) + ' complete ✓'; b.lvlDone = 1; }
+    else b.pmsg = pr.done[l] ? 'No mistakes! (This level is already complete.)' : 'No mistakes! Streak: ' + pr.streak[l] + ' of 3.';
+  } else b.pmsg = 'Solved, but there was a mistake, so the streak starts over. You need 3 in a row with no mistakes.';
+}
+function renderPractice(){
+  var pr = S.prac;
+  if (!pr.b || pr.b.lvl !== pr.lvl || pr.b.dead) newPracProblem();
+  var b = pr.b, l = pr.lvl;
+  var pills = '<div class="pills"><span class="lbl">Level</span>' + LEVELS.map(function(n, k){
+    var en = UNLOCK || k === 0 || pr.done[k - 1] || pr.done[k];
+    return '<button class="pill' + (k === l ? ' cur' : '') + (pr.done[k] ? ' done' : '') + '" data-act="plvl" data-arg="' + k + '"' + (en ? '' : ' disabled') + ' title="' + esc(n.name) + '">' + (pr.done[k] ? '✓' : 'L' + (k + 1)) + '</button>';
+  }).join('') + '<span class="streak" aria-label="streak ' + pr.streak[l] + ' of 3">' + (pr.done[l] ? '✓ done' : 'Streak') + [0,1,2].map(function(i){ return '<span class="dot' + (i < pr.streak[l] ? ' on' : '') + '">' + (i < pr.streak[l] ? '✓' : '') + '</span>'; }).join('') + '</span></div>';
+  var story = '<div class="gray story"><div class="t">Level ' + (l + 1) + ' of ' + NLVL + ' · ' + esc(LEVELS[l].name) + '</div>' + b.p.story + '</div>';
+  var next = '';
+  if (b.phase === 'done'){
+    var allDone = cnt(pr.done) === NLVL;
+    if (b.lvlDone && l < NLVL - 1) next = '<button class="big green" data-act="pnext" data-arg="lvl">Next level ▶</button>';
+    else if (b.lvlDone && allDone) next = '<button class="big green" data-act="card">🏆 See completion card</button>';
+    else next = '<button class="big" data-act="pnext">Next problem ▶</button>';
+    next = '<div class="nextrow">' + next + (allDone && !(b.lvlDone && allDone) ? '<button class="big ghost" data-act="card">🏆 Completion card</button>' : '') + '</div>';
+  } else if (cnt(pr.done) === NLVL) next = '<div class="nextrow"><button class="big ghost" data-act="card">🏆 Completion card</button></div>';
+  LEFT.innerHTML = pills + story + boardLeft(b) + next;
+  RIGHT.innerHTML = boardRight(b);
+}
+async function showMe(b){
+  S.mis.showme++; b.shown = true; b.auto = true; b.autoOK = true;
+  b.phase = 'formula'; b.fills = {}; b.sel = null; b.hist = []; b.moves = []; b.locked = false; b.op = null; b.flipped = false; b.eq = null; b.eq0 = null; b.ans = null; b.fwrong = null; b.abWrong = null;
+  b.fb = {ok:true, title:'Watch', why:'Here is the solution, one step at a time.'};
+  render();
+  function gone(){ return S.prac.b !== b; }
+  await wait(1200); if (gone()) return;
+  b.fb = {ok:true, title:'Watch: pick the formula', why:formulaWhy(b.p)}; render();
+  await wait(2000); if (gone()) return;
+  pickFormula(b, b.p.fid);
+  b.fb = {ok:true, title:'Watch', why:'Plug in: the number goes in its slot, the unknown gets the purple tile.'}; render();
+  var order = tmplSyms(b.p.fid);
+  for (var i = 0; i < order.length; i++){
+    await wait(800); if (gone()) return;
+    var s = order[i]; b.sel = s === b.p.U ? 'U' : s; render(); await wait(500); if (gone()) return;
+    if (i === order.length - 1){ placeChip(b, b.sel, s); }
+    else { b.fills[s] = b.sel; b.sel = null; render(); }
+  }
+  b.fb = {ok:true, title:'Watch', why:'Now get ' + uName(b) + ' alone.'}; render();
+  var guard = 0;
+  while (!aloneSide(b.eq, b.p.U) && guard++ < 6){
+    await wait(1400); if (gone()) return;
+    var mv = nextMove(b.eq, b.p.U); if (!mv) break;
+    b.fb = {ok:true, title:mv.op === 'p10' ? '10⁻ˣ both sides' : mv.op + ' ' + chipLabel(b.eq, mv.ids) + ' on both sides', why:mv.why};
+    doMove(b, mv.op, mv.ids);
+    await wait(1000);
+  }
+  await wait(1100); if (gone()) return;
+  calc(b);
+  b.fb = {ok:true, title:'Watch: acidic or basic?', why:abWhy(b)}; render();
+  await wait(2200); if (gone()) return;
+  pickAB(b, classify(phOf(b)));
+  b.auto = false; b.autoOK = false; save(); render();
+}
+
+/* ----- completion card ----- */
+function cardData(){
+  var d = new Date();
+  return {when:d.toLocaleDateString(undefined, {weekday:'short', year:'numeric', month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'}),
+    learn:pct('learn'), guided:pct('guided'), prac:pct('prac'), mis:S.mis};
+}
+var MISNAMES = [['formula','Wrong formula (H⁺ ↔ pH, OH⁻ ↔ pOH)'],['slot','Number in the wrong slot'],['opposite','Wrong move (10⁻ˣ, + vs −, × vs ÷)'],['nohelp','Move that didn’t help'],['ab','Acidic vs basic mixed up'],['showme','“Show me” used']];
+function cardText(c){
+  return 'pH Calculations — Completion Card\n' + c.when + '\nLearn: ' + c.learn + '%   Guided: ' + c.guided + '%   Practice: ' + c.prac + '%\n\nMistakes by type:\n' +
+    MISNAMES.map(function(m){ return '  • ' + m[1] + ': ' + (c.mis[m[0]] || 0); }).join('\n') + '\n\n' + PAGE;
+}
+function cardCanvas(c){
+  var cv = document.createElement('canvas'); cv.width = 900; cv.height = 600;
+  var x = cv.getContext('2d'), F2 = 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+  x.fillStyle = '#fff'; x.fillRect(0, 0, 900, 600);
+  x.fillStyle = '#1f3a5f'; x.fillRect(0, 0, 900, 90);
+  x.fillStyle = '#fff'; x.font = 'bold 34px ' + F2; x.fillText('pH Calculations', 30, 52);
+  x.font = '20px ' + F2; x.fillText('Completion Card · ' + c.when, 30, 80);
+  var g = x.createLinearGradient(30, 0, 870, 0);
+  ['#c81e1e','#e8551f','#f4a12a','#f2d33b','#8cc63f','#2e9e4f','#1f8f9a','#2b6cb0','#4b3fa8','#6a2fb0'].forEach(function(col, i){ g.addColorStop(i / 9, col); });
+  x.fillStyle = g; x.fillRect(30, 104, 840, 14);
+  var y = 172;
+  [['Learn', c.learn], ['Guided', c.guided], ['Practice', c.prac]].forEach(function(r, i){
+    var bx = 30 + i * 285; x.fillStyle = r[1] === 100 ? '#1d7a35' : '#6a7682'; x.fillRect(bx, y - 34, 265, 64);
+    x.fillStyle = '#fff'; x.font = 'bold 26px ' + F2; x.fillText(r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%'), bx + 18, y + 8);
+  });
+  y = 256; x.fillStyle = '#1f3a5f'; x.font = 'bold 24px ' + F2; x.fillText('Mistakes by type', 30, y);
+  MISNAMES.forEach(function(m, i){
+    var yy = y + 40 + i * 40; x.fillStyle = '#15191e'; x.font = '22px ' + F2; x.fillText(m[1], 50, yy);
+    x.font = 'bold 22px ' + F2; x.fillText(String(c.mis[m[0]] || 0), 820, yy);
+    x.strokeStyle = '#e1e6ec'; x.lineWidth = 1; x.beginPath(); x.moveTo(40, yy + 13); x.lineTo(860, yy + 13); x.stroke();
+  });
+  x.fillStyle = '#5a6672'; x.font = '18px ' + F2; x.fillText(PAGE, 30, 580);
+  x.strokeStyle = '#1f3a5f'; x.lineWidth = 6; x.strokeRect(3, 3, 894, 594);
+  return cv;
+}
+function openCard(){
+  var c = cardData();
+  var rows = MISNAMES.map(function(m){ return '<tr><td>' + esc(m[1]) + '</td><td>' + (c.mis[m[0]] || 0) + '</td></tr>'; }).join('');
+  modal('<div class="card"><h3>🏆 pH Calculations: Completion Card</h3><div>' + esc(c.when) + '</div>' +
+    '<div class="row" style="margin:10px 0">' + [['Learn', c.learn], ['Guided', c.guided], ['Practice', c.prac]].map(function(r){ return '<span class="opt ' + (r[1] === 100 ? 'right' : '') + '">' + r[0] + ': ' + (r[1] === 100 ? '✓ 100%' : r[1] + '%') + '</span>'; }).join('') + '</div>' +
+    '<b>Mistakes by type</b><table>' + rows + '</table></div><div id="cardmsg" class="qhint" style="min-height:1.3em;margin-top:6px"></div>' +
+    '<div class="mbtns"><button class="big" data-act="cardcopy">📋 Copy</button><button class="big" data-act="cardpng">⬇ Save PNG</button><button class="big" data-act="cardmail">✉ Email using Google</button><button class="big ghost" data-act="close">Close</button></div>');
+}
+function cardMsg(t){ var el = document.getElementById('cardmsg'); if (el) el.textContent = t; }
+
+/* ===================================================================
+   PART 4: FREE FORM — have → want (one step or a chain), type value, solve
+   =================================================================== */
+function chainOf(have, want){
+  var i = ORD.indexOf(have), j = ORD.indexOf(want), st = j > i ? 1 : -1, out = [];
+  for (var k = i; k !== j; k += st) out.push(ORD[k] + '>' + ORD[k + st]);
+  return out;
+}
+function freeReset(step){
+  var f = S.free;
+  if (step <= 1) f.have = null;
+  if (step <= 2){ f.want = null; f.vals = {}; }
+  if (step <= 3){ f.bs = []; f.ci = 0; }
+  f.step = step;
+}
+function freeBoard(ci, given){
+  var conv = chainOf(S.free.have, S.free.want)[ci];
+  return newBoard('free', mkProb(conv, given, ''));
+}
+var KP = null;
+function openKeypad(sym){
+  var g = S.free.vals[sym];
+  KP = {sym:sym, m:'', e:'', neg:false, eneg:false, em:false, err:''};
+  if (g && g.raw){ KP.m = g.raw.m; KP.e = g.raw.e; KP.neg = g.raw.neg; KP.eneg = g.raw.eneg; KP.em = g.raw.em; }
+  else if (QOF[sym] === 'conc'){ KP.em = false; }
+  drawKeypad();
+}
+function kpStr(){ var s = (KP.neg ? '−' : '') + (KP.m || ''); if (KP.em) s += '×10' + sup((KP.eneg ? '-' : '') + (KP.e || '')) + (KP.e ? '' : '▯'); return s; }
+function drawKeypad(){
+  var u = QOF[KP.sym] === 'conc' ? 'M' : '';
+  var keys = ['7','8','9','⌫','4','5','6','±','1','2','3','×10ⁿ','0','.','',''];
+  modal('<div class="kp"><h3>Enter ' + esc(sy(KP.sym)) + (u ? ' (' + u + ')' : '') + '</h3><div class="kpd">' + esc(kpStr() || ' ') + (u ? ' <small>' + u + '</small>' : '') + '</div>' +
+    '<div class="kpg">' + keys.map(function(k){ return k ? '<button data-act="kp" data-arg="' + k + '">' + k + '</button>' : ''; }).join('') +
+    '<button class="ok" data-act="kp" data-arg="OK" style="grid-column:span 2">OK</button></div><div class="kperr">' + esc(KP.err) + '</div>' +
+    (u ? '<div class="qhint">For 3.2×10⁻⁴: type 3.2, tap ×10ⁿ, type 4, tap ± to make it −4.</div>' : '') +
+    '<div class="mbtns"><button class="big ghost" data-act="close">Cancel</button></div></div>');
+}
+function kpKey(k){
+  KP.err = '';
+  if (/^\d$/.test(k)){ if (KP.em){ if (KP.e.length < 3) KP.e += k; } else if (KP.m.replace('.', '').length < 10) KP.m += k; }
+  else if (k === '.'){ if (!KP.em && KP.m.indexOf('.') < 0) KP.m = (KP.m || '0') + '.'; }
+  else if (k === '±'){ if (KP.em) KP.eneg = !KP.eneg; else KP.neg = !KP.neg; }
+  else if (k === '×10ⁿ'){ if (!KP.em){ if (!KP.m) KP.m = '1'; KP.em = true; } }
+  else if (k === '⌫'){ if (KP.em){ if (KP.e) KP.e = KP.e.slice(0, -1); else if (KP.eneg) KP.eneg = false; else KP.em = false; } else if (KP.m) KP.m = KP.m.slice(0, -1); else KP.neg = false; }
+  else if (k === 'OK'){
+    var mv = parseFloat(KP.m);
+    if (!KP.m || isNaN(mv)){ KP.err = 'Type a number first.'; drawKeypad(); return; }
+    if (KP.em && !KP.e){ KP.err = 'Type the power of 10 (or tap ⌫).'; drawKeypad(); return; }
+    var ex = KP.em ? (KP.eneg ? -1 : 1) * parseInt(KP.e, 10) : 0;
+    var val = (KP.neg ? -1 : 1) * mv * Math.pow(10, ex);
+    var conc = QOF[KP.sym] === 'conc';
+    if (conc && !(val > 0)){ KP.err = 'A concentration must be more than 0.'; drawKeypad(); return; }
+    var mtxt = KP.m.replace(/\.$/, '');
+    var txt = (KP.neg ? '−' : '') + mtxt + (KP.em ? '×10' + sup((KP.eneg ? '-' : '') + KP.e) : '');
+    S.free.vals[KP.sym] = {val:val, txt:txt, unit: conc ? 'M' : '', sci:KP.em, m:(KP.neg ? '-' : '') + mtxt, e:ex, raw:{m:KP.m, e:KP.e, neg:KP.neg, eneg:KP.eneg, em:KP.em}};
+    KP = null; closeModal(); save(); render(); return;
+  }
+  drawKeypad();
+}
+function freeChainRoad(){
+  var f = S.free, ch = chainOf(f.have, f.want), vals = {}, mids = [];
+  if (f.vals[f.have]) vals[f.have] = f.vals[f.have].txt;
+  f.bs.forEach(function(b){ if (b.ans !== null && b.phase === 'done') vals[b.p.want] = fmtQ(b.ans, QOF[b.p.want]); });
+  ch.forEach(function(c, i){ if (i < ch.length - 1) mids.push(CONV[c].want); });
+  return {give:f.have, want:f.want, arrows:ch, vals:vals, mids:mids};
+}
+function renderFree(){
+  var f = S.free, h = '';
+  var names = ['Have','Want','Value','Solve'];
+  h += '<div class="pills"><span class="lbl">Step</span>' + names.map(function(n, k){
+    var st = k + 1, en = st < f.step;
+    return '<button class="pill' + (st === f.step ? ' cur' : '') + (st < f.step ? ' done' : '') + '" data-act="fstep" data-arg="' + st + '"' + (en ? '' : ' disabled') + '>' + (st < f.step ? '✓ ' : st + ' ') + n + '</button>';
+  }).join('') + '</div>';
+  var right = '', TYPEN = {H:'concentration (M)', OH:'concentration (M)', pH:'', pOH:''};
+  function qbtn(s, act, sel){ return '<button class="opt qpick' + (sel ? ' sel' : '') + '" data-act="' + act + '" data-arg="' + s + '">' + esc(sy(s)) + (TYPEN[s] ? '<small>' + TYPEN[s] + '</small>' : '<small>&nbsp;</small>') + '</button>'; }
+  if (f.step === 1){
+    h += qbox('STEP 1 OF 4 — HAVE', 'What do you <span class="kw">have</span>?', 'For homework or lab calculations: pick what you know, pick what you want, type your number, then solve it step by step.', '<div class="row">' + ORD.map(function(s){ return qbtn(s, 'fhave'); }).join('') + '</div>', '');
+    right = '<div class="panel"><div class="boardt"><h2>Equation board</h2></div>' + roadHTML({}) + '<div class="eqwrap"><div class="qhint" style="font-size:1.1rem">Pick what you have on the left.</div></div></div>';
+  } else if (f.step === 2){
+    h += '<div class="doneline">✓ Have: ' + esc(sy(f.have)) + '</div>';
+    h += qbox('STEP 2 OF 4 — WANT', 'What do you <span class="kw">want</span> to find?', 'If it isn’t right next to ' + esc(sy(f.have)) + ' on the road map, you’ll solve it in more than one step.', '<div class="row">' + ORD.filter(function(s){ return s !== f.have; }).map(function(s){ return qbtn(s, 'fwant'); }).join('') + '</div>', '');
+    right = '<div class="panel"><div class="boardt"><h2>Equation board</h2></div>' + roadHTML({give:f.have}) + '<div class="eqwrap"><div class="qhint" style="font-size:1.1rem">Pick what you want on the left.</div></div></div>';
+  } else {
+    var ch = chainOf(f.have, f.want);
+    h += '<div class="doneline">✓ Have ' + esc(sy(f.have)) + ' → want ' + esc(sy(f.want)) + (ch.length > 1 ? ' · ' + ch.length + ' steps: ' + ch.map(function(c){ return CONV[c].name; }).join(', ') : ' · ' + esc(CONV[ch[0]].name)) + '</div>';
+    if (f.step === 3){
+      var g = f.vals[f.have], u = QOF[f.have] === 'conc' ? 'M' : '';
+      var row = '<div class="row"><button class="opt" data-act="fslot" data-arg="' + f.have + '" style="font-size:1.25rem">' + esc(sy(f.have)) + ' = ' + (g ? '<b>' + esc(g.txt) + '</b>' : '<span style="color:#8a96a2">tap to type</span>') + (u ? ' <small style="color:#66727e">' + u + '</small>' : '') + '</button></div>';
+      h += qbox('STEP 3 OF 4 — VALUE', 'Type the <span class="kw">' + esc(sy(f.have)) + '</span> you have.', 'Tap the box, then type the number on the keypad.', row, '');
+      h += '<div class="nextrow"><button class="big" data-act="fgo"' + (g ? '' : ' disabled') + '>Next ▶</button></div>';
+      right = '<div class="panel"><div class="boardt"><h2>Equation board</h2>' + fcardHTML(formulaHTML(CONV[ch[0]].fid, fUnits(CONV[ch[0]].fid))) + '</div>' + roadHTML(freeChainRoad()) + '<div class="eqwrap"><div class="qhint" style="font-size:1.1rem">Type your ' + esc(sy(f.have)) + ' on the left.</div></div></div>';
+    } else {
+      var b = f.bs[f.ci], last = f.ci === ch.length - 1;
+      h += boardLeft(b, 'STEP 4 OF 4' + (ch.length > 1 ? ' (PART ' + (f.ci + 1) + ' OF ' + ch.length + ': ' + CONV[ch[f.ci]].name + ')' : ''));
+      if (b.phase === 'done'){
+        if (!last) h += '<div class="nextrow"><button class="big green" data-act="fnext">Next: ' + esc(CONV[ch[f.ci + 1]].name) + ' ▶</button></div>';
+        else h += '<div class="nextrow"><button class="big" data-act="fcopy">📋 Copy</button><button class="big" data-act="fmail">✉ Email using Google</button><button class="big" data-act="fprint">🖨 Print</button></div>' +
+          '<div class="nextrow"><button class="big ghost" data-act="fagain">↻ Same question, new number</button><button class="big ghost" data-act="fnew">New question</button></div><div id="fmsg" class="qhint"></div>';
+      }
+      right = boardRight(b, ch.length > 1 ? freeChainRoad() : null);
+    }
+  }
+  LEFT.innerHTML = h;
+  RIGHT.innerHTML = right;
+}
+function freeSummary(){
+  var f = S.free, lines = [], ch = chainOf(f.have, f.want), g = f.vals[f.have];
+  lines.push('pH Calculations — Free Form');
+  lines.push('Have: ' + sy(f.have) + ' = ' + T(g) + '     Want: ' + sy(f.want));
+  f.bs.forEach(function(b, i){
+    if (ch.length > 1) lines.push('Part ' + (i + 1) + ': ' + CONV[ch[i]].name);
+    lines.push('  Formula: ' + formulaText(b.p.fid));
+    lines.push('  Plug in:  ' + eqText(b.eq0));
+    b.moves.forEach(function(m){ lines.push('  ' + (m.op === 'p10' ? '10⁻ˣ' : m.op + ' ' + m.label) + ' on both sides:  ' + m.text); });
+    lines.push('  ' + ansText(b));
+  });
+  var lb = f.bs[f.bs.length - 1];
+  if (lb && lb.ans !== null){ var k = classify(phOf(lb)); lines.push('Answer: ' + ansText(lb) + '   (' + ABW[k].toLowerCase() + ')'); }
+  lines.push(''); lines.push(PAGE);
+  return lines.join('\n');
+}
+function freePrint(){
+  var P = document.getElementById('print'), txt = freeSummary().split('\n');
+  P.innerHTML = '<h2>pH Calculations: Free Form</h2><p>' + txt.slice(1).map(esc).join('<br>').replace(/ {2}/g, '&nbsp;&nbsp;') + '</p>';
+  window.print();
+}
+
+/* ===================================================================
+   RENDER + ACTIONS
+   =================================================================== */
+function render(){
+  if (!unlocked(S.tab)) S.tab = 'learn';
+  renderTabs();
+  if (S.tab === 'learn') renderLearn();
+  else if (S.tab === 'guided') renderGuided();
+  else if (S.tab === 'prac') renderPractice();
+  else renderFree();
+  fitEqs();
+}
+function goTab(t){
+  if (!unlocked(t)){ modal('<h3>🔒 ' + esc(LOCKMSG[t]) + '</h3><p>The parts unlock in order: Learn → Guided → Practice. Free Form is always open.</p><div class="mbtns"><button class="big" data-act="close">OK</button></div>'); return; }
+  S.tab = t; LV.pick = null; LV.wrong = null; save(); render();
+  if (t === 'learn') startStop();
+  LEFT.scrollTop = 0;
+}
+function startStop(){ LV.pick = null; LV.wrong = null; render(); playFrames(); }
+
+var ACT = {
+  tab:function(a){ goTab(a); },
+  close:function(){ closeModal(); KP = null; },
+  /* learn */
+  lstop:function(a){ S.learn.cur = +a; save(); startStop(); },
+  lopt:function(a){
+    var st = STOPS[S.learn.cur], o = st.opts[+a];
+    if (o.ok){ LV.pick = +a; LV.wrong = null; S.learn.done[S.learn.cur] = 1; save(); }
+    else { LV.wrong = +a; }
+    render();
+  },
+  lnext:function(){ if (S.learn.cur < NSTOPS - 1){ S.learn.cur++; save(); startStop(); } else goTab('guided'); },
+  /* board */
+  fml:function(a){ var b = curBoard(); if (b && !b.auto) pickFormula(b, a); },
+  ab:function(a){ var b = curBoard(); if (b && !b.auto) pickAB(b, a); },
+  chip:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; b.sel = b.sel === a ? null : a; b.fb = null; render(); },
+  slot:function(a){ var b = curBoard(); if (!b || b.phase !== 'plug' || b.auto) return; if (!b.sel){ if (!b.fills[a]){ b.fb = {ok:false, title:'', why:'Tap a value first, then tap its slot.'}; render(); } return; } placeChip(b, b.sel, a); },
+  op:function(a){ var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return; if (a === 'p10'){ doMove(b, 'p10', []); return; } b.op = b.op === a ? null : a; b.fb = null; render(); },
+  schip:function(a){
+    var b = curBoard(); if (!b || b.locked || b.busy || b.auto) return;
+    var c = solveChips(b.eq, b.p.U)[+a]; if (!c) return;
+    if (!b.op){ b.fb = {ok:false, title:'', why:'Tap an operation first (+ − × ÷), then a number. (10⁻ˣ works by itself.)'}; render(); return; }
+    doMove(b, b.op, c.ids);
+  },
+  undo:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) undo(b); },
+  calc:function(){ var b = curBoard(); if (b && !b.busy && !b.auto) calc(b); },
+  showme:function(){ var b = curBoard(); if (b) showMe(b); },
+  /* guided */
+  gprob:function(a){ S.guided.cur = +a; S.guided.b = null; save(); render(); },
+  gnext:function(){ if (S.guided.cur < NGUIDED - 1){ S.guided.cur++; S.guided.b = null; save(); render(); } else goTab('prac'); },
+  /* practice */
+  plvl:function(a){ S.prac.lvl = +a; S.prac.b = null; save(); render(); },
+  pnext:function(a){
+    var pr = S.prac;
+    if (a === 'lvl' && pr.lvl < NLVL - 1) pr.lvl++;
+    newPracProblem(); save(); render();
+    if (cnt(pr.done) === NLVL && !pr.cardShown){ pr.cardShown = 1; save(); openCard(); }
+  },
+  card:function(){ S.prac.cardShown = 1; save(); openCard(); },
+  cardcopy:function(){
+    var c = cardData(), text = cardText(c), cv = cardCanvas(c);
+    try {
+      if (navigator.clipboard && window.ClipboardItem){
+        cv.toBlob(function(blob){
+          navigator.clipboard.write([new ClipboardItem({'image/png':blob, 'text/plain':new Blob([text], {type:'text/plain'})})]).then(function(){ cardMsg('✓ Copied (picture + text). Paste it into Google Classroom or an email.'); },
+            function(){ copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text (this browser blocked the picture; use ⬇ Save PNG for it).' : 'Copy was blocked. Use ⬇ Save PNG instead.'); }); });
+        });
+        return;
+      }
+    } catch(e){}
+    copyText(text, function(ok){ cardMsg(ok ? '✓ Copied the text. Use ⬇ Save PNG for the picture.' : 'Copy was blocked. Use ⬇ Save PNG instead.'); });
+  },
+  cardpng:function(){
+    var cv = cardCanvas(cardData());
+    cv.toBlob(function(blob){ var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ph-calculations-card.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000); cardMsg('✓ Saved the PNG to your Downloads.'); });
+  },
+  cardmail:function(){ gmail('pH Calculations: Completion Card', cardText(cardData())); },
+  /* free */
+  fstep:function(a){ var st = +a, f = S.free; if (st >= f.step) return; freeReset(st); save(); render(); },
+  fhave:function(a){ var f = S.free; f.have = a; f.want = null; f.vals = {}; f.bs = []; f.ci = 0; f.step = 2; save(); render(); },
+  fwant:function(a){ var f = S.free; f.want = a; f.bs = []; f.ci = 0; f.step = 3; save(); render(); },
+  fslot:function(a){ if (S.free.step !== 3) return; openKeypad(a); },
+  kp:function(a){ if (KP) kpKey(a); },
+  fgo:function(){
+    var f = S.free, g = f.vals[f.have]; if (!g) return;
+    f.bs = [freeBoard(0, {val:g.val, txt:g.txt, unit:g.unit, sci:g.sci, m:g.m, e:g.e})]; f.ci = 0; f.step = 4; save(); render();
+  },
+  fnext:function(){
+    var f = S.free, b = f.bs[f.ci]; if (!b || b.phase !== 'done') return;
+    f.ci++; f.bs.push(freeBoard(f.ci, carry(b.ans, QOF[b.p.want]))); save(); render();
+  },
+  fagain:function(){ var f = S.free; f.vals = {}; f.bs = []; f.ci = 0; f.step = 3; save(); render(); },
+  fnew:function(){ freeReset(1); save(); render(); },
+  fcopy:function(){ copyText(freeSummary(), function(ok){ var el = document.getElementById('fmsg'); if (el) el.textContent = ok ? '✓ Copied. Paste it into your lab or homework.' : 'Copy was blocked by this browser.'; }); },
+  fmail:function(){ gmail('pH Calculations: ' + sy(S.free.have) + ' → ' + sy(S.free.want), freeSummary()); },
+  fprint:function(){ freePrint(); }
+};
+
+var suppressClick = false;
+document.addEventListener('click', function(e){
+  if (suppressClick) return;
+  var el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  var fn = ACT[el.dataset.act]; if (fn) fn(el.dataset.arg, el);
+});
+document.addEventListener('keydown', function(e){
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.slot[data-act]')){ e.preventDefault(); e.target.click(); }
+  if (e.key === 'Escape') ACT.close();
+});
+/* drag a chip onto a slot */
+var drag = null;
+document.addEventListener('pointerdown', function(e){
+  var c = e.target.closest('.chip[data-act="chip"]'); if (!c || c.disabled) return;
+  drag = {el:c, sym:c.dataset.arg, x:e.clientX, y:e.clientY, ghost:null};
+});
+document.addEventListener('pointermove', function(e){
+  if (!drag) return;
+  if (!drag.ghost){
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 10) return;
+    var gh = drag.el.cloneNode(true); gh.classList.add('sel'); gh.classList.remove('glow');
+    gh.style.cssText = 'position:fixed;pointer-events:none;z-index:80;opacity:.92;margin:0';
+    document.body.appendChild(gh); drag.ghost = gh;
+  }
+  drag.ghost.style.left = (e.clientX - 30) + 'px'; drag.ghost.style.top = (e.clientY - 25) + 'px';
+});
+function endDrag(e, cancel){
+  if (!drag) return; var d = drag; drag = null;
+  if (!d.ghost) return;
+  d.ghost.remove(); suppressClick = true; setTimeout(function(){ suppressClick = false; }, 60);
+  if (cancel) return;
+  var el = document.elementFromPoint(e.clientX, e.clientY), s = el && el.closest('[data-act="slot"]'), b = curBoard();
+  if (s && b && b.phase === 'plug'){ b.sel = d.sym; placeChip(b, d.sym, s.dataset.arg); }
+}
+document.addEventListener('pointerup', function(e){ endDrag(e, false); });
+document.addEventListener('pointercancel', function(e){ endDrag(e, true); });
+window.addEventListener('resize', function(){ fitEqs(); });
+
+/* ---------- start ---------- */
+if (Q.get('mode') === 'free') S.tab = 'free';
+render();
+if (S.tab === 'learn') playFrames();
+var anyProgress = cnt(S.learn.done) || cnt(S.guided.done) || cnt(S.prac.done) || S.prac.count.some(function(x){ return x; }) || S.free.have;
+if (hadSave && anyProgress) setTimeout(function(){ toast('Welcome back — you’re right where you left off'); }, 300);
+window.__S = function(){ return S; };
+window.__T = {ACT:ACT, curBoard:curBoard, expect:expect, render:render, solveChips:solveChips};
+})();
+</script>
+</body>
+</html>
